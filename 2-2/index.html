@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>한반도의 암석 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅱ-2 · 한반도의 암석</div>
+      <h1 class="display">화성암과<br>변성암</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 마그마와 화성암</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 암석의 순환</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 변성 작용</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 우리나라 지질공원</button>
+  </nav>
+
+  <main>
+    <!-- TAB0 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 마그마의 화학 조성과 냉각 속도</div>
+        <h2 class="display">마그마로부터 생성되는 화성암</h2>
+        <p>SiO₂ 함량 슬라이더로 마그마의 종류를, 냉각 속도 버튼으로 화산암·심성암을 선택해 완성되는 화성암을 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">SiO₂ 함량(%)<span class="val" id="c0-sio2-val">52</span></div>
+            <input type="range" id="c0-sio2" min="45" max="70" step="1" value="52">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">냉각 속도</div>
+            <div class="seg" id="c0-cool">
+              <button class="on" data-c="fast">급냉 (화산암·세립질)</button>
+              <button data-c="slow">서냉 (심성암·조립질)</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB1 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 지구시스템 속 암석의 이동</div>
+        <h2 class="display">암석의 순환</h2>
+        <p>화성암·퇴적암·변성암은 서로 다른 암석으로 끊임없이 변합니다. 순환도의 각 단계를 클릭해 어떤 작용으로 암석이 바뀌는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
+        <div class="info-card" id="c1-info">순환도의 원이나 화살표를 클릭해 보세요.</div>
+      </div>
+    </section>
+
+    <!-- TAB2 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 열과 압력에 의한 조직 변화</div>
+        <h2 class="display">접촉 변성과 광역 변성</h2>
+        <p>온도와 압력을 조절하며 변성암에 엽리(줄무늬 조직)가 어떻게 발달하는지, 접촉 변성과 광역 변성의 차이를 관찰해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c2" width="900" height="420"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">변성 유형</div>
+            <div class="seg" id="c2-type">
+              <button class="on" data-t="contact">접촉 변성</button>
+              <button data-t="regional">광역 변성</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">압력 강도<span class="val" id="c2-p-val">2</span></div>
+            <input type="range" id="c2-p" min="1" max="10" step="1" value="2">
+          </div>
+        </div>
+        <div class="info-card" id="c2-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB3 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 국가지질공원</div>
+        <h2 class="display">우리나라의 지질 명소</h2>
+        <p>지도의 지질공원 표식을 클릭해 어떤 암석과 지질 구조를 관찰할 수 있는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3" width="900" height="600"></canvas></div>
+        <div class="info-card" id="c3-info">지도의 표식을 클릭해 보세요.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* TAB0 마그마와 화성암 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var sio2 = 52, cooling = "fast";
+  var info = document.getElementById("c0-info");
+
+  document.getElementById("c0-sio2").addEventListener("input", function (e) { sio2 = +e.target.value; document.getElementById("c0-sio2-val").textContent = sio2; render(); });
+  document.querySelectorAll("#c0-cool button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      cooling = b.getAttribute("data-c");
+      document.querySelectorAll("#c0-cool button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+
+  function magmaType() {
+    if (sio2 < 52) return { name: "현무암질 마그마", key: "basaltic" };
+    if (sio2 < 63) return { name: "안산암질 마그마", key: "andesitic" };
+    return { name: "유문암질 마그마", key: "rhyolitic" };
+  }
+  var rockTable = {
+    basaltic: { fast: "현무암", slow: "반려암" },
+    andesitic: { fast: "안산암", slow: "섬록암" },
+    rhyolitic: { fast: "유문암", slow: "화강암" }
+  };
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    // SiO2 gradient bar
+    var barX = 60, barY = 60, barW = W - 120, barH = 22;
+    var grad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
+    grad.addColorStop(0, cssVar("--coral")); grad.addColorStop(.5, cssVar("--teal")); grad.addColorStop(1, cssVar("--violet"));
+    ctx.fillStyle = grad; ctx.fillRect(barX, barY, barW, barH);
+    var markX = barX + (sio2 - 45) / (70 - 45) * barW;
+    ctx.save(); ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(markX, barY - 6); ctx.lineTo(markX, barY + barH + 6); ctx.stroke();
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+    ctx.fillText("45% (현무암질)", barX, barY + barH + 24);
+    ctx.textAlign = "right"; ctx.fillText("70% (유문암질)", barX + barW, barY + barH + 24);
+
+    var mt = magmaType();
+    var rock = rockTable[mt.key][cooling];
+
+    // texture visualization
+    var boxX = W / 2 - 140, boxY = 160, boxW = 280, boxH = 200;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.strokeRect(boxX, boxY, boxW, boxH);
+    ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(boxX, boxY, boxW, boxH);
+    var rand = mulberry32(sio2 * 100 + (cooling === "fast" ? 1 : 2));
+    if (cooling === "fast") {
+      for (var i = 0; i < 260; i++) {
+        ctx.fillStyle = i % 3 === 0 ? cssVar("--teal") : cssVar("--mist");
+        ctx.globalAlpha = 0.7;
+        ctx.beginPath();
+        ctx.arc(boxX + rand() * boxW, boxY + rand() * boxH, 1.6, 0, 7);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    } else {
+      for (var j = 0; j < 40; j++) {
+        ctx.save();
+        ctx.translate(boxX + rand() * boxW, boxY + rand() * boxH);
+        ctx.rotate(rand() * Math.PI);
+        ctx.fillStyle = j % 2 === 0 ? cssVar("--teal") : cssVar("--coral");
+        ctx.globalAlpha = 0.75;
+        var s = 6 + rand() * 10;
+        ctx.fillRect(-s / 2, -s / 2, s, s);
+        ctx.restore();
+      }
+    }
+    ctx.font = "700 16px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+    ctx.fillText(rock, W / 2, boxY + boxH + 32);
+    ctx.font = "12px Segoe UI"; ctx.fillStyle = cssVar("--mist");
+    ctx.fillText(mt.name + " · " + (cooling === "fast" ? "급냉(세립질 조직)" : "서냉(조립질 조직)"), W / 2, boxY - 16);
+
+    info.innerHTML = "SiO₂ 함량 " + sio2 + "%는 <b>" + mt.name + "</b>에 해당합니다. " + (cooling === "fast" ? "지표 부근에서 빠르게 식으면(화산암) 입자가 작은 세립질 조직이 됩니다." : "지하 깊은 곳에서 서서히 식으면(심성암) 입자가 큰 조립질 조직이 됩니다.") + " 완성된 암석은 <b>" + rock + "</b>입니다.";
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  render();
+})();
+
+/* TAB1 암석의 순환 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c1-info");
+
+  var nodes = [
+    { name: "화성암", x: W / 2, y: 90, color: "var(--coral)", desc: "마그마가 냉각되어 굳어진 암석입니다." },
+    { name: "퇴적암", x: W - 160, y: H / 2, color: "var(--teal)", desc: "풍화·침식된 퇴적물이 다져지고 굳어져(속성 작용) 만들어진 암석입니다." },
+    { name: "변성암", x: W / 2, y: H - 90, color: "var(--violet)", desc: "열과 압력을 받아 조직과 광물이 변한 암석입니다." },
+    { name: "마그마", x: 160, y: H / 2, color: "var(--cold)", desc: "암석이 지하 깊은 곳에서 다시 녹아 생긴 용융물입니다." }
+  ];
+  var edges = [
+    { a: 0, b: 1, label: "풍화·침식·퇴적", desc: "화성암이 풍화·침식을 받아 퇴적물이 되고, 쌓여서 퇴적암이 됩니다." },
+    { a: 1, b: 2, label: "열과 압력(매몰)", desc: "퇴적암이 깊이 묻혀 열과 압력을 받으면 변성암이 됩니다." },
+    { a: 2, b: 3, label: "용융", desc: "변성암이 높은 열을 받아 다시 녹으면 마그마가 됩니다." },
+    { a: 3, b: 0, label: "냉각", desc: "마그마가 식어 굳으면 화성암이 됩니다." },
+    { a: 0, b: 2, label: "열과 압력", desc: "화성암도 열과 압력을 받으면 직접 변성암이 될 수 있습니다." },
+    { a: 1, b: 3, label: "용융", desc: "퇴적암이 매우 깊이 묻혀 녹으면 마그마가 될 수 있습니다." }
+  ];
+
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
+    var hit = null;
+    nodes.forEach(function (n) { if (Math.hypot(mx - n.x, my - n.y) < 45) hit = n; });
+    if (hit) { info.innerHTML = "<b>" + hit.name + "</b> — " + hit.desc; render(); return; }
+    edges.forEach(function (ed) {
+      var A = nodes[ed.a], B = nodes[ed.b];
+      var mxid = (A.x + B.x) / 2, myid = (A.y + B.y) / 2;
+      if (Math.hypot(mx - mxid, my - myid) < 30) { info.innerHTML = "<b>" + ed.label + "</b> — " + ed.desc; }
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    edges.forEach(function (ed) {
+      var A = nodes[ed.a], B = nodes[ed.b];
+      ctx.save();
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+      ctx.restore();
+      var mxid = (A.x + B.x) / 2, myid = (A.y + B.y) / 2;
+      ctx.save();
+      ctx.fillStyle = cssVar("--panel-2"); ctx.strokeStyle = cssVar("--line");
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(mxid - 46, myid - 12, 92, 24, 6) : ctx.rect(mxid - 46, myid - 12, 92, 24);
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "10.5px Segoe UI"; ctx.textAlign = "center";
+      ctx.fillText(ed.label, mxid, myid + 4);
+      ctx.restore();
+    });
+    nodes.forEach(function (n) {
+      ctx.save();
+      ctx.fillStyle = cssVar(n.color.replace("var(", "").replace(")", ""));
+      ctx.beginPath(); ctx.arc(n.x, n.y, 42, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.font = "700 14px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
+      ctx.fillText(n.name, n.x, n.y + 5);
+    });
+  }
+  render();
+})();
+
+/* TAB2 변성작용 */
+(function () {
+  var canvas = document.getElementById("c2");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var type = "contact", pressure = 2;
+  var info = document.getElementById("c2-info");
+
+  document.querySelectorAll("#c2-type button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      type = b.getAttribute("data-t");
+      document.querySelectorAll("#c2-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+  document.getElementById("c2-p").addEventListener("input", function (e) { pressure = +e.target.value; document.getElementById("c2-p-val").textContent = pressure; render(); });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var boxX = 220, boxY = 60, boxW = 460, boxH = 260;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+    if (type === "contact") {
+      ctx.save();
+      ctx.fillStyle = cssVar("--coral"); ctx.globalAlpha = .5;
+      ctx.beginPath(); ctx.arc(boxX + boxW / 2, boxY + boxH / 2, 60, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText("마그마 관입 (열)", boxX + boxW / 2, boxY + boxH / 2 + 5);
+      // dots randomly scattered, no orientation (no foliation)
+      for (var i = 0; i < 200; i++) {
+        var rx = boxX + Math.random() * boxW, ry = boxY + Math.random() * boxH;
+        if (Math.hypot(rx - (boxX + boxW / 2), ry - (boxY + boxH / 2)) < 65) continue;
+        ctx.fillStyle = cssVar("--mist"); ctx.globalAlpha = .6;
+        ctx.beginPath(); ctx.arc(rx, ry, 2, 0, 7); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      info.innerHTML = "<b>접촉 변성 작용</b>: 마그마가 관입할 때 주변 암석이 열의 영향만 주로 받아 변성됩니다. 압력의 영향이 적어 엽리가 거의 나타나지 않습니다. 예) 혼펠스, 대리암.";
+    } else {
+      var lines = 6 + pressure * 3;
+      var angle = -0.15 - pressure * 0.03;
+      for (var l = 0; l < lines; l++) {
+        var yy = boxY + 15 + (l / lines) * (boxH - 30);
+        ctx.save();
+        ctx.strokeStyle = cssVar("--violet"); ctx.globalAlpha = .8; ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(boxX + 10, yy + Math.sin(l) * 4);
+        ctx.lineTo(boxX + boxW - 10, yy + angle * boxW + Math.sin(l) * 4);
+        ctx.stroke();
+        ctx.restore();
+      }
+      ctx.save(); ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 4;
+      drawArrow(ctx, boxX + boxW / 2, boxY - 20, boxX + boxW / 2, boxY + 10, 8);
+      drawArrow(ctx, boxX + boxW / 2, boxY + boxH + 20, boxX + boxW / 2, boxY + boxH - 10, 8);
+      ctx.restore();
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText("광역적인 압력(조산 운동)", boxX + boxW / 2, boxY - 28);
+      info.innerHTML = "<b>광역 변성 작용</b>: 넓은 지역에 걸쳐 높은 열과 강한 압력을 함께 받아 변성됩니다. 압력이 강할수록(현재 " + pressure + "단계) 광물이 한 방향으로 배열되는 <b>엽리</b>가 뚜렷하게 발달합니다. 예) 편암, 편마암.";
+    }
+  }
+  render();
+})();
+
+/* TAB3 지질공원 지도 */
+(function () {
+  var canvas = document.getElementById("c3");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c3-info");
+  var peninsula = [
+    [430, 70], [470, 90], [455, 160], [500, 230], [470, 300],
+    [510, 360], [470, 420], [430, 470], [390, 500], [370, 460],
+    [400, 400], [360, 340], [390, 270], [350, 210], [380, 140], [400, 90]
+  ];
+  var spots = [
+    { name: "한탄강 (연천·포천)", x: 430, y: 140, desc: "용암이 흘러 형성된 현무암 협곡과 주상절리를 관찰할 수 있습니다. 세계지질공원으로 지정되었습니다." },
+    { name: "청송 국가지질공원", x: 470, y: 300, desc: "화강암 침식 지형과 다양한 중생대 화산암을 관찰할 수 있는 세계지질공원입니다." },
+    { name: "무등산 국가지질공원", x: 400, y: 400, desc: "중생대에 형성된 화산암으로 이루어진 주상절리(입석대·서석대)를 볼 수 있습니다." },
+    { name: "제주도 국가지질공원", x: 380, y: 520, desc: "신생대 화산 활동으로 형성된 섬으로, 현무암 용암동굴과 다양한 화산 지형이 있습니다." },
+    { name: "울릉도·독도 지질공원", x: 560, y: 260, desc: "신생대 화산 활동으로 형성된 화산섬으로, 조면암 등 다양한 화산암을 관찰할 수 있습니다." }
+  ];
+
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
+    var hit = null;
+    spots.forEach(function (s) { if (Math.hypot(mx - s.x, my - s.y) < 22) hit = s; });
+    if (hit) info.innerHTML = "<b>" + hit.name + "</b> — " + hit.desc;
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    ctx.beginPath();
+    peninsula.forEach(function (p, i) { if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]); });
+    ctx.closePath();
+    ctx.fillStyle = cssVar("--panel-2"); ctx.fill();
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.stroke();
+
+    spots.forEach(function (s) {
+      ctx.save();
+      ctx.fillStyle = cssVar("--coral");
+      ctx.beginPath(); ctx.arc(s.x, s.y, 9, 0, 7); ctx.fill();
+      ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "left";
+      ctx.fillText(s.name, s.x + 14, s.y + 4);
+    });
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>

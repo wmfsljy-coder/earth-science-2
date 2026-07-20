@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대기와 해양의 상호작용과 기후 변화 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅰ-2 · 대기와 해양</div>
+      <h1 class="display">상호작용과<br>기후 변화</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 용승과 침강</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 엔소(ENSO)</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 기후 변화 요인</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 온실 효과·온난화</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 기후 변화 대응</button>
+  </nav>
+
+  <main>
+    <!-- TAB 0 : 용승과 침강 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 해수의 연직 이동</div>
+        <h2 class="display">용승과 침강</h2>
+        <p>바람 때문에 표층 해수가 수평으로 이동하면, 이를 채우기 위해 심층의 해수가 수직으로 이동합니다. 연안 용승·침강과 적도 용승 세 가지 유형을 비교해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="520"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">유형</div>
+            <div class="seg" id="c0-type">
+              <button class="on" data-t="coastal-up">연안 용승</button>
+              <button data-t="coastal-down">연안 침강</button>
+              <button data-t="equator">적도 용승</button>
+            </div>
+          </div>
+          <div class="readout"><span class="dot" id="c0-dot" style="background:var(--cold)"></span><span class="txt" id="c0-result">결과: —</span></div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB 1 : 엔소 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 열대 태평양의 대기-해양 상호작용</div>
+        <h2 class="display">엘니뇨·라니냐·워커 순환</h2>
+        <p>무역풍의 세기에 따라 열대 태평양의 수온·기압·강수 분포가 어떻게 달라지는지 관찰해 보세요. 엘니뇨와 라니냐는 각각 엔소(ENSO)의 '더운 시기'와 '차가운 시기'입니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="520"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">상태</div>
+            <div class="seg" id="c1-state">
+              <button data-s="nina">라니냐</button>
+              <button class="on" data-s="normal">평상시</button>
+              <button data-s="nino">엘니뇨</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c1-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2 : 기후 변화 자연적 요인 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 밀란코비치 이론</div>
+        <h2 class="display">지구 외적 요인과 기후 변화</h2>
+        <p>세차 운동·자전축 기울기·공전 궤도 이심률을 조절하며, 이 세 가지 지구 운동 변화가 북반구의 연교차(계절 차이)에 어떤 영향을 주는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c2" width="900" height="520"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">세차 운동(자전축 방향)<span class="val" id="c2-prec-val">0°</span></div>
+            <input type="range" id="c2-prec" min="0" max="359" step="1" value="0">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">자전축 기울기<span class="val" id="c2-tilt-val">23.5°</span></div>
+            <input type="range" id="c2-tilt" min="21.5" max="24.5" step="0.1" value="23.5">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">공전 궤도 이심률<span class="val" id="c2-ecc-val">0.02</span></div>
+            <input type="range" id="c2-ecc" min="0" max="0.09" step="0.005" value="0.02">
+          </div>
+        </div>
+        <div class="info-card" id="c2-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3 : 온실효과와 온난화 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 지구 복사 평형</div>
+        <h2 class="display">온실 효과와 지구 온난화</h2>
+        <p>대기 중 온실 기체 농도를 조절하며, 대기의 재복사량과 지구 평균 기온이 어떻게 달라지는지 살펴보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3" width="900" height="520"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">대기 중 CO₂ 농도(ppm)<span class="val" id="c3-co2-val">280</span></div>
+            <input type="range" id="c3-co2" min="280" max="500" step="5" value="280">
+          </div>
+          <div class="readout"><span class="dot" id="c3-dot" style="background:var(--teal)"></span><span class="txt" id="c3-temp">기온 편차: —</span></div>
+        </div>
+        <div class="info-card">온실 기체는 태양 복사(가시광선)는 통과시키지만, 지구 복사(적외선)는 흡수했다가 지표로 재복사합니다. 농도가 높아질수록 재복사량이 늘어 지표 기온이 상승합니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB 4 : 기후변화 대응 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 국제 사회의 대응</div>
+        <h2 class="display">탄소 중립과 기후 협약</h2>
+        <p>타임라인의 점을 클릭해 주요 국제 기후 협약의 내용을 확인하고, 기후 변화를 완화하는 과학기술적 방법도 살펴보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c4" width="900" height="360"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">완화 기술</div>
+            <div class="toggle-row">
+              <button class="chip" data-tech="hydrogen">그린 수소 에너지</button>
+              <button class="chip" data-tech="ccs">CO₂ 포집·저장</button>
+              <button class="chip" data-tech="albedo">태양 복사 조절</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c4-info">타임라인의 점 또는 완화 기술 버튼을 클릭해 보세요.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* TAB0 용승과 침강 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var type = "coastal-up";
+  var t = 0;
+  var info = document.getElementById("c0-info");
+  var result = document.getElementById("c0-result");
+  var dot = document.getElementById("c0-dot");
+
+  document.querySelectorAll("#c0-type button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      type = b.getAttribute("data-t");
+      document.querySelectorAll("#c0-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      updateInfo();
+    });
+  });
+  function updateInfo() {
+    if (type === "coastal-up") {
+      info.innerHTML = "북반구 대륙 서쪽 해안에서 <b>북풍</b>이 불면 에크만 수송으로 표층 해수가 먼바다 쪽으로 이동하고, 이를 채우기 위해 심층의 찬 해수가 올라오는 <b>연안 용승</b>이 일어납니다. 영양염이 풍부해져 좋은 어장이 형성됩니다.";
+      result.innerHTML = "결과: <b style='color:var(--cold)'>연안 용승</b> — 표층 수온 하강, 영양염 증가";
+      dot.style.background = "var(--cold)";
+    } else if (type === "coastal-down") {
+      info.innerHTML = "같은 해안에서 <b>남풍</b>이 불면 표층 해수가 해안 쪽으로 이동하여 <b>침강</b>이 일어납니다.";
+      result.innerHTML = "결과: <b style='color:var(--coral)'>연안 침강</b> — 표층수 해안에 쌓여 가라앉음";
+      dot.style.background = "var(--coral)";
+    } else {
+      info.innerHTML = "적도 부근에서는 무역풍의 영향으로 표층 해수가 북반구에서는 북쪽, 남반구에서는 남쪽으로 이동합니다. 이를 채우기 위해 적도에서 <b>적도 용승</b>이 일어납니다.";
+      result.innerHTML = "결과: <b style='color:var(--cold)'>적도 용승</b> — 적도 표층 수온이 주변보다 낮음";
+      dot.style.background = "var(--cold)";
+    }
+  }
+
+  function frame() {
+    if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    if (type !== "equator") {
+      var coastX = 170;
+      ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(0, 0, coastX, H);
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(coastX, 0); ctx.lineTo(coastX, H); ctx.stroke();
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
+      ctx.save(); ctx.translate(coastX / 2, H / 2); ctx.fillText("육지", 0, 0); ctx.restore();
+
+      var up = type === "coastal-up";
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral");
+      var wy1 = up ? 40 : H - 40, wy2 = up ? H - 40 : 40;
+      for (var i = 0; i < 3; i++) {
+        var wx = coastX + 40 + i * 40;
+        ctx.lineWidth = 4;
+        drawArrow(ctx, wx, wy1, wx, wy1 + (wy2 - wy1) * 0.8, 10);
+      }
+      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
+      ctx.fillText(up ? "북풍" : "남풍", coastX + 160, (wy1 + wy2) / 2);
+      ctx.restore();
+
+      var midY = H / 2;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--teal"); ctx.fillStyle = cssVar("--teal"); ctx.lineWidth = 5;
+      if (up) drawArrow(ctx, coastX + 60, midY - 100, coastX + 240, midY - 100, 12);
+      else drawArrow(ctx, coastX + 240, midY - 100, coastX + 60, midY - 100, 12);
+      ctx.font = "700 12px Segoe UI"; ctx.fillText("에크만 수송", coastX + 60, midY - 112);
+      ctx.restore();
+
+      var grad = ctx.createLinearGradient(0, midY - 40, 0, H - 20);
+      grad.addColorStop(0, "rgba(63,201,176,.18)"); grad.addColorStop(1, "rgba(10,25,45,.55)");
+      ctx.fillStyle = grad; ctx.fillRect(coastX, midY - 40, W - coastX - 30, H - midY - 20 + 40);
+
+      for (var j = 0; j < 8; j++) {
+        var px = coastX + 30 + (j % 2) * 50;
+        var phase = (t * 0.6 + j * 0.2) % 1;
+        var py = up ? (H - 30) - phase * (H - 30 - (midY - 20)) : (midY - 10) + phase * (H - 30 - (midY - 10));
+        ctx.save(); ctx.fillStyle = up ? cssVar("--cold") : cssVar("--coral"); ctx.globalAlpha = .85;
+        ctx.beginPath(); ctx.arc(px, py, 5, 0, 7); ctx.fill(); ctx.restore();
+      }
+    } else {
+      var eqY = H / 2;
+      ctx.strokeStyle = cssVar("--mist"); ctx.setLineDash([4, 4]); ctx.globalAlpha = .5;
+      ctx.beginPath(); ctx.moveTo(40, eqY); ctx.lineTo(W - 40, eqY); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.fillText("적도", W - 70, eqY - 8);
+
+      ctx.save(); ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 4;
+      drawArrow(ctx, W / 2, eqY - 130, W / 2, eqY - 40, 10);
+      drawArrow(ctx, W / 2, eqY + 130, W / 2, eqY + 40, 10);
+      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
+      ctx.fillText("무역풍에 의한 표층수 이동(북쪽)", W / 2, eqY - 140);
+      ctx.fillText("무역풍에 의한 표층수 이동(남쪽)", W / 2, eqY + 150);
+      ctx.restore();
+
+      var n = 10;
+      for (var k = 0; k < n; k++) {
+        var phase2 = (t * 0.5 + k / n) % 1;
+        var py2 = (H - 30) - phase2 * (H - 30 - (eqY - 20));
+        ctx.save(); ctx.fillStyle = cssVar("--cold"); ctx.globalAlpha = .85;
+        ctx.beginPath(); ctx.arc(W / 2 - 20 + (k % 3) * 20, py2, 5, 0, 7); ctx.fill(); ctx.restore();
+      }
+    }
+    t += 1 / 60;
+    requestAnimationFrame(frame);
+  }
+  updateInfo();
+  requestAnimationFrame(frame);
+})();
+
+/* TAB1 엔소 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var state = "normal";
+  var t = 0;
+  var info = document.getElementById("c1-info");
+  var texts = {
+    nina: "무역풍이 <b>강화</b>되어 동태평양의 용승이 강해지고 수온이 낮아지는 <b>라니냐</b> 시기입니다. 서태평양은 저기압·다우, 동태평양은 고기압·가뭄 경향이 더 뚜렷해집니다.",
+    normal: "<b>평상시</b>에는 무역풍이 서쪽으로 불어 따뜻한 표층수가 서태평양에 쌓이고, 동태평양은 용승으로 찬물이 유지됩니다. 서태평양은 저기압(다우), 동태평양은 고기압(맑음)입니다.",
+    nino: "무역풍이 <b>약화</b>되어 동태평양의 용승이 약해지고 수온이 높아지는 <b>엘니뇨</b> 시기입니다. 서태평양은 평소보다 건조해 가뭄, 동태평양은 강수량이 늘어 홍수 경향을 보입니다."
+  };
+  document.querySelectorAll("#c1-state button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      state = b.getAttribute("data-s");
+      document.querySelectorAll("#c1-state button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      info.innerHTML = texts[state];
+    });
+  });
+
+  function frame() {
+    if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var seaTop = 60, seaBot = H - 100;
+    var westX = 100, eastX = W - 100;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+    ctx.strokeRect(westX - 40, seaTop, eastX - westX + 80, seaBot - seaTop);
+    ctx.fillStyle = cssVar("--mist"); ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
+    ctx.fillText("서태평양", westX - 30, seaTop - 12);
+    ctx.textAlign = "right"; ctx.fillText("동태평양", eastX + 30, seaTop - 12);
+
+    var windStrength = state === "nino" ? 0.35 : state === "nina" ? 1.5 : 1.0;
+    var warmTilt = state === "nino" ? 0.3 : state === "nina" ? 0.75 : 0.55;
+
+    // warm water layer (wedge shape thicker on west)
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(westX - 40, seaTop + 20);
+    ctx.lineTo(eastX + 40, seaTop + 20 + (seaBot - seaTop - 40) * (1 - warmTilt));
+    ctx.lineTo(eastX + 40, seaBot);
+    ctx.lineTo(westX - 40, seaBot);
+    ctx.closePath();
+    ctx.fillStyle = "rgba(242,150,92,0.35)";
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = cssVar("--mist"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
+    ctx.fillText("온난 수역", (westX + eastX) / 2, seaTop + 40);
+
+    // trade wind arrow (east->west)
+    ctx.save();
+    ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral");
+    ctx.lineWidth = 3 + windStrength * 3;
+    drawArrow(ctx, eastX, seaTop - 30, westX, seaTop - 30, 10 + windStrength * 4);
+    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
+    ctx.fillText("무역풍 (세기: " + windStrength.toFixed(2) + "×)", (westX + eastX) / 2, seaTop - 40);
+    ctx.restore();
+
+    // upwelling arrows east
+    ctx.save();
+    ctx.strokeStyle = cssVar("--cold"); ctx.fillStyle = cssVar("--cold");
+    ctx.lineWidth = 3 + (1 - warmTilt) * 4;
+    drawArrow(ctx, eastX, seaBot - 10, eastX, seaTop + 30, 10);
+    ctx.restore();
+
+    // pressure + weather labels
+    var westPressure = state === "nino" ? "고기압 · 건조" : state === "nina" ? "저기압 · 다우" : "저기압 · 다우";
+    var eastPressure = state === "nino" ? "저기압 · 다우" : state === "nina" ? "고기압 · 건조" : "고기압 · 맑음";
+    ctx.font = "700 13px Segoe UI"; ctx.textAlign = "left";
+    ctx.fillStyle = cssVar("--foam"); ctx.fillText(westPressure, westX - 30, H - 60);
+    ctx.textAlign = "right"; ctx.fillText(eastPressure, eastX + 30, H - 60);
+
+    // walker circulation arrows (loop)
+    ctx.save();
+    ctx.strokeStyle = cssVar("--violet"); ctx.globalAlpha = .6; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(westX, seaTop - 55); ctx.lineTo(eastX, seaTop - 55);
+    ctx.stroke();
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--violet"); ctx.textAlign = "center";
+    ctx.fillText("워커 순환", (westX + eastX) / 2, seaTop - 62);
+
+    t += 1 / 60;
+    requestAnimationFrame(frame);
+  }
+  info.innerHTML = texts.normal;
+  requestAnimationFrame(frame);
+})();
+
+/* TAB2 밀란코비치 */
+(function () {
+  var canvas = document.getElementById("c2");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var prec = 0, tilt = 23.5, ecc = 0.02;
+  var info = document.getElementById("c2-info");
+
+  document.getElementById("c2-prec").addEventListener("input", function (e) {
+    prec = +e.target.value; document.getElementById("c2-prec-val").textContent = prec + "°"; render();
+  });
+  document.getElementById("c2-tilt").addEventListener("input", function (e) {
+    tilt = +e.target.value; document.getElementById("c2-tilt-val").textContent = tilt.toFixed(1) + "°"; render();
+  });
+  document.getElementById("c2-ecc").addEventListener("input", function (e) {
+    ecc = +e.target.value; document.getElementById("c2-ecc-val").textContent = ecc.toFixed(3); render();
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var cx = W / 2, cy = H / 2 + 10;
+    var a = 260, b = a * Math.sqrt(1 - ecc * ecc);
+    ctx.save();
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+
+    // sun at focus
+    var c = Math.sqrt(a * a - b * b);
+    ctx.save();
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(cx + c, cy, 12, 0, 7); ctx.fill();
+    ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--mist");
+    ctx.fillText("태양", cx + c, cy + 28);
+    ctx.restore();
+
+    var precRad = prec * Math.PI / 180;
+    // earth at "current" position: near aphelion side related to precession phase
+    function earthAt(angle) {
+      return { x: cx + a * Math.cos(angle), y: cy + b * Math.sin(angle) };
+    }
+    var posSummer = earthAt(Math.PI + precRad);
+    var posWinter = earthAt(precRad);
+
+    [{ p: posSummer, label: "북반구 여름", col: cssVar("--coral") }, { p: posWinter, label: "북반구 겨울", col: cssVar("--cold") }].forEach(function (o) {
+      ctx.save();
+      ctx.fillStyle = o.col;
+      ctx.beginPath(); ctx.arc(o.p.x, o.p.y, 9, 0, 7); ctx.fill();
+      // tilt axis indicator
+      var axisLen = 22 + (tilt - 21.5) * 10;
+      ctx.strokeStyle = o.col; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(o.p.x, o.p.y - axisLen);
+      ctx.lineTo(o.p.x, o.p.y + axisLen);
+      ctx.stroke();
+      ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--mist");
+      ctx.fillText(o.label, o.p.x, o.p.y + axisLen + 16);
+      ctx.restore();
+    });
+
+    // distance readout
+    var dSummer = Math.hypot(posSummer.x - (cx + c), posSummer.y - cy);
+    var dWinter = Math.hypot(posWinter.x - (cx + c), posWinter.y - cy);
+    var closerInSummer = dSummer < dWinter;
+
+    var tiltEffect = (tilt - 23.0);
+    var eccEffect = ecc;
+    var seasonIntensity = Math.abs(tiltEffect) * 1.2 + eccEffect * 8 + (closerInSummer ? 1.4 : 0);
+
+    ctx.save();
+    ctx.textAlign = "left"; ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam");
+    ctx.fillText("연교차(계절 차이) 크기 추정:", 20, 30);
+    var barW = 260, level = Math.min(1, seasonIntensity / 4);
+    ctx.strokeStyle = cssVar("--line"); ctx.strokeRect(20, 40, barW, 14);
+    ctx.fillStyle = cssVar("--coral"); ctx.fillRect(20, 40, barW * level, 14);
+    ctx.restore();
+
+    info.innerHTML = "현재 지구는 여름철에 태양과 " + (closerInSummer ? "<b>더 가깝습니다</b> (연교차 감소 방향)" : "<b>더 멉니다</b> (연교차 증가 방향)") +
+      ". 자전축 기울기가 " + tilt.toFixed(1) + "°로 표준(23.5°)보다 " + (tiltEffect >= 0 ? "크고" : "작고") +
+      ", 이심률은 " + ecc.toFixed(3) + "입니다. 세 요인이 결합하여 북반구의 계절 차이(연교차)를 " + (level > 0.55 ? "크게" : level > 0.25 ? "보통으로" : "작게") + " 만듭니다.";
+  }
+  render();
+})();
+
+/* TAB3 온실효과 */
+(function () {
+  var canvas = document.getElementById("c3");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var co2 = 280;
+  var tempEl = document.getElementById("c3-temp");
+  var dot = document.getElementById("c3-dot");
+
+  document.getElementById("c3-co2").addEventListener("input", function (e) {
+    co2 = +e.target.value;
+    document.getElementById("c3-co2-val").textContent = co2;
+    render();
+  });
+
+  function tempAnomaly(c) {
+    // rough log relation, scaled for visualization purposes only
+    return 3.0 * Math.log(c / 280) / Math.log(2);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var groundY = H - 70, skyTop = 40;
+    // sun radiation down
+    ctx.save();
+    ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 3;
+    for (var i = 0; i < 3; i++) {
+      var x = 180 + i * 60;
+      drawArrow(ctx, x, skyTop, x, groundY - 10, 8);
+    }
+    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
+    ctx.fillText("태양 복사(가시광선) 통과", 270, skyTop - 10);
+    ctx.restore();
+
+    // ground
+    ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(0, groundY, W, H - groundY);
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left"; ctx.fillText("지표", 12, groundY + 20);
+
+    // greenhouse layer thickness scales with co2
+    var layerThickness = 6 + (co2 - 280) * 0.35;
+    ctx.save();
+    ctx.fillStyle = "rgba(63,201,176," + (0.12 + (co2 - 280) / 500) + ")";
+    ctx.fillRect(0, skyTop + 20, W, layerThickness);
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--teal"); ctx.textAlign = "left";
+    ctx.fillText("온실 기체층 (CO₂ " + co2 + " ppm)", 12, skyTop + 16);
+
+    // outgoing IR + reradiation arrows scale with co2
+    var n = 5;
+    for (var j = 0; j < n; j++) {
+      var xx = 550 + j * 55;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 2.5;
+      drawArrow(ctx, xx, groundY - 10, xx, skyTop + 30, 7);
+      ctx.restore();
+      var reradiate = (co2 - 280) / 220;
+      if (reradiate > j / n) {
+        ctx.save();
+        ctx.strokeStyle = cssVar("--violet"); ctx.fillStyle = cssVar("--violet"); ctx.lineWidth = 2.5;
+        drawArrow(ctx, xx + 15, skyTop + 35, xx + 15, groundY - 15, 7);
+        ctx.restore();
+      }
+    }
+    ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+    ctx.fillText("지구 복사(적외선) 방출 / 재복사", 660, skyTop - 10);
+
+    var anomaly = tempAnomaly(co2);
+    tempEl.innerHTML = "기온 편차: <b>+" + anomaly.toFixed(2) + "°C</b> (산업화 이전 대비, 단순화된 모델)";
+    dot.style.background = anomaly > 2 ? cssVar("--coral") : anomaly > 1 ? cssVar("--teal") : cssVar("--cold");
+  }
+  render();
+})();
+
+/* TAB4 기후변화 대응 */
+(function () {
+  var canvas = document.getElementById("c4");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c4-info");
+
+  var events = [
+    { y: 1992, name: "유엔 기후 변화 협약", d: "기후 변화에 공동 대응하기 위한 국제 협약을 최초로 채택했습니다." },
+    { y: 1997, name: "교토 의정서", d: "선진국의 온실 기체 배출량 감축을 의무화했습니다." },
+    { y: 2015, name: "파리 기후 변화 협약", d: "모든 국가가 자국 상황에 맞는 감축 목표를 세우고, 지구 평균 기온 상승을 1.5°C로 제한하기로 합의했습니다." },
+    { y: 2021, name: "글래스고 기후 합의", d: "파리 협약 세부 이행 지침을 완성하고 화석 연료 감축에 합의했습니다." }
+  ];
+  var techTexts = {
+    hydrogen: "<b>그린 수소 에너지</b>: 재생 에너지로 물을 전기 분해해 생산 단계부터 온실 기체를 배출하지 않는 친환경 에너지입니다.",
+    ccs: "<b>CO₂ 포집·저장</b>: 산업 시설에서 발생하는 이산화 탄소를 포집해 해양이나 지층 속에 저장하는 기술입니다.",
+    albedo: "<b>태양 복사 에너지량 조절</b>: 성층권에 에어로졸을 뿌리거나 우주에 반사막을 설치해 지구에 흡수되는 태양 복사 에너지를 줄이는 방법입니다."
+  };
+
+  var minY = 1990, maxY = 2023;
+  function xOf(y) { return 60 + (y - minY) / (maxY - minY) * (W - 120); }
+
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var best = null, bestD = 20;
+    events.forEach(function (ev) {
+      var d = Math.abs(xOf(ev.y) - mx);
+      if (d < bestD) { bestD = d; best = ev; }
+    });
+    if (best) info.innerHTML = "<b>" + best.y + "년 " + best.name + "</b> — " + best.d;
+  });
+  document.querySelectorAll("[data-tech]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      document.querySelectorAll("[data-tech]").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      info.innerHTML = techTexts[b.getAttribute("data-tech")];
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var lineY = H / 2;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(60, lineY); ctx.lineTo(W - 60, lineY); ctx.stroke();
+
+    events.forEach(function (ev) {
+      var x = xOf(ev.y);
+      ctx.save();
+      ctx.fillStyle = cssVar("--teal");
+      ctx.beginPath(); ctx.arc(x, lineY, 8, 0, 7); ctx.fill();
+      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--foam");
+      ctx.fillText(ev.y, x, lineY - 18);
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist");
+      ctx.fillText(ev.name, x, lineY + 30);
+      ctx.restore();
+    });
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>

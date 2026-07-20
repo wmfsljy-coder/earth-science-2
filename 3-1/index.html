@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>태양계 천체 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅲ-1 · 태양계 천체</div>
+      <h1 class="display">행성의 운동과<br>식 현상</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 행성의 배치</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 순행과 역행</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 금성의 위상</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 일식과 월식</button>
+  </nav>
+
+  <main>
+    <!-- TAB0 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 태양-지구-행성의 위치 관계</div>
+        <h2 class="display">행성의 겉보기 배치</h2>
+        <p>화성(외행성) 위치를 슬라이더로 움직이며 합·충·구의 배치를, 금성(내행성) 위치로 합·최대 이각의 배치를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="480"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">외행성(화성) 공전각<span class="val" id="c0-outer-val">90°</span></div>
+            <input type="range" id="c0-outer" min="0" max="359" step="1" value="90">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">내행성(금성) 공전각<span class="val" id="c0-inner-val">45°</span></div>
+            <input type="range" id="c0-inner" min="0" max="359" step="1" value="45">
+          </div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB1 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 지구보다 바깥을 도는 행성 관측</div>
+        <h2 class="display">순행과 역행</h2>
+        <p>재생 버튼을 눌러 지구와 화성이 공전하는 모습을 보면서, 배경 별자리에 대한 화성의 겉보기 이동 경로(오른쪽)가 어떻게 그려지는지 관찰해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">재생</div>
+            <div class="seg" id="c1-play">
+              <button class="on" data-p="play">재생 중</button>
+              <button data-p="pause">일시 정지</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">속도<span class="val" id="c1-speed-val">1.0×</span></div>
+            <input type="range" id="c1-speed" min="0.2" max="3" step="0.1" value="1">
+          </div>
+          <button class="chip" id="c1-reset">경로 지우기</button>
+        </div>
+        <div class="info-card">지구가 화성을 &quot;추월&quot;하는 구간(지구와 화성이 가까워지는 충 부근)에서, 화성이 배경 별자리에 대해 서쪽으로 되돌아가는 것처럼 보이는 <b>역행</b>이 나타납니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB2 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 내행성의 위상 변화</div>
+        <h2 class="display">금성의 위상과 크기</h2>
+        <p>금성의 공전 궤도상 위치를 조절하며, 지구에서 본 금성의 위상(모양)과 겉보기 크기가 함께 달라지는 것을 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c2" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">금성의 공전각<span class="val" id="c2-a-val">45°</span></div>
+            <input type="range" id="c2-a" min="0" max="359" step="1" value="45">
+          </div>
+        </div>
+        <div class="info-card" id="c2-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB3 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 태양·지구·달의 정렬</div>
+        <h2 class="display">일식과 월식</h2>
+        <p>달의 공전 위치를 조절해 태양-달-지구(일식) 또는 태양-지구-달(월식)이 일직선에 가까워질 때 어떤 식 현상이 나타나는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">달의 공전각<span class="val" id="c3-a-val">0°</span></div>
+            <input type="range" id="c3-a" min="0" max="359" step="1" value="0">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">달 궤도의 기울기 반영</div>
+            <div class="seg" id="c3-incl">
+              <button class="on" data-i="on">반영(약 5°)</button>
+              <button data-i="off">무시(단순화)</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c3-info"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* TAB0 행성의 배치 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var outerA = 90, innerA = 45;
+  var info = document.getElementById("c0-info");
+
+  document.getElementById("c0-outer").addEventListener("input", function (e) { outerA = +e.target.value; document.getElementById("c0-outer-val").textContent = outerA + "°"; render(); });
+  document.getElementById("c0-inner").addEventListener("input", function (e) { innerA = +e.target.value; document.getElementById("c0-inner-val").textContent = innerA + "°"; render(); });
+
+  function classify() {
+    var oNorm = ((outerA % 360) + 360) % 360;
+    var iNorm = ((innerA % 360) + 360) % 360;
+    var outerLabel = (oNorm < 8 || oNorm > 352) ? "합(conjunction)" : (Math.abs(oNorm - 180) < 8) ? "충(opposition)" : (Math.abs(oNorm - 90) < 8 || Math.abs(oNorm - 270) < 8) ? "구(quadrature)" : "일반 위치";
+    var innerLabel = (iNorm < 8 || iNorm > 352) ? "외합(태양 반대편)" : (Math.abs(iNorm - 180) < 8) ? "내합(지구에 가까움)" : (Math.abs(iNorm - 90) < 8 || Math.abs(iNorm - 270) < 8) ? "최대 이각 부근" : "일반 위치";
+    return { outerLabel: outerLabel, innerLabel: innerLabel };
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var cx = W / 2, cy = H / 2;
+    var rInner = 70, rEarth = 150, rOuter = 260;
+
+    [rInner, rEarth, rOuter].forEach(function (r) {
+      ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke(); ctx.restore();
+    });
+    // sun
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(cx, cy, 16, 0, 7); ctx.fill();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center"; ctx.fillText("태양", cx, cy + 30);
+
+    // earth fixed at angle 0 (right)
+    var ex = cx + rEarth, ey = cy;
+    ctx.fillStyle = cssVar("--teal");
+    ctx.beginPath(); ctx.arc(ex, ey, 10, 0, 7); ctx.fill();
+    ctx.fillStyle = cssVar("--mist"); ctx.fillText("지구", ex, ey + 24);
+
+    // inner planet (Venus)
+    var iaRad = innerA * Math.PI / 180;
+    var ix = cx + rInner * Math.cos(iaRad), iy = cy + rInner * Math.sin(iaRad);
+    ctx.fillStyle = cssVar("--violet");
+    ctx.beginPath(); ctx.arc(ix, iy, 8, 0, 7); ctx.fill();
+    ctx.fillText("금성", ix, iy - 14);
+
+    // outer planet (Mars)
+    var oaRad = outerA * Math.PI / 180;
+    var ox = cx + rOuter * Math.cos(oaRad), oy = cy + rOuter * Math.sin(oaRad);
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(ox, oy, 9, 0, 7); ctx.fill();
+    ctx.fillText("화성", ox, oy - 16);
+
+    ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ox, oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ix, iy); ctx.stroke();
+    ctx.restore();
+
+    var cl = classify();
+    info.innerHTML = "화성(외행성) 배치: <b>" + cl.outerLabel + "</b> · 금성(내행성) 배치: <b>" + cl.innerLabel + "</b><br>외행성은 지구를 기준으로 합·충·구로, 내행성은 합(내합·외합)과 최대 이각으로 위치를 구분합니다.";
+  }
+  render();
+})();
+
+/* TAB1 순행과 역행 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var earthA = 0, marsA = 40, speed = 1, playing = true;
+  var trail = [];
+
+  document.querySelectorAll("#c1-play button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      playing = b.getAttribute("data-p") === "play";
+      document.querySelectorAll("#c1-play button").forEach(function (x) { x.classList.toggle("on", x === b); });
+    });
+  });
+  document.getElementById("c1-speed").addEventListener("input", function (e) { speed = +e.target.value; document.getElementById("c1-speed-val").textContent = speed.toFixed(1) + "×"; });
+  document.getElementById("c1-reset").addEventListener("click", function () { trail = []; });
+
+  function frame() {
+    if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+    if (playing) { earthA += 1.5 * speed; marsA += 1.5 * speed * (1 / 1.88); }
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var leftW = W * 0.45;
+    var cx = leftW / 2, cy = H / 2;
+    var rE = 70, rM = 115;
+    [rE, rM].forEach(function (r) { ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.stroke(); ctx.restore(); });
+    ctx.fillStyle = cssVar("--coral"); ctx.beginPath(); ctx.arc(cx, cy, 12, 0, 7); ctx.fill();
+
+    var er = earthA * Math.PI / 180, mr = marsA * Math.PI / 180;
+    var ex = cx + rE * Math.cos(er), ey = cy + rE * Math.sin(er);
+    var mx = cx + rM * Math.cos(mr), my = cy + rM * Math.sin(mr);
+    ctx.fillStyle = cssVar("--teal"); ctx.beginPath(); ctx.arc(ex, ey, 8, 0, 7); ctx.fill();
+    ctx.fillStyle = cssVar("--coral"); ctx.beginPath(); ctx.arc(mx, my, 7, 0, 7); ctx.fill();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("지구", ex, ey - 14); ctx.fillText("화성", mx, my - 12);
+
+    // sight line direction from earth through mars, extended to "sky" strip
+    var dirAngle = Math.atan2(my - ey, mx - ex);
+    var skyR = 400;
+    var skyDeg = (dirAngle * 180 / Math.PI + 360) % 360;
+    trail.push(skyDeg);
+    if (trail.length > 400) trail.shift();
+
+    ctx.save();
+    ctx.strokeStyle = cssVar("--violet"); ctx.globalAlpha = .5; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(ex + skyR * Math.cos(dirAngle), ey + skyR * Math.sin(dirAngle)); ctx.stroke();
+    ctx.restore();
+
+    // right panel: sky strip showing apparent longitude of Mars over time
+    var rx0 = leftW + 30, rx1 = W - 30, ry0 = 40, ry1 = H - 40;
+    ctx.strokeStyle = cssVar("--line"); ctx.strokeRect(rx0, ry0, rx1 - rx0, ry1 - ry0);
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("배경 별자리에 대한 화성의 겉보기 위치(시간에 따른 기록)", (rx0 + rx1) / 2, ry0 - 12);
+
+    ctx.beginPath();
+    trail.forEach(function (deg, i) {
+      var px = rx0 + (deg / 360) * (rx1 - rx0);
+      var py = ry0 + (i / 400) * (ry1 - ry0);
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    });
+    ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2; ctx.stroke();
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* TAB2 금성의 위상 */
+(function () {
+  var canvas = document.getElementById("c2");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var a = 45;
+  var info = document.getElementById("c2-info");
+  document.getElementById("c2-a").addEventListener("input", function (e) { a = +e.target.value; document.getElementById("c2-a-val").textContent = a + "°"; render(); });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var cx = W * 0.32, cy = H / 2, rOrbit = 90, rEarthOrbit = 170;
+    ctx.strokeStyle = cssVar("--line");
+    ctx.beginPath(); ctx.arc(cx, cy, rOrbit, 0, 7); ctx.stroke();
+    ctx.fillStyle = cssVar("--coral"); ctx.beginPath(); ctx.arc(cx, cy, 14, 0, 7); ctx.fill();
+
+    var ex = cx + rEarthOrbit, ey = cy;
+    ctx.fillStyle = cssVar("--teal"); ctx.beginPath(); ctx.arc(ex, ey, 10, 0, 7); ctx.fill();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center"; ctx.fillText("지구", ex, ey + 24);
+
+    var rad = a * Math.PI / 180;
+    var vx = cx + rOrbit * Math.cos(rad), vy = cy + rOrbit * Math.sin(rad);
+    ctx.fillStyle = cssVar("--violet"); ctx.beginPath(); ctx.arc(vx, vy, 8, 0, 7); ctx.fill();
+    ctx.fillText("금성", vx, vy - 14);
+
+    // distance earth-venus determines apparent size
+    var dist = Math.hypot(ex - vx, ey - vy);
+    var maxDist = rEarthOrbit + rOrbit, minDist = rEarthOrbit - rOrbit;
+    var sizeFactor = 1 - (dist - minDist) / (maxDist - minDist); // 0..1, larger when closer
+
+    // phase: angle between (venus->sun) and (venus->earth)
+    var toSun = { x: cx - vx, y: cy - vy };
+    var toEarth = { x: ex - vx, y: ey - vy };
+    var dot = toSun.x * toEarth.x + toSun.y * toEarth.y;
+    var mag = Math.hypot(toSun.x, toSun.y) * Math.hypot(toEarth.x, toEarth.y);
+    var phaseAngle = Math.acos(Math.max(-1, Math.min(1, dot / mag))); // 0 = full, PI = new
+    var illum = (1 + Math.cos(phaseAngle)) / 2;
+
+    // draw venus disc with phase on right panel
+    var discCx = W * 0.75, discCy = H / 2, discR = 30 + sizeFactor * 60;
+    ctx.save();
+    ctx.fillStyle = cssVar("--panel-2");
+    ctx.beginPath(); ctx.arc(discCx, discCy, discR, 0, 7); ctx.fill();
+    // illuminated crescent using two overlapping circles technique
+    ctx.save();
+    ctx.beginPath(); ctx.arc(discCx, discCy, discR, 0, 7); ctx.clip();
+    ctx.fillStyle = cssVar("--coral");
+    var side = Math.sin(rad) >= 0 ? 1 : -1; // just for visual variety
+    var termOffset = discR * Math.cos(phaseAngle);
+    ctx.beginPath();
+    ctx.ellipse(discCx + termOffset * 0, discCy, Math.abs(discR), discR, 0, -Math.PI / 2, Math.PI / 2);
+    ctx.ellipse(discCx, discCy, Math.abs(termOffset), discR, 0, Math.PI / 2, -Math.PI / 2, termOffset < 0);
+    ctx.fill();
+    ctx.restore();
+    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.arc(discCx, discCy, discR, 0, 7); ctx.stroke();
+    ctx.restore();
+
+    ctx.font = "12px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("지구에서 본 금성 (겉보기 크기·위상)", discCx, discCy + discR + 30);
+
+    var maxElong = Math.asin(rOrbit / rEarthOrbit) * 180 / Math.PI;
+    info.innerHTML = "금성이 지구에서 " + (dist < (minDist + maxDist) / 2 ? "가까워질수록" : "멀어질수록") + " 겉보기 크기가 " + (sizeFactor > 0.5 ? "커지고" : "작아지고") + ", 위상은 조명각(" + (phaseAngle * 180 / Math.PI).toFixed(0) + "°)에 따라 달라집니다. 금성의 최대 이각은 약 " + maxElong.toFixed(1) + "°입니다.";
+  }
+  render();
+})();
+
+/* TAB3 일식과 월식 */
+(function () {
+  var canvas = document.getElementById("c3");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var a = 0, incl = true;
+  var info = document.getElementById("c3-info");
+
+  document.getElementById("c3-a").addEventListener("input", function (e) { a = +e.target.value; document.getElementById("c3-a-val").textContent = a + "°"; render(); });
+  document.querySelectorAll("#c3-incl button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      incl = b.getAttribute("data-i") === "on";
+      document.querySelectorAll("#c3-incl button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var cx = 150, cy = H / 2, rOrbit = 300;
+    // sun
+    ctx.fillStyle = cssVar("--coral"); ctx.beginPath(); ctx.arc(60, cy, 34, 0, 7); ctx.fill();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center"; ctx.fillText("태양", 60, cy + 50);
+
+    // earth
+    ctx.fillStyle = cssVar("--teal"); ctx.beginPath(); ctx.arc(cx, cy, 16, 0, 7); ctx.fill();
+    ctx.fillText("지구", cx, cy + 30);
+
+    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.arc(cx, cy, rOrbit / 4.2, 0, 7); ctx.stroke();
+
+    var rad = a * Math.PI / 180;
+    var rMoon = rOrbit / 4.2;
+    var inclOffset = incl ? Math.sin(rad * 1) * 14 : 0;
+    // vertical offset only meaningfully non-zero near new/full moon to show why eclipses are rare
+    var yOff = incl ? Math.sin(rad) * 10 * Math.sign(Math.sin(rad * 0.5001)) : 0;
+    var mx = cx + rMoon * Math.cos(rad), my = cy + rMoon * Math.sin(rad) * 0.3 + (incl ? 14 * Math.sin(rad * 2) : 0);
+    ctx.fillStyle = cssVar("--mist"); ctx.beginPath(); ctx.arc(mx, my, 6, 0, 7); ctx.fill();
+    ctx.fillText("달", mx, my - 14);
+
+    // determine near new moon (a~0 or 360) or full moon (a~180)
+    var aNorm = ((a % 360) + 360) % 360;
+    var nearNew = aNorm < 10 || aNorm > 350;
+    var nearFull = Math.abs(aNorm - 180) < 10;
+    var verticalMisalign = Math.abs(my - cy);
+
+    var resultText = "이번 배치에서는 식이 일어나지 않습니다 (태양-지구-달이 일직선에서 벗어나 있음).";
+    if (nearNew) {
+      if (!incl || verticalMisalign < 3) resultText = "태양-달-지구가 일직선! <b>일식</b>이 일어납니다 (달의 그림자가 지구에 드리움).";
+      else resultText = "삭(new moon) 위치이지만 달의 궤도가 기울어져 있어(약 5°) 대부분은 식이 일어나지 않습니다. 실제로 일식은 삭일 때마다 일어나지 않습니다.";
+    } else if (nearFull) {
+      if (!incl || verticalMisalign < 3) resultText = "태양-지구-달이 일직선! <b>월식</b>이 일어납니다 (지구의 그림자가 달에 드리움).";
+      else resultText = "망(full moon) 위치이지만 달의 궤도가 기울어져 있어(약 5°) 대부분은 식이 일어나지 않습니다. 실제로 월식은 보름달마다 일어나지 않습니다.";
+    }
+    info.innerHTML = resultText + " 삭(0°/360°)일 때는 일식이, 망(180°)일 때는 월식이 일어날 <b>수</b> 있습니다.";
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>

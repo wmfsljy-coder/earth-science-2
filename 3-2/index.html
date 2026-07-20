@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>별과 우주의 진화 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅲ-2 · 별과 우주</div>
+      <h1 class="display">별의 진화와<br>우주의 팽창</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 별의 분광형</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> H-R도</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 별의 진화</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 은하의 분류</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우주의 진화</button>
+  </nav>
+
+  <main>
+    <!-- TAB0 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 표면 온도에 따른 별의 색</div>
+        <h2 class="display">별의 분광형과 물리량</h2>
+        <p>표면 온도 슬라이더를 움직여 별의 색과 분광형(O-B-A-F-G-K-M)이 어떻게 달라지는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="420"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">표면 온도(K)<span class="val" id="c0-t-val">5800</span></div>
+            <input type="range" id="c0-t" min="2500" max="35000" step="100" value="5800">
+          </div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB1 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 온도-광도 도표</div>
+        <h2 class="display">H-R도 위의 별</h2>
+        <p>온도와 광도를 조절해 점을 H-R도 위에서 움직여 보세요. 점이 주계열, 거성, 초거성, 백색왜성 중 어느 영역에 있는지 확인할 수 있습니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="500"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">표면 온도(K)<span class="val" id="c1-t-val">5800</span></div>
+            <input type="range" id="c1-t" min="2500" max="35000" step="100" value="5800">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">광도(태양=1)<span class="val" id="c1-l-val">1</span></div>
+            <input type="range" id="c1-l" min="-4" max="6" step="0.1" value="0">
+          </div>
+        </div>
+        <div class="info-card" id="c1-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB2 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 질량에 따른 별의 일생</div>
+        <h2 class="display">별의 진화 경로</h2>
+        <p>별의 질량(태양 질량 단위)을 조절하며 별의 일생이 어떻게 달라지는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c2" width="900" height="380"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">별의 질량(태양=1)<span class="val" id="c2-m-val">1.0</span></div>
+            <input type="range" id="c2-m" min="0.2" max="25" step="0.1" value="1">
+          </div>
+        </div>
+        <div class="info-card" id="c2-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB3 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 허블의 은하 분류</div>
+        <h2 class="display">은하의 형태와 특징</h2>
+        <p>허블의 소리굽쇠 도표에서 은하의 종류를 클릭해 형태적 특징을 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3" width="900" height="420"></canvas></div>
+        <div class="info-card" id="c3-info">도표의 은하 모양을 클릭해 보세요.</div>
+      </div>
+    </section>
+
+    <!-- TAB4 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 팽창하는 우주</div>
+        <h2 class="display">허블 법칙과 우주의 진화</h2>
+        <p>은하까지의 거리를 조절해 후퇴 속도가 어떻게 변하는지, 허블 법칙(v = H₀ × d)의 의미를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c4" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">은하까지의 거리(Mpc)<span class="val" id="c4-d-val">100</span></div>
+            <input type="range" id="c4-d" min="10" max="1000" step="10" value="100">
+          </div>
+        </div>
+        <div class="info-card" id="c4-info"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+function tempToColor(t) {
+  if (t > 25000) return "#9db4ff";
+  if (t > 10000) return "#c8d8ff";
+  if (t > 7500) return "#f0f4ff";
+  if (t > 6000) return "#fff6df";
+  if (t > 5200) return "#ffe9b3";
+  if (t > 3700) return "#ffb37a";
+  return "#ff7a5c";
+}
+function tempToClass(t) {
+  if (t > 25000) return "O";
+  if (t > 10000) return "B";
+  if (t > 7500) return "A";
+  if (t > 6000) return "F";
+  if (t > 5200) return "G";
+  if (t > 3700) return "K";
+  return "M";
+}
+var classInfo = {
+  O: "가장 뜨겁고 푸른 별. 표면 온도 25,000K 이상. 수명이 매우 짧고 드뭅니다.",
+  B: "청백색 별. 표면 온도 10,000~25,000K.",
+  A: "흰색 별. 표면 온도 7,500~10,000K. 예) 견우성(알타이르).",
+  F: "황백색 별. 표면 온도 6,000~7,500K.",
+  G: "노란색 별. 표면 온도 5,200~6,000K. 태양이 이 유형입니다.",
+  K: "주황색 별. 표면 온도 3,700~5,200K.",
+  M: "붉은색 별. 표면 온도 3,700K 이하. 가장 흔한 유형입니다."
+};
+
+/* TAB0 분광형 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var temp = 5800;
+  var info = document.getElementById("c0-info");
+  document.getElementById("c0-t").addEventListener("input", function (e) { temp = +e.target.value; document.getElementById("c0-t-val").textContent = temp; render(); });
+
+  var seq = [{ k: "M", t: 3000 }, { k: "K", t: 4500 }, { k: "G", t: 5600 }, { k: "F", t: 6800 }, { k: "A", t: 8800 }, { k: "B", t: 18000 }, { k: "O", t: 30000 }];
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var cx = W / 2, cy = H / 2 - 20;
+    var r = 60 + Math.max(0, (12000 - temp)) / 12000 * 30;
+    ctx.save();
+    ctx.shadowColor = tempToColor(temp); ctx.shadowBlur = 40;
+    ctx.fillStyle = tempToColor(temp);
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.fill();
+    ctx.restore();
+
+    var cls = tempToClass(temp);
+    ctx.font = "700 20px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+    ctx.fillText("분광형 " + cls + "형", cx, cy + r + 40);
+
+    // sequence bar
+    var barY = H - 60, barX0 = 60, barX1 = W - 60;
+    seq.forEach(function (s, i) {
+      var x = barX0 + (i / (seq.length - 1)) * (barX1 - barX0);
+      ctx.save();
+      ctx.fillStyle = tempToColor(s.t);
+      ctx.beginPath(); ctx.arc(x, barY, 14, 0, 7); ctx.fill();
+      ctx.strokeStyle = s.k === cls ? cssVar("--teal") : cssVar("--line");
+      ctx.lineWidth = s.k === cls ? 4 : 1.5;
+      ctx.stroke();
+      ctx.restore();
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+      ctx.fillText(s.k, x, barY + 30);
+    });
+    ctx.font = "10.5px Segoe UI"; ctx.textAlign = "left"; ctx.fillText("고온(30,000K+)", barX1 - 90, barY - 24);
+    ctx.textAlign = "left"; ctx.fillText("저온(~3,000K)", barX0, barY - 24);
+
+    info.innerHTML = classInfo[cls];
+  }
+  render();
+})();
+
+/* TAB1 HR도 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var temp = 5800, logL = 0;
+  var info = document.getElementById("c1-info");
+  document.getElementById("c1-t").addEventListener("input", function (e) { temp = +e.target.value; document.getElementById("c1-t-val").textContent = temp; render(); });
+  document.getElementById("c1-l").addEventListener("input", function (e) {
+    logL = +e.target.value;
+    document.getElementById("c1-l-val").textContent = (logL === 0 ? "1" : Math.pow(10, logL).toFixed(logL > 0 ? 0 : 3));
+    render();
+  });
+
+  var x0 = 80, x1 = W - 40, y0 = 40, y1 = H - 60;
+  function tx(t) {
+    // log scale, hot on left
+    var logT = Math.log10(t);
+    var logMax = Math.log10(35000), logMin = Math.log10(2500);
+    return x1 - (logT - logMin) / (logMax - logMin) * (x1 - x0);
+  }
+  function ly(l) {
+    return y1 - (l + 5) / 11 * (y1 - y0);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("표면 온도(고온 ← → 저온)", (x0 + x1) / 2, y1 + 32);
+    ctx.save(); ctx.translate(24, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("광도(밝음 ↑)", 0, 0); ctx.restore();
+
+    // main sequence diagonal band
+    ctx.save();
+    ctx.strokeStyle = cssVar("--teal"); ctx.globalAlpha = .4; ctx.lineWidth = 26;
+    ctx.beginPath();
+    ctx.moveTo(tx(35000), ly(5.2));
+    ctx.lineTo(tx(2500), ly(-4));
+    ctx.stroke();
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--teal"); ctx.globalAlpha = 1; ctx.textAlign = "left";
+    ctx.fillText("주계열", tx(9000) + 10, ly(1.4));
+
+    // giant region label
+    ctx.fillStyle = cssVar("--coral");
+    ctx.fillText("거성", tx(4200), ly(2.5));
+    ctx.fillText("초거성", tx(8000), ly(5));
+    // white dwarf region
+    ctx.fillStyle = cssVar("--cold");
+    ctx.fillText("백색왜성", tx(15000), ly(-3));
+
+    // sun marker
+    ctx.save();
+    ctx.fillStyle = cssVar("--mist");
+    ctx.beginPath(); ctx.arc(tx(5800), ly(0), 4, 0, 7); ctx.fill();
+    ctx.font = "10px Segoe UI"; ctx.fillText("태양", tx(5800) + 8, ly(0) + 4);
+    ctx.restore();
+
+    // current point
+    var px = tx(temp), py = ly(logL);
+    ctx.save();
+    ctx.fillStyle = tempToColor(temp);
+    ctx.shadowColor = tempToColor(temp); ctx.shadowBlur = 18;
+    ctx.beginPath(); ctx.arc(px, py, 9, 0, 7); ctx.fill();
+    ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 2; ctx.stroke();
+    ctx.restore();
+
+    var region = "주계열성";
+    if (logL > 2.5 && temp < 8000 && temp > 3200) region = "거성/초거성";
+    else if (logL < -1.5 && temp > 6000) region = "백색왜성";
+    else if (Math.abs(logL - ((Math.log10(temp) - Math.log10(5800)) * -8.5)) > 2.2) region = "주계열을 벗어난 별";
+
+    info.innerHTML = "이 별은 표면 온도 " + temp + "K, 광도(태양=1) 약 " + Math.pow(10, logL).toFixed(3) + "배로, H-R도에서 <b>" + region + "</b> 영역 부근에 위치합니다.";
+  }
+  render();
+})();
+
+/* TAB2 별의 진화 */
+(function () {
+  var canvas = document.getElementById("c2");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var mass = 1.0;
+  var info = document.getElementById("c2-info");
+  document.getElementById("c2-m").addEventListener("input", function (e) { mass = +e.target.value; document.getElementById("c2-m-val").textContent = mass.toFixed(1); render(); });
+
+  function pathFor(m) {
+    if (m < 0.5) return ["원시별", "적색 왜성(오래 안정)", "(관측 가능한 시간 내 진화 종료 안 됨)"];
+    if (m < 8) return ["원시별", "주계열성", "적색 거성", "행성상 성운", "백색 왜성"];
+    return ["원시별", "주계열성(대질량)", "초거성", "초신성 폭발", m < 20 ? "중성자별" : "블랙홀"];
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var stages = pathFor(mass);
+    var x0 = 60, x1 = W - 60, y = H / 2;
+    var colors = [cssVar("--mist"), cssVar("--coral"), cssVar("--violet"), cssVar("--teal"), cssVar("--cold")];
+    stages.forEach(function (s, i) {
+      var x = stages.length > 1 ? x0 + (i / (stages.length - 1)) * (x1 - x0) : (x0 + x1) / 2;
+      var r = 14 + (i === stages.length - 1 ? 4 : 0);
+      ctx.save();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      wrapText(ctx, s, x, y + r + 20, 130, 14);
+      if (i > 0) {
+        var xPrev = x0 + ((i - 1) / (stages.length - 1)) * (x1 - x0);
+        ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(xPrev + 16, y); ctx.lineTo(x - 16, y); ctx.stroke();
+        ctx.restore();
+      }
+    });
+
+    var category = mass < 0.5 ? "매우 가벼운 별" : mass < 8 ? "태양과 비슷한 질량의 별" : "무거운 별";
+    var ending = mass < 0.5 ? "매우 느리게 진화해 우주 나이보다 긴 수명을 가집니다." : mass < 8 ? "결국 백색왜성으로 생을 마칩니다." : (mass < 20 ? "초신성 폭발 후 중성자별을 남깁니다." : "초신성 폭발 후 블랙홀을 남깁니다.");
+    info.innerHTML = "질량 " + mass.toFixed(1) + "M☉는 <b>" + category + "</b>입니다. " + ending;
+  }
+  function wrapText(ctx, text, x, y, maxW, lh) {
+    var words = text.split(""), line = "", lines = [];
+    // simple char-wrap for Korean (no spaces needed)
+    for (var i = 0; i < text.length; i++) {
+      var test = line + text[i];
+      if (ctx.measureText(test).width > maxW && line.length > 0) { lines.push(line); line = text[i]; }
+      else line = test;
+    }
+    lines.push(line);
+    lines.forEach(function (l, i) { ctx.fillText(l, x, y + i * lh); });
+  }
+  render();
+})();
+
+/* TAB3 은하 분류 */
+(function () {
+  var canvas = document.getElementById("c3");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c3-info");
+
+  var galaxies = [
+    { name: "타원 은하 (E0-E7)", x: 130, y: 210, shape: "ellipse", desc: "구형에 가까운 것부터 납작한 것까지 있으며, 편평도에 따라 E0~E7로 세분합니다. 나선팔이 없고 늙은 별이 많습니다." },
+    { name: "정상 나선 은하 (Sa-Sc)", x: 430, y: 130, shape: "spiral", desc: "중심의 팽대부에서 나선팔이 직접 뻗어 나온 은하입니다. 팽대부가 클수록 Sa, 작을수록 Sc로 분류합니다." },
+    { name: "막대 나선 은하 (SBa-SBc)", x: 430, y: 300, shape: "barred", desc: "중심을 가로지르는 막대 구조 끝에서 나선팔이 뻗어 나온 은하입니다. 우리은하도 막대 나선 은하로 추정됩니다." },
+    { name: "불규칙 은하", x: 720, y: 210, shape: "irregular", desc: "규칙적인 형태가 없는 은하로, 대마젤란은하가 대표적입니다." }
+  ];
+
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
+    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
+    galaxies.forEach(function (g) {
+      if (Math.hypot(mx - g.x, my - g.y) < 55) info.innerHTML = "<b>" + g.name + "</b> — " + g.desc;
+    });
+  });
+
+  function drawGalaxy(g) {
+    ctx.save();
+    ctx.translate(g.x, g.y);
+    if (g.shape === "ellipse") {
+      ctx.fillStyle = cssVar("--coral"); ctx.globalAlpha = .8;
+      ctx.beginPath(); ctx.ellipse(0, 0, 46, 28, 0, 0, 7); ctx.fill();
+    } else if (g.shape === "spiral" || g.shape === "barred") {
+      ctx.fillStyle = cssVar("--teal"); ctx.globalAlpha = .3;
+      ctx.beginPath(); ctx.arc(0, 0, 48, 0, 7); ctx.fill();
+      if (g.shape === "barred") {
+        ctx.globalAlpha = .9; ctx.fillRect(-30, -6, 60, 12);
+      }
+      ctx.globalAlpha = .85; ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 3;
+      for (var i = 0; i < 2; i++) {
+        ctx.beginPath();
+        for (var a = 0; a < 4.5; a += 0.1) {
+          var r = 8 + a * 9;
+          var ang = a + i * Math.PI;
+          var px = r * Math.cos(ang), py = r * Math.sin(ang) * 0.6;
+          if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.fillStyle = cssVar("--foam"); ctx.beginPath(); ctx.arc(0, 0, g.shape === "barred" ? 8 : 12, 0, 7); ctx.fill();
+    } else {
+      ctx.fillStyle = cssVar("--violet"); ctx.globalAlpha = .8;
+      for (var j = 0; j < 12; j++) {
+        ctx.beginPath();
+        ctx.arc((Math.random() - 0.5) * 60, (Math.random() - 0.5) * 40, 6 + Math.random() * 8, 0, 7);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText(g.name, g.x, g.y + 70);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    galaxies.forEach(drawGalaxy);
+    ctx.strokeStyle = cssVar("--line"); ctx.setLineDash([4, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(190, 210); ctx.lineTo(370, 130); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(190, 210); ctx.lineTo(370, 300); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  render();
+})();
+
+/* TAB4 허블법칙 */
+(function () {
+  var canvas = document.getElementById("c4");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var dist = 100;
+  var H0 = 70; // km/s/Mpc
+  var info = document.getElementById("c4-info");
+  document.getElementById("c4-d").addEventListener("input", function (e) { dist = +e.target.value; document.getElementById("c4-d-val").textContent = dist; render(); });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 70, x1 = W - 250, y0 = 40, y1 = H - 60;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("은하까지의 거리(Mpc) →", (x0 + x1) / 2, y1 + 28);
+    ctx.save(); ctx.translate(24, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("후퇴 속도(km/s) ↑", 0, 0); ctx.restore();
+
+    var maxD = 1000, maxV = H0 * maxD;
+    ctx.beginPath();
+    ctx.moveTo(x0, y1); ctx.lineTo(x1, y1 - (maxV) / maxV * (y1 - y0));
+    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
+
+    var v = H0 * dist;
+    var px = x0 + (dist / maxD) * (x1 - x0);
+    var py = y1 - (v / maxV) * (y1 - y0);
+    ctx.save(); ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(px, py, 7, 0, 7); ctx.fill(); ctx.restore();
+
+    // right side: redshift illustration (galaxy moving away, light stretched)
+    var gx = x1 + 60, gy = H / 2;
+    ctx.save();
+    ctx.translate(gx, gy);
+    ctx.fillStyle = cssVar("--violet"); ctx.globalAlpha = .8;
+    ctx.beginPath(); ctx.arc(0, 0, 14, 0, 7); ctx.fill();
+    ctx.restore();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("멀어지는 은하", gx, gy - 24);
+    var waveLen = 6 + dist / 60;
+    ctx.save();
+    ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2; ctx.beginPath();
+    for (var i = 0; i < 120; i++) {
+      var xx = gx + 20 + i;
+      var yy = gy + 40 + Math.sin(i / waveLen) * 10;
+      if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillText("적색 편이(파장이 늘어남)", gx + 40, gy + 70);
+
+    info.innerHTML = "허블 법칙 v = H₀ × d 에 따라, 거리 " + dist + " Mpc인 은하의 후퇴 속도는 약 <b>" + Math.round(v).toLocaleString() + " km/s</b>입니다 (H₀ ≈ 70 km/s/Mpc 가정). 멀리 있는 은하일수록 더 빠르게 멀어지며, 이는 우주가 <b>팽창</b>하고 있다는 증거입니다.";
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>

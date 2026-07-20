@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>해수의 순환 — 관측 스테이션</title>
+<style>
+  :root {
+    --abyss: #061621;
+    --panel: #0c2438;
+    --panel-2: #102c44;
+    --rail: #081b2b;
+    --foam: #eaf3f2;
+    --mist: #a9c3ca;
+    --teal: #3fc9b0;
+    --teal-dim: #2a8f7c;
+    --coral: #f2965c;
+    --cold: #6fa8e0;
+    --line: #1c3c52;
+    --ink: #eaf3f2;
+    --good: #6fcf97;
+    --warn: #f2965c;
+  }
+  :root[data-theme="light"] {
+    --abyss: #eef5f4;
+    --panel: #ffffff;
+    --panel-2: #f4f9f8;
+    --rail: #e2edec;
+    --foam: #0c2233;
+    --mist: #4a6270;
+    --teal: #1f9683;
+    --teal-dim: #17765f;
+    --coral: #d97a3f;
+    --cold: #3a72b8;
+    --line: #d3e2e0;
+    --ink: #0c2233;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --abyss: #eef5f4;
+      --panel: #ffffff;
+      --panel-2: #f4f9f8;
+      --rail: #e2edec;
+      --foam: #0c2233;
+      --mist: #4a6270;
+      --teal: #1f9683;
+      --teal-dim: #17765f;
+      --coral: #d97a3f;
+      --cold: #3a72b8;
+      --line: #d3e2e0;
+      --ink: #0c2233;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--abyss);
+    color: var(--ink);
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .display {
+    font-family: Georgia, "Noto Serif KR", "Batang", serif;
+  }
+  .mono {
+    font-family: "Consolas", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: minmax(180px, 220px) 1fr;
+    min-height: 100vh;
+  }
+  @media (max-width: 760px) {
+    .app { grid-template-columns: 1fr; }
+    .rail { flex-direction: row !important; overflow-x: auto; height: auto !important; }
+  }
+
+  /* ---- Rail (instrument selector) ---- */
+  .rail {
+    background: var(--rail);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
+    gap: 4px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  .brand {
+    padding: 6px 10px 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 10px;
+  }
+  .brand a.home {
+    color: var(--mist);
+    font-size: 11px;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .brand a.home:hover { color: var(--teal); }
+  .brand .eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 600;
+  }
+  .brand h1 {
+    font-size: 19px;
+    margin: 4px 0 0;
+    line-height: 1.25;
+  }
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--mist);
+    text-align: left;
+    padding: 10px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .tab-btn .num {
+    font-family: "Consolas", ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--mist);
+    opacity: 0.6;
+    width: 16px;
+  }
+  .tab-btn:hover { background: var(--panel-2); color: var(--foam); }
+  .tab-btn.active {
+    background: linear-gradient(90deg, rgba(63,201,176,0.16), rgba(63,201,176,0.03));
+    border-color: var(--teal-dim);
+    color: var(--foam);
+  }
+  .tab-btn.active .num { color: var(--teal); opacity: 1; }
+
+  /* ---- Main stage ---- */
+  main {
+    padding: 26px 30px 60px;
+    max-width: 980px;
+  }
+  .stage-head {
+    margin-bottom: 16px;
+  }
+  .stage-head .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal);
+    font-weight: 700;
+  }
+  .stage-head h2 {
+    font-size: 26px;
+    margin: 4px 0 8px;
+    text-wrap: balance;
+  }
+  .stage-head p {
+    color: var(--mist);
+    font-size: 14.5px;
+    line-height: 1.65;
+    max-width: 640px;
+    margin: 0;
+  }
+
+  .stage-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-top: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+  }
+  .canvas-wrap {
+    position: relative;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+  }
+  canvas { display: block; width: 100%; height: auto; touch-action: none; }
+
+  .badge-row {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: rgba(6, 22, 33, 0.6);
+    color: var(--foam);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(3px);
+  }
+  :root[data-theme="light"] .badge { background: rgba(255,255,255,0.8); }
+
+  .controls {
+    padding: 16px 20px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+  }
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 170px;
+    flex: 1;
+  }
+  .ctrl-label {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mist);
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+  }
+  .ctrl-label .val { color: var(--teal); }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 3px;
+    background: var(--line);
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2px solid var(--panel);
+    box-shadow: 0 0 0 1px var(--teal-dim);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--teal);
+    border: 2px solid var(--panel);
+    cursor: pointer;
+  }
+  .toggle-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--mist);
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.on {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #04231d;
+  }
+  .chip.warm.on { background: var(--coral); border-color: var(--coral); color: #331700; }
+  .chip.cold.on { background: var(--cold); border-color: var(--cold); color: #04182f; }
+  .chip:focus-visible, .tab-btn:focus-visible, button:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  .seg {
+    display: flex;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    width: fit-content;
+  }
+  .seg button {
+    border: none;
+    background: var(--panel-2);
+    color: var(--mist);
+    padding: 7px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .seg button.on { background: var(--teal); color: #04231d; }
+
+  .readout {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .readout .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  .readout .txt { font-size: 12.5px; color: var(--foam); line-height: 1.5; }
+  .readout .txt b { color: var(--teal); }
+
+  .info-card {
+    margin: 0 20px 20px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--mist);
+    min-height: 22px;
+  }
+  .info-card b { color: var(--foam); }
+  .info-card .tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    margin-right: 8px;
+  }
+
+  .foot-note {
+    color: var(--mist);
+    font-size: 11.5px;
+    padding: 0 20px 18px;
+    opacity: 0.75;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 18px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--mist);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 11px;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow">Ⅰ-1 · 대기와 해양</div>
+      <h1 class="display">해수의 순환<br>관측 스테이션</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 표층 해류</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 에크만 수송</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 지형류</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 심층 순환</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리나라 주변 해류</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 용승과 침강</button>
+  </nav>
+
+  <main>
+    <!-- TAB 0 : 표층 해류 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 대기 대순환과 표층 해류</div>
+        <h2 class="display">바람이 만드는 표층 해류</h2>
+        <p>무역풍·편서풍·극동풍 버튼을 켜고 꺼 보면서, 위도대별 바람이 어떻게 아열대 순환과 아한대 순환을 만드는지 관찰해 보세요. 남반구·북반구를 전환하면 순환 방향이 반대가 되는 것도 확인할 수 있습니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c0" width="900" height="560"></canvas>
+          <div class="badge-row" id="c0-badges"></div>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">바람 계통</div>
+            <div class="toggle-row">
+              <button class="chip on" data-wind="polar">극동풍</button>
+              <button class="chip on" data-wind="westerlies">편서풍</button>
+              <button class="chip on" data-wind="trade">무역풍</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">재생 속도<span class="val" id="c0-speed-val">1.0×</span></div>
+            <input type="range" id="c0-speed" min="0" max="2" step="0.1" value="1">
+          </div>
+        </div>
+        <div class="info-card" id="c0-info">바람 버튼을 눌러 순환을 만들어 보세요. 세 바람이 모두 켜지면 실제와 같은 이중 순환(아열대 + 아한대)이 완성됩니다.</div>
+      </div>
+      <p class="foot-note">모식도는 대양을 단순화한 사각 해분(海盆)입니다. 실제 해류 방향·세기·해안선 형태와는 차이가 있습니다.</p>
+    </section>
+
+    <!-- TAB 1 : 에크만 수송 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 마찰력과 전향력의 균형</div>
+        <h2 class="display">에크만 수송 나선</h2>
+        <p>바람 방향 다이얼을 돌려보세요. 표층에서 심층으로 갈수록 해수는 조금씩 더 오른쪽(북반구)/왼쪽(남반구)으로 휘어지고, 이를 모두 더한 <b>순 수송(에크만 수송)</b>은 바람 방향의 직각을 향합니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c1" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">바람 방향<span class="val" id="c1-wind-val">0°</span></div>
+            <input type="range" id="c1-wind" min="0" max="359" step="1" value="0">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">반구</div>
+            <div class="seg" id="c1-hemi">
+              <button class="on" data-h="N">북반구</button>
+              <button data-h="S">남반구</button>
+            </div>
+          </div>
+          <div class="readout">
+            <span class="dot" style="background:var(--coral)"></span>
+            <span class="txt">에크만 수송(순 이동) 방향: <b id="c1-net">—</b></span>
+          </div>
+        </div>
+        <div class="info-card">위쪽 굵은 화살표가 <b>바람</b>, 아래로 갈수록 옅어지는 화살표들이 <b>깊이별 해수 이동</b>입니다. 오렌지색 화살표가 여러 층을 합한 <b>순 수송 방향</b>이에요.</div>
+      </div>
+    </section>
+
+    <!-- TAB 2 : 지형류 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 압력 경도력과 전향력의 평형</div>
+        <h2 class="display">지형류 만들기</h2>
+        <p>해수면 경사를 조절해 보세요. 경사가 생기면 <b>압력 경도력</b>이 해수를 낮은 쪽으로 밀지만, <b>전향력</b>이 이를 직각으로 되돌려 두 힘이 균형을 이루면 해류는 등수압선(등고선)과 나란히 흐르는 <b>지형류</b>가 됩니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c2" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">해수면 경사(수위차)<span class="val" id="c2-slope-val">50</span></div>
+            <input type="range" id="c2-slope" min="5" max="100" step="1" value="50">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">반구</div>
+            <div class="seg" id="c2-hemi">
+              <button class="on" data-h="N">북반구</button>
+              <button data-h="S">남반구</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card">
+          <span class="tag" style="background:var(--coral);color:#331700">PGF</span>압력 경도력 — 해수면이 높은 곳에서 낮은 곳으로 작용<br>
+          <span class="tag" style="background:var(--cold);color:#04182f">CF</span>전향력 — 이동 방향의 직각으로 작용해 진로를 휘게 함<br>
+          <span class="tag" style="background:var(--teal);color:#04231d">지형류</span>두 힘이 평형을 이루면 등압선을 따라 일정하게 흐름
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3 : 심층 순환 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 열염 순환(밀도류)</div>
+        <h2 class="display">수온·염분과 심층 순환</h2>
+        <p>수온과 염분 슬라이더를 움직여 해수 덩어리의 <b>밀도</b>를 바꿔 보세요. 밀도가 커질수록 해수는 더 빠르게 가라앉습니다. 그린란드 부근과 남극 웨델해에서 가라앉은 물이 전 지구를 순환하는 컨베이어 벨트를 관찰해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c3" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">수온(°C)<span class="val" id="c3-temp-val">4</span></div>
+            <input type="range" id="c3-temp" min="-2" max="28" step="1" value="4">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">염분(psu)<span class="val" id="c3-sal-val">35</span></div>
+            <input type="range" id="c3-sal" min="30" max="40" step="0.5" value="35">
+          </div>
+          <div class="readout">
+            <span class="dot" id="c3-dot" style="background:var(--teal)"></span>
+            <span class="txt">상대 밀도: <b id="c3-density">보통</b> — <span id="c3-sink">서서히 가라앉음</span></span>
+          </div>
+        </div>
+        <div class="info-card">수온이 낮을수록, 염분이 높을수록 밀도가 커져 해수가 더 빠르게 가라앉습니다. 컨베이어 벨트 위 점들의 속도로 확인해 보세요. (수온과 염분은 실제로는 독립적으로 조절되지 않지만, 학습 편의를 위해 임의로 조절할 수 있게 했습니다.)</div>
+      </div>
+    </section>
+
+    <!-- TAB 4 : 우리나라 주변 해류 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 동해·황해·남해의 해류</div>
+        <h2 class="display">우리나라 주변 해류 지도</h2>
+        <p>지도 위의 해류 화살표를 클릭해서 이름과 특징을 확인해 보세요. 동해에서 난류와 한류가 만나는 <b>조경수역</b>도 표시해 볼 수 있습니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c4" width="900" height="620"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">표시</div>
+            <div class="toggle-row">
+              <button class="chip warm on" data-show="warm">난류</button>
+              <button class="chip cold on" data-show="cold">한류</button>
+              <button class="chip" data-show="front">조경수역</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c4-info">해류 화살표를 클릭하면 이곳에 설명이 나타납니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB 5 : 용승과 침강 -->
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 연안 용승과 침강</div>
+        <h2 class="display">해안을 따라 부는 바람의 힘</h2>
+        <p>해안선의 방향과 바람 방향을 바꿔가며, 에크만 수송이 해안에서 <b>먼 쪽</b>으로 향하면 용승이, <b>가까운 쪽</b>으로 향하면 침강이 일어나는 과정을 살펴보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c5" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">바람 방향</div>
+            <div class="seg" id="c5-wind">
+              <button class="on" data-w="down">해안을 따라 ↓ (남향)</button>
+              <button data-w="up">해안을 따라 ↑ (북향)</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">반구</div>
+            <div class="seg" id="c5-hemi">
+              <button class="on" data-h="N">북반구</button>
+              <button data-h="S">남반구</button>
+            </div>
+          </div>
+          <div class="readout">
+            <span class="dot" id="c5-dot" style="background:var(--teal)"></span>
+            <span class="txt" id="c5-result">결과: —</span>
+          </div>
+        </div>
+        <div class="info-card">해안은 캔버스 왼쪽에 고정되어 있습니다. 에크만 수송이 <b>바다 쪽(오른쪽)</b>으로 향하면 표층수가 빠져나간 자리를 채우려 <b>찬 심층수가 용승</b>하고, <b>육지 쪽(왼쪽)</b>으로 향하면 표층수가 쌓여 <b>침강</b>합니다.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- theme toggle ---------- */
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("themeToggle");
+  themeBtn.addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    var next = cur === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    themeBtn.textContent = next === "dark" ? "라이트 모드" : "다크 모드";
+  });
+
+  /* ---------- tab switching ---------- */
+  var tabBtns = document.querySelectorAll(".tab-btn");
+  var panels = document.querySelectorAll(".tab-panel");
+  var activeTab = 0;
+  tabBtns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var idx = +btn.getAttribute("data-tab");
+      activeTab = idx;
+      tabBtns.forEach(function (b) { b.classList.toggle("active", b === btn); });
+      panels.forEach(function (p, i) { p.hidden = i !== idx; });
+    });
+  });
+
+  function DPR(canvas) {
+    var dpr = window.devicePixelRatio || 1;
+    var w = canvas.width, h = canvas.height;
+    if (canvas._dprSet) return canvas.getContext("2d");
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    var ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    canvas._dprSet = true;
+    canvas._w = w; canvas._h = h;
+    return ctx;
+  }
+
+  function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  /* ==================================================================
+     TAB 0 — 표층 해류 (대기 대순환)
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c0");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var winds = { polar: true, westerlies: true, trade: true };
+    var speed = 1.0;
+    var t = 0;
+
+    document.querySelectorAll("[data-wind]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var k = btn.getAttribute("data-wind");
+        winds[k] = !winds[k];
+        btn.classList.toggle("on", winds[k]);
+        updateInfo();
+      });
+    });
+    var speedSlider = document.getElementById("c0-speed");
+    var speedVal = document.getElementById("c0-speed-val");
+    speedSlider.addEventListener("input", function () {
+      speed = +speedSlider.value;
+      speedVal.textContent = speed.toFixed(1) + "×";
+    });
+
+    function updateInfo() {
+      var info = document.getElementById("c0-info");
+      var subtropical = winds.trade && winds.westerlies;
+      var subpolar = winds.westerlies && winds.polar;
+      if (subtropical && subpolar) {
+        info.innerHTML = "<b>아열대 순환</b>과 <b>아한대 순환</b>이 모두 형성되었습니다. 두 순환의 경계에서 편서풍이 공통으로 두 순환을 구동하고 있어요.";
+      } else if (subtropical) {
+        info.innerHTML = "무역풍 + 편서풍 조합 → <b>아열대 순환(중위도 순환)</b>이 형성됩니다. 북반구에서는 시계 방향으로 돕니다.";
+      } else if (subpolar) {
+        info.innerHTML = "편서풍 + 극동풍 조합 → <b>아한대 순환(고위도 순환)</b>이 형성됩니다. 북반구에서는 시계 반대 방향으로 돕니다.";
+      } else {
+        info.innerHTML = "바람이 한 종류만 켜져 있으면 완결된 순환이 만들어지지 않습니다. 인접한 두 바람 계통을 함께 켜 보세요.";
+      }
+    }
+
+    // Basin geometry: x in [x0,x1], bands by latitude y
+    var x0 = 140, x1 = W - 60;
+    var yEq = H / 2;
+    var bandH = 95; // half-band height per zone approx
+
+    // zone boundaries (y): polar-N top .. equator .. polar-S bottom
+    var yPolarNTop = 40, yPolarNBot = yEq - 2 * bandH;
+    var yWestNTop = yPolarNBot, yWestNBot = yEq - bandH;
+    var yTradeNTop = yWestNBot, yTradeNBot = yEq;
+    var yTradeSTop = yEq, yTradeSBot = yEq + bandH;
+    var yWestSTop = yTradeSBot, yWestSBot = yEq + 2 * bandH;
+    var yPolarSTop = yWestSBot, yPolarSBot = H - 40;
+
+    function particlesForLoop(pathFn, n, colorFn) {
+      var arr = [];
+      for (var i = 0; i < n; i++) arr.push({ u: i / n, colorFn: colorFn });
+      return { path: pathFn, particles: arr };
+    }
+
+    // Rounded rectangle loop path sampler: returns {x,y,angle} for u in [0,1)
+    function loopPath(cx, cy, rx, ry, clockwise) {
+      return function (u) {
+        var a = (clockwise ? 1 : -1) * u * Math.PI * 2 - Math.PI / 2;
+        var x = cx + rx * Math.cos(a);
+        var y = cy + ry * Math.sin(a);
+        var angle = a + (clockwise ? 1 : -1) * Math.PI / 2;
+        return { x: x, y: y, angle: angle };
+      };
+    }
+
+    var loops = [];
+    function rebuildLoops() {
+      loops = [];
+      var cx = (x0 + x1) / 2, rx = (x1 - x0) / 2 - 10;
+      // subtropical N: trade + westerlies present
+      if (winds.trade && winds.westerlies) {
+        var cy = (yWestNTop + yTradeNBot) / 2;
+        var ry = (yTradeNBot - yWestNTop) / 2 - 6;
+        loops.push({ path: loopPath(cx, cy, rx, ry, true), n: 26, color: "var(--coral)", label: "아열대 순환(N)" });
+      }
+      if (winds.trade && winds.westerlies) {
+        var cyS = (yTradeSTop + yWestSBot) / 2;
+        var ryS = (yWestSBot - yTradeSTop) / 2 - 6;
+        loops.push({ path: loopPath(cx, cyS, rx, ryS, false), n: 26, color: "var(--coral)", label: "아열대 순환(S)" });
+      }
+      if (winds.westerlies && winds.polar) {
+        var cy2 = (yPolarNTop + yWestNBot) / 2;
+        var ry2 = (yWestNBot - yPolarNTop) / 2 - 6;
+        loops.push({ path: loopPath(cx, cy2, rx * 0.72, ry2, false), n: 18, color: "var(--cold)", label: "아한대 순환(N)" });
+      }
+      if (winds.westerlies && winds.polar) {
+        var cy3 = (yWestSTop + yPolarSBot) / 2;
+        var ry3 = (yPolarSBot - yWestSTop) / 2 - 6;
+        loops.push({ path: loopPath(cx, cy3, rx * 0.72, ry3, true), n: 18, color: "var(--cold)", label: "아한대 순환(S)" });
+      }
+      loops.forEach(function (loop) {
+        loop.particles = [];
+        for (var i = 0; i < loop.n; i++) loop.particles.push(i / loop.n);
+      });
+    }
+    rebuildLoops();
+    document.querySelectorAll("[data-wind]").forEach(function (btn) {
+      btn.addEventListener("click", rebuildLoops);
+    });
+
+    function drawWindArrows(y, active, dir, label, color) {
+      ctx.save();
+      ctx.globalAlpha = active ? 1 : 0.18;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2;
+      var n = 6;
+      for (var i = 0; i < n; i++) {
+        var x = x0 - 30 + (i * (x1 - x0 + 60)) / (n - 1);
+        arrow(x - (dir * 14), y, x + (dir * 14), y, 5);
+      }
+      ctx.font = "600 11px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(label, 8, y + 4);
+      ctx.restore();
+    }
+    function arrow(x1_, y1_, x2_, y2_, head) {
+      ctx.beginPath();
+      ctx.moveTo(x1_, y1_);
+      ctx.lineTo(x2_, y2_);
+      ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.5), y2_ - head * Math.sin(ang - 0.5));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.5), y2_ - head * Math.sin(ang + 0.5));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      // ocean basin
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+      var grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, "rgba(63,201,176,0.10)");
+      grad.addColorStop(0.5, "rgba(63,201,176,0.03)");
+      grad.addColorStop(1, "rgba(63,201,176,0.10)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(x0, 30, x1 - x0, H - 60);
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(x0, 30, x1 - x0, H - 60);
+
+      // equator line
+      ctx.save();
+      ctx.strokeStyle = cssVar("--mist");
+      ctx.globalAlpha = 0.4;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x0, yEq);
+      ctx.lineTo(x1, yEq);
+      ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.fillText("적도", x1 + 6, yEq + 4);
+
+      // wind arrows per band
+      drawWindArrows((yPolarNTop + yPolarNBot) / 2, winds.polar, -1, "극동풍", cssVar("--cold"));
+      drawWindArrows((yWestNTop + yWestNBot) / 2, winds.westerlies, 1, "편서풍", cssVar("--coral"));
+      drawWindArrows((yTradeNTop + yTradeNBot) / 2, winds.trade, -1, "무역풍", cssVar("--teal"));
+      drawWindArrows((yTradeSTop + yTradeSBot) / 2, winds.trade, -1, "무역풍", cssVar("--teal"));
+      drawWindArrows((yWestSTop + yWestSBot) / 2, winds.westerlies, 1, "편서풍", cssVar("--coral"));
+      drawWindArrows((yPolarSTop + yPolarSBot) / 2, winds.polar, -1, "극동풍", cssVar("--cold"));
+
+      // gyres
+      loops.forEach(function (loop) {
+        ctx.save();
+        ctx.strokeStyle = loop.color;
+        ctx.globalAlpha = 0.35;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (var s = 0; s <= 64; s++) {
+          var p = loop.path(s / 64);
+          if (s === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+        ctx.restore();
+
+        loop.particles.forEach(function (u, i) {
+          var uu = (u + t * 0.06 * speed) % 1;
+          var p = loop.path(uu);
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.angle);
+          ctx.fillStyle = loop.color;
+          ctx.beginPath();
+          ctx.moveTo(6, 0);
+          ctx.lineTo(-4, -3.2);
+          ctx.lineTo(-4, 3.2);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        });
+      });
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    updateInfo();
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 1 — 에크만 수송
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c1");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var windDeg = 0;
+    var hemi = "N";
+
+    var windSlider = document.getElementById("c1-wind");
+    var windVal = document.getElementById("c1-wind-val");
+    windSlider.addEventListener("input", function () {
+      windDeg = +windSlider.value;
+      windVal.textContent = windDeg + "°";
+      render();
+    });
+    document.querySelectorAll("#c1-hemi button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        hemi = btn.getAttribute("data-h");
+        document.querySelectorAll("#c1-hemi button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        render();
+      });
+    });
+
+    function compassLabel(deg) {
+      var dirs = ["북", "북동", "동", "남동", "남", "남서", "서", "북서"];
+      var idx = Math.round(((deg % 360) / 45)) % 8;
+      return dirs[idx];
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      var cx = W / 2, topY = 90;
+      var rad = (windDeg - 90) * Math.PI / 180;
+      var wx = Math.cos(rad), wy = Math.sin(rad);
+
+      // wind arrow (big, at top)
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.fillStyle = cssVar("--coral");
+      ctx.lineWidth = 5;
+      var len = 70;
+      arrowAt(cx, topY, cx + wx * len, topY + wy * len, 12);
+      ctx.font = "700 13px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("바람 (" + compassLabel(windDeg) + "쪽으로)", cx, topY - 40);
+      ctx.restore();
+
+      // spiral layers going down, each rotated further
+      var layers = 7;
+      var sign = hemi === "N" ? 1 : -1;
+      var baseY = topY + 90;
+      var gap = 46;
+      var netX = 0, netY = 0;
+      for (var i = 0; i < layers; i++) {
+        var depthFrac = i / (layers - 1);
+        var extraAngle = sign * depthFrac * 130 * Math.PI / 180; // spiraling
+        var a = rad + extraAngle;
+        var mag = (1 - depthFrac * 0.75) * 60;
+        var lx = Math.cos(a) * mag, ly = Math.sin(a) * mag;
+        var oy = baseY + i * gap;
+        ctx.save();
+        ctx.globalAlpha = 1 - depthFrac * 0.65;
+        ctx.strokeStyle = cssVar("--teal");
+        ctx.fillStyle = cssVar("--teal");
+        ctx.lineWidth = 3;
+        arrowAt(cx, oy, cx + lx, oy + ly, 8);
+        ctx.restore();
+        netX += lx / layers;
+        netY += ly / layers;
+      }
+
+      // net Ekman transport arrow (should be ~90 deg from wind)
+      var netAngle = sign * 90 * Math.PI / 180 + rad;
+      var netLen = 85;
+      var nx = Math.cos(netAngle) * netLen, ny = Math.sin(netAngle) * netLen;
+      var netCx = cx + 190, netCy = baseY + gap * 3;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.fillStyle = cssVar("--coral");
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(netCx, netCy, 4, 0, 7);
+      ctx.fill();
+      arrowAt(netCx, netCy, netCx + nx, netCy + ny, 12);
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("에크만 수송", netCx + 14, netCy - 6);
+      ctx.restore();
+
+      var netDeg = ((netAngle * 180 / Math.PI) + 450) % 360;
+      document.getElementById("c1-net").textContent =
+        "바람 기준 직각 " + (hemi === "N" ? "오른쪽" : "왼쪽") + " (" + compassLabel((windDeg + sign * 90 + 360) % 360) + "쪽)";
+
+      // depth labels
+      ctx.save();
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("표층", cx - 220, baseY + 4);
+      ctx.fillText("심층", cx - 220, baseY + (layers - 1) * gap + 4);
+      ctx.strokeStyle = cssVar("--line");
+      ctx.beginPath();
+      ctx.moveTo(cx - 230, baseY - 20);
+      ctx.lineTo(cx - 230, baseY + (layers - 1) * gap + 20);
+      ctx.stroke();
+      ctx.restore();
+    }
+    function arrowAt(x1_, y1_, x2_, y2_, head) {
+      ctx.beginPath();
+      ctx.moveTo(x1_, y1_);
+      ctx.lineTo(x2_, y2_);
+      ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.45), y2_ - head * Math.sin(ang - 0.45));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.45), y2_ - head * Math.sin(ang + 0.45));
+      ctx.closePath();
+      ctx.fill();
+    }
+    render();
+  })();
+
+  /* ==================================================================
+     TAB 2 — 지형류
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c2");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var slope = 50;
+    var hemi = "N";
+    var t = 0;
+
+    var slider = document.getElementById("c2-slope");
+    var val = document.getElementById("c2-slope-val");
+    slider.addEventListener("input", function () {
+      slope = +slider.value;
+      val.textContent = slope;
+    });
+    document.querySelectorAll("#c2-hemi button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        hemi = btn.getAttribute("data-h");
+        document.querySelectorAll("#c2-hemi button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+      });
+    });
+
+    function arrowAt(x1_, y1_, x2_, y2_, head) {
+      ctx.beginPath();
+      ctx.moveTo(x1_, y1_);
+      ctx.lineTo(x2_, y2_);
+      ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.45), y2_ - head * Math.sin(ang - 0.45));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.45), y2_ - head * Math.sin(ang + 0.45));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      // cross-section: sea surface slope, left high, right low (mound)
+      var baseY = 200;
+      var midX = W / 2;
+      var amp = slope * 1.1;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(60, baseY + 30);
+      for (var x = 60; x <= W - 60; x += 4) {
+        var d = (x - midX) / 220;
+        var y = baseY - amp * Math.exp(-d * d * 2.2);
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(W - 60, baseY + 30);
+      ctx.closePath();
+      var grad = ctx.createLinearGradient(0, baseY - amp, 0, baseY + 30);
+      grad.addColorStop(0, "rgba(63,201,176,0.5)");
+      grad.addColorStop(1, "rgba(63,201,176,0.08)");
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = cssVar("--teal");
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "12px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("해수면 단면 (수위가 높은 언덕 모양)", midX, baseY + 55);
+
+      // PGF arrow from crest sloping down to side
+      var crestX = midX - 90, crestY = baseY - amp * Math.exp(-((crestX - midX) / 220) * ((crestX - midX) / 220) * 2.2);
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.fillStyle = cssVar("--coral");
+      ctx.lineWidth = 4;
+      arrowAt(crestX, crestY - 6, crestX + 70, crestY - 6, 9);
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("PGF →", crestX, crestY - 16);
+      ctx.restore();
+
+      // CF arrow opposing, perpendicular-ish
+      ctx.save();
+      ctx.strokeStyle = cssVar("--cold");
+      ctx.fillStyle = cssVar("--cold");
+      ctx.lineWidth = 4;
+      var cfx = crestX + 70, cfy = crestY - 6;
+      arrowAt(cfx, cfy, cfx - 55, cfy - 45, 9);
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.fillText("CF ↖", cfx - 55, cfy - 52);
+      ctx.restore();
+
+      // geostrophic current: parallel to slope (into/out of page shown as flowing dots along a line)
+      var curY = baseY + 90;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--line");
+      ctx.setLineDash([5, 5]);
+      ctx.beginPath();
+      ctx.moveTo(60, curY);
+      ctx.lineTo(W - 60, curY);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = cssVar("--foam");
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("지형류 (등압선과 나란히, 등고선을 따라 흐름)", 60, curY + 26);
+
+      var speed = 0.4 + slope / 100 * 1.6;
+      var dir = hemi === "N" ? 1 : -1;
+      var n = 9;
+      for (var i = 0; i < n; i++) {
+        var u = ((i / n) + t * 0.12 * speed * dir) % 1;
+        if (u < 0) u += 1;
+        var px = 60 + u * (W - 120);
+        ctx.save();
+        ctx.fillStyle = cssVar("--teal");
+        ctx.beginPath();
+        ctx.arc(px, curY, 5, 0, 7);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.save();
+      ctx.fillStyle = cssVar("--teal");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("유속: " + speed.toFixed(2) + " (경사 비례)", midX, curY + 44);
+      ctx.restore();
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 3 — 심층 순환
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c3");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var temp = 4, sal = 35;
+    var t = 0;
+
+    var tSlider = document.getElementById("c3-temp");
+    var tVal = document.getElementById("c3-temp-val");
+    var sSlider = document.getElementById("c3-sal");
+    var sVal = document.getElementById("c3-sal-val");
+    var densityLabel = document.getElementById("c3-density");
+    var sinkLabel = document.getElementById("c3-sink");
+    var dot = document.getElementById("c3-dot");
+
+    function density() {
+      // simplified relative index: higher salinity, lower temp -> higher density
+      return (sal - 30) * 1.0 - temp * 0.6;
+    }
+    function updateReadout() {
+      var d = density();
+      var speedFactor;
+      if (d > 6) { densityLabel.textContent = "매우 큼"; sinkLabel.textContent = "빠르게 가라앉음 (심층수 형성)"; dot.style.background = cssVar("--cold"); speedFactor = 2.2; }
+      else if (d > 2) { densityLabel.textContent = "큼"; sinkLabel.textContent = "가라앉음"; dot.style.background = cssVar("--teal"); speedFactor = 1.3; }
+      else if (d > -2) { densityLabel.textContent = "보통"; sinkLabel.textContent = "서서히 가라앉음"; dot.style.background = cssVar("--teal-dim"); speedFactor = 0.8; }
+      else { densityLabel.textContent = "작음"; sinkLabel.textContent = "가라앉지 않고 표층에 머무름"; dot.style.background = cssVar("--coral"); speedFactor = 0.15; }
+      return speedFactor;
+    }
+    var sinkSpeed = updateReadout();
+    tSlider.addEventListener("input", function () { temp = +tSlider.value; tVal.textContent = temp; sinkSpeed = updateReadout(); });
+    sSlider.addEventListener("input", function () { sal = +sSlider.value; sVal.textContent = sal; sinkSpeed = updateReadout(); });
+
+    // parcel drop animation on left, conveyor belt loop on right
+    var parcelY = 60;
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      // left: water column with parcel sinking
+      var colX = 110, colW = 90, colTop = 40, colBot = H - 40;
+      var grad = ctx.createLinearGradient(0, colTop, 0, colBot);
+      grad.addColorStop(0, "rgba(111,168,224,0.25)");
+      grad.addColorStop(1, "rgba(10,25,40,0.6)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(colX, colTop, colW, colBot - colTop);
+      ctx.strokeStyle = cssVar("--line");
+      ctx.strokeRect(colX, colTop, colW, colBot - colTop);
+
+      parcelY += sinkSpeed * 1.0;
+      if (parcelY > colBot - 20) parcelY = colTop + 10;
+      ctx.save();
+      ctx.fillStyle = cssVar("--foam");
+      ctx.beginPath();
+      ctx.arc(colX + colW / 2, parcelY, 10, 0, 7);
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("수괴", colX + colW / 2, colTop - 10);
+      ctx.fillText("표층", colX + colW / 2, colTop + 14);
+      ctx.fillText("심층", colX + colW / 2, colBot - 6);
+
+      // right: conveyor loop
+      var lx = 280, rx = W - 60, topY = 90, botY = H - 90;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 2;
+      roundedLoop(lx, topY, rx, botY, 40);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("그린란드 부근 (침강)", lx - 4, topY - 14);
+      ctx.textAlign = "right";
+      ctx.fillText("남극 웨델해 (침강)", rx + 4, botY + 26);
+
+      // moving dots along the loop path, speed tied to sinkSpeed near the "sinking corners"
+      var n = 16;
+      var perim = 2 * (rx - lx) + 2 * (botY - topY);
+      for (var i = 0; i < n; i++) {
+        var s = ((i / n) + t * 0.05 * (0.5 + sinkSpeed * 0.3)) % 1;
+        var p = pointOnLoop(lx, topY, rx, botY, s);
+        var warm = s > 0.5;
+        ctx.save();
+        ctx.fillStyle = warm ? cssVar("--coral") : cssVar("--cold");
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 5, 0, 7);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.fillStyle = cssVar("--foam");
+      ctx.textAlign = "center";
+      ctx.fillText("전 지구 해양 컨베이어 벨트 (개념도)", (lx + rx) / 2, botY + 60);
+      ctx.font = "10.5px Segoe UI, sans-serif";
+      ctx.fillStyle = cssVar("--mist");
+      ctx.fillText("주황 = 따뜻한 표층 귀환류 · 파랑 = 차가운 심층류", (lx + rx) / 2, botY + 78);
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    function roundedLoop(x0_, y0_, x1_, y1_, r) {
+      ctx.beginPath();
+      ctx.moveTo(x0_ + r, y0_);
+      ctx.lineTo(x1_ - r, y0_);
+      ctx.arcTo(x1_, y0_, x1_, y0_ + r, r);
+      ctx.lineTo(x1_, y1_ - r);
+      ctx.arcTo(x1_, y1_, x1_ - r, y1_, r);
+      ctx.lineTo(x0_ + r, y1_);
+      ctx.arcTo(x0_, y1_, x0_, y1_ - r, r);
+      ctx.lineTo(x0_, y0_ + r);
+      ctx.arcTo(x0_, y0_, x0_ + r, y0_, r);
+      ctx.closePath();
+    }
+    function pointOnLoop(x0_, y0_, x1_, y1_, s) {
+      var wTop = x1_ - x0_, hSide = y1_ - y0_;
+      var perim = 2 * wTop + 2 * hSide;
+      var d = s * perim;
+      if (d < wTop) return { x: x0_ + d, y: y0_ };
+      d -= wTop;
+      if (d < hSide) return { x: x1_, y: y0_ + d };
+      d -= hSide;
+      if (d < wTop) return { x: x1_ - d, y: y1_ };
+      d -= wTop;
+      return { x: x0_, y: y1_ - d };
+    }
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 4 — 우리나라 주변 해류
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c4");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var show = { warm: true, cold: true, front: false };
+    var t = 0;
+    var hovered = null;
+
+    document.querySelectorAll("[data-show]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var k = btn.getAttribute("data-show");
+        show[k] = !show[k];
+        btn.classList.toggle("on", show[k]);
+      });
+    });
+
+    // schematic peninsula polygon (rough, stylized, not geographically precise)
+    var peninsula = [
+      [430, 70], [470, 90], [455, 160], [500, 230], [470, 300],
+      [510, 360], [470, 420], [430, 470], [390, 500], [370, 460],
+      [400, 400], [360, 340], [390, 270], [350, 210], [380, 140], [400, 90]
+    ];
+
+    var currents = [
+      {
+        id: "kuroshio", name: "쿠로시오 해류", type: "warm",
+        pts: [[560, 520], [520, 440], [480, 360]],
+        desc: "저위도에서 고위도로 흐르는 강한 난류로, 우리나라 주변 난류의 근원입니다. 수온과 염분이 비교적 높습니다."
+      },
+      {
+        id: "tsushima", name: "대마 난류", type: "warm",
+        pts: [[480, 360], [450, 300], [430, 250]],
+        desc: "쿠로시오 해류에서 갈라져 대한해협을 지나 동해로 유입되는 난류입니다."
+      },
+      {
+        id: "donghan", name: "동한 난류", type: "warm",
+        pts: [[430, 250], [440, 190], [450, 130]],
+        desc: "대마 난류의 일부가 동해안을 따라 북상하는 난류로, 여름철 동해 연안 수온을 높입니다."
+      },
+      {
+        id: "hwanghae", name: "황해 난류", type: "warm",
+        pts: [[330, 380], [320, 300], [330, 220]],
+        desc: "쿠로시오 해류의 일부가 황해로 유입되어 북상하는 세력이 약한 난류입니다."
+      },
+      {
+        id: "bukhan", name: "북한 한류", type: "cold",
+        pts: [[420, 110], [430, 170], [440, 220]],
+        desc: "고위도 해역에서 남하하는 한류로, 동해안을 따라 남쪽으로 흐르며 동한 난류와 만납니다."
+      },
+      {
+        id: "liman", name: "리만 한류", type: "cold",
+        pts: [[400, 90], [380, 150], [370, 210]],
+        desc: "연해주 방면에서 남하하는 한류로 동해 북부의 수온을 낮춥니다."
+      }
+    ];
+
+    function toDevice(pt) { return pt; }
+
+    canvas.addEventListener("click", function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
+      var mx = (e.clientX - rect.left) * scaleX;
+      var my = (e.clientY - rect.top) * scaleY;
+      var best = null, bestDist = 26;
+      currents.forEach(function (c) {
+        for (var i = 0; i < c.pts.length - 1; i++) {
+          var d = distToSeg(mx, my, c.pts[i], c.pts[i + 1]);
+          if (d < bestDist) { bestDist = d; best = c; }
+        }
+      });
+      if (best) {
+        hovered = best.id;
+        var info = document.getElementById("c4-info");
+        var color = best.type === "warm" ? "var(--coral)" : "var(--cold)";
+        var bg = best.type === "warm" ? "var(--coral)" : "var(--cold)";
+        info.innerHTML = '<span class="tag" style="background:' + bg + ';color:#161616">' + (best.type === "warm" ? "난류" : "한류") + '</span><b>' + best.name + '</b> — ' + best.desc;
+      }
+    });
+
+    function distToSeg(px, py, a, b) {
+      var dx = b[0] - a[0], dy = b[1] - a[1];
+      var len2 = dx * dx + dy * dy;
+      var u = len2 ? ((px - a[0]) * dx + (py - a[1]) * dy) / len2 : 0;
+      u = Math.max(0, Math.min(1, u));
+      var cx = a[0] + u * dx, cy = a[1] + u * dy;
+      return Math.hypot(px - cx, py - cy);
+    }
+
+    function arrowAt(x1_, y1_, x2_, y2_, head, w) {
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(x1_, y1_);
+      ctx.lineTo(x2_, y2_);
+      ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.4), y2_ - head * Math.sin(ang - 0.4));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.4), y2_ - head * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+      // sea background
+      ctx.fillStyle = "rgba(63,201,176,0.05)";
+      ctx.fillRect(0, 0, W, H);
+
+      // peninsula
+      ctx.beginPath();
+      peninsula.forEach(function (p, i) { if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]); });
+      ctx.closePath();
+      ctx.fillStyle = cssVar("--panel-2");
+      ctx.fill();
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "12px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("(모식도)", 430, 290);
+
+      // labels for seas
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.fillStyle = cssVar("--mist");
+      ctx.fillText("황해", 300, 300);
+      ctx.fillText("동해", 500, 260);
+      ctx.fillText("남해", 430, 500);
+
+      currents.forEach(function (c) {
+        if (!show[c.type]) return;
+        var color = c.type === "warm" ? cssVar("--coral") : cssVar("--cold");
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.globalAlpha = hovered === c.id ? 1 : 0.85;
+        for (var i = 0; i < c.pts.length - 1; i++) {
+          var a = c.pts[i], b = c.pts[i + 1];
+          arrowAt(a[0], a[1], b[0], b[1], 9, hovered === c.id ? 5 : 3.5);
+        }
+        ctx.restore();
+      });
+
+      // front zone (조경수역)
+      if (show.front) {
+        var fx = 465, fy = 280;
+        ctx.save();
+        var pulse = 0.5 + 0.5 * Math.sin(t * 2);
+        ctx.globalAlpha = 0.35 + pulse * 0.25;
+        var g = ctx.createRadialGradient(fx, fy, 4, fx, fy, 46);
+        g.addColorStop(0, cssVar("--foam"));
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 46, 0, 7);
+        ctx.fill();
+        ctx.restore();
+        ctx.fillStyle = cssVar("--foam");
+        ctx.font = "700 11px Segoe UI, sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText("조경수역 (난류·한류가 만남)", fx + 16, fy);
+      }
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    document.getElementById("c4-info").innerHTML = "지도 위의 해류 화살표를 클릭해서 이름과 특징을 확인해 보세요.";
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 5 — 용승과 침강
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c5");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var windDir = "down"; // along coast, "down" = southward, "up" = northward
+    var hemi = "N";
+    var t = 0;
+
+    document.querySelectorAll("#c5-wind button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        windDir = btn.getAttribute("data-w");
+        document.querySelectorAll("#c5-wind button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+      });
+    });
+    document.querySelectorAll("#c5-hemi button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        hemi = btn.getAttribute("data-h");
+        document.querySelectorAll("#c5-hemi button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+      });
+    });
+
+    function computeMode() {
+      // wind blowing "down" (south, -y along coast) : N hemi Ekman transport is 90 right of wind => offshore (to the right/east, away from coast on left) => upwelling
+      // wind "up" (north, +y) : transport is 90 right of wind (north) => onshore(west, toward coast) => downwelling  [for coast on the left / wind blowing along north-south coastline]
+      var windIsSouth = windDir === "down";
+      var transportRight = hemi === "N"; // N: transport 90 deg right of wind; S: left
+      // wind vector: south = (0,+1) in screen terms pointing down the coast; north = (0,-1)
+      // "right of wind" when facing wind direction of travel:
+      // if wind travels south (0,1), right-of-travel (in standard x-right,y-down screen) is... need consistent 2D calc.
+      var windVec = windIsSouth ? { x: 0, y: 1 } : { x: 0, y: -1 };
+      var rightVec = { x: -windVec.y, y: windVec.x }; // rotate -90 (screen coords) = "right" when y-down... we'll just define offshore = +x (to sea, right side of canvas)
+      var perp = hemi === "N" ? { x: -windVec.y, y: windVec.x } : { x: windVec.y, y: -windVec.x };
+      // pick sign so offshore(+x) vs onshore(-x)
+      var offshore = perp.x > 0;
+      return offshore ? "upwelling" : "downwelling";
+    }
+
+    function render() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(render); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      var mode = computeMode();
+      var resultEl = document.getElementById("c5-result");
+      var dotEl = document.getElementById("c5-dot");
+      if (mode === "upwelling") {
+        resultEl.innerHTML = '결과: <b style="color:var(--cold)">용승</b> — 찬 심층수가 올라와 표층 수온이 낮아지고 영양염이 풍부해집니다.';
+        dotEl.style.background = cssVar("--cold");
+      } else {
+        resultEl.innerHTML = '결과: <b style="color:var(--coral)">침강</b> — 표층수가 해안에 쌓여 가라앉습니다.';
+        dotEl.style.background = cssVar("--coral");
+      }
+
+      // coastline: land on left
+      var coastX = 170;
+      ctx.fillStyle = cssVar("--panel-2");
+      ctx.fillRect(0, 0, coastX, H);
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(coastX, 0);
+      ctx.lineTo(coastX, H);
+      ctx.stroke();
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "12px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.save();
+      ctx.translate(coastX / 2, H / 2);
+      ctx.fillText("육지", 0, 0);
+      ctx.restore();
+
+      // wind arrows along coast (vertical)
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.fillStyle = cssVar("--coral");
+      var wy1 = windDir === "down" ? 60 : H - 60;
+      var wy2 = windDir === "down" ? H - 60 : 60;
+      for (var i = 0; i < 3; i++) {
+        var wx = coastX + 40 + i * 40;
+        arrowAt2(wx, wy1, wx, wy1 + (wy2 - wy1) * 0.85, 10, 4);
+      }
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("바람", coastX + 160, (wy1 + wy2) / 2);
+      ctx.restore();
+
+      // Ekman transport arrow (big, horizontal-ish) showing offshore or onshore
+      var midY = H / 2;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--teal");
+      ctx.fillStyle = cssVar("--teal");
+      if (mode === "upwelling") {
+        arrowAt2(coastX + 60, midY - 120, coastX + 220, midY - 120, 12, 5);
+      } else {
+        arrowAt2(coastX + 220, midY - 120, coastX + 60, midY - 120, 12, 5);
+      }
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.fillText("에크만 수송", coastX + 60, midY - 132);
+      ctx.restore();
+
+      // water column with rising/sinking particles
+      var wx0 = coastX, wx1 = W - 30;
+      var grad = ctx.createLinearGradient(0, midY - 60, 0, H - 20);
+      grad.addColorStop(0, "rgba(63,201,176,0.18)");
+      grad.addColorStop(1, "rgba(10,25,45,0.55)");
+      ctx.fillStyle = grad;
+      ctx.fillRect(wx0, midY - 60, wx1 - wx0, H - midY - 40 + 60);
+
+      var n = 14;
+      for (var j = 0; j < n; j++) {
+        var col = j % 7;
+        var px = coastX + 30 + col * 55;
+        var phase = (t * 0.6 + j * 0.15) % 1;
+        var py;
+        if (mode === "upwelling") {
+          py = (H - 30) - phase * (H - 30 - (midY - 40));
+          if (px > coastX + 90) continue; // only near-coast column rises
+        } else {
+          py = (midY - 20) + phase * (H - 30 - (midY - 20));
+          if (px > coastX + 90) continue;
+        }
+        ctx.save();
+        ctx.fillStyle = mode === "upwelling" ? cssVar("--cold") : cssVar("--coral");
+        ctx.globalAlpha = 0.85;
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, 7);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(mode === "upwelling" ? "찬 심층수 상승 ↑" : "표층수 하강 ↓", coastX + 60, H - 12);
+
+      t += 1 / 60;
+      requestAnimationFrame(render);
+    }
+    function arrowAt2(x1_, y1_, x2_, y2_, head, w) {
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(x1_, y1_);
+      ctx.lineTo(x2_, y2_);
+      ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.4), y2_ - head * Math.sin(ang - 0.4));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.4), y2_ - head * Math.sin(ang + 0.4));
+      ctx.closePath();
+      ctx.fill();
+    }
+    requestAnimationFrame(render);
+  })();
+
+})();
+</script>
+</body>
+</html>

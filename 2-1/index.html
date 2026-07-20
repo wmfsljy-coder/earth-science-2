@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지구의 역사 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body>
+
+<div class="app">
+  <nav class="rail" id="rail">
+    <div class="brand">
+      <a class="home" href="../">← 2학년 지구과학</a>
+      <div class="eyebrow" style="margin-top:8px">Ⅱ-1 · 지구의 역사</div>
+      <h1 class="display">지층과<br>지질 시대</h1>
+    </div>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 상대연령 법칙</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 지층 대비</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 절대연령과 반감기</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 지질 시대와 화석</button>
+  </nav>
+
+  <main>
+    <!-- TAB0 상대연령 법칙 -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 지층 형성의 선후 관계</div>
+        <h2 class="display">상대연령을 결정하는 법칙</h2>
+        <p>아래 법칙 버튼을 눌러 각 법칙이 지층 단면에서 어떻게 적용되는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c0" width="900" height="480"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">법칙 선택</div>
+            <div class="toggle-row">
+              <button class="chip on" data-law="horizontal">수평퇴적</button>
+              <button class="chip" data-law="superposition">지층 누중</button>
+              <button class="chip" data-law="faunal">동물군천이</button>
+              <button class="chip" data-law="intrusion">관입</button>
+              <button class="chip" data-law="unconformity">부정합</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c0-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB1 지층 대비 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 서로 떨어진 지층 비교하기</div>
+        <h2 class="display">암상 대비와 화석 대비</h2>
+        <p>가까운 두 지역은 암석의 종류(암상)로, 멀리 떨어진 두 지역은 화석으로 지층을 대비합니다. 기준을 눌러 같은 시기에 쌓인 지층이 어떻게 연결되는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">대비 기준</div>
+            <div class="seg" id="c1-mode">
+              <button class="on" data-m="lith">암상 대비 (가까운 지역)</button>
+              <button data-m="fossil">화석 대비 (먼 지역)</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c1-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB2 절대연령 -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 방사성 동위원소 붕괴</div>
+        <h2 class="display">반감기로 절대연령 구하기</h2>
+        <p>경과한 반감기 횟수를 조절하며 모원소와 자원소의 비율이 어떻게 변하는지, 실제 절대연령이 얼마나 되는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c2" width="900" height="460"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">경과한 반감기 횟수<span class="val" id="c2-n-val">1.0</span></div>
+            <input type="range" id="c2-n" min="0" max="5" step="0.1" value="1">
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">방사성 동위원소</div>
+            <div class="seg" id="c2-iso">
+              <button data-iso="C14">¹⁴C (5,730년)</button>
+              <button class="on" data-iso="K40">⁴⁰K (13억 년)</button>
+              <button data-iso="U238">²³⁸U (45.1억 년)</button>
+            </div>
+          </div>
+          <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="c2-age">절대연령: —</span></div>
+        </div>
+        <div class="info-card">모원소의 양이 처음의 1/2로 줄어드는 데 걸리는 시간이 <b>반감기</b>입니다. 반감기가 n번 지나면 모원소는 (1/2)ⁿ만큼 남습니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB3 지질시대 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 46억 년의 지구 역사</div>
+        <h2 class="display">지질 시대와 표준 화석</h2>
+        <p>지질 시대 막대를 클릭해 각 시대의 환경과 대표적인 표준 화석을 확인해 보세요. 지질 시대는 생물계의 큰 변화를 기준으로 구분합니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3" width="900" height="260"></canvas></div>
+        <div class="info-card" id="c3-info">지질 시대 막대를 클릭해 보세요.</div>
+      </div>
+      <p class="foot-note">지질 시대 막대는 상대적 길이를 강조하기 위해 실제 비율을 과장하여 표현했습니다 (선캄브리아 시대가 전체의 약 88%를 차지합니다).</p>
+    </section>
+  </main>
+</div>
+
+<button class="theme-toggle" id="themeToggle">라이트 모드</button>
+
+<script src="../assets/theme.js"></script>
+<script>
+(function () {
+"use strict";
+
+/* TAB0 상대연령 법칙 */
+(function () {
+  var canvas = document.getElementById("c0");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var law = "horizontal";
+  var info = document.getElementById("c0-info");
+  var texts = {
+    horizontal: "<b>수평퇴적의 법칙</b>: 퇴적물은 중력의 영향으로 일반적으로 수평으로 쌓입니다. 지층이 기울어지거나 휘어져 있다면, 퇴적된 후 지각 변동을 받았다고 해석할 수 있습니다.",
+    superposition: "<b>지층 누중의 법칙</b>: 지층이 역전되지 않았다면, 아래쪽 지층이 위쪽 지층보다 먼저 쌓인 것입니다 (오래된 지층일수록 아래에 위치).",
+    faunal: "<b>동물군천이의 법칙</b>: 생물은 멸종과 출현을 거듭하며 진화하므로, 먼저 쌓인 지층일수록 더 원시적인 화석이, 나중에 쌓인 지층일수록 더 진화된 화석이 발견됩니다.",
+    intrusion: "<b>관입의 법칙</b>: 마그마가 기존 지층의 틈을 뚫고 들어가 굳으면(관입), 관입한 암석이 관입당한 암석보다 나중에 생성된 것입니다.",
+    unconformity: "<b>부정합의 법칙</b>: 부정합면을 경계로 상하 지층 사이에 오랜 시간 간격(퇴적 중단)이 있습니다. 융기·침식 후 다시 침강·퇴적되어 형성됩니다."
+  };
+  document.querySelectorAll("[data-law]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      law = b.getAttribute("data-law");
+      document.querySelectorAll("[data-law]").forEach(function (x) { x.classList.toggle("on", x === b); });
+      info.innerHTML = texts[law];
+      render();
+    });
+  });
+
+  var colors;
+  function render() {
+    colors = [cssVar("--teal"), cssVar("--cold"), cssVar("--coral"), cssVar("--violet"), cssVar("--teal-dim")];
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 150, x1 = W - 150, y0 = 60, y1 = H - 60;
+
+    if (law === "horizontal") {
+      // two panels: horizontal vs tilted
+      drawLayers(x0, y0, (x1 - x0) / 2 - 20, y1 - y0, 5, false, "정상 퇴적(수평)");
+      drawLayers(x0 + (x1 - x0) / 2 + 20, y0, (x1 - x0) / 2 - 20, y1 - y0, 5, true, "지각 변동 후(기울어짐)");
+    } else if (law === "superposition") {
+      drawLayers(x0, y0, x1 - x0, y1 - y0, 6, false, null);
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left";
+      ctx.fillText("가장 오래된 지층 →", x1 + 6, y1 - 20);
+      ctx.fillText("가장 젊은 지층 →", x1 + 6, y0 + 20);
+    } else if (law === "faunal") {
+      drawLayers(x0, y0, x1 - x0, y1 - y0, 5, false, null);
+      var lh = (y1 - y0) / 5;
+      for (var i = 0; i < 5; i++) {
+        var cy = y0 + lh * i + lh / 2;
+        ctx.save(); ctx.fillStyle = cssVar("--foam"); ctx.font = "20px Segoe UI"; ctx.textAlign = "center";
+        var complexity = 5 - i;
+        ctx.fillText("●".repeat(Math.min(complexity, 3)), (x0 + x1) / 2, cy + 6);
+        ctx.restore();
+      }
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+      ctx.fillText("단순한 화석 (오래됨)", x1 + 6, y1 - 20);
+      ctx.fillText("복잡한 화석 (최근)", x1 + 6, y0 + 20);
+    } else if (law === "intrusion") {
+      drawLayers(x0, y0, x1 - x0, y1 - y0, 5, false, null);
+      // intrusion dike
+      ctx.save();
+      ctx.fillStyle = cssVar("--coral");
+      ctx.beginPath();
+      ctx.moveTo((x0 + x1) / 2 - 20, y0);
+      ctx.lineTo((x0 + x1) / 2 + 20, y0);
+      ctx.lineTo((x0 + x1) / 2 + 8, y1);
+      ctx.lineTo((x0 + x1) / 2 - 8, y1);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText("관입암 (나중 생성)", (x0 + x1) / 2, y0 - 12);
+    } else if (law === "unconformity") {
+      drawLayers(x0, y0, x1 - x0, (y1 - y0) * 0.4, 3, false, null);
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 3; ctx.setLineDash([8, 4]);
+      ctx.beginPath(); ctx.moveTo(x0, y0 + (y1 - y0) * 0.42); ctx.lineTo(x1, y0 + (y1 - y0) * 0.4); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--coral"); ctx.textAlign = "center";
+      ctx.fillText("부정합면 (긴 시간 간격)", (x0 + x1) / 2, y0 + (y1 - y0) * 0.42 + 20);
+      drawLayers(x0, y0 + (y1 - y0) * 0.48, x1 - x0, (y1 - y0) * 0.52, 4, false, null);
+    }
+  }
+  function drawLayers(x, y, w, h, n, tilt, label) {
+    var lh = h / n;
+    for (var i = 0; i < n; i++) {
+      ctx.save();
+      if (tilt) { ctx.translate(x + w / 2, y + h / 2); ctx.rotate(-0.12); ctx.translate(-(x + w / 2), -(y + h / 2)); }
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.globalAlpha = 0.75;
+      ctx.fillRect(x, y + i * lh, w, lh - 2);
+      ctx.restore();
+    }
+    if (label) {
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+      ctx.fillText(label, x + w / 2, y + h + 20);
+    }
+  }
+  info.innerHTML = texts.horizontal;
+  render();
+})();
+
+/* TAB1 지층대비 */
+(function () {
+  var canvas = document.getElementById("c1");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var mode = "lith";
+  var info = document.getElementById("c1-info");
+  document.querySelectorAll("#c1-mode button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.getAttribute("data-m");
+      document.querySelectorAll("#c1-mode button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var colA = 200, colB = W - 200, y0 = 50, y1 = H - 50, colW = 90;
+    var patternA, patternB, matchIdx;
+    if (mode === "lith") {
+      patternA = ["sand", "shale", "tuff", "sand", "shale"];
+      patternB = ["shale", "sand", "tuff", "shale", "sand"];
+      matchIdx = 2;
+      info.innerHTML = "두 지역 모두에서 <b>응회암(tuff)층</b>이 관찰됩니다. 화산재가 짧은 시기에 광범위하게 쌓여 만들어지는 응회암층은 지층 대비의 좋은 기준(열쇠층)이 됩니다.";
+    } else {
+      patternA = ["A", "B", "C", "D", "E"];
+      patternB = ["X", "B", "Y", "Z", "E"];
+      matchIdx = -1;
+      info.innerHTML = "서로 멀리 떨어진 지역은 암석 종류가 다를 수 있으므로, 특정 시기에만 번성했던 생물의 <b>화석</b>을 기준으로 대비합니다. 같은 표준 화석이 나오는 지층끼리 연결됩니다 (양쪽에 표시된 B, E층).";
+    }
+    var lh = (y1 - y0) / patternA.length;
+    var palette = { sand: cssVar("--coral"), shale: cssVar("--mist"), tuff: cssVar("--violet") };
+
+    function drawCol(x, pattern) {
+      pattern.forEach(function (p, i) {
+        ctx.save();
+        if (mode === "lith") { ctx.fillStyle = palette[p]; ctx.globalAlpha = .8; }
+        else { ctx.fillStyle = (p === "B" || p === "E") ? cssVar("--teal") : cssVar("--panel-2"); ctx.globalAlpha = .85; ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1; }
+        ctx.fillRect(x, y0 + i * lh, colW, lh - 2);
+        if (mode !== "lith") ctx.strokeRect(x, y0 + i * lh, colW, lh - 2);
+        ctx.restore();
+        ctx.fillStyle = cssVar("--foam"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
+        ctx.fillText(mode === "lith" ? p : p, x + colW / 2, y0 + i * lh + lh / 2 + 4);
+      });
+    }
+    drawCol(colA, patternA);
+    drawCol(colB, patternB);
+
+    ctx.font = "12px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("A 지역", colA + colW / 2, y0 - 14);
+    ctx.fillText("B 지역", colB + colW / 2, y0 - 14);
+
+    ctx.save();
+    ctx.strokeStyle = cssVar("--teal"); ctx.setLineDash([6, 4]); ctx.lineWidth = 2;
+    if (mode === "lith") {
+      var yMatch = y0 + matchIdx * lh + lh / 2;
+      ctx.beginPath(); ctx.moveTo(colA + colW, yMatch); ctx.lineTo(colB, yMatch); ctx.stroke();
+    } else {
+      [1, 4].forEach(function (i) {
+        var yMatch = y0 + i * lh + lh / 2;
+        ctx.beginPath(); ctx.moveTo(colA + colW, yMatch); ctx.lineTo(colB, yMatch); ctx.stroke();
+      });
+    }
+    ctx.restore();
+  }
+  render();
+})();
+
+/* TAB2 절대연령 */
+(function () {
+  var canvas = document.getElementById("c2");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var n = 1.0;
+  var iso = "K40";
+  var halflife = { C14: { t: 5730, label: "5,730년" }, K40: { t: 1300000000, label: "13억 년" }, U238: { t: 4510000000, label: "45.1억 년" } };
+
+  document.getElementById("c2-n").addEventListener("input", function (e) { n = +e.target.value; document.getElementById("c2-n-val").textContent = n.toFixed(1); render(); });
+  document.querySelectorAll("#c2-iso button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      iso = b.getAttribute("data-iso");
+      document.querySelectorAll("#c2-iso button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var remain = Math.pow(0.5, n);
+    // decay curve
+    var x0 = 60, x1 = 480, y0 = 40, y1 = H - 60;
+    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.beginPath();
+    for (var px = 0; px <= 200; px++) {
+      var nn = px / 200 * 5;
+      var yy = y1 - Math.pow(0.5, nn) * (y1 - y0);
+      var xx = x0 + px / 200 * (x1 - x0);
+      if (px === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
+
+    var curX = x0 + (n / 5) * (x1 - x0), curY = y1 - remain * (y1 - y0);
+    ctx.save();
+    ctx.fillStyle = cssVar("--coral");
+    ctx.beginPath(); ctx.arc(curX, curY, 6, 0, 7); ctx.fill();
+    ctx.restore();
+
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+    ctx.fillText("모원소 비율", x0, y0 - 10);
+    ctx.textAlign = "center"; ctx.fillText("경과한 반감기 수 →", (x0 + x1) / 2, y1 + 30);
+
+    // pie chart parent vs daughter
+    var pieX = 680, pieY = 200, r = 90;
+    ctx.save();
+    ctx.beginPath(); ctx.moveTo(pieX, pieY);
+    ctx.arc(pieX, pieY, r, -Math.PI / 2, -Math.PI / 2 + remain * Math.PI * 2);
+    ctx.closePath();
+    ctx.fillStyle = cssVar("--teal"); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(pieX, pieY);
+    ctx.arc(pieX, pieY, r, -Math.PI / 2 + remain * Math.PI * 2, -Math.PI / 2 + Math.PI * 2);
+    ctx.closePath();
+    ctx.fillStyle = cssVar("--cold"); ctx.fill();
+    ctx.restore();
+    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
+    ctx.fillStyle = cssVar("--teal"); ctx.fillText("모원소 " + (remain * 100).toFixed(1) + "%", pieX, pieY + r + 24);
+    ctx.fillStyle = cssVar("--cold"); ctx.fillText("자원소 " + ((1 - remain) * 100).toFixed(1) + "%", pieX, pieY + r + 44);
+
+    var age = n * halflife[iso].t;
+    document.getElementById("c2-age").innerHTML = "절대연령: <b>" + formatAge(age) + "</b> (반감기 " + halflife[iso].label + " × " + n.toFixed(1) + "회)";
+  }
+  function formatAge(y) {
+    if (y >= 1e8) return (y / 1e8).toFixed(2) + "억 년";
+    if (y >= 1e4) return (y / 1e4).toFixed(1) + "만 년";
+    return Math.round(y) + "년";
+  }
+  render();
+})();
+
+/* TAB3 지질시대 */
+(function () {
+  var canvas = document.getElementById("c3");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c3-info");
+
+  var eras = [
+    { name: "선캄브리아 시대", w: 0.60, color: "var(--mist)", desc: "46억 년 전 지구 탄생부터 약 5.4억 년 전까지. 초기 대기는 산소가 거의 없었고, 말기에 다세포 생물이 출현했습니다. 전체 지질 시대의 약 88%를 차지합니다.", fossil: "스트로마톨라이트(남세균)" },
+    { name: "고생대", w: 0.16, color: "var(--teal)", desc: "다양한 생물이 폭발적으로 등장(캄브리아 대폭발)했고, 말기에는 초대륙 판게아가 형성되었습니다.", fossil: "삼엽충, 방추충" },
+    { name: "중생대", w: 0.12, color: "var(--coral)", desc: "판게아가 분리되기 시작했고, 공룡을 비롯한 파충류가 번성한 시기입니다.", fossil: "암모나이트, 공룡" },
+    { name: "신생대", w: 0.12, color: "var(--violet)", desc: "포유류와 속씨식물이 번성했으며, 현재의 대륙 배치와 가까워졌습니다.", fossil: "화폐석, 매머드" }
+  ];
+  var x = 40, y = 90, w = W - 80, h = 60;
+
+  canvas.addEventListener("click", function (e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas._w / rect.width;
+    var mx = (e.clientX - rect.left) * scaleX;
+    var acc = x;
+    eras.forEach(function (era) {
+      var ew = w * era.w;
+      if (mx >= acc && mx < acc + ew) {
+        info.innerHTML = "<b>" + era.name + "</b> — " + era.desc + " 대표 표준 화석: <b>" + era.fossil + "</b>";
+      }
+      acc += ew;
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var acc = x;
+    eras.forEach(function (era) {
+      var ew = w * era.w;
+      ctx.save();
+      ctx.fillStyle = cssVar(era.color.replace("var(", "").replace(")", ""));
+      ctx.globalAlpha = .85;
+      ctx.fillRect(acc, y, ew, h);
+      ctx.restore();
+      ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.strokeRect(acc, y, ew, h);
+      if (ew > 40) {
+        ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
+        ctx.fillText(era.name, acc + ew / 2, y + h / 2 + 4);
+      }
+      acc += ew;
+    });
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+    ctx.fillText("46억 년 전 (지구 탄생)", x, y - 10);
+    ctx.textAlign = "right"; ctx.fillText("현재", x + w, y - 10);
+  }
+  render();
+})();
+
+})();
+</script>
+</body>
+</html>
