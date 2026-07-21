@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>해수의 순환 — 관측 스테이션</title>
+<title>해수의 순환과 대기의 변화 — 관측 스테이션</title>
 <style>
   :root {
     --abyss: #061621;
@@ -356,6 +356,12 @@
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
+  .mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 14px 0 30px; }
+  .mini-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .mini-card .mi-ico { font-size: 20px; margin-bottom: 6px; }
+  .mini-card h4 { margin: 0 0 4px; font-size: 13.5px; }
+  .mini-card p { margin: 0; font-size: 12px; line-height: 1.55; color: var(--mist); }
+
 </style>
 </head>
 <body>
@@ -365,21 +371,58 @@
     <div class="brand">
       <a class="home" href="../">← 2학년 지구과학</a>
       <div class="eyebrow">Ⅰ-1 · 대기와 해양</div>
-      <h1 class="display">해수의 순환<br>관측 스테이션</h1>
+      <h1 class="display">해수의 순환과<br>대기의 변화</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 표층 해류</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 에크만 수송</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 지형류</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 심층 순환</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리나라 주변 해류</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 용승과 침강</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 해수의 성질</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 표층 해류</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 에크만 수송</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 지형류</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 심층 순환</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 우리나라 주변 해류</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 연안 용승과 침강</button>
+    <button class="tab-btn" data-tab="7"><span class="num">08</span> 기압과 날씨 변화</button>
+    <button class="tab-btn" data-tab="8"><span class="num">09</span> 태풍</button>
+    <button class="tab-btn" data-tab="9"><span class="num">10</span> 악기상</button>
   </nav>
 
   <main>
-    <!-- TAB 0 : 표층 해류 -->
+    <!-- TAB 0 (NEW) : 해수의 성질 -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 대기 대순환과 표층 해류</div>
+        <div class="eyebrow">01 · 수온·염분·밀도의 연직 분포</div>
+        <h2 class="display">깊이에 따라 달라지는 해수의 성질</h2>
+        <p>위도대를 선택하고 관측 깊이 슬라이더를 움직여, 깊이에 따라 수온·염분·밀도가 어떻게 달라지는지 살펴보세요. 수온이 급격히 낮아지는 구간이 <b>수온약층</b>입니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c6" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">위도대</div>
+            <div class="seg" id="c6-lat">
+              <button class="on" data-lat="low">저위도</button>
+              <button data-lat="mid">중위도</button>
+              <button data-lat="high">고위도</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">관측 깊이(m)<span class="val" id="c6-depth-val">0</span></div>
+            <input type="range" id="c6-depth" min="0" max="1000" step="10" value="0">
+          </div>
+          <div class="readout">
+            <span class="dot" id="c6-dot" style="background:var(--teal)"></span>
+            <span class="txt" id="c6-readout">깊이 0 m — 수온 —, 염분 —, 밀도 —</span>
+          </div>
+        </div>
+        <div class="info-card" id="c6-info">저위도는 표층과 심층의 수온 차가 커서 뚜렷한 <b>수온약층</b>이 나타나지만, 고위도는 표층부터 수온이 낮아 깊이에 따른 변화가 작습니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB 1 : 표층 해류 -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 대기 대순환과 표층 해류</div>
         <h2 class="display">바람이 만드는 표층 해류</h2>
         <p>무역풍·편서풍·극동풍 버튼을 켜고 꺼 보면서, 위도대별 바람이 어떻게 아열대 순환과 아한대 순환을 만드는지 관찰해 보세요. 남반구·북반구를 전환하면 순환 방향이 반대가 되는 것도 확인할 수 있습니다.</p>
       </div>
@@ -407,10 +450,10 @@
       <p class="foot-note">모식도는 대양을 단순화한 사각 해분(海盆)입니다. 실제 해류 방향·세기·해안선 형태와는 차이가 있습니다.</p>
     </section>
 
-    <!-- TAB 1 : 에크만 수송 -->
-    <section class="tab-panel" data-panel="1" hidden>
+    <!-- TAB 2 : 에크만 수송 -->
+    <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 마찰력과 전향력의 균형</div>
+        <div class="eyebrow">03 · 마찰력과 전향력의 균형</div>
         <h2 class="display">에크만 수송 나선</h2>
         <p>바람 방향 다이얼을 돌려보세요. 표층에서 심층으로 갈수록 해수는 조금씩 더 오른쪽(북반구)/왼쪽(남반구)으로 휘어지고, 이를 모두 더한 <b>순 수송(에크만 수송)</b>은 바람 방향의 직각을 향합니다.</p>
       </div>
@@ -439,10 +482,10 @@
       </div>
     </section>
 
-    <!-- TAB 2 : 지형류 -->
-    <section class="tab-panel" data-panel="2" hidden>
+    <!-- TAB 3 : 지형류 -->
+    <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 압력 경도력과 전향력의 평형</div>
+        <div class="eyebrow">04 · 압력 경도력과 전향력의 평형</div>
         <h2 class="display">지형류 만들기</h2>
         <p>해수면 경사를 조절해 보세요. 경사가 생기면 <b>압력 경도력</b>이 해수를 낮은 쪽으로 밀지만, <b>전향력</b>이 이를 직각으로 되돌려 두 힘이 균형을 이루면 해류는 등수압선(등고선)과 나란히 흐르는 <b>지형류</b>가 됩니다.</p>
       </div>
@@ -471,10 +514,10 @@
       </div>
     </section>
 
-    <!-- TAB 3 : 심층 순환 -->
-    <section class="tab-panel" data-panel="3" hidden>
+    <!-- TAB 4 : 심층 순환 -->
+    <section class="tab-panel" data-panel="4" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 열염 순환(밀도류)</div>
+        <div class="eyebrow">05 · 열염 순환(밀도류)</div>
         <h2 class="display">수온·염분과 심층 순환</h2>
         <p>수온과 염분 슬라이더를 움직여 해수 덩어리의 <b>밀도</b>를 바꿔 보세요. 밀도가 커질수록 해수는 더 빠르게 가라앉습니다. 그린란드 부근과 남극 웨델해에서 가라앉은 물이 전 지구를 순환하는 컨베이어 벨트를 관찰해 보세요.</p>
       </div>
@@ -500,10 +543,10 @@
       </div>
     </section>
 
-    <!-- TAB 4 : 우리나라 주변 해류 -->
-    <section class="tab-panel" data-panel="4" hidden>
+    <!-- TAB 5 : 우리나라 주변 해류 -->
+    <section class="tab-panel" data-panel="5" hidden>
       <div class="stage-head">
-        <div class="eyebrow">05 · 동해·황해·남해의 해류</div>
+        <div class="eyebrow">06 · 동해·황해·남해의 해류</div>
         <h2 class="display">우리나라 주변 해류 지도</h2>
         <p>지도 위의 해류 화살표를 클릭해서 이름과 특징을 확인해 보세요. 동해에서 난류와 한류가 만나는 <b>조경수역</b>도 표시해 볼 수 있습니다.</p>
       </div>
@@ -525,10 +568,10 @@
       </div>
     </section>
 
-    <!-- TAB 5 : 용승과 침강 -->
-    <section class="tab-panel" data-panel="5" hidden>
+    <!-- TAB 6 : 연안 용승과 침강 -->
+    <section class="tab-panel" data-panel="6" hidden>
       <div class="stage-head">
-        <div class="eyebrow">06 · 연안 용승과 침강</div>
+        <div class="eyebrow">07 · 연안 용승과 침강</div>
         <h2 class="display">해안을 따라 부는 바람의 힘</h2>
         <p>해안선의 방향과 바람 방향을 바꿔가며, 에크만 수송이 해안에서 <b>먼 쪽</b>으로 향하면 용승이, <b>가까운 쪽</b>으로 향하면 침강이 일어나는 과정을 살펴보세요.</p>
       </div>
@@ -558,6 +601,88 @@
         </div>
         <div class="info-card">해안은 캔버스 왼쪽에 고정되어 있습니다. 에크만 수송이 <b>바다 쪽(오른쪽)</b>으로 향하면 표층수가 빠져나간 자리를 채우려 <b>찬 심층수가 용승</b>하고, <b>육지 쪽(왼쪽)</b>으로 향하면 표층수가 쌓여 <b>침강</b>합니다.</div>
       </div>
+    </section>
+
+    <!-- TAB 7 (NEW) : 기압과 날씨 변화 -->
+    <section class="tab-panel" data-panel="7" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">08 · 고기압과 저기압의 바람과 날씨</div>
+        <h2 class="display">고기압과 저기압, 바람은 어떻게 불까</h2>
+        <p>기압계와 반구를 선택해 등압선 주위로 바람이 어떻게 불어드는지(수렴) 또는 불어나가는지(발산) 관찰하고, 그에 따른 날씨 변화를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c7" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">기압계</div>
+            <div class="seg" id="c7-sys">
+              <button class="on" data-sys="low">저기압</button>
+              <button data-sys="high">고기압</button>
+            </div>
+          </div>
+          <div class="ctrl-group">
+            <div class="ctrl-label">반구</div>
+            <div class="seg" id="c7-hemi">
+              <button class="on" data-h="N">북반구</button>
+              <button data-h="S">남반구</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c7-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB 8 (NEW) : 태풍 -->
+    <section class="tab-panel" data-panel="8" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">09 · 태풍의 구조와 세기</div>
+        <h2 class="display">태풍의 구조와 중심으로부터의 거리</h2>
+        <p>태풍은 중심에 <b>태풍의 눈</b>이 있고, 그 주위를 강한 바람과 폭우를 동반한 <b>눈벽구름</b>과 나선 모양의 <b>강우대</b>가 둘러싸고 있습니다. 슬라이더로 중심에서의 거리를 옮기며 바람과 날씨 변화를 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c8" width="900" height="560"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">중심으로부터 거리(km)<span class="val" id="c8-r-val">0</span></div>
+            <input type="range" id="c8-r" min="0" max="400" step="5" value="0">
+          </div>
+          <div class="readout">
+            <span class="dot" id="c8-dot" style="background:var(--teal)"></span>
+            <span class="txt" id="c8-readout">—</span>
+          </div>
+        </div>
+        <div class="info-card">북반구에서 태풍의 바람은 중심을 향해 <b>반시계 방향으로 불어들어갑니다(수렴)</b>. 태풍의 눈에서는 하강 기류로 오히려 날씨가 맑고 바람이 약합니다.</div>
+      </div>
+    </section>
+
+    <!-- TAB 9 (NEW) : 악기상 -->
+    <section class="tab-panel" data-panel="9" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">10 · 좁은 지역에 급격한 피해를 주는 날씨</div>
+        <h2 class="display">뇌우의 발달 단계와 다양한 악기상</h2>
+        <p>적운 단계 → 성숙 단계 → 소멸 단계로 이어지는 뇌우의 한살이를 살펴보고, 우리나라에서 나타나는 다른 악기상 현상도 함께 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap">
+          <canvas id="c9" width="900" height="480"></canvas>
+        </div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">뇌우의 단계</div>
+            <div class="seg" id="c9-stage">
+              <button class="on" data-s="0">적운 단계</button>
+              <button data-s="1">성숙 단계</button>
+              <button data-s="2">소멸 단계</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c9-info"></div>
+      </div>
+      <div class="mini-grid" id="c9-grid"></div>
     </section>
   </main>
 </div>
@@ -1560,6 +1685,420 @@
       ctx.fill();
     }
     requestAnimationFrame(render);
+  })();
+
+
+  /* ==================================================================
+     TAB 0 (NEW) — 해수의 성질
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c6");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var lat = "low";
+    var depth = 0;
+
+    document.querySelectorAll("#c6-lat button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        lat = btn.getAttribute("data-lat");
+        document.querySelectorAll("#c6-lat button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        render();
+      });
+    });
+    var depthSlider = document.getElementById("c6-depth");
+    var depthVal = document.getElementById("c6-depth-val");
+    depthSlider.addEventListener("input", function () {
+      depth = +depthSlider.value;
+      depthVal.textContent = depth;
+      render();
+    });
+
+    var profiles = {
+      low:  { surfT: 28, deepT: 2, thermoTop: 100, thermoBot: 600, surfS: 36.5, deepS: 34.6, label: "저위도(열대)" },
+      mid:  { surfT: 18, deepT: 2, thermoTop: 80,  thermoBot: 500, surfS: 35.0, deepS: 34.6, label: "중위도" },
+      high: { surfT: 2,  deepT: 1, thermoTop: 0,   thermoBot: 50,  surfS: 33.0, deepS: 34.6, label: "고위도(극)" }
+    };
+
+    function tempAt(d, p) {
+      if (d <= p.thermoTop) return p.surfT;
+      if (d >= p.thermoBot) return p.deepT;
+      var f = (d - p.thermoTop) / (p.thermoBot - p.thermoTop);
+      f = f * f * (3 - 2 * f);
+      return p.surfT + (p.deepT - p.surfT) * f;
+    }
+    function salAt(d, p) {
+      if (d <= p.thermoTop) return p.surfS;
+      if (d >= p.thermoBot) return p.deepS;
+      var f = (d - p.thermoTop) / (p.thermoBot - p.thermoTop);
+      f = f * f * (3 - 2 * f);
+      return p.surfS + (p.deepS - p.surfS) * f;
+    }
+    function densityIdx(t, s) { return (s - 30) * 1.0 - t * 0.4; }
+
+    var plotX0 = 130, plotX1 = 800, plotY0 = 60, plotY1 = 500;
+    function xOf(temp) { return plotX0 + (temp / 30) * (plotX1 - plotX0); }
+    function yOf(d) { return plotY0 + (d / 1000) * (plotY1 - plotY0); }
+
+    function render() {
+      var p = profiles[lat];
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(plotX0, plotY0); ctx.lineTo(plotX0, plotY1); ctx.lineTo(plotX1, plotY1);
+      ctx.stroke();
+
+      ctx.save();
+      ctx.fillStyle = "rgba(63,201,176,0.10)";
+      ctx.fillRect(plotX0, yOf(p.thermoTop), plotX1 - plotX0, Math.max(yOf(p.thermoBot) - yOf(p.thermoTop), 0));
+      ctx.restore();
+
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "11px Segoe UI, sans-serif";
+      ctx.textAlign = "right";
+      for (var d = 0; d <= 1000; d += 200) {
+        var y = yOf(d);
+        ctx.save();
+        ctx.strokeStyle = cssVar("--line");
+        ctx.globalAlpha = 0.4;
+        ctx.beginPath(); ctx.moveTo(plotX0, y); ctx.lineTo(plotX1, y); ctx.stroke();
+        ctx.restore();
+        ctx.fillText(d + "m", plotX0 - 8, y + 4);
+      }
+      ctx.textAlign = "center";
+      for (var tt = 0; tt <= 30; tt += 5) {
+        ctx.fillText(tt + "°", xOf(tt), plotY1 + 20);
+      }
+      ctx.fillText("수온(°C) →", (plotX0 + plotX1) / 2, plotY1 + 40);
+      ctx.save();
+      ctx.translate(plotX0 - 60, (plotY0 + plotY1) / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("깊이(m)", 0, 0);
+      ctx.restore();
+
+      ctx.strokeStyle = cssVar("--teal");
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (var dd = 0; dd <= 1000; dd += 5) {
+        var xx = xOf(tempAt(dd, p)), yy = yOf(dd);
+        if (dd === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+
+      var curT = tempAt(depth, p), curS = salAt(depth, p);
+      var mx = xOf(curT), my = yOf(depth);
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.globalAlpha = 0.6;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(plotX0, my); ctx.lineTo(mx, my); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = cssVar("--coral");
+      ctx.beginPath(); ctx.arc(mx, my, 6, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = cssVar("--foam");
+      ctx.font = "700 12px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(p.label, plotX0, 34);
+
+      var idx = densityIdx(curT, curS);
+      var densTxt = idx > 4 ? "큼" : (idx > 0 ? "보통" : "작음");
+      document.getElementById("c6-readout").textContent =
+        "깊이 " + depth + " m — 수온 " + curT.toFixed(1) + "°C, 염분 " + curS.toFixed(1) + " psu, 밀도 " + densTxt;
+      document.getElementById("c6-dot").style.background = idx > 4 ? cssVar("--cold") : (idx > 0 ? cssVar("--teal") : cssVar("--coral"));
+
+      var info = document.getElementById("c6-info");
+      if (p.thermoBot > p.thermoTop && depth >= p.thermoTop && depth <= p.thermoBot) {
+        info.innerHTML = "지금 위치는 <b>수온약층(경계층)</b> 안입니다. 깊이가 늘어날수록 수온이 급격히 낮아지는 구간이에요.";
+      } else if (depth < p.thermoTop) {
+        info.innerHTML = "지금 위치는 <b>혼합층</b>입니다. 바람의 혼합 작용으로 수온이 거의 일정합니다.";
+      } else {
+        info.innerHTML = "지금 위치는 <b>심해층</b>입니다. 태양 에너지가 거의 도달하지 않아 수온이 낮고 거의 일정하게 유지됩니다.";
+      }
+    }
+    render();
+  })();
+
+  /* ==================================================================
+     TAB 7 (NEW) — 기압과 날씨 변화
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c7");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var sys = "low", hemi = "N", t = 0;
+
+    document.querySelectorAll("#c7-sys button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        sys = btn.getAttribute("data-sys");
+        document.querySelectorAll("#c7-sys button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        updateInfo();
+      });
+    });
+    document.querySelectorAll("#c7-hemi button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        hemi = btn.getAttribute("data-h");
+        document.querySelectorAll("#c7-hemi button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        updateInfo();
+      });
+    });
+
+    function rotSense() {
+      if (sys === "low") return hemi === "N" ? -1 : 1;
+      return hemi === "N" ? 1 : -1;
+    }
+    function inward() { return sys === "low" ? 1 : -1; }
+
+    function updateInfo() {
+      var info = document.getElementById("c7-info");
+      var name = sys === "low" ? "저기압" : "고기압";
+      var hname = hemi === "N" ? "북반구" : "남반구";
+      var rot = rotSense() === -1 ? "반시계 방향" : "시계 방향";
+      var flow = sys === "low" ? "수렴(불어들어옴)" : "발산(불어나감)";
+      var weather = sys === "low" ? "상승 기류가 발달해 구름이 생기고 흐리거나 비가 옵니다." : "하강 기류가 발달해 구름이 흩어지고 대체로 맑습니다.";
+      info.innerHTML = hname + " " + name + " — 바람은 <b>" + rot + "</b>으로 <b>" + flow + "</b>합니다. " + weather;
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+      var cx = W / 2, cy = H / 2 - 10;
+
+      ctx.strokeStyle = cssVar("--line");
+      ctx.lineWidth = 1.3;
+      for (var r = 60; r <= 240; r += 45) {
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      }
+
+      ctx.fillStyle = sys === "low" ? cssVar("--cold") : cssVar("--coral");
+      ctx.font = "700 22px Georgia, serif";
+      ctx.textAlign = "center";
+      ctx.fillText(sys === "low" ? "L" : "H", cx, cy + 8);
+
+      var sense = rotSense();
+      var tiltDir = inward();
+      var rings = [80, 140, 200];
+      rings.forEach(function (rr, ri) {
+        var count = 8 + ri * 2;
+        for (var i = 0; i < count; i++) {
+          var ang = (i / count) * Math.PI * 2 + sense * t * 0.6 * (1 - ri * 0.15);
+          var x = cx + Math.cos(ang) * rr, y = cy + Math.sin(ang) * rr;
+          var tangent = ang + sense * Math.PI / 2;
+          var vAng = tangent - tiltDir * 0.35 * sense;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(vAng);
+          ctx.fillStyle = cssVar("--teal");
+          ctx.beginPath();
+          ctx.moveTo(7, 0); ctx.lineTo(-4, -3); ctx.lineTo(-4, 3); ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+      });
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    updateInfo();
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 8 (NEW) — 태풍
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c8");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var r = 0, t = 0;
+    var cx = W / 2, cy = H / 2 - 10;
+    var maxKm = 400, maxPx = 230;
+
+    var slider = document.getElementById("c8-r");
+    var val = document.getElementById("c8-r-val");
+    slider.addEventListener("input", function () { r = +slider.value; val.textContent = r; updateReadout(); });
+
+    function zoneOf(rk) {
+      if (rk < 25) return { name: "태풍의 눈", wind: "약함(고요)", weather: "맑거나 구름 적음, 하강 기류", color: cssVar("--teal-dim") };
+      if (rk < 60) return { name: "눈벽구름", wind: "가장 강함(최대풍속)", weather: "폭풍우, 매우 강한 상승 기류", color: cssVar("--coral") };
+      if (rk < 250) return { name: "나선형 강우대(강풍역)", wind: "강함", weather: "돌풍성 비바람이 간헐적으로 통과", color: cssVar("--cold") };
+      return { name: "태풍 바깥 영역", wind: "약함", weather: "구름 많고 바람 약간 강함", color: cssVar("--mist") };
+    }
+    function updateReadout() {
+      var z = zoneOf(r);
+      document.getElementById("c8-readout").textContent = r + "km 지점 — " + z.name + " · 바람: " + z.wind + " · " + z.weather;
+      document.getElementById("c8-dot").style.background = z.color;
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      ctx.save();
+      for (var k = 0; k < 5; k++) {
+        var a0 = t * 0.4 + k * (Math.PI * 2 / 5);
+        ctx.strokeStyle = cssVar("--cold");
+        ctx.globalAlpha = 0.5;
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        for (var s = 0; s <= 40; s++) {
+          var frac = s / 40;
+          var rr = 40 + frac * 190;
+          var ang = a0 - frac * 3.4;
+          var x = cx + Math.cos(ang) * rr, y = cy + Math.sin(ang) * rr;
+          if (s === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = cssVar("--coral");
+      ctx.globalAlpha = 1;
+      ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.arc(cx, cy, 40, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = cssVar("--panel-2");
+      ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = cssVar("--foam");
+      ctx.font = "700 11px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("눈", cx, cy + 4);
+
+      var rp = 40 + (r / maxKm) * maxPx;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--teal");
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, Math.max(rp, 4), 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = cssVar("--mist");
+      ctx.font = "10.5px Segoe UI, sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("중심(태풍의 눈)에서 바깥으로 약 " + maxKm + "km까지 표시", 16, H - 16);
+
+      t += 1 / 60;
+      requestAnimationFrame(frame);
+    }
+    updateReadout();
+    requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 9 (NEW) — 악기상
+     ================================================================== */
+  (function () {
+    var canvas = document.getElementById("c9");
+    var ctx = DPR(canvas);
+    var W = canvas._w, H = canvas._h;
+    var stage = 0;
+
+    document.querySelectorAll("#c9-stage button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        stage = +btn.getAttribute("data-s");
+        document.querySelectorAll("#c9-stage button").forEach(function (b) { b.classList.toggle("on", b === btn); });
+        updateInfo();
+      });
+    });
+
+    var infoTexts = [
+      "따뜻하고 습한 공기가 상승하며 <b>적운</b>이 발달합니다. 구름 속은 온통 <b>상승 기류</b>뿐이라 아직 비는 내리지 않습니다.",
+      "구름이 <b>적란운</b>으로 성장해 꼭대기가 대류권 상층까지 닿고, 구름 속에 <b>상승 기류와 하강 기류가 함께</b> 존재합니다. 강한 소나기·번개·돌풍이 나타나는 가장 위험한 단계입니다.",
+      "하강 기류가 구름 전체를 채우면서 상승 기류가 사라지고, 비가 약해지며 구름이 흩어집니다."
+    ];
+    function updateInfo() {
+      document.getElementById("c9-info").innerHTML = "<b>" + ["적운 단계", "성숙 단계", "소멸 단계"][stage] + "</b> — " + infoTexts[stage];
+    }
+
+    function drawArrowV(x1_, y1_, x2_, y2_, color) {
+      ctx.save();
+      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(x1_, y1_); ctx.lineTo(x2_, y2_); ctx.stroke();
+      var ang = Math.atan2(y2_ - y1_, x2_ - x1_);
+      var head = 9;
+      ctx.beginPath();
+      ctx.moveTo(x2_, y2_);
+      ctx.lineTo(x2_ - head * Math.cos(ang - 0.45), y2_ - head * Math.sin(ang - 0.45));
+      ctx.lineTo(x2_ - head * Math.cos(ang + 0.45), y2_ - head * Math.sin(ang + 0.45));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+    function label(x, y, txt, color) {
+      ctx.save();
+      ctx.fillStyle = color; ctx.font = "700 11px Segoe UI, sans-serif"; ctx.textAlign = "center";
+      ctx.fillText(txt, x, y);
+      ctx.restore();
+    }
+
+    function frame() {
+      if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = cssVar("--panel");
+      ctx.fillRect(0, 0, W, H);
+
+      var groundY = H - 60;
+      ctx.strokeStyle = cssVar("--line");
+      ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(W, groundY); ctx.stroke();
+
+      var cx = W / 2;
+      var cloudTop = stage === 1 ? 40 : (stage === 0 ? 140 : 90);
+      ctx.fillStyle = cssVar("--panel-2");
+      ctx.strokeStyle = cssVar("--mist");
+      ctx.lineWidth = 1.5;
+      var puffs = stage === 1
+        ? [[cx, cloudTop + 140, 90], [cx - 70, cloudTop + 190, 70], [cx + 70, cloudTop + 190, 70], [cx, cloudTop + 60, 60], [cx, cloudTop, 40]]
+        : stage === 0
+        ? [[cx, cloudTop + 90, 70], [cx - 40, cloudTop + 130, 55], [cx + 40, cloudTop + 130, 55]]
+        : [[cx, cloudTop + 150, 60], [cx - 60, cloudTop + 170, 45], [cx + 60, cloudTop + 170, 45]];
+      puffs.forEach(function (p) { ctx.beginPath(); ctx.arc(p[0], p[1], p[2], 0, Math.PI * 2); ctx.fill(); ctx.stroke(); });
+
+      if (stage === 0) {
+        drawArrowV(cx - 20, groundY - 10, cx - 20, cloudTop + 150, cssVar("--coral"));
+        drawArrowV(cx + 20, groundY - 10, cx + 20, cloudTop + 150, cssVar("--coral"));
+        label(cx, groundY + 24, "상승 기류만 존재", cssVar("--coral"));
+      } else if (stage === 1) {
+        drawArrowV(cx - 60, groundY - 10, cx - 60, cloudTop + 180, cssVar("--coral"));
+        drawArrowV(cx + 70, cloudTop + 60, cx + 70, groundY - 10, cssVar("--cold"));
+        label(cx - 60, groundY + 24, "상승 기류", cssVar("--coral"));
+        label(cx + 70, groundY + 24, "하강 기류 + 강수", cssVar("--cold"));
+        ctx.save();
+        ctx.strokeStyle = cssVar("--cold");
+        ctx.globalAlpha = 0.6;
+        for (var i = 0; i < 14; i++) {
+          var rx = cx + 30 + Math.random() * 70, ry = cloudTop + 220 + Math.random() * Math.max(groundY - cloudTop - 220, 10);
+          ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(rx - 4, ry + 12); ctx.stroke();
+        }
+        ctx.restore();
+      } else {
+        drawArrowV(cx, cloudTop + 150, cx, groundY - 10, cssVar("--cold"));
+        label(cx, groundY + 24, "하강 기류만 남음 · 비 약화", cssVar("--cold"));
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    var extras = [
+      { ico: "🧊", name: "우박", desc: "적란운 속에서 강한 상승·하강을 반복하며 얼음 알갱이가 커져 떨어지는 현상입니다." },
+      { ico: "🌧️", name: "집중호우", desc: "좁은 지역에 짧은 시간 동안 많은 비가 쏟아져 침수·산사태를 일으킬 수 있습니다." },
+      { ico: "❄️", name: "폭설", desc: "찬 대륙 공기가 상대적으로 따뜻한 바다를 지나며 눈구름이 발달해 내리는 많은 눈입니다." },
+      { ico: "🌫️", name: "황사", desc: "중국·몽골의 건조한 사막·황토 지대에서 강풍에 날려 올라간 미세한 흙먼지가 편서풍을 타고 이동하는 현상입니다." }
+    ];
+    var grid = document.getElementById("c9-grid");
+    extras.forEach(function (e) {
+      var div = document.createElement("div");
+      div.className = "mini-card";
+      div.innerHTML = '<div class="mi-ico">' + e.ico + '</div><h4>' + e.name + '</h4><p>' + e.desc + '</p>';
+      grid.appendChild(div);
+    });
+
+    updateInfo();
+    requestAnimationFrame(frame);
   })();
 
 })();

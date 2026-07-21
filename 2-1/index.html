@@ -18,7 +18,8 @@
     <button class="tab-btn active" data-tab="0"><span class="num">01</span> 상대연령 법칙</button>
     <button class="tab-btn" data-tab="1"><span class="num">02</span> 지층 대비</button>
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 절대연령과 반감기</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 지질 시대와 화석</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 퇴적암과 퇴적구조</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 지질 시대와 화석</button>
   </nav>
 
   <main>
@@ -97,10 +98,34 @@
       </div>
     </section>
 
-    <!-- TAB3 지질시대 -->
+    <!-- TAB3 (NEW) 퇴적암과 퇴적구조 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 46억 년의 지구 역사</div>
+        <div class="eyebrow">04 · 퇴적물이 굳어 암석이 되기까지</div>
+        <h2 class="display">퇴적암과 퇴적구조로 알아보는 지층의 위아래</h2>
+        <p>퇴적물은 다짐 작용과 교결 작용(속성 작용)을 거쳐 퇴적암이 됩니다. 퇴적 당시의 환경을 알려주는 대표적인 퇴적구조를 선택해 생성 과정과, 그 구조로 지층의 <b>상하(위아래)</b>를 어떻게 판단하는지 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c4" width="900" height="460"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group">
+            <div class="ctrl-label">퇴적구조</div>
+            <div class="seg" id="c4-mode">
+              <button class="on" data-m="cross">사층리</button>
+              <button data-m="graded">점이층리</button>
+              <button data-m="mudcrack">건열</button>
+              <button data-m="ripple">연흔</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c4-info"></div>
+      </div>
+    </section>
+
+    <!-- TAB4 지질시대 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 46억 년의 지구 역사</div>
         <h2 class="display">지질 시대와 표준 화석</h2>
         <p>지질 시대 막대를 클릭해 각 시대의 환경과 대표적인 표준 화석을 확인해 보세요. 지질 시대는 생물계의 큰 변화를 기준으로 구분합니다.</p>
       </div>
@@ -357,6 +382,146 @@
     if (y >= 1e4) return (y / 1e4).toFixed(1) + "만 년";
     return Math.round(y) + "년";
   }
+  render();
+})();
+
+/* TAB3 (NEW) 퇴적암과 퇴적구조 */
+(function () {
+  var canvas = document.getElementById("c4");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var mode = "cross";
+  var info = document.getElementById("c4-info");
+  var texts = {
+    cross: "<b>사층리</b>: 바람이나 물의 흐름 방향을 따라 비스듬한 엽리(층리)가 쌓입니다. 비스듬한 엽리는 <b>위쪽 경계면에서 잘려나가고</b>, 아래쪽 경계면에는 접하듯 완만하게 이어집니다 → 엽리가 잘린 쪽이 <b>위(젊은 지층)</b>입니다.",
+    graded: "<b>점이층리</b>: 하나의 지층 안에서 굵은 입자가 먼저 가라앉고 고운 입자가 나중에 가라앉아, 아래에서 위로 갈수록 <b>입자 크기가 작아집니다</b> → 입자가 <b>작아지는 방향이 위(젊은 지층)</b>입니다.",
+    mudcrack: "<b>건열</b>: 얕은 물 밑 진흙이 대기 중에 노출되어 마르면서 갈라진 쐐기 모양의 틈입니다. 쐐기는 <b>위가 넓고 아래로 갈수록 뾰족</b>해집니다 → 쐐기가 <b>좁아지는 방향이 아래(오래된 지층)</b>입니다.",
+    ripple: "<b>연흔(물결자국)</b>: 얕은 물이나 바람에 의해 표면에 물결 모양의 흔적이 남습니다. 봉우리는 <b>둥글고 골은 뾰족</b>합니다 → 둥근 봉우리가 있는 쪽이 <b>위(젊은 지층)</b>입니다."
+  };
+  document.querySelectorAll("#c4-mode button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      mode = b.getAttribute("data-m");
+      document.querySelectorAll("#c4-mode button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      info.innerHTML = texts[mode];
+      render();
+    });
+  });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 220, x1 = W - 220, y0 = 60, y1 = H - 80;
+
+    if (mode === "cross") {
+      // outer bed boundaries (several stacked beds), middle bed has diagonal laminae truncated at top
+      var bedH = (y1 - y0) / 3;
+      for (var bi = 0; bi < 3; bi++) {
+        ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+        ctx.strokeRect(x0, y0 + bi * bedH, x1 - x0, bedH);
+      }
+      // cross laminae in middle bed
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, y0 + bedH, x1 - x0, bedH);
+      ctx.clip();
+      ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 1.5;
+      for (var lx = x0 - 60; lx < x1 + 60; lx += 22) {
+        ctx.beginPath();
+        ctx.moveTo(lx, y0 + bedH * 1.9);
+        ctx.quadraticCurveTo(lx + 40, y0 + bedH * 1.5, lx + 90, y0 + bedH);
+        ctx.stroke();
+      }
+      ctx.restore();
+      ctx.fillStyle = cssVar("--coral"); ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
+      ctx.fillText("↑ 위쪽 경계에서 엽리가 잘림", x1 + 10, y0 + bedH + 6);
+      ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+      ctx.fillText("위(젊음)", x0 + (x1-x0)/2, y0 - 14);
+      ctx.fillText("아래(오래됨)", x0 + (x1-x0)/2, y1 + 24);
+    } else if (mode === "graded") {
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+      var rows = 7;
+      for (var r = 0; r < rows; r++) {
+        var frac = r / (rows - 1);
+        var grainR = 14 - frac * 10;
+        var ry = y1 - (r + 0.5) * (y1 - y0) / rows;
+        var n = Math.floor((x1 - x0) / (grainR * 2.4));
+        for (var i = 0; i < n; i++) {
+          var gx = x0 + 10 + i * (x1 - x0 - 20) / Math.max(n - 1, 1);
+          ctx.beginPath();
+          ctx.fillStyle = cssVar("--teal");
+          ctx.globalAlpha = 0.75;
+          ctx.arc(gx, ry, grainR * 0.8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+      }
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
+      ctx.fillText("작은 입자 = 위(젊음)", x0 + (x1-x0)/2, y0 - 14);
+      ctx.fillText("굵은 입자 = 아래(오래됨)", x0 + (x1-x0)/2, y1 + 24);
+    } else if (mode === "mudcrack") {
+      // top-down polygon cracks (left) + cross-section V shape (right)
+      var midX = (x0 + x1) / 2;
+      ctx.save();
+      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2;
+      var cx0 = x0, cx1 = midX - 20, cy0 = y0, cy1 = y1;
+      var cxm = (cx0+cx1)/2, cym = (cy0+cy1)/2;
+      [[cx0,cy0],[cxm,cy0],[cx1,cy0],[cx0,cym],[cx1,cym],[cx0,cy1],[cxm,cy1],[cx1,cy1]].forEach(function(pt){
+        ctx.beginPath(); ctx.moveTo(cxm, cym); ctx.lineTo(pt[0], pt[1]); ctx.stroke();
+      });
+      ctx.restore();
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
+      ctx.fillText("위에서 본 갈라진 진흙(평면)", (cx0+cx1)/2, cy1 + 24);
+
+      var sx0 = midX + 20, sx1 = x1, sy0 = y0, sy1 = y1;
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+      ctx.strokeRect(sx0, sy0, sx1 - sx0, sy1 - sy0);
+      ctx.save();
+      ctx.fillStyle = cssVar("--panel");
+      ctx.beginPath();
+      var vx = (sx0+sx1)/2;
+      ctx.moveTo(vx - 55, sy0);
+      ctx.lineTo(vx + 55, sy0);
+      ctx.lineTo(vx + 8, sy1);
+      ctx.lineTo(vx - 8, sy1);
+      ctx.closePath();
+      ctx.fillStyle = cssVar("--abyss");
+      ctx.fill();
+      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2; ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+      ctx.fillText("옆에서 본 단면 (쐐기 모양)", (sx0+sx1)/2, sy1 + 24);
+      ctx.fillStyle = cssVar("--coral"); ctx.font="700 12px Segoe UI";
+      ctx.fillText("위(넓음)", vx, sy0 - 10);
+      ctx.fillText("아래(뾰족)", vx, sy1 + 44);
+    } else if (mode === "ripple") {
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0, y0, x1-x0, y1-y0);
+      ctx.clip();
+      ctx.fillStyle = cssVar("--teal");
+      ctx.globalAlpha = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(x0, y1);
+      var amp = 22, wavelength = 90;
+      for (var xx2 = x0; xx2 <= x1; xx2 += 4) {
+        var phase = (xx2 - x0) / wavelength * Math.PI * 2;
+        // asymmetric wave: sharper trough, rounder crest
+        var yy2 = (y0+y1)/2 - amp * Math.sin(phase) - amp*0.3*Math.sin(phase*2);
+        ctx.lineTo(xx2, yy2);
+      }
+      ctx.lineTo(x1, y1);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
+      ctx.fillText("둥근 봉우리 = 위(젊음)", x0 + (x1-x0)/2, y0 - 14);
+      ctx.fillText("뾰족한 골 = 아래쪽 방향", x0 + (x1-x0)/2, y1 + 24);
+    }
+  }
+  info.innerHTML = texts.cross;
   render();
 })();
 
