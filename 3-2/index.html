@@ -19,8 +19,10 @@
     <button class="tab-btn" data-tab="1"><span class="num">02</span> H-R도</button>
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 별의 진화</button>
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 은하의 분류</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우주의 진화</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 빅뱅과 원소의 기원</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 특이 은하와 활동 은하핵</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 우주의 진화</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 빅뱅과 원소의 기원</button>
+    <button class="tab-btn" data-tab="7"><span class="num">08</span> 급팽창 우주론과 가속 팽창</button>
   </nav>
 
   <main>
@@ -98,8 +100,32 @@
       </div>
     </section>
 
-    <!-- TAB4 -->
+    <!-- TAB_NEW 특이은하 -->
     <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 보통 은하와는 다른 은하</div>
+        <h2 class="display">특이 은하와 활동 은하핵</h2>
+        <p>퀘이사·세이퍼트은하·전파은하 등 특이 은하의 중심에는 거대 질량 블랙홀이 있습니다. 종류를 클릭해 공통점과 차이점을 확인해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3b" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="ctrl-label">특이 은하의 종류</div>
+            <div class="seg" id="c3b-type">
+              <button class="on" data-g="seyfert">세이퍼트 은하</button>
+              <button data-g="radio">전파 은하</button>
+              <button data-g="quasar">퀘이사</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c3b-info"></div>
+      </div>
+      <p class="foot-note">그림 Ⅲ-55~57: 세이퍼트은하·전파은하(M87)·퀘이사(3C 273)는 모두 중심핵에 거대 질량 블랙홀을 가지며, 강착 원반에서 막대한 에너지를 방출하는 활동 은하핵(AGN)입니다.</p>
+    </section>
+
+    <!-- TAB4 -->
+    <section class="tab-panel" data-panel="5" hidden>
       <div class="stage-head">
         <div class="eyebrow">05 · 팽창하는 우주</div>
         <h2 class="display">허블 법칙과 우주의 진화</h2>
@@ -117,7 +143,7 @@
       </div>
     </section>
     <!-- TAB5 -->
-    <section class="tab-panel" data-panel="5" hidden>
+    <section class="tab-panel" data-panel="6" hidden>
       <div class="stage-head">
         <div class="eyebrow">06 · 대폭발 우주론</div>
         <h2 class="display">빅뱅 이후, 기본입자는<br>어떻게 만들어졌을까?</h2>
@@ -138,6 +164,29 @@
         <div class="info-card" id="c5-info"></div>
       </div>
       <p class="foot-note">대폭발 초기 우주의 양성자 : 중성자 개수비 약 7 : 1, 대폭발 후 약 3분 뒤 수소 : 헬륨 원자핵 개수비 약 12 : 1(질량비 약 3 : 1)은 실제 관측과 거의 일치하여 대폭발 우주론을 지지하는 중요한 증거입니다 (교과서 204쪽).</p>
+    </section>
+
+    <!-- TAB_NEW 급팽창/가속팽창 -->
+    <section class="tab-panel" data-panel="7" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">08 · 대폭발 우주론을 보완한 두 가지 발견</div>
+        <h2 class="display">급팽창 우주론과 가속 팽창</h2>
+        <p>대폭발 우주론만으로는 설명하기 어려웠던 두 가지 문제와, 이를 해결·확장한 급팽창 이론·가속 팽창 관측을 살펴보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c6" width="900" height="440"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="ctrl-label">주제</div>
+            <div class="seg" id="c6-topic">
+              <button class="on" data-p="horizon">지평선 문제와 급팽창</button>
+              <button data-p="accel">가속 팽창과 암흑 에너지</button>
+            </div>
+          </div>
+        </div>
+        <div class="info-card" id="c6-info"></div>
+      </div>
+      <p class="foot-note">급팽창 우주론: 우주 나이 10⁻³⁰초 무렵 공간이 짧은 시간 동안 급격히 팽창했다는 이론(지평선·편평성 문제 해결). 가속 팽창: 1990년대 Ⅰa형 초신성 관측으로 발견되었으며, 정체를 알 수 없는 암흑 에너지가 원인으로 추정됩니다.</p>
     </section>
   </main>
 </div>
@@ -662,6 +711,171 @@ var classInfo = {
     ctx.fillText("적색 편이(파장이 늘어남)", gx + 40, gy + 70);
 
     info.innerHTML = "허블 법칙 v = H₀ × d 에 따라, 거리 " + dist + " Mpc인 은하의 후퇴 속도는 약 <b>" + Math.round(v).toLocaleString() + " km/s</b>입니다 (H₀ ≈ 70 km/s/Mpc 가정). 멀리 있는 은하일수록 더 빠르게 멀어지며, 이는 우주가 <b>팽창</b>하고 있다는 증거입니다.";
+  }
+  render();
+})();
+
+/* TAB_NEW 특이은하와 활동은하핵 */
+(function () {
+  var canvas = document.getElementById("c3b");
+  if (!canvas) return;
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var type = "seyfert";
+  var info = document.getElementById("c3b-info");
+  var data = {
+    seyfert: {
+      name: "세이퍼트 은하",
+      desc: "주로 나선 은하의 형태를 하고 있으며, 은하 전체 밝기에 비해 <b>중심핵이 유난히 밝고</b>, 핵 스펙트럼에서 폭이 넓은 방출선이 관측됩니다. 중심핵의 거대 질량 블랙홀로 물질이 빨려 들어가며 에너지를 방출합니다.",
+      jet: false, disk: true, host: "spiral"
+    },
+    radio: {
+      name: "전파 은하",
+      desc: "가시광선으로는 평범해 보이지만, 은하 중심에서 강력한 <b>전파를 방출</b>합니다. M87처럼 중심핵에서 거대한 <b>제트(jet)</b>가 뿜어져 나와 은하 바깥까지 뻗어 있는 경우가 많습니다.",
+      jet: true, disk: true, host: "elliptical"
+    },
+    quasar: {
+      name: "퀘이사(3C 273 등)",
+      desc: "겉보기에는 별처럼 보이지만(quasi-stellar), 매우 먼 거리에 있으면서도 은하 전체보다 밝은 에너지를 방출하는 활동 은하핵입니다. 우주 초기에 형성된 것이 많아, 초기 우주의 거대 질량 블랙홀 연구에 중요합니다.",
+      jet: true, disk: true, host: "point"
+    }
+  };
+  document.querySelectorAll("#c3b-type button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      type = b.getAttribute("data-g");
+      document.querySelectorAll("#c3b-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var d = data[type];
+    var cx = W / 2, cy = H / 2;
+
+    if (d.host === "spiral") {
+      ctx.save(); ctx.strokeStyle = cssVar("--teal"); ctx.globalAlpha = .5; ctx.lineWidth = 3;
+      for (var i = 0; i < 2; i++) {
+        ctx.beginPath();
+        for (var a = 0; a < 4.5; a += 0.1) {
+          var r = 20 + a * 22;
+          var ang = a + i * Math.PI;
+          var px = cx + r * Math.cos(ang), py = cy + r * Math.sin(ang) * 0.6;
+          if (a === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (d.host === "elliptical") {
+      ctx.save(); ctx.fillStyle = cssVar("--coral"); ctx.globalAlpha = .35;
+      ctx.beginPath(); ctx.ellipse(cx, cy, 160, 100, 0, 0, 7); ctx.fill(); ctx.restore();
+    } else {
+      ctx.save(); ctx.fillStyle = cssVar("--violet"); ctx.globalAlpha = .25;
+      ctx.beginPath(); ctx.arc(cx, cy, 12, 0, 7); ctx.fill(); ctx.restore();
+      ctx.font = "10px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+      ctx.fillText("(매우 먼 거리 → 겉보기에 점광원)", cx, cy - 120);
+    }
+
+    // accretion disk
+    ctx.save();
+    var grad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 34);
+    grad.addColorStop(0, "#fff6df"); grad.addColorStop(1, cssVar("--coral"));
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.ellipse(cx, cy, 34, 12, 0, 0, 7); ctx.fill();
+    ctx.restore();
+
+    // black hole
+    ctx.fillStyle = "#000"; ctx.beginPath(); ctx.arc(cx, cy, 8, 0, 7); ctx.fill();
+    ctx.font = "10px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("거대 질량 블랙홀 + 강착 원반", cx, cy + 40);
+
+    if (d.jet) {
+      ctx.save(); ctx.strokeStyle = cssVar("--cold"); ctx.fillStyle = cssVar("--cold"); ctx.lineWidth = 4;
+      drawArrow(ctx, cx, cy - 10, cx, cy - 150, 9);
+      drawArrow(ctx, cx, cy + 10, cx, cy + 150, 9);
+      ctx.restore();
+      ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--cold"); ctx.textAlign = "left";
+      ctx.fillText("제트(jet)", cx + 14, cy - 130);
+    }
+
+    ctx.font = "700 14px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "left";
+    ctx.fillText(d.name, 20, 30);
+
+    info.innerHTML = "<b>" + d.name + "</b> — " + d.desc;
+  }
+  render();
+})();
+
+/* TAB_NEW 급팽창/가속팽창 */
+(function () {
+  var canvas = document.getElementById("c6");
+  if (!canvas) return;
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var topic = "horizon";
+  var info = document.getElementById("c6-info");
+  document.querySelectorAll("#c6-topic button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      topic = b.getAttribute("data-p");
+      document.querySelectorAll("#c6-topic button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var x0 = 70, x1 = W - 40, y0 = 50, y1 = H - 60;
+    ctx.strokeStyle = cssVar("--line"); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
+    ctx.fillText("시간 →", (x0 + x1) / 2, y1 + 26);
+    ctx.save(); ctx.translate(24, (y0 + y1) / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("우주의 크기 →", 0, 0); ctx.restore();
+
+    if (topic === "horizon") {
+      // inflation spike near t=0 then normal expansion
+      ctx.beginPath();
+      var pts = [];
+      for (var px = 0; px <= 300; px++) {
+        var t = px / 300;
+        var size;
+        if (t < 0.06) size = t / 0.06 * 0.55; // sharp inflation jump
+        else size = 0.55 + (t - 0.06) * 0.45 / 0.94;
+        var xx = x0 + t * (x1 - x0), yy = y1 - size * (y1 - y0);
+        pts.push([xx, yy]);
+        if (px === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 3; ctx.stroke();
+      var spikeX = x0 + 0.06 * (x1 - x0);
+      ctx.save(); ctx.strokeStyle = cssVar("--coral"); ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(spikeX, y0); ctx.lineTo(spikeX, y1); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--coral"); ctx.textAlign = "center";
+      ctx.fillText("급팽창(우주 나이 10⁻³⁰초 무렵)", spikeX, y0 - 14);
+      info.innerHTML = "우주 배경 복사는 우주의 <b>모든 방향</b>에서 거의 균일한 온도로 관측되는데, 대폭발 우주론만으로는 서로 정보를 주고받을 시간이 없었을 만큼 멀리 떨어진 영역들이 왜 같은 온도를 갖는지 설명하기 어려웠습니다(<b>지평선 문제</b>). <b>급팽창 우주론</b>은 우주 나이 10⁻³⁰초가 되기 전, 아주 짧은 시간 동안 공간이 급격히 팽창했다고 설명합니다. 급팽창 이전에는 지금보다 훨씬 작은 영역이 서로 정보를 주고받을 수 있었고, 이 영역이 급팽창으로 커진 것이라면 지평선 문제와 우주의 편평성(임계 밀도에 가까운 밀도) 문제를 함께 해결할 수 있습니다.";
+    } else {
+      // decelerating (expected) vs accelerating (observed) curves
+      ctx.beginPath();
+      for (var px2 = 0; px2 <= 300; px2++) {
+        var t2 = px2 / 300;
+        var size2 = Math.sqrt(t2); // decelerating expansion shape
+        var xx2 = x0 + t2 * (x1 - x0), yy2 = y1 - size2 * (y1 - y0) * 0.9;
+        if (px2 === 0) ctx.moveTo(xx2, yy2); else ctx.lineTo(xx2, yy2);
+      }
+      ctx.strokeStyle = cssVar("--line"); ctx.setLineDash([5, 5]); ctx.lineWidth = 2.5; ctx.stroke(); ctx.setLineDash([]);
+      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+      ctx.fillText("예상: 감속 팽창(중력 때문에)", x0 + 20, y0 + 20);
+
+      ctx.beginPath();
+      for (var px3 = 0; px3 <= 300; px3++) {
+        var t3 = px3 / 300;
+        var size3 = Math.pow(t3, 0.72) * 1.05;
+        var xx3 = x0 + t3 * (x1 - x0), yy3 = y1 - Math.min(1, size3) * (y1 - y0) * 0.9;
+        if (px3 === 0) ctx.moveTo(xx3, yy3); else ctx.lineTo(xx3, yy3);
+      }
+      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 3; ctx.stroke();
+      ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--coral"); ctx.textAlign = "left";
+      ctx.fillText("실제 관측: 가속 팽창", x0 + 20, y0 + 40);
+
+      info.innerHTML = "은하들 사이에는 서로 끌어당기는 <b>중력</b>이 작용하므로, 과학자들은 우주의 팽창 속도가 시간이 갈수록 <b>느려질 것(감속 팽창)</b>이라고 예상했습니다. 그러나 1990년대 말 멀리 있는 <b>Ⅰa형 초신성</b>을 이용해 우주의 팽창 속도를 정밀하게 측정한 결과, 예상과 달리 우주의 팽창은 <b>점점 빨라지고(가속 팽창)</b> 있다는 사실이 밝혀졌습니다. 이 가속 팽창을 일으키는 정체불명의 힘(에너지)을 <b>암흑 에너지</b>라고 부르며, 그 본질은 아직 밝혀지지 않았습니다.";
+    }
   }
   render();
 })();
