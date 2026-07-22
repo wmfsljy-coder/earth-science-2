@@ -98,6 +98,27 @@
         <div class="canvas-wrap"><canvas id="c3" width="900" height="420"></canvas></div>
         <div class="info-card" id="c3-info">도표의 은하 모양을 클릭해 보세요.</div>
       </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c3g" width="900" height="420"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="ctrl-label">은하 유형</div>
+            <div class="seg" id="c3g-type">
+              <button class="on" data-t="elliptic">타원 은하</button>
+              <button data-t="spiral">나선 은하</button>
+            </div>
+          </div>
+          <div class="ctrl-group" id="c3g-ell-wrap">
+            <div class="ctrl-label">편평도 지수 e = 10(1-b/a)<span class="val" id="c3g-ell-val">3</span></div>
+            <input type="range" id="c3g-ell" min="0" max="7" step="1" value="3">
+          </div>
+          <div class="ctrl-group" id="c3g-pitch-wrap" hidden>
+            <div class="ctrl-label">나선팔 감김 각(피치각, °)<span class="val" id="c3g-pitch-val">15</span></div>
+            <input type="range" id="c3g-pitch" min="5" max="35" step="1" value="15">
+          </div>
+        </div>
+        <div class="info-card" id="c3g-info"></div>
+      </div>
     </section>
 
     <!-- TAB_NEW 특이은하 -->
@@ -654,6 +675,76 @@ var classInfo = {
     ctx.beginPath(); ctx.moveTo(190, 210); ctx.lineTo(370, 130); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(190, 210); ctx.lineTo(370, 300); ctx.stroke();
     ctx.setLineDash([]);
+  }
+  render();
+})();
+
+/* TAB3b 타원/나선 은하 형태 계산기 */
+(function () {
+  var canvas = document.getElementById("c3g");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c3g-info");
+  var type = "elliptic", ell = 3, pitch = 15;
+
+  document.querySelectorAll("#c3g-type button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      type = b.getAttribute("data-t");
+      document.querySelectorAll("#c3g-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      document.getElementById("c3g-ell-wrap").hidden = (type !== "elliptic");
+      document.getElementById("c3g-pitch-wrap").hidden = (type !== "spiral");
+      render();
+    });
+  });
+  document.getElementById("c3g-ell").addEventListener("input", function (e) { ell = +e.target.value; document.getElementById("c3g-ell-val").textContent = ell; render(); });
+  document.getElementById("c3g-pitch").addEventListener("input", function (e) { pitch = +e.target.value; document.getElementById("c3g-pitch-val").textContent = pitch; render(); });
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+    var cx = W / 2, cy = H / 2 - 10;
+
+    if (type === "elliptic") {
+      // e = 10(1 - b/a)  ->  b/a = 1 - e/10
+      var a = 140, b = a * (1 - ell / 10);
+      ctx.save(); ctx.fillStyle = cssVar("--coral"); ctx.globalAlpha = .85;
+      ctx.beginPath(); ctx.ellipse(cx, cy, a, Math.max(b, 4), 0, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(cx - a - 20, cy); ctx.lineTo(cx + a + 20, cy); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(cx, cy - a - 20); ctx.lineTo(cx, cy + a + 20); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.font = "700 16px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText("E" + ell, cx, cy + a + 46);
+      info.innerHTML = "장반경 a, 단반경 b일 때 편평도 e = 10(1-b/a) = <b>" + ell + "</b>이면 <b>E" + ell + "</b> 은하로 분류합니다. e가 클수록(0→7) 은하가 더 납작한 원반 모양에 가까워집니다. (E7보다 더 납작하면 나선 은하의 팽대부와 구분이 어려워집니다.)";
+    } else {
+      var b_axis = Math.tan(pitch * Math.PI / 180);
+      var armR = 8;
+      ctx.save(); ctx.fillStyle = cssVar("--teal"); ctx.globalAlpha = .25;
+      ctx.beginPath(); ctx.arc(cx, cy, 150, 0, 7); ctx.fill(); ctx.restore();
+      for (var i = 0; i < 2; i++) {
+        ctx.save();
+        ctx.strokeStyle = cssVar("--teal"); ctx.globalAlpha = .9; ctx.lineWidth = 4;
+        ctx.beginPath();
+        for (var th = 0; th <= 3.2; th += 0.05) {
+          var r = armR * Math.exp(b_axis * th);
+          if (r > 150) break;
+          var ang = th + i * Math.PI;
+          var px = cx + r * Math.cos(ang), py = cy + r * Math.sin(ang);
+          if (th === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+      var bulgeR = 20 + (35 - pitch) * 0.9;
+      ctx.fillStyle = cssVar("--foam"); ctx.beginPath(); ctx.arc(cx, cy, bulgeR, 0, 7); ctx.fill();
+
+      var cls = pitch < 15 ? "Sa" : (pitch < 25 ? "Sb" : "Sc");
+      ctx.font = "700 16px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+      ctx.fillText(cls + " 유형", cx, cy + 175);
+
+      info.innerHTML = "나선팔은 로그 나선 r = a·e^(bθ) (b = tan(피치각))으로 표현됩니다. 피치각이 <b>" + pitch + "°</b>로 " + (pitch < 15 ? "작아 팔이 촘촘하게 감기고 팽대부가 커서 <b>Sa</b>" : pitch < 25 ? "중간 정도로 감기고 팽대부도 중간 크기여서 <b>Sb</b>" : "커서 팔이 느슨하게 풀리고 팽대부가 작아 <b>Sc</b>") + " 유형에 가깝습니다.";
+    }
   }
   render();
 })();

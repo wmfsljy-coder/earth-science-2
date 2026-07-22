@@ -59,6 +59,25 @@
         <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
         <div class="info-card" id="c1-info">순환도의 원이나 화살표를 클릭해 보세요.</div>
       </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c1b" width="900" height="480"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="ctrl-label">현재 암석</div>
+            <div class="seg" id="c1b-start">
+              <button class="on" data-i="0">화성암</button>
+              <button data-i="1">퇴적암</button>
+              <button data-i="2">변성암</button>
+              <button data-i="3">마그마</button>
+            </div>
+          </div>
+          <div class="ctrl-group" style="flex:1 1 100%">
+            <div class="ctrl-label">다음 암석으로의 진행률(%)<span class="val" id="c1b-p-val">0</span></div>
+            <input type="range" id="c1b-p" min="0" max="100" step="1" value="0">
+          </div>
+        </div>
+        <div class="info-card" id="c1b-info"></div>
+      </div>
     </section>
 
     <!-- TAB2 -->
@@ -263,6 +282,93 @@
       ctx.font = "700 14px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
       ctx.fillText(n.name, n.x, n.y + 5);
     });
+  }
+  render();
+})();
+
+/* TAB1b 암석 순환 경과 시간 시뮬레이터 */
+(function () {
+  var canvas = document.getElementById("c1b");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var info = document.getElementById("c1b-info");
+  var start = 0, progress = 0;
+
+  var nodes = [
+    { name: "화성암", x: W / 2, y: 90, color: "--coral" },
+    { name: "퇴적암", x: W - 160, y: H / 2, color: "--teal" },
+    { name: "변성암", x: W / 2, y: H - 90, color: "--violet" },
+    { name: "마그마", x: 160, y: H / 2, color: "--cold" }
+  ];
+  // 각 암석에서 순환의 다음 단계로 넘어가는 데 걸리는 대표적인(수량화된) 시간 규모
+  var nextOf = [1, 2, 3, 0];
+  var transitions = [
+    { label: "풍화 · 침식 · 퇴적 · 속성 작용", years: 1e6, note: "지표에서 풍화·침식을 받아 퇴적물이 되고, 쌓이고 다져져(속성 작용) 퇴적암이 되기까지 걸리는 대표적인 시간입니다." },
+    { label: "매몰과 열·압력에 의한 변성 작용", years: 1e7, note: "퇴적암이 지하 깊이 매몰되어 높은 열과 압력을 받아 변성암으로 바뀌기까지 걸리는 대표적인 시간입니다." },
+    { label: "용융(변성암 → 마그마)", years: 1e6, note: "변성암이 지하 깊은 곳에서 높은 열을 받아 다시 녹아 마그마가 되기까지 걸리는 대표적인 시간입니다." },
+    { label: "냉각과 고결(마그마 → 화성암)", years: 1e4, note: "마그마가 식어 굳어 화성암이 되는 시간으로, 지표 부근(화산암)은 수일~수년, 지하 깊은 곳(심성암)은 수만~수십만 년으로 큰 차이가 있습니다." }
+  ];
+
+  document.querySelectorAll("#c1b-start button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      start = +b.getAttribute("data-i");
+      document.querySelectorAll("#c1b-start button").forEach(function (x) { x.classList.toggle("on", x === b); });
+      render();
+    });
+  });
+  document.getElementById("c1b-p").addEventListener("input", function (e) {
+    progress = +e.target.value;
+    document.getElementById("c1b-p-val").textContent = progress;
+    render();
+  });
+
+  function fmtYears(y) {
+    if (y >= 1e6) return (y / 1e6).toFixed(y % 1e6 === 0 ? 0 : 1) + "백만 년";
+    if (y >= 1e4) return (y / 1e4).toFixed(y % 1e4 === 0 ? 0 : 1) + "만 년";
+    return y.toLocaleString() + "년";
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var A = nodes[start], toIdx = nextOf[start], B = nodes[toIdx];
+    var tr = transitions[start];
+
+    // 배경 순환 고리(연하게)
+    nodes.forEach(function (n, i) {
+      var m = nodes[nextOf[i]];
+      ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.globalAlpha = .5; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y); ctx.stroke();
+      ctx.restore();
+    });
+    // 현재 경로 강조
+    ctx.save(); ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+    ctx.restore();
+
+    nodes.forEach(function (n, i) {
+      ctx.save();
+      ctx.fillStyle = cssVar(n.color); ctx.globalAlpha = (i === start || i === toIdx) ? 1 : 0.35;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 42, 0, 7); ctx.fill();
+      ctx.restore();
+      ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
+      ctx.fillText(n.name, n.x, n.y + 5);
+    });
+
+    // 진행 위치 마커
+    var p = progress / 100;
+    var mx = A.x + (B.x - A.x) * p, my = A.y + (B.y - A.y) * p;
+    ctx.save(); ctx.fillStyle = cssVar("--foam");
+    ctx.beginPath(); ctx.arc(mx, my, 12, 0, 7); ctx.fill();
+    ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.stroke();
+    ctx.restore();
+
+    var elapsed = tr.years * p;
+    ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
+    ctx.fillText(tr.label, W / 2, 30);
+
+    info.innerHTML = "<b>" + A.name + "</b>에서 <b>" + B.name + "</b>(으)로 향하는 <b>" + tr.label + "</b> 과정이 <b>" + progress + "%</b> 진행되었습니다(경과 " + fmtYears(elapsed) + " · 전체 대표 소요 시간 약 " + fmtYears(tr.years) + "). " + tr.note;
   }
   render();
 })();
