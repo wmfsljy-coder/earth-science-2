@@ -20,6 +20,7 @@
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 별의 진화</button>
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 은하의 분류</button>
     <button class="tab-btn" data-tab="4"><span class="num">05</span> 우주의 진화</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 빅뱅과 원소의 기원</button>
   </nav>
 
   <main>
@@ -115,6 +116,29 @@
         <div class="info-card" id="c4-info"></div>
       </div>
     </section>
+    <!-- TAB5 -->
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 대폭발 우주론</div>
+        <h2 class="display">빅뱅 이후, 기본입자는<br>어떻게 만들어졌을까?</h2>
+        <p>시간 슬라이더를 움직이거나 재생 버튼을 눌러, 대폭발(빅뱅) 이후 우주가 식어가며 입자들이 어떻게 뭉쳐 갔는지 확인해 보세요. 입자의 색·크기·개수 비율은 교과서(그림 Ⅲ-63, Ⅲ-64)에 나오는 실제 비율을 반영합니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="canvas-wrap"><canvas id="c5" width="900" height="460"></canvas></div>
+        <div class="controls">
+          <div class="ctrl-group" style="flex:2;min-width:280px">
+            <div class="ctrl-label">빅뱅 이후 경과 시간<span class="val" id="c5-stage-val">우주 탄생 직후</span></div>
+            <input type="range" id="c5-stage" min="0" max="3" step="1" value="0">
+          </div>
+          <div class="ctrl-group" style="flex:0 0 auto;min-width:110px">
+            <div class="ctrl-label">자동 재생</div>
+            <button class="chip" id="c5-play">▶ 재생</button>
+          </div>
+        </div>
+        <div class="info-card" id="c5-info"></div>
+      </div>
+      <p class="foot-note">대폭발 초기 우주의 양성자 : 중성자 개수비 약 7 : 1, 대폭발 후 약 3분 뒤 수소 : 헬륨 원자핵 개수비 약 12 : 1(질량비 약 3 : 1)은 실제 관측과 거의 일치하여 대폭발 우주론을 지지하는 중요한 증거입니다 (교과서 204쪽).</p>
+    </section>
   </main>
 </div>
 
@@ -124,6 +148,182 @@
 <script>
 (function () {
 "use strict";
+
+/* TAB5: 빅뱅과 원소의 기원 */
+(function () {
+  var canvas = document.getElementById("c5");
+  var ctx = setupCanvas(canvas);
+  var W = canvas._w, H = canvas._h;
+  var slider = document.getElementById("c5-stage");
+  var stageVal = document.getElementById("c5-stage-val");
+  var info = document.getElementById("c5-info");
+  var playBtn = document.getElementById("c5-play");
+  var stageIdx = 0, playing = false, playTimer = null;
+
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      var t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  var colorMap = {
+    quarkU: function () { return cssVar("--violet"); },
+    quarkD: function () { return cssVar("--cold"); },
+    proton: function () { return cssVar("--coral"); },
+    neutron: function () { return cssVar("--cold"); },
+    helium: function () { return cssVar("--teal"); },
+    hAtom: function () { return cssVar("--coral"); },
+    heAtom: function () { return cssVar("--teal"); }
+  };
+
+  var stages = [
+    {
+      time: "우주 탄생 직후",
+      title: "쿼크-글루온 시대",
+      desc: "대폭발(빅뱅) 직후 우주는 상상할 수 없이 뜨겁고 밀도가 높아, 쿼크와 글루온이 자유롭게 돌아다니는 상태였습니다. 아직 양성자나 중성자 같은 입자는 만들어지지 않았습니다.",
+      legend: [["업 쿼크", "quarkU"], ["다운 쿼크", "quarkD"]],
+      make: function () {
+        var list = [];
+        for (var i = 0; i < 260; i++) list.push({ type: i % 2 === 0 ? "quarkU" : "quarkD", r: 2.2 });
+        return list;
+      }
+    },
+    {
+      time: "대폭발 초기 우주",
+      title: "양성자 : 중성자 ≈ 7 : 1",
+      desc: "쿼크가 뭉쳐 <b>양성자</b>와 <b>중성자</b>가 만들어진 뒤, 대폭발 이후 초기 우주에서 양성자와 중성자의 개수비는 약 <b>7 : 1</b>이었습니다(교과서 그림 Ⅲ-63).",
+      legend: [["양성자", "proton"], ["중성자", "neutron"]],
+      make: function () {
+        var list = [];
+        for (var i = 0; i < 84; i++) list.push({ type: "proton", r: 7 });
+        for (var j = 0; j < 12; j++) list.push({ type: "neutron", r: 7 });
+        return list;
+      }
+    },
+    {
+      time: "대폭발 후 약 3분",
+      title: "수소·헬륨 원자핵 형성",
+      desc: "양성자와 중성자가 결합(핵반응)해 <b>헬륨 원자핵</b>(양성자 2개+중성자 2개)이 형성되었습니다. 그 결과 수소 원자핵 : 헬륨 원자핵의 개수비는 약 <b>12 : 1</b>, 질량비는 약 <b>3 : 1</b>(수소 75% : 헬륨 25%)로 나타났습니다. 이는 실제 관측과 거의 일치하는, 대폭발 우주론을 지지하는 중요한 증거입니다(교과서 그림 Ⅲ-63).",
+      legend: [["수소 원자핵(양성자)", "proton"], ["헬륨 원자핵", "helium"]],
+      make: function () {
+        var list = [];
+        for (var i = 0; i < 96; i++) list.push({ type: "proton", r: 7 });
+        for (var j = 0; j < 8; j++) list.push({ type: "helium", r: 11 });
+        return list;
+      }
+    },
+    {
+      time: "대폭발 후 약 38만 년",
+      title: "원자의 탄생과 우주 배경 복사",
+      desc: "우주 온도가 약 3000 K까지 냉각되자 원자핵과 전자가 결합해 <b>중성 원자</b>(수소·헬륨)가 되었고, 그동안 전자에 갇혀 있던 빛(광자)이 우주 공간으로 자유롭게 퍼져나갔습니다. 이 최초의 빛은 우주가 팽창하며 파장이 늘어나 오늘날 약 2.7 K의 <b>우주 배경 복사</b>로 관측됩니다(교과서 그림 Ⅲ-64).",
+      legend: [["수소 원자", "hAtom"], ["헬륨 원자", "heAtom"]],
+      make: function () {
+        var list = [];
+        for (var i = 0; i < 96; i++) list.push({ type: "hAtom", r: 7 });
+        for (var j = 0; j < 8; j++) list.push({ type: "heAtom", r: 11 });
+        return list;
+      }
+    }
+  ];
+
+  function layout(list, seed) {
+    var rnd = mulberry32(seed);
+    var x0 = 40, x1 = W - 40, y0 = 36, y1 = H - 76;
+    var placed = [];
+    list.forEach(function (p) {
+      var tries = 0, x, y, ok;
+      do {
+        x = x0 + rnd() * (x1 - x0);
+        y = y0 + rnd() * (y1 - y0);
+        ok = true;
+        for (var k = 0; k < placed.length; k++) {
+          var d = Math.hypot(x - placed[k].x, y - placed[k].y);
+          if (d < (p.r + placed[k].r) * 0.78) { ok = false; break; }
+        }
+        tries++;
+      } while (!ok && tries < 12);
+      placed.push({ x: x, y: y, r: p.r, type: p.type });
+    });
+    return placed;
+  }
+
+  function render() {
+    var stage = stages[stageIdx];
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
+
+    var list = stage.make();
+    var placed = layout(list, stageIdx * 97 + 13);
+    placed.forEach(function (p) {
+      ctx.save();
+      ctx.fillStyle = colorMap[p.type]();
+      ctx.globalAlpha = 0.88;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+      ctx.restore();
+      if (p.type === "hAtom" || p.type === "heAtom") {
+        var n = p.type === "hAtom" ? 1 : 2;
+        ctx.save(); ctx.strokeStyle = cssVar("--mist"); ctx.globalAlpha = .5; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r + 6, 0, 7); ctx.stroke(); ctx.restore();
+        for (var e = 0; e < n; e++) {
+          var ang = (e / n) * Math.PI * 2 + 0.6;
+          var ex = p.x + Math.cos(ang) * (p.r + 6), ey = p.y + Math.sin(ang) * (p.r + 6);
+          ctx.save(); ctx.fillStyle = cssVar("--foam");
+          ctx.beginPath(); ctx.arc(ex, ey, 2, 0, 7); ctx.fill(); ctx.restore();
+        }
+      }
+    });
+
+    ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "left";
+    ctx.fillText(stage.title + " · " + stage.time, 16, 22);
+
+    var lx = 16, ly = H - 34;
+    stage.legend.forEach(function (l) {
+      ctx.save(); ctx.fillStyle = colorMap[l[1]]();
+      ctx.beginPath(); ctx.arc(lx, ly, 7, 0, 7); ctx.fill(); ctx.restore();
+      ctx.font = "11.5px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
+      ctx.fillText(l[0], lx + 14, ly + 4);
+      lx += 14 + ctx.measureText(l[0]).width + 24;
+    });
+
+    var counts = {};
+    list.forEach(function (p) { counts[p.type] = (counts[p.type] || 0) + 1; });
+    var ratioText = "";
+    if (stageIdx === 1) ratioText = "양성자 : 중성자 = " + counts.proton + " : " + counts.neutron + " (약 7:1)";
+    else if (stageIdx === 2) ratioText = "수소핵 : 헬륨핵 = " + counts.proton + " : " + counts.helium + " (약 12:1, 질량비 3:1)";
+    else if (stageIdx === 3) ratioText = "수소원자 : 헬륨원자 = " + counts.hAtom + " : " + counts.heAtom + " (약 12:1)";
+    if (ratioText) {
+      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--teal"); ctx.textAlign = "right";
+      ctx.fillText(ratioText, W - 16, 22);
+    }
+
+    stageVal.textContent = stage.time;
+    info.innerHTML = "<b>" + stage.title + "</b> — " + stage.desc;
+  }
+
+  slider.addEventListener("input", function (e) {
+    stageIdx = Math.round(+e.target.value);
+    render();
+  });
+  playBtn.addEventListener("click", function () {
+    playing = !playing;
+    playBtn.textContent = playing ? "⏸ 정지" : "▶ 재생";
+    playBtn.classList.toggle("on", playing);
+    if (playing) {
+      playTimer = setInterval(function () {
+        stageIdx = (stageIdx + 1) % stages.length;
+        slider.value = stageIdx;
+        render();
+      }, 2200);
+    } else if (playTimer) {
+      clearInterval(playTimer);
+    }
+  });
+
+  render();
+})();
 
 function tempToColor(t) {
   if (t > 25000) return "#9db4ff";
