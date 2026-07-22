@@ -5,6 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>지구의 역사 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<style>
+  .strat-columns { display: flex; gap: 24px; flex-wrap: wrap; padding: 18px 20px 0; }
+  .strat-col { flex: 1 1 220px; min-width: 200px; }
+  .strat-col-title { font-size: 12.5px; font-weight: 700; color: var(--foam); margin-bottom: 8px; text-align: center; }
+  .strat-layer { border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 4px; font-size: 12px; color: var(--mist); display: flex; align-items: center; gap: 8px; background: var(--panel-2); transition: all .15s; }
+  .strat-layer.has-fossil { cursor: pointer; }
+  .strat-layer.has-fossil:hover { border-color: var(--teal-dim); }
+  .strat-layer .fossil-ico { font-size: 17px; }
+  .strat-layer.selected { border-color: var(--foam); box-shadow: 0 0 0 2px var(--foam) inset; }
+  .strat-layer.paired-0 { border-color: var(--teal); background: rgba(63,201,176,0.12); }
+  .strat-layer.paired-1 { border-color: var(--violet); background: rgba(160,120,240,0.12); }
+  .strat-layer.flash-wrong { border-color: var(--coral) !important; }
+
+  .fossil-pool { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 20px 0; }
+  .fossil-chip { border: 1.5px solid var(--line); background: var(--panel-2); color: var(--mist); padding: 8px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all .15s; }
+  .fossil-chip:hover { border-color: var(--teal-dim); }
+  .fossil-chip.selected { border-color: var(--foam); box-shadow: 0 0 0 2px var(--foam) inset; }
+  .fossil-chip.placed { cursor: pointer; }
+  .fossil-chip.correct { border-color: var(--teal); background: rgba(63,201,176,0.15); color: var(--foam); }
+  .fossil-chip.wrong { border-color: var(--coral); background: rgba(242,150,92,0.15); color: var(--foam); }
+  .fossil-baskets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; padding: 16px 20px 0; }
+  .fossil-basket { border: 1.5px dashed var(--line); border-radius: 10px; padding: 10px 12px; min-height: 76px; cursor: pointer; }
+  .fossil-basket .basket-title { font-weight: 700; font-size: 12.5px; color: var(--foam); margin-bottom: 8px; }
+  .fossil-basket .basket-items { display: flex; gap: 6px; flex-wrap: wrap; }
+</style>
 </head>
 <body>
 
@@ -67,6 +92,19 @@
           </div>
         </div>
         <div class="info-card" id="c1-info"></div>
+      </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 표준 화석으로 직접 대비하기</div>
+        <h2 class="display" style="font-size:20px;">두 지역의 지층을 화석으로 연결해 보세요</h2>
+        <p>두 지역은 서로 멀리 떨어져 있어 암석의 종류가 다르지만, 같은 시기에 살았던 표준 화석이 공통으로 들어 있는 지층이 있습니다. 화석이 있는 지층을 클릭한 뒤, 같은 화석이 들어 있는 다른 지역의 지층을 클릭해 짝을 지어 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="strat-columns" id="c1m-columns"></div>
+        <div class="toggle-row" style="margin:14px 20px 0;">
+          <button class="chip" id="c1m-new">다시 섞기</button>
+        </div>
+        <div class="info-card" id="c1m-info">화석이 있는 지층(🐚, 🐠)을 순서대로 클릭해 두 지역을 연결해 보세요.</div>
       </div>
     </section>
 
@@ -134,6 +172,21 @@
         <div class="info-card" id="c3-info">지질 시대 막대를 클릭해 보세요.</div>
       </div>
       <p class="foot-note">지질 시대 막대는 상대적 길이를 강조하기 위해 실제 비율을 과장하여 표현했습니다 (선캄브리아 시대가 전체의 약 88%를 차지합니다).</p>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 표준 화석 분류하기</div>
+        <h2 class="display" style="font-size:20px;">화석을 알맞은 지질 시대에 분류해 보세요</h2>
+        <p>화석 카드를 클릭해 선택한 뒤, 그 화석이 번성했던 지질 시대 칸을 클릭해 옮겨 보세요. 이미 놓인 화석을 다시 클릭하면 목록으로 돌아옵니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="fossil-pool" id="c3m-pool"></div>
+        <div class="fossil-baskets" id="c3m-baskets"></div>
+        <div class="toggle-row" style="margin:14px 20px 0;">
+          <button class="chip" id="c3m-check">채점하기</button>
+          <button class="chip" id="c3m-new">다시 섞기</button>
+        </div>
+        <div class="info-card" id="c3m-info">화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.</div>
+      </div>
     </section>
   </main>
 </div>
@@ -310,6 +363,126 @@
     ctx.restore();
   }
   render();
+})();
+
+/* TAB1 미션 — 표준 화석으로 대비하기 */
+(function () {
+  var colEl = document.getElementById("c1m-columns");
+  var infoEl = document.getElementById("c1m-info");
+  var newBtn = document.getElementById("c1m-new");
+  if (!colEl) return;
+
+  var colA = [
+    { rock: "석회암", fossil: null },
+    { rock: "셰일", fossil: "🐠" },
+    { rock: "이암", fossil: null },
+    { rock: "사암", fossil: "🐚" }
+  ]; // index 0 = top(젊음) ... index 3 = bottom(오래됨), 표시는 위에서부터 그대로 렌더링
+
+  var colBBase = [
+    { rock: "석회암", fossil: null },
+    { rock: "셰일", fossil: "🐚" },
+    { rock: "응회암", fossil: null },
+    { rock: "사암", fossil: "🐠" },
+    { rock: "역암", fossil: null }
+  ];
+
+  var colB = [];
+  var selectedA = null;
+  var pairs = []; // {aIdx, bIdx, color}
+  var colorClasses = ["paired-0", "paired-1"];
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function reset() {
+    colB = shuffle(colBBase);
+    selectedA = null;
+    pairs = [];
+    infoEl.style.color = "";
+    infoEl.textContent = "화석이 있는 지층(🐚, 🐠)을 순서대로 클릭해 두 지역을 연결해 보세요.";
+    render();
+  }
+
+  function pairColorFor(colName, idx) {
+    for (var i = 0; i < pairs.length; i++) {
+      if (colName === "A" && pairs[i].aIdx === idx) return colorClasses[i];
+      if (colName === "B" && pairs[i].bIdx === idx) return colorClasses[i];
+    }
+    return null;
+  }
+
+  function render() {
+    colEl.innerHTML = "";
+
+    var wrapA = document.createElement("div");
+    wrapA.className = "strat-col";
+    var titleA = document.createElement("div");
+    titleA.className = "strat-col-title";
+    titleA.textContent = "기준 지역";
+    wrapA.appendChild(titleA);
+    colA.forEach(function (layer, idx) {
+      var el = document.createElement("div");
+      var pc = pairColorFor("A", idx);
+      el.className = "strat-layer" + (layer.fossil && !pc ? " has-fossil" : "") + (selectedA === idx ? " selected" : "") + (pc ? " " + pc : "");
+      el.innerHTML = (layer.fossil ? '<span class="fossil-ico">' + layer.fossil + '</span>' : '<span class="fossil-ico">·</span>') + '<span>' + layer.rock + (layer.fossil ? "" : " (화석 없음)") + '</span>';
+      if (layer.fossil && !pc) {
+        el.addEventListener("click", function () {
+          selectedA = (selectedA === idx) ? null : idx;
+          render();
+        });
+      }
+      wrapA.appendChild(el);
+    });
+    colEl.appendChild(wrapA);
+
+    var wrapB = document.createElement("div");
+    wrapB.className = "strat-col";
+    var titleB = document.createElement("div");
+    titleB.className = "strat-col-title";
+    titleB.textContent = "먼 지역";
+    wrapB.appendChild(titleB);
+    colB.forEach(function (layer, idx) {
+      var el = document.createElement("div");
+      var pc = pairColorFor("B", idx);
+      el.className = "strat-layer" + (layer.fossil && !pc ? " has-fossil" : "") + (pc ? " " + pc : "");
+      el.innerHTML = (layer.fossil ? '<span class="fossil-ico">' + layer.fossil + '</span>' : '<span class="fossil-ico">·</span>') + '<span>' + layer.rock + (layer.fossil ? "" : " (화석 없음)") + '</span>';
+      if (layer.fossil && !pc) {
+        el.addEventListener("click", function () {
+          if (selectedA === null) return;
+          var aLayer = colA[selectedA];
+          if (aLayer.fossil === layer.fossil) {
+            pairs.push({ aIdx: selectedA, bIdx: idx, color: colorClasses[pairs.length] });
+            selectedA = null;
+            render();
+            if (pairs.length === 2) {
+              infoEl.style.color = "var(--teal)";
+              infoEl.innerHTML = "<b>두 지역 모두 연결했습니다!</b> 암석의 종류(암상)는 서로 다르지만, 같은 표준 화석이 들어 있는 지층은 같은 시기에 쌓인 지층입니다. 이렇게 표준 화석을 이용하면 멀리 떨어진 지역도 대비할 수 있습니다.";
+            } else {
+              infoEl.style.color = "var(--teal)";
+              infoEl.textContent = "연결되었습니다! 나머지 화석 지층도 연결해 보세요.";
+            }
+          } else {
+            el.classList.add("flash-wrong");
+            infoEl.style.color = "var(--coral)";
+            infoEl.textContent = "화석이 서로 다릅니다. 같은 화석이 들어 있는 지층끼리 연결해야 합니다.";
+            setTimeout(function () { el.classList.remove("flash-wrong"); }, 500);
+          }
+        });
+      }
+      wrapB.appendChild(el);
+    });
+    colEl.appendChild(wrapB);
+  }
+
+  newBtn.addEventListener("click", reset);
+  reset();
 })();
 
 /* TAB2 절대연령 */
@@ -577,6 +750,131 @@
     ctx.textAlign = "right"; ctx.fillText("현재", x + w, y - 10);
   }
   render();
+})();
+
+/* TAB3 미션 — 표준 화석 분류하기 */
+(function () {
+  var poolEl = document.getElementById("c3m-pool");
+  var basketsEl = document.getElementById("c3m-baskets");
+  var checkBtn = document.getElementById("c3m-check");
+  var newBtn = document.getElementById("c3m-new");
+  if (!poolEl) return;
+
+  var eraKeys = ["pre", "paleo", "meso", "ceno"];
+  var eraNames = { pre: "선캄브리아 시대", paleo: "고생대", meso: "중생대", ceno: "신생대" };
+  var fossilData = [
+    { name: "스트로마톨라이트", era: "pre" },
+    { name: "삼엽충", era: "paleo" },
+    { name: "방추충", era: "paleo" },
+    { name: "암모나이트", era: "meso" },
+    { name: "공룡", era: "meso" },
+    { name: "화폐석", era: "ceno" },
+    { name: "매머드", era: "ceno" }
+  ];
+
+  var pool = [];
+  var baskets = {};
+  var selected = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function reset() {
+    pool = shuffle(fossilData.map(function (f) { return f.name; }));
+    baskets = { pre: [], paleo: [], meso: [], ceno: [] };
+    selected = null;
+    var info = document.getElementById("c3m-info");
+    info.style.color = "";
+    info.textContent = "화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.";
+    render();
+  }
+
+  function eraOf(name) {
+    var f = fossilData.filter(function (d) { return d.name === name; })[0];
+    return f ? f.era : null;
+  }
+
+  function render(gradeMode) {
+    poolEl.innerHTML = "";
+    pool.forEach(function (name) {
+      var chip = document.createElement("div");
+      chip.className = "fossil-chip" + (selected === name ? " selected" : "");
+      chip.textContent = name;
+      chip.addEventListener("click", function () {
+        selected = (selected === name) ? null : name;
+        render();
+      });
+      poolEl.appendChild(chip);
+    });
+
+    basketsEl.innerHTML = "";
+    eraKeys.forEach(function (key) {
+      var basket = document.createElement("div");
+      basket.className = "fossil-basket";
+      var title = document.createElement("div");
+      title.className = "basket-title";
+      title.textContent = eraNames[key];
+      basket.appendChild(title);
+      var itemsWrap = document.createElement("div");
+      itemsWrap.className = "basket-items";
+      baskets[key].forEach(function (name) {
+        var chip = document.createElement("div");
+        var cls = "fossil-chip placed";
+        if (gradeMode) cls += (eraOf(name) === key ? " correct" : " wrong");
+        chip.className = cls;
+        chip.textContent = name;
+        chip.addEventListener("click", function () {
+          baskets[key] = baskets[key].filter(function (n) { return n !== name; });
+          pool.push(name);
+          render();
+        });
+        itemsWrap.appendChild(chip);
+      });
+      basket.appendChild(itemsWrap);
+      basket.addEventListener("click", function (e) {
+        if (e.target === basket || e.target === title) {
+          if (selected) {
+            baskets[key].push(selected);
+            pool = pool.filter(function (n) { return n !== selected; });
+            selected = null;
+            render();
+          }
+        }
+      });
+      basketsEl.appendChild(basket);
+    });
+  }
+
+  checkBtn.addEventListener("click", function () {
+    var info = document.getElementById("c3m-info");
+    if (pool.length > 0) {
+      info.style.color = "";
+      info.textContent = "아직 분류하지 않은 화석이 " + pool.length + "개 있습니다. 모든 화석을 지질 시대 칸에 놓아 주세요.";
+      return;
+    }
+    render(true);
+    var total = fossilData.length;
+    var correct = 0;
+    eraKeys.forEach(function (key) {
+      baskets[key].forEach(function (name) { if (eraOf(name) === key) correct++; });
+    });
+    if (correct === total) {
+      info.style.color = "var(--teal)";
+      info.innerHTML = "<b>전부 정답입니다!</b> 표준 화석은 특정 지질 시대에만 번성하고 넓은 지역에 분포해, 지층의 생성 시기를 알려주는 중요한 단서입니다.";
+    } else {
+      info.style.color = "var(--coral)";
+      info.textContent = total + "개 중 " + correct + "개가 맞았습니다. 빨간 테두리로 표시된 화석을 알맞은 시대로 옮겨 다시 시도해 보세요.";
+    }
+  });
+
+  newBtn.addEventListener("click", reset);
+  reset();
 })();
 
 })();

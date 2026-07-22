@@ -5,6 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>대기와 해양의 상호작용과 기후 변화 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<style>
+  .enso-cards { display: flex; gap: 10px; flex-wrap: wrap; padding: 18px 20px 0; }
+  .enso-card { flex: 1 1 160px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 12px; line-height: 1.55; color: var(--mist); cursor: pointer; transition: all .15s; }
+  .enso-card:hover { border-color: var(--teal-dim); }
+  .enso-card.selected { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal) inset; }
+  .enso-slots { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 20px 0; }
+  .enso-slot { flex: 1 1 160px; min-height: 90px; border: 1.5px dashed var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all .15s; }
+  .enso-slot .slot-title { font-size: 12.5px; font-weight: 700; color: var(--foam); margin-bottom: 6px; }
+  .enso-slot .slot-body { font-size: 11.5px; line-height: 1.5; color: var(--mist); }
+  .enso-slot.filled { border-style: solid; background: var(--panel-2); }
+  .enso-slot.correct { border-color: var(--teal); }
+  .enso-slot.wrong { border-color: var(--coral); }
+</style>
 </head>
 <body>
 
@@ -67,6 +80,21 @@
           </div>
         </div>
         <div class="info-card" id="c1-info"></div>
+      </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 엔소 카드 매칭</div>
+        <h2 class="display" style="font-size:20px;">관측 카드를 알맞은 시기에 놓아보세요</h2>
+        <p>무역풍 세기와 동·서태평양의 날씨 단서가 적힌 카드 3장이 있습니다. 카드를 클릭해 선택한 뒤, 라니냐·평상시·엘니뇨 중 알맞은 칸을 클릭해 배치하고 채점해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="enso-cards" id="c1m-cards"></div>
+        <div class="enso-slots" id="c1m-slots"></div>
+        <div class="toggle-row" style="margin:14px 20px 0;">
+          <button class="chip" id="c1m-check">채점하기</button>
+          <button class="chip" id="c1m-new">카드 새로 섞기</button>
+        </div>
+        <div class="info-card" id="c1m-info">카드를 클릭해 선택한 뒤, 놓을 칸을 클릭하세요.</div>
       </div>
     </section>
 
@@ -347,6 +375,115 @@
   }
   info.innerHTML = texts.normal;
   requestAnimationFrame(frame);
+})();
+
+/* TAB1 미션 — 엔소 카드 매칭 */
+(function () {
+  var cardsEl = document.getElementById("c1m-cards");
+  var slotsEl = document.getElementById("c1m-slots");
+  var checkBtn = document.getElementById("c1m-check");
+  var newBtn = document.getElementById("c1m-new");
+  if (!cardsEl) return;
+
+  var slotNames = { nina: "라니냐", normal: "평상시", nino: "엘니뇨" };
+  var slotOrder = ["nina", "normal", "nino"];
+  var clues = {
+    nina: "무역풍이 평소보다 강하게 붑니다. 동태평양에서 용승이 강해져 표층 수온이 낮아졌고, 서태평양은 강수가 많고 동태평양은 가뭄 경향이 뚜렷합니다.",
+    normal: "무역풍이 평년 수준으로 붑니다. 따뜻한 표층수가 서태평양에 쌓이고 동태평양은 용승으로 찬물이 유지되어, 서태평양은 저기압(다우), 동태평양은 고기압(맑음)입니다.",
+    nino: "무역풍이 평소보다 약해졌습니다. 동태평양의 용승이 약해져 표층 수온이 평소보다 높고, 서태평양은 가뭄, 동태평양은 강수량이 늘어 홍수 경향을 보입니다."
+  };
+
+  var pool = [];
+  var slots = {};
+  var selected = null;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function reset() {
+    pool = shuffle(slotOrder.slice());
+    slots = { nina: null, normal: null, nino: null };
+    selected = null;
+    var info = document.getElementById("c1m-info");
+    info.style.color = "";
+    info.textContent = "카드를 클릭해 선택한 뒤, 놓을 칸을 클릭하세요.";
+    render();
+  }
+
+  function render() {
+    cardsEl.innerHTML = "";
+    pool.forEach(function (key) {
+      var card = document.createElement("div");
+      card.className = "enso-card" + (selected === key ? " selected" : "");
+      card.textContent = clues[key];
+      card.addEventListener("click", function () {
+        selected = (selected === key) ? null : key;
+        render();
+      });
+      cardsEl.appendChild(card);
+    });
+
+    slotsEl.innerHTML = "";
+    slotOrder.forEach(function (targetKey) {
+      var slot = document.createElement("div");
+      var filledKey = slots[targetKey];
+      slot.className = "enso-slot" + (filledKey ? " filled" : "");
+      var title = document.createElement("div");
+      title.className = "slot-title";
+      title.textContent = slotNames[targetKey];
+      slot.appendChild(title);
+      var body = document.createElement("div");
+      body.className = "slot-body";
+      body.textContent = filledKey ? clues[filledKey] : "여기를 클릭해 선택한 카드를 놓으세요.";
+      slot.appendChild(body);
+      slot.addEventListener("click", function () {
+        if (filledKey) {
+          pool.push(filledKey);
+          slots[targetKey] = null;
+          render();
+        } else if (selected) {
+          slots[targetKey] = selected;
+          pool = pool.filter(function (k) { return k !== selected; });
+          selected = null;
+          render();
+        }
+      });
+      slotsEl.appendChild(slot);
+    });
+  }
+
+  checkBtn.addEventListener("click", function () {
+    var info = document.getElementById("c1m-info");
+    if (pool.length > 0) {
+      info.style.color = "";
+      info.textContent = "아직 배치하지 않은 카드가 있습니다. 카드 3장을 모두 알맞은 칸에 놓아 주세요.";
+      return;
+    }
+    var correctCount = 0;
+    slotsEl.querySelectorAll(".enso-slot").forEach(function (slotEl, i) {
+      var targetKey = slotOrder[i];
+      var ok = slots[targetKey] === targetKey;
+      slotEl.classList.remove("correct", "wrong");
+      slotEl.classList.add(ok ? "correct" : "wrong");
+      if (ok) correctCount++;
+    });
+    if (correctCount === 3) {
+      info.style.color = "var(--teal)";
+      info.innerHTML = "<b>3장 모두 정답입니다!</b> 무역풍의 세기 변화가 엔소(ENSO)의 세 시기를 구분하는 핵심 단서입니다.";
+    } else {
+      info.style.color = "var(--coral)";
+      info.innerHTML = correctCount + " / 3 칸이 맞았습니다. 빨간 테두리 칸을 다시 살펴보고 카드를 옮겨 보세요.";
+    }
+  });
+
+  newBtn.addEventListener("click", reset);
+  reset();
 })();
 
 /* TAB2 밀란코비치 */

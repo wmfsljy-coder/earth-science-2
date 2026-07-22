@@ -66,6 +66,25 @@
         </div>
         <div class="info-card" id="c1-info"></div>
       </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 실제 별 자료로 H-R도 완성하기</div>
+        <h2 class="display" style="font-size:20px;">별의 자료를 하나씩 찍어 분류해 보세요</h2>
+        <p>[다음 별] 버튼을 누르면 실제 별의 표면 온도·광도 자료가 위 H-R도에 점으로 찍힙니다. 점의 위치를 보고 이 별이 주계열성·거성/초거성·백색왜성 중 어디에 속하는지 분류해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c1m-star">[다음 별] 버튼을 눌러 시작해 보세요. (총 6개 별)</div>
+        <div class="toggle-row" id="c1m-choices" style="margin:14px 20px 0;">
+          <button class="chip" data-choice="main">주계열성</button>
+          <button class="chip" data-choice="giant">거성 · 초거성</button>
+          <button class="chip" data-choice="dwarf">백색왜성</button>
+        </div>
+        <div class="toggle-row" style="margin:10px 20px 0;">
+          <button class="chip" id="c1m-check">정답 확인</button>
+          <button class="chip" id="c1m-next">다음 별</button>
+        </div>
+        <div class="info-card" id="c1m-info">진행 0 / 6 · 맞힌 개수 0</div>
+      </div>
     </section>
 
     <!-- TAB2 -->
@@ -118,6 +137,27 @@
           </div>
         </div>
         <div class="info-card" id="c3g-info"></div>
+      </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 타이머 은하 분류 게임</div>
+        <h2 class="display" style="font-size:20px;">제한 시간 안에 은하를 분류해 보세요</h2>
+        <p>위 은하 생성기가 무작위로 은하를 만들어 보여줍니다. 제한 시간(8초) 안에 이 은하가 어떤 종류인지 빠르게 분류해 보세요. 총 6라운드입니다.</p>
+      </div>
+      <div class="stage-card">
+        <div class="info-card" id="c3m-timer">[게임 시작] 버튼을 눌러 시작하세요.</div>
+        <div class="toggle-row" id="c3m-choices" style="margin:14px 20px 0;">
+          <button class="chip" data-choice="e_low">E0~E2 (둥근 타원)</button>
+          <button class="chip" data-choice="e_mid">E3~E5 (중간 타원)</button>
+          <button class="chip" data-choice="e_high">E6~E7 (납작한 타원)</button>
+          <button class="chip" data-choice="s_a">Sa (꽉 감긴 나선)</button>
+          <button class="chip" data-choice="s_b">Sb (중간 나선)</button>
+          <button class="chip" data-choice="s_c">Sc (느슨한 나선)</button>
+        </div>
+        <div class="toggle-row" style="margin:10px 20px 0;">
+          <button class="chip" id="c3m-start">게임 시작</button>
+        </div>
+        <div class="info-card" id="c3m-info">허블의 소리굽쇠 분류 기준을 참고해 은하를 빠르게 분류해 보세요.</div>
       </div>
     </section>
 
@@ -551,6 +591,110 @@ var classInfo = {
   render();
 })();
 
+/* TAB1 미션 — 실제 별 자료로 H-R도 완성하기 */
+(function () {
+  var starEl = document.getElementById("c1m-star");
+  var choices = document.querySelectorAll("#c1m-choices .chip");
+  var checkBtn = document.getElementById("c1m-check");
+  var nextBtn = document.getElementById("c1m-next");
+  var infoEl = document.getElementById("c1m-info");
+  var tSlider = document.getElementById("c1-t");
+  var lSlider = document.getElementById("c1-l");
+  if (!starEl || !tSlider || !lSlider) return;
+
+  var stars = [
+    { name: "태양", temp: 5800, logL: 0, answer: "main" },
+    { name: "리겔 (Rigel)", temp: 12000, logL: 5.1, answer: "giant" },
+    { name: "시리우스 A", temp: 9900, logL: 1.4, answer: "main" },
+    { name: "베텔게우스", temp: 3500, logL: 5.1, answer: "giant" },
+    { name: "시리우스 B (백색왜성)", temp: 25000, logL: -1.7, answer: "dwarf" },
+    { name: "프록시마 센타우리", temp: 3050, logL: -2.8, answer: "main" }
+  ];
+  var order = [];
+  var step = -1;
+  var picked = null;
+  var correctCount = 0;
+
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function setSlidersTo(star) {
+    var tSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    tSetter.call(tSlider, star.temp);
+    tSlider.dispatchEvent(new Event("input", { bubbles: true }));
+    tSlider.dispatchEvent(new Event("change", { bubbles: true }));
+    var lSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    lSetter.call(lSlider, star.logL);
+    lSlider.dispatchEvent(new Event("input", { bubbles: true }));
+    lSlider.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+
+  function loadStar() {
+    picked = null;
+    choices.forEach(function (c) { c.classList.remove("on"); });
+    step++;
+    if (step >= order.length) {
+      infoEl.style.color = "";
+      infoEl.textContent = "6개 별을 모두 확인했습니다. 맞힌 개수: " + correctCount + " / 6. [다음 별]을 눌러 새로 섞어 다시 도전해 보세요.";
+      starEl.textContent = "모든 별의 분류를 마쳤습니다.";
+      order = [];
+      step = -1;
+      return;
+    }
+    var star = order[step];
+    setSlidersTo(star);
+    starEl.innerHTML = "<b>" + star.name + "</b> — 표면 온도 " + star.temp + "K, 광도(태양=1) " + Math.pow(10, star.logL).toFixed(star.logL >= 0 ? 0 : 4) + "배";
+    infoEl.style.color = "";
+    infoEl.textContent = "진행 " + (step + 1) + " / " + stars.length + " · 맞힌 개수 " + correctCount + " — 위 H-R도의 점 위치를 보고 분류를 선택하세요.";
+  }
+
+  choices.forEach(function (c) {
+    c.addEventListener("click", function () {
+      picked = c.getAttribute("data-choice");
+      choices.forEach(function (x) { x.classList.toggle("on", x === c); });
+    });
+  });
+
+  checkBtn.addEventListener("click", function () {
+    if (step < 0 || step >= order.length) {
+      infoEl.style.color = "";
+      infoEl.textContent = "[다음 별] 버튼을 먼저 눌러 별의 자료를 불러오세요.";
+      return;
+    }
+    if (!picked) {
+      infoEl.style.color = "";
+      infoEl.textContent = "먼저 분류를 하나 선택해 주세요.";
+      return;
+    }
+    var star = order[step];
+    var ok = picked === star.answer;
+    var answerNames = { main: "주계열성", giant: "거성 · 초거성", dwarf: "백색왜성" };
+    if (ok) {
+      correctCount++;
+      infoEl.style.color = "var(--teal)";
+      infoEl.innerHTML = "<b>정답입니다!</b> " + star.name + "은(는) " + answerNames[star.answer] + "입니다. [다음 별]을 눌러 계속하세요.";
+    } else {
+      infoEl.style.color = "var(--coral)";
+      infoEl.innerHTML = "<b>다시 생각해 보세요.</b> 정답은 <b>" + answerNames[star.answer] + "</b>입니다. [다음 별]을 눌러 계속하세요.";
+    }
+  });
+
+  nextBtn.addEventListener("click", function () {
+    if (order.length === 0) {
+      order = shuffle(stars);
+      step = -1;
+      correctCount = 0;
+    }
+    loadStar();
+  });
+})();
+
 /* TAB2 별의 진화 */
 (function () {
   var canvas = document.getElementById("c2");
@@ -747,6 +891,120 @@ var classInfo = {
     }
   }
   render();
+})();
+
+/* TAB3b 미션 — 타이머 은하 분류 게임 */
+(function () {
+  var startBtn = document.getElementById("c3m-start");
+  var choicesEl = document.getElementById("c3m-choices");
+  var timerEl = document.getElementById("c3m-timer");
+  var infoEl = document.getElementById("c3m-info");
+  if (!startBtn) return;
+
+  var TOTAL_ROUNDS = 6;
+  var TIME_PER_ROUND = 8;
+  var round = 0;
+  var score = 0;
+  var timeLeft = 0;
+  var timerId = null;
+  var currentAnswer = null;
+  var answered = false;
+
+  var answerNames = {
+    e_low: "E0~E2 (둥근 타원)", e_mid: "E3~E5 (중간 타원)", e_high: "E6~E7 (납작한 타원)",
+    s_a: "Sa (꽉 감긴 나선)", s_b: "Sb (중간 나선)", s_c: "Sc (느슨한 나선)"
+  };
+
+  function clickType(t) {
+    var btn = document.querySelector('#c3g-type [data-t="' + t + '"]');
+    if (btn) btn.dispatchEvent(new Event("click", { bubbles: true }));
+  }
+  function setSlider(id, value) {
+    var el = document.getElementById(id);
+    var setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+    setter.call(el, value);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  function newRound() {
+    answered = false;
+    choicesEl.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("on", "correct", "wrong"); });
+    var isElliptic = Math.random() < 0.5;
+    if (isElliptic) {
+      clickType("elliptic");
+      var ellVal = Math.floor(Math.random() * 8); // 0-7
+      setSlider("c3g-ell", ellVal);
+      currentAnswer = ellVal <= 2 ? "e_low" : (ellVal <= 5 ? "e_mid" : "e_high");
+    } else {
+      clickType("spiral");
+      var pitchVal = 5 + Math.floor(Math.random() * 31); // 5-35
+      setSlider("c3g-pitch", pitchVal);
+      currentAnswer = pitchVal < 15 ? "s_a" : (pitchVal < 25 ? "s_b" : "s_c");
+    }
+    timeLeft = TIME_PER_ROUND;
+    updateTimerText();
+    clearInterval(timerId);
+    timerId = setInterval(function () {
+      timeLeft--;
+      updateTimerText();
+      if (timeLeft <= 0) {
+        clearInterval(timerId);
+        if (!answered) finishRound(null);
+      }
+    }, 1000);
+  }
+
+  function updateTimerText() {
+    timerEl.textContent = "라운드 " + (round + 1) + " / " + TOTAL_ROUNDS + " · 남은 시간 " + Math.max(timeLeft, 0) + "초 · 점수 " + score;
+  }
+
+  function finishRound(picked) {
+    answered = true;
+    clearInterval(timerId);
+    var ok = picked === currentAnswer;
+    if (ok) score++;
+    choicesEl.querySelectorAll(".chip").forEach(function (c) {
+      var key = c.getAttribute("data-choice");
+      if (key === currentAnswer) c.classList.add("correct");
+      else if (key === picked) c.classList.add("wrong");
+    });
+    if (picked === null) {
+      infoEl.style.color = "var(--coral)";
+      infoEl.innerHTML = "<b>시간 초과!</b> 정답은 <b>" + answerNames[currentAnswer] + "</b>였습니다.";
+    } else if (ok) {
+      infoEl.style.color = "var(--teal)";
+      infoEl.innerHTML = "<b>정답입니다!</b> " + answerNames[currentAnswer] + "가 맞습니다.";
+    } else {
+      infoEl.style.color = "var(--coral)";
+      infoEl.innerHTML = "<b>아쉽네요.</b> 정답은 <b>" + answerNames[currentAnswer] + "</b>였습니다.";
+    }
+    round++;
+    setTimeout(function () {
+      if (round >= TOTAL_ROUNDS) {
+        timerEl.textContent = "게임 종료! 최종 점수: " + score + " / " + TOTAL_ROUNDS;
+        infoEl.style.color = "";
+        infoEl.textContent = "[게임 시작]을 눌러 다시 도전해 보세요.";
+        startBtn.textContent = "다시 시작";
+      } else {
+        newRound();
+      }
+    }, 1400);
+  }
+
+  choicesEl.querySelectorAll(".chip").forEach(function (c) {
+    c.addEventListener("click", function () {
+      if (answered || timerId === null) return;
+      finishRound(c.getAttribute("data-choice"));
+    });
+  });
+
+  startBtn.addEventListener("click", function () {
+    clearInterval(timerId);
+    round = 0;
+    score = 0;
+    startBtn.textContent = "다시 시작";
+    newRound();
+  });
 })();
 
 /* TAB4 허블법칙 */

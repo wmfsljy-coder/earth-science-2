@@ -362,6 +362,14 @@
   .mini-card h4 { margin: 0 0 4px; font-size: 13.5px; }
   .mini-card p { margin: 0; font-size: 12px; line-height: 1.55; color: var(--mist); }
 
+  .weather-maps { display: flex; gap: 12px; flex-wrap: wrap; padding: 18px 20px 0; }
+  .wmap { flex: 1 1 140px; min-width: 130px; aspect-ratio: 1 / 1; background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px; position: relative; overflow: hidden; }
+  .wmap .wmap-day { position: absolute; top: 8px; left: 10px; font-size: 11.5px; font-weight: 700; color: var(--mist); }
+  .wmap .wmap-sys { position: absolute; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 700 17px Georgia, serif; transform: translate(-50%, -50%); box-shadow: 0 0 0 6px rgba(255,255,255,0.05); }
+  .wmap .wmap-obs { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--foam); transform: translate(-50%, -50%); box-shadow: 0 0 0 4px rgba(255,255,255,0.12); }
+  .wmap .wmap-obs-label { position: absolute; font-size: 9.5px; color: var(--mist); white-space: nowrap; transform: translate(-50%, 4px); }
+  .wmap.wmap-day4 { border-style: dashed; opacity: .85; }
+
 </style>
 </head>
 <body>
@@ -416,6 +424,25 @@
           </div>
         </div>
         <div class="info-card" id="c6-info">저위도는 표층과 심층의 수온 차가 커서 뚜렷한 <b>수온약층</b>이 나타나지만, 고위도는 표층부터 수온이 낮아 깊이에 따른 변화가 작습니다.</div>
+      </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 관측 자료로 위도대 추리하기</div>
+        <h2 class="display" style="font-size:20px;">이 바다는 저위도·중위도·고위도 중 어디일까요?</h2>
+        <p>표층(0m)·200m·800m 세 깊이에서 관측한 수온 자료가 주어집니다. 앞서 살펴본 위도대별 수온 분포 특징을 바탕으로 어느 위도대의 바다인지 추리해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="mini-grid" id="c6m-data" style="margin:18px 20px 0;"></div>
+        <div class="toggle-row" id="c6m-choices" style="margin:16px 20px 0;">
+          <button class="chip" data-choice="low">저위도(열대)</button>
+          <button class="chip" data-choice="mid">중위도</button>
+          <button class="chip" data-choice="high">고위도(극)</button>
+        </div>
+        <div class="toggle-row" style="margin:10px 20px 0;">
+          <button class="chip" id="c6m-check">정답 확인</button>
+          <button class="chip" id="c6m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c6m-info">세 깊이의 수온 자료를 비교해 보고, 위도대를 선택한 뒤 [정답 확인]을 눌러 보세요.</div>
       </div>
     </section>
 
@@ -631,6 +658,24 @@
           </div>
         </div>
         <div class="info-card" id="c7-info"></div>
+      </div>
+
+      <div class="stage-head" style="margin-top:30px;">
+        <div class="eyebrow">🔎 미션 · 일기도 읽기</div>
+        <h2 class="display" style="font-size:20px;">4일차 날씨를 예측해 보세요</h2>
+        <p>편서풍대에 위치한 우리나라 부근에서는 기압계가 대체로 서쪽에서 동쪽으로 이동합니다. 1~3일차 일기도에서 기압계의 이동을 보고, 4일차에 관측 지점(●)의 날씨를 예측해 보세요.</p>
+      </div>
+      <div class="stage-card">
+        <div class="weather-maps" id="c7m-maps"></div>
+        <div class="toggle-row" id="c7m-choices" style="margin:18px 20px 0;">
+          <button class="chip" data-choice="clear">맑음 예상</button>
+          <button class="chip" data-choice="rain">흐리고 비 예상</button>
+        </div>
+        <div class="toggle-row" style="margin:10px 20px 0;">
+          <button class="chip" id="c7m-check">정답 확인</button>
+          <button class="chip" id="c7m-new">새 문제</button>
+        </div>
+        <div class="info-card" id="c7m-info">1~3일차 일기도의 기압계 이동을 살펴보고, 예상을 선택한 뒤 [정답 확인]을 눌러 보세요.</div>
       </div>
     </section>
 
@@ -1820,6 +1865,62 @@
       }
     }
     render();
+
+    /* --- 미션: 관측 자료로 위도대 추리하기 --- */
+    var mDataEl = document.getElementById("c6m-data");
+    var mChoices = document.querySelectorAll("#c6m-choices .chip");
+    var mCheck = document.getElementById("c6m-check");
+    var mNew = document.getElementById("c6m-new");
+    var mq = {};
+    var mPicked = null;
+    var latNames = { low: "저위도(열대)", mid: "중위도", high: "고위도(극)" };
+
+    function newMission() {
+      mPicked = null;
+      mChoices.forEach(function (c) { c.classList.remove("on"); });
+      var keys = ["low", "mid", "high"];
+      mq.key = keys[Math.floor(Math.random() * keys.length)];
+      var p2 = profiles[mq.key];
+      var jitter = function (v) { return v + (Math.random() * 1.6 - 0.8); };
+      mq.t0 = jitter(tempAt(0, p2));
+      mq.t200 = jitter(tempAt(200, p2));
+      mq.t800 = jitter(tempAt(800, p2));
+      mDataEl.innerHTML =
+        '<div class="mini-card"><div class="mi-ico">🌊</div><h4>표층(0m) 수온</h4><p>' + mq.t0.toFixed(1) + ' °C</p></div>' +
+        '<div class="mini-card"><div class="mi-ico">🌊</div><h4>200m 수온</h4><p>' + mq.t200.toFixed(1) + ' °C</p></div>' +
+        '<div class="mini-card"><div class="mi-ico">🌊</div><h4>800m 수온</h4><p>' + mq.t800.toFixed(1) + ' °C</p></div>';
+      var mInfo = document.getElementById("c6m-info");
+      mInfo.style.color = "";
+      mInfo.textContent = "세 깊이의 수온 자료를 비교해 보고, 위도대를 선택한 뒤 [정답 확인]을 눌러 보세요.";
+    }
+
+    mChoices.forEach(function (c) {
+      c.addEventListener("click", function () {
+        mPicked = c.getAttribute("data-choice");
+        mChoices.forEach(function (x) { x.classList.toggle("on", x === c); });
+      });
+    });
+
+    mCheck.addEventListener("click", function () {
+      var mInfo = document.getElementById("c6m-info");
+      if (!mPicked) {
+        mInfo.style.color = "";
+        mInfo.textContent = "먼저 위도대를 하나 선택해 주세요.";
+        return;
+      }
+      var ok = mPicked === mq.key;
+      var diff = (mq.t0 - mq.t800).toFixed(1);
+      if (ok) {
+        mInfo.style.color = "var(--teal)";
+        mInfo.innerHTML = "<b>정답입니다!</b> " + latNames[mq.key] + "의 자료였습니다. 표층과 800m 사이의 수온 차이가 " + diff + "°C로, 이 차이의 크기가 위도대를 구분하는 중요한 단서입니다.";
+      } else {
+        mInfo.style.color = "var(--coral)";
+        mInfo.innerHTML = "<b>다시 생각해 보세요.</b> 표층과 800m의 수온 차이는 " + diff + "°C입니다. 정답은 <b>" + latNames[mq.key] + "</b>였습니다.";
+      }
+    });
+
+    mNew.addEventListener("click", newMission);
+    newMission();
   })();
 
   /* ==================================================================
@@ -1906,6 +2007,103 @@
     }
     updateInfo();
     requestAnimationFrame(frame);
+  })();
+
+  /* ==================================================================
+     TAB 7 미션 — 일기도 읽기
+     ================================================================== */
+  (function () {
+    var mapsEl = document.getElementById("c7m-maps");
+    var infoEl = document.getElementById("c7m-info");
+    var choices = document.querySelectorAll("#c7m-choices .chip");
+    var checkBtn = document.getElementById("c7m-check");
+    var newBtn = document.getElementById("c7m-new");
+    if (!mapsEl) return;
+
+    var OBS_X = 74, OBS_Y = 52;
+    var q = {};
+    var picked = null;
+
+    function newQuestion() {
+      picked = null;
+      choices.forEach(function (c) { c.classList.remove("on"); });
+      q.sys = Math.random() < 0.5 ? "low" : "high";
+      q.startX = 10 + Math.random() * 16;
+      q.speed = 16 + Math.random() * 8;
+      q.y = OBS_Y + (Math.random() * 24 - 12);
+      q.days = [0, 1, 2, 3].map(function (i) { return q.startX + q.speed * i; });
+      var dist4 = Math.abs(q.days[3] - OBS_X);
+      q.answer = (q.sys === "low" && dist4 < 16) ? "rain" : "clear";
+      renderMaps();
+      infoEl.textContent = "1~3일차 일기도의 기압계 이동을 살펴보고, 예상을 선택한 뒤 [정답 확인]을 눌러 보세요.";
+      infoEl.style.color = "";
+    }
+
+    function renderMaps() {
+      mapsEl.innerHTML = "";
+      var sysColor = q.sys === "low" ? cssVar("--cold") : cssVar("--coral");
+      var sysLabel = q.sys === "low" ? "L" : "H";
+      for (var d = 0; d < 3; d++) {
+        var box = document.createElement("div");
+        box.className = "wmap";
+        var dayLbl = document.createElement("div");
+        dayLbl.className = "wmap-day";
+        dayLbl.textContent = (d + 1) + "일차";
+        box.appendChild(dayLbl);
+
+        var sysEl = document.createElement("div");
+        sysEl.className = "wmap-sys";
+        sysEl.style.left = q.days[d] + "%";
+        sysEl.style.top = q.y + "%";
+        sysEl.style.background = sysColor;
+        sysEl.style.color = q.sys === "low" ? "#04182f" : "#331700";
+        sysEl.textContent = sysLabel;
+        box.appendChild(sysEl);
+
+        var obsEl = document.createElement("div");
+        obsEl.className = "wmap-obs";
+        obsEl.style.left = OBS_X + "%";
+        obsEl.style.top = OBS_Y + "%";
+        box.appendChild(obsEl);
+
+        var obsLbl = document.createElement("div");
+        obsLbl.className = "wmap-obs-label";
+        obsLbl.style.left = OBS_X + "%";
+        obsLbl.style.top = OBS_Y + "%";
+        obsLbl.textContent = "관측 지점";
+        box.appendChild(obsLbl);
+
+        mapsEl.appendChild(box);
+      }
+    }
+
+    choices.forEach(function (c) {
+      c.addEventListener("click", function () {
+        picked = c.getAttribute("data-choice");
+        choices.forEach(function (x) { x.classList.toggle("on", x === c); });
+      });
+    });
+
+    checkBtn.addEventListener("click", function () {
+      if (!picked) {
+        infoEl.style.color = "";
+        infoEl.textContent = "먼저 [맑음 예상] 또는 [흐리고 비 예상] 중 하나를 선택해 주세요.";
+        return;
+      }
+      var ok = picked === q.answer;
+      var sysWord = q.sys === "low" ? "저기압" : "고기압";
+      var moved = (q.days[3] - q.days[2]).toFixed(0);
+      if (ok) {
+        infoEl.style.color = "var(--teal)";
+        infoEl.innerHTML = "<b>정답입니다!</b> " + sysWord + "이 하루 약 " + moved + "%씩 동쪽으로 이동하고 있어, 4일차에는 " + (q.answer === "rain" ? "관측 지점 부근을 저기압이 통과하며 흐리고 비가 올 가능성이 큽니다." : "관측 지점에 큰 영향을 주지 않아 대체로 맑겠습니다.");
+      } else {
+        infoEl.style.color = "var(--coral)";
+        infoEl.innerHTML = "<b>다시 생각해 보세요.</b> " + sysWord + "의 이동 속도로 볼 때 4일차 위치를 예상해 보면, 정답은 <b>" + (q.answer === "rain" ? "흐리고 비" : "맑음") + "</b>입니다.";
+      }
+    });
+
+    newBtn.addEventListener("click", newQuestion);
+    newQuestion();
   })();
 
   /* ==================================================================
