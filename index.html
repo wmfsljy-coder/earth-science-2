@@ -7,73 +7,25 @@
 <link rel="stylesheet" href="assets/theme.css">
 <style>
   body { display: block; }
-  .hero {
-    padding: 64px 30px 30px;
-    max-width: 1080px;
-    margin: 0 auto;
-  }
-  .hero .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); font-weight: 700; }
-  .hero h1 { font-size: clamp(30px, 5vw, 46px); margin: 10px 0 14px; text-wrap: balance; }
-  .hero p { color: var(--mist); font-size: 15.5px; line-height: 1.7; max-width: 640px; margin: 0; }
-
-  .grid {
-    max-width: 1080px;
-    margin: 30px auto 80px;
-    padding: 0 30px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
-  }
-  .unit-card {
-    display: block;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 22px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .15s, transform .15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .unit-card:hover { border-color: var(--teal-dim); transform: translateY(-2px); }
-  .unit-card .chapter {
-    font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--teal); font-weight: 700; margin-bottom: 6px;
-  }
-  .unit-card h3 { font-size: 19px; margin: 0 0 8px; }
-  .unit-card p { color: var(--mist); font-size: 13px; line-height: 1.6; margin: 0 0 14px; min-height: 60px; }
-  .unit-card .topics { display: flex; flex-wrap: wrap; gap: 6px; }
-  .unit-card .topics span {
-    font-size: 10.5px; padding: 3px 8px; border-radius: 999px;
-    background: var(--panel-2); border: 1px solid var(--line); color: var(--mist);
-  }
-  .unit-card .go {
-    position: absolute; top: 22px; right: 22px;
-    color: var(--mist); font-size: 18px;
-  }
-  .part-label {
-    max-width: 1080px; margin: 0 auto; padding: 30px 30px 0;
-    font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--mist); font-weight: 700;
-  }
-
+  .hero-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; max-width: 1080px; margin: 0 auto; padding: 0 30px; }
+  .hero-emoji { font-size: 54px; line-height: 1; flex: none; filter: drop-shadow(0 10px 16px rgba(18,32,58,.15)); }
   .qr-block { margin-top: 22px; }
   .qr-toggle {
     display: inline-flex; align-items: center; gap: 8px;
-    background: var(--panel); border: 1px solid var(--line); color: var(--ink);
-    border-radius: 10px; padding: 10px 16px; font-size: 13.5px; font-weight: 700;
-    cursor: pointer; font-family: inherit;
+    background: var(--card); border: 2px solid var(--line); color: var(--ink);
+    border-radius: 999px; padding: 10px 18px; font-size: 13.5px; font-weight: 800;
+    cursor: pointer; font-family: inherit; box-shadow: var(--shadow-card);
   }
-  .qr-toggle:hover { border-color: var(--teal-dim); }
+  .qr-toggle:hover { border-color: var(--brand); }
   .qr-toggle .qr-caret { color: var(--mist); transition: transform .15s; display: inline-block; }
   .qr-toggle.open .qr-caret { transform: rotate(180deg); }
   .qr-panel {
-    margin-top: 12px; background: var(--panel); border: 1px solid var(--line);
-    border-radius: 14px; padding: 20px; display: inline-flex; flex-direction: column;
-    align-items: center; gap: 10px; max-width: 260px;
+    margin-top: 12px; background: var(--card); border: 2px solid var(--line);
+    border-radius: 20px; padding: 20px; display: inline-flex; flex-direction: column;
+    align-items: center; gap: 10px; max-width: 260px; box-shadow: var(--shadow-card);
   }
   .qr-panel[hidden] { display: none; }
-  .qr-panel .qr-code { background: #fff; padding: 10px; border-radius: 8px; line-height: 0; }
+  .qr-panel .qr-code { background: #fff; padding: 10px; border-radius: 12px; line-height: 0; border: 2px solid var(--line); }
   .qr-panel .qr-code svg { display: block; width: 160px; height: 160px; }
   .qr-panel .qr-url { color: var(--mist); font-size: 11.5px; word-break: break-all; margin: 0; text-align: center; }
   .qr-panel .qr-hint { color: var(--mist); font-size: 12px; margin: 0; text-align: center; }
@@ -82,31 +34,36 @@
 <body>
 
 <div class="hero">
-  <div class="eyebrow">고등학교 지구과학 · 인터랙티브 학습 도구</div>
-  <h1 class="display">지구과학<br>관측 스테이션</h1>
-  <p>단원별 핵심 개념을 직접 조작하며 익히는 인터랙티브 학습 도구입니다. 아래에서 학습할 단원을 선택하세요.</p>
-  <div class="qr-block">
-    <button class="qr-toggle" id="qrToggle" type="button" aria-expanded="false">
-      <span>📱 QR 코드</span><span class="qr-caret">▾</span>
-    </button>
-    <div class="qr-panel" id="qrPanel" hidden>
-      <p class="qr-hint">학생들이 휴대폰이나 태블릿으로 찍으면 이 페이지로 바로 접속됩니다.</p>
-      <div class="qr-code" id="qrCode"></div>
-      <p class="qr-url" id="qrUrl"></p>
+  <div class="hero-row">
+    <div>
+      <div class="kicker">🌏 고등학교 지구과학 · 인터랙티브 학습 도구</div>
+      <h1 class="display">지구과학<br>관측 스테이션</h1>
+      <p>단원별 핵심 개념을 직접 조작하며 익히는 인터랙티브 학습 도구입니다. 아래에서 학습할 단원을 선택하세요.</p>
+      <div class="qr-block">
+        <button class="qr-toggle" id="qrToggle" type="button" aria-expanded="false">
+          <span>📱 QR 코드</span><span class="qr-caret">▾</span>
+        </button>
+        <div class="qr-panel" id="qrPanel" hidden>
+          <p class="qr-hint">학생들이 휴대폰이나 태블릿으로 찍으면 이 페이지로 바로 접속됩니다.</p>
+          <div class="qr-code" id="qrCode"></div>
+          <p class="qr-url" id="qrUrl"></p>
+        </div>
+      </div>
     </div>
+    <div class="hero-emoji">🪐</div>
   </div>
 </div>
 
-<div class="part-label">Ⅰ. 대기와 해양의 상호작용</div>
+<div class="part-heading"><span class="roman">Ⅰ</span> 대기와 해양의 상호작용</div>
 <div class="grid">
-  <a class="unit-card" href="1-1/">
+  <a class="unit-card c1" href="1-1/">
     <div class="chapter">Ⅰ-1</div>
     <h3 class="display">해수의 순환과 대기의 변화</h3>
     <p>해수의 성질, 표층·심층 해류, 우리나라 주변 해류, 기압과 날씨 변화, 태풍, 악기상까지 해양과 대기를 아우르며 배웁니다.</p>
     <div class="topics"><span>해수의 성질</span><span>해수의 순환</span><span>기압과 날씨</span><span>태풍</span><span>악기상</span></div>
     <div class="go">→</div>
   </a>
-  <a class="unit-card" href="1-2/">
+  <a class="unit-card c1" href="1-2/">
     <div class="chapter">Ⅰ-2</div>
     <h3 class="display">대기와 해양의 상호작용과 기후 변화</h3>
     <p>용승과 침강, 엔소(ENSO), 기후 변화의 자연적·인위적 요인, 온실 효과와 지구 온난화, 국제 사회의 대응을 다룹니다.</p>
@@ -115,16 +72,16 @@
   </a>
 </div>
 
-<div class="part-label">Ⅱ. 지구의 역사와 한반도의 암석</div>
+<div class="part-heading"><span class="roman">Ⅱ</span> 지구의 역사와 한반도의 암석</div>
 <div class="grid">
-  <a class="unit-card" href="2-1/">
+  <a class="unit-card c2" href="2-1/">
     <div class="chapter">Ⅱ-1</div>
     <h3 class="display">지구의 역사</h3>
     <p>상대연령을 결정하는 법칙들, 지층 대비, 반감기를 이용한 절대연령 계산, 퇴적암과 퇴적구조, 지질 시대와 표준 화석을 다룹니다.</p>
     <div class="topics"><span>상대연령</span><span>지층 대비</span><span>퇴적구조</span><span>지질 시대</span></div>
     <div class="go">→</div>
   </a>
-  <a class="unit-card" href="2-2/">
+  <a class="unit-card c2" href="2-2/">
     <div class="chapter">Ⅱ-2</div>
     <h3 class="display">한반도의 암석</h3>
     <p>마그마의 종류와 화성암, 암석의 순환, 접촉·광역 변성 작용, 우리나라의 국가지질공원을 살펴봅니다.</p>
@@ -133,16 +90,16 @@
   </a>
 </div>
 
-<div class="part-label">Ⅲ. 태양계 천체와 별과 우주의 진화</div>
+<div class="part-heading"><span class="roman">Ⅲ</span> 태양계 천체와 별과 우주의 진화</div>
 <div class="grid">
-  <a class="unit-card" href="3-1/">
+  <a class="unit-card c3" href="3-1/">
     <div class="chapter">Ⅲ-1</div>
     <h3 class="display">태양계 천체</h3>
     <p>행성의 겉보기 배치, 순행과 역행, 금성의 위상 변화, 일식과 월식이 일어나는 조건을 시뮬레이션합니다.</p>
     <div class="topics"><span>합과 충</span><span>역행 운동</span><span>금성의 위상</span><span>일식·월식</span></div>
     <div class="go">→</div>
   </a>
-  <a class="unit-card" href="3-2/">
+  <a class="unit-card c3" href="3-2/">
     <div class="chapter">Ⅲ-2</div>
     <h3 class="display">별과 우주의 진화</h3>
     <p>별의 분광형, H-R도, 질량에 따른 별의 진화, 은하의 분류, 허블 법칙과 우주의 팽창을 다룹니다.</p>
@@ -151,7 +108,6 @@
   </a>
 </div>
 
-<button class="theme-toggle" id="themeToggle">라이트 모드</button>
 <script src="assets/theme.js"></script>
 <script src="assets/qrcode.js"></script>
 <script>
