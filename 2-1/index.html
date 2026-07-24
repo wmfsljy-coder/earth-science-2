@@ -29,7 +29,7 @@
   .fossil-basket { border: 1.5px dashed var(--line); border-radius: 10px; padding: 10px 12px; min-height: 76px; cursor: pointer; }
   .fossil-basket .basket-title { font-weight: 700; font-size: 12.5px; color: var(--foam); margin-bottom: 8px; }
   .fossil-basket .basket-items { display: flex; gap: 6px; flex-wrap: wrap; }
-</style>
+.mission-stats{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}.stat-chip{background:var(--panel-2);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--mist);}.stat-chip b{color:var(--teal-dim);}.reward-badge{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:linear-gradient(135deg,#fff7ed,#ffe8d3);border:2px solid #ffb774;border-radius:999px;padding:10px 20px;font-size:14.5px;font-weight:800;color:#c2590f;animation:badge-pop .5s cubic-bezier(.34,1.56,.64,1);}.reward-badge[hidden]{display:none;}@keyframes badge-pop{0%{transform:scale(0) rotate(-8deg);opacity:0;}60%{transform:scale(1.15) rotate(3deg);opacity:1;}100%{transform:scale(1) rotate(0);}}</style>
 </head>
 <body>
 
@@ -185,7 +185,7 @@
           <button class="chip" id="c3m-check">채점하기</button>
           <button class="chip" id="c3m-new">다시 섞기</button>
         </div>
-        <div class="info-card" id="c3m-info">화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.</div><div class="info-card" style="margin-top:12px;background:#ffe8d3;"><span style="font-weight:800;color:#c2590f;">🦕 초등 연계 힌트</span> — 화석 분류가 낯설게 느껴지는 학생에게는 초등 학습 놀이터 <b>에딩(Eding)</b>의 <a href="https://edugame.restyart.com/play/dino-dig" target="_blank" rel="noopener" style="color:var(--teal-dim);font-weight:700;">공룡 발굴단</a> 게임을 먼저 해보게 하는 것도 좋은 도입 활동이 됩니다. 화석을 발굴하고 특징으로 시대를 추리하는 놀이 경험이, 위 '표준 화석 분류하기' 미션에서 배우는 개념(특정 시대에만 번성한 화석 = 표준 화석)의 직관적인 밑바탕이 되어 줍니다.</div>
+        <div class="info-card" id="c3m-info">화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.</div><div class="mission-stats" id="c3m-stats"><span class="stat-chip">시도 <b id="c3m-tries">0</b>회</span><span class="stat-chip">최고 기록 <b id="c3m-best">0</b>/7</span></div><div class="reward-badge" id="c3m-badge" hidden>🏆 <span>완벽 분류! 모든 표준 화석을 정확히 짝지었습니다.</span></div>
       </div>
     </section>
   </main>
@@ -791,7 +791,7 @@
     selected = null;
     var info = document.getElementById("c3m-info");
     info.style.color = "";
-    info.textContent = "화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.";
+    info.textContent = "화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=true;}
     render();
   }
 
@@ -858,7 +858,7 @@
       info.textContent = "아직 분류하지 않은 화석이 " + pool.length + "개 있습니다. 모든 화석을 지질 시대 칸에 놓아 주세요.";
       return;
     }
-    render(true);
+    render(true); var _tr=document.getElementById("c3m-tries"); if(_tr){_tr.textContent=(parseInt(_tr.textContent,10)+1);}
     var total = fossilData.length;
     var correct = 0;
     eraKeys.forEach(function (key) {
@@ -866,10 +866,10 @@
     });
     if (correct === total) {
       info.style.color = "var(--teal)";
-      info.innerHTML = "<b>전부 정답입니다!</b> 표준 화석은 특정 지질 시대에만 번성하고 넓은 지역에 분포해, 지층의 생성 시기를 알려주는 중요한 단서입니다.";
+      info.innerHTML = "<b>전부 정답입니다!</b> 표준 화석은 특정 지질 시대에만 번성하고 넓은 지역에 분포해, 지층의 생성 시기를 알려주는 중요한 단서입니다."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=false;} var _bs=document.getElementById("c3m-best"); if(_bs){var _cur=parseInt(_bs.textContent,10)||0; if(correct>_cur){_bs.textContent=correct;}}
     } else {
       info.style.color = "var(--coral)";
-      info.textContent = total + "개 중 " + correct + "개가 맞았습니다. 빨간 테두리로 표시된 화석을 알맞은 시대로 옮겨 다시 시도해 보세요.";
+      info.textContent = total + "개 중 " + correct + "개가 맞았습니다. 빨간 테두리로 표시된 화석을 알맞은 시대로 옮겨 다시 시도해 보세요."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=true;} var _bs=document.getElementById("c3m-best"); if(_bs){var _cur=parseInt(_bs.textContent,10)||0; if(correct>_cur){_bs.textContent=correct;}}
     }
   });
 
