@@ -76,8 +76,23 @@
   }
   @media (max-width: 760px) {
     .app { grid-template-columns: 1fr; }
-    .rail { flex-direction: row !important; overflow-x: auto; height: auto !important; }
+    .rail {
+      flex-direction: row !important; align-items: center;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      height: auto !important; position: static !important;
+      border-right: none !important; border-bottom: 1px solid var(--line);
+      padding: 12px; gap: 8px;
+    }
+    .rail .brand { flex: 0 0 auto; margin: 0 6px 0 0; padding: 0 14px 0 4px; border-bottom: none; border-right: 1px solid var(--line); }
+    .rail .brand h1 { font-size: 15px; margin: 2px 0 0; white-space: nowrap; }
+    .rail .brand h1 br { display: none; }
+    .rail .tab-btn { flex: 0 0 auto; white-space: nowrap; }
+    main { padding: 22px 16px 60px; }
+    .controls { padding: 16px 16px 18px; }
+    .info-card, .detail-panel { margin-left: 16px; margin-right: 16px; }
+    .stat-row, .legend-row, .card-grid { padding-left: 16px; padding-right: 16px; }
   }
+  canvas { display: block; width: 100%; max-width: 100%; height: auto; }
 
   /* ---- Rail (instrument selector) ---- */
   .rail {
@@ -761,14 +776,14 @@
   });
 
   function DPR(canvas) {
-    var dpr = window.devicePixelRatio || 1;
-    var w = canvas.width, h = canvas.height;
-    if (canvas._dprSet) return canvas.getContext("2d");
-    canvas.style.width = w + "px";
-    canvas.style.height = h + "px";
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
     var ctx = canvas.getContext("2d");
+    if (canvas._dprSet) return ctx;
+    var w = canvas.width, h = canvas.height;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.style.width = "100%";
+    canvas.style.height = "auto";
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
     ctx.scale(dpr, dpr);
     canvas._dprSet = true;
     canvas._w = w; canvas._h = h;
