@@ -133,6 +133,158 @@
     ctx.closePath();
   };
 
+  /* =========================================================================
+     학습 설계 부품 — 예측 잠금 · 산출물 · 진행 기록
+     단원 페이지는 sthUnit() 으로 이름을 정하고 sthGate() / sthWork() 만 부르면 된다.
+     ========================================================================= */
+  var UNIT = "sth-unit", STATE = {}, FIELDS = {};
+
+  function store() {
+    try { localStorage.setItem(UNIT, JSON.stringify({ s: STATE, w: FIELDS })); }
+    catch (e) { /* 시크릿 모드 등에서는 저장이 막힌다 */ }
+    paintRecap();
+  }
+  function restore() {
+    try {
+      var o = JSON.parse(localStorage.getItem(UNIT) || "{}");
+      if (o.s) STATE = o.s;
+      if (o.w) FIELDS = o.w;
+    } catch (e) { STATE = {}; FIELDS = {}; }
+  }
+
+  /* 단원 이름 정하기. 이걸 불러야 저장이 단원별로 나뉜다. */
+  window.sthUnit = function (name) {
+    UNIT = "sth-" + name;
+    restore();
+    return { state: STATE, fields: FIELDS };
+  };
+  window.sthState = function (k, v) {
+    if (arguments.length === 1) return STATE[k];
+    STATE[k] = v; store(); return v;
+  };
+
+  /* ---- 예측 잠금 ----
+     opt = { gate:'게이트 요소 id', veil:'덮개 요소 id', key:'저장 이름',
+             question:'질문', options:['㉠ …','㉡ …'], onPick:function(i, text){} }   */
+  window.sthGate = function (opt) {
+    var gate = document.getElementById(opt.gate);
+    var veil = opt.veil ? document.getElementById(opt.veil) : null;
+    if (!gate) return;
+    var html = '<h4>' + (opt.title || "먼저 예상해 봅시다") + '</h4>'
+             + '<p>' + opt.question + '</p><div class="opts"></div>';
+    gate.innerHTML = html;
+    var box = gate.querySelector(".opts");
+    opt.options.forEach(function (t, i) {
+      var b = document.createElement("button");
+      b.className = "opt"; b.type = "button"; b.textContent = t;
+      b.addEventListener("click", function () {
+        Array.prototype.forEach.call(box.children, function (o) { o.classList.remove("picked"); });
+        b.classList.add("picked");
+        gate.classList.add("done");
+        if (veil) veil.hidden = true;
+        STATE[opt.key || "pred"] = t;
+        store();
+        if (typeof opt.onPick === "function") opt.onPick(i, t);
+      });
+      box.appendChild(b);
+    });
+    /* 이미 고른 적이 있으면 그대로 복원한다 */
+    var prev = STATE[opt.key || "pred"];
+    if (prev) {
+      var idx = opt.options.indexOf(prev);
+      if (idx >= 0) {
+        box.children[idx].classList.add("picked");
+        gate.classList.add("done");
+        if (veil) veil.hidden = true;
+        if (typeof opt.onPick === "function") opt.onPick(idx, prev);
+      }
+    }
+  };
+
+  /* ---- 산출물 ----
+     opt = { mount:'붙일 요소 id', unitLabel:'제목줄에 넣을 단원 이름',
+             items:[{ id, label, hint, ph }] , recap:[{key,label}] }   */
+  var RECAP = null;
+  window.sthWork = function (opt) {
+    var mount = document.getElementById(opt.mount);
+    if (!mount) return;
+    var h = "";
+    if (opt.recap && opt.recap.length) {
+      h += '<div class="recap" id="' + opt.mount + '-recap"></div>';
+      RECAP = { id: opt.mount + "-recap", rows: opt.recap };
+    }
+    h += '<div class="work">';
+    opt.items.forEach(function (it, i) {
+      h += '<label for="' + it.id + '">' + (i + 1) + ". " + it.label
+         + ' <span class="saved" id="' + it.id + '-s"></span></label>';
+      if (it.hint) h += '<p class="hint" style="margin:0 0 6px">' + it.hint + '</p>';
+      h += '<textarea id="' + it.id + '" placeholder="' + (it.ph || "") + '"></textarea>';
+      if (it.after) h += '<p class="hint">' + it.after + '</p>';
+    });
+    h += '<div class="btn-row" style="margin-top:18px">'
+       + '<button class="btn primary" type="button" id="' + opt.mount + '-copy">답안 복사</button>'
+       + '<button class="btn" type="button" id="' + opt.mount + '-wipe">모두 지우기</button>'
+       + '<span class="saved" id="' + opt.mount + '-msg"></span></div></div>';
+    mount.innerHTML = h;
+
+    opt.items.forEach(function (it) {
+      var el = document.getElementById(it.id);
+      if (FIELDS[it.id]) el.value = FIELDS[it.id];
+      var tag = document.getElementById(it.id + "-s"), timer = null;
+      el.addEventListener("input", function () {
+        FIELDS[it.id] = el.value;
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function () {
+          store();
+          if (tag) { tag.textContent = "저장됨"; setTimeout(function () { tag.textContent = ""; }, 1200); }
+        }, 400);
+      });
+    });
+
+    var msg = document.getElementById(opt.mount + "-msg");
+    document.getElementById(opt.mount + "-copy").addEventListener("click", function () {
+      var lines = [opt.unitLabel || document.title, "이름: ______________", ""];
+      (opt.recap || []).forEach(function (r) {
+        lines.push("· " + r.label + ": " + (STATE[r.key] || "-"));
+      });
+      if (opt.recap && opt.recap.length) lines.push("");
+      opt.items.forEach(function (it, i) {
+        lines.push((i + 1) + ") " + it.label.replace(/<[^>]+>/g, ""));
+        lines.push(document.getElementById(it.id).value || "-");
+        lines.push("");
+      });
+      var txt = lines.join("\n");
+      function ok() { msg.textContent = "복사했습니다. 붙여넣어 제출하세요."; setTimeout(function () { msg.textContent = ""; }, 2600); }
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); ok(); }
+        catch (e) { msg.textContent = "복사가 막혀 있습니다. 직접 선택해 복사해 주세요."; }
+        document.body.removeChild(ta);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(ok, fallback);
+      } else fallback();
+    });
+    document.getElementById(opt.mount + "-wipe").addEventListener("click", function () {
+      opt.items.forEach(function (it) { var e = document.getElementById(it.id); if (e) e.value = ""; FIELDS[it.id] = ""; });
+      store();
+    });
+    paintRecap();
+  };
+
+  function paintRecap() {
+    if (!RECAP) return;
+    var el = document.getElementById(RECAP.id);
+    if (!el) return;
+    el.innerHTML = RECAP.rows.map(function (r) {
+      var v = STATE[r.key];
+      return "<div>" + r.label + " : "
+        + (v ? "<b>" + v + "</b>" : "<span class='none'>아직 하지 않음</span>") + "</div>";
+    }).join("");
+  }
+
   /* 구형 기기(크롬 98 이하 등)에는 ctx.roundRect 가 없다 */
   if (window.CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {

@@ -4,54 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>해수의 순환과 대기의 변화 — 관측 스테이션</title>
+<link rel="stylesheet" href="../assets/theme.css">
 <style>
-  :root {
-    --abyss: #061621;
-    --panel: #0c2438;
-    --panel-2: #102c44;
-    --rail: #081b2b;
-    --foam: #eaf3f2;
-    --mist: #a9c3ca;
-    --teal: #3fc9b0;
-    --teal-dim: #2a8f7c;
-    --coral: #f2965c;
-    --cold: #6fa8e0;
-    --line: #1c3c52;
-    --ink: #eaf3f2;
-    --good: #6fcf97;
-    --warn: #f2965c;
-  }
-  :root[data-theme="light"] {
-    --abyss: #eef5f4;
-    --panel: #ffffff;
-    --panel-2: #f4f9f8;
-    --rail: #e2edec;
-    --foam: #0c2233;
-    --mist: #4a6270;
-    --teal: #1f9683;
-    --teal-dim: #17765f;
-    --coral: #d97a3f;
-    --cold: #3a72b8;
-    --line: #d3e2e0;
-    --ink: #0c2233;
-  }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      --abyss: #eef5f4;
-      --panel: #ffffff;
-      --panel-2: #f4f9f8;
-      --rail: #e2edec;
-      --foam: #0c2233;
-      --mist: #4a6270;
-      --teal: #1f9683;
-      --teal-dim: #17765f;
-      --coral: #d97a3f;
-      --cold: #3a72b8;
-      --line: #d3e2e0;
-      --ink: #0c2233;
-    }
-  }
-
+  /* 색 토큰은 ../assets/theme.css 의 정본을 그대로 씁니다 */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -385,7 +340,7 @@
   .wmap.wmap-day4 { border-style: dashed; opacity: .85; }
 
 </style>
-<style>@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gothic+A1:wght@400;500;600;700;800;900&display=swap');:root{--abyss:#eef6fb!important;--panel:#ffffff!important;--panel-2:#f4f9fb!important;--rail:#ffffff!important;--foam:#12203a!important;--mist:#5c7086!important;--teal:#14b8a6!important;--teal-dim:#0f766e!important;--coral:#ff9752!important;--cold:#3db7e8!important;--line:#dfeaf1!important;--ink:#12203a!important;--good:#14b8a6!important;--warn:#ff9752!important;}.display{font-family:"Jua","Gothic A1",sans-serif;font-weight:400;letter-spacing:-.01em;}body{font-family:"Gothic A1",-apple-system,BlinkMacSystemFont,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;}.theme-toggle{display:none!important;}</style></head>
+</head>
 <body>
 
 <div class="app">
@@ -405,6 +360,7 @@
     <button class="tab-btn" data-tab="7"><span class="num">08</span> 기압과 날씨 변화</button>
     <button class="tab-btn" data-tab="8"><span class="num">09</span> 태풍</button>
     <button class="tab-btn" data-tab="9"><span class="num">10</span> 악기상</button>
+    <button class="tab-btn" data-tab="10"><span class="num">11</span> 정리하기</button>
   </nav>
 
   <main>
@@ -414,6 +370,8 @@
         <div class="eyebrow">01 · 수온·염분·밀도의 연직 분포</div>
         <h2 class="display">깊이에 따라 달라지는 해수의 성질</h2>
         <p>위도대를 선택하고 관측 깊이 슬라이더를 움직여, 깊이에 따라 수온·염분·밀도가 어떻게 달라지는지 살펴보세요. 수온이 급격히 낮아지는 구간이 <b>수온약층</b>입니다.</p>
+      
+        <span class="std-chip">12지구01-01</span><span class="std-chip">12지구01-02</span><span class="std-chip">12지구01-03</span><span class="std-chip">12지구01-04</span><div class="std-note"><b>[12지구01-01]</b> 해수의 물리적, 화학적 성질을 이해하고, 실측 자료를 활용하여 해수의 온도·염분·밀도 등의 분포를 설명할 수 있다.<br><b>[12지구01-02]</b> 심층 순환의 발생 원리와 분포를 알고, 표층 순환 및 기후 변화의 관련성을 추론할 수 있다.<br><b>[12지구01-03]</b> 중위도 저기압과 고기압이 통과할 때 날씨의 변화를 일기도, 위성 영상, 레이더 영상을 종합하여 해석할 수 있다.<br><b>[12지구01-04]</b> 태풍의 발생·이동·소멸 과정 및 태풍 영향권에서 날씨를 예측하고, 뇌우·집중 호우·폭설·강풍 등을 설명할 수 있다.</div><div class="terms"><b>수온약층</b><b>심층 순환</b><b>전선</b><b>태풍</b></div>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap">
@@ -458,6 +416,7 @@
         </div>
         <div class="info-card" id="c6m-info">세 깊이의 수온 자료를 비교해 보고, 위도대를 선택한 뒤 [정답 확인]을 눌러 보세요.</div>
       </div>
+      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>대기 대순환과 해류의 방향</b><br>대기 대순환과 해류의 방향이 <b>같다고 생각</b>하는데, 정확히 일치하지는 않는다. 그 이유는 <b>전향력</b> 때문이다. 전향력은 위도가 높아질수록 증가한다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
     </section>
 
     <!-- TAB 1 : 표층 해류 -->
@@ -489,6 +448,7 @@
         <div class="info-card" id="c0-info">바람 버튼을 눌러 순환을 만들어 보세요. 세 바람이 모두 켜지면 실제와 같은 이중 순환(아열대 + 아한대)이 완성됩니다.</div>
       </div>
       <p class="foot-note">모식도는 대양을 단순화한 사각 해분(海盆)입니다. 실제 해류 방향·세기·해안선 형태와는 차이가 있습니다.</p>
+      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>심층 순환과 표층 순환의 속도</b><br>두 순환이 컨베이어 벨트처럼 연결되어 있으므로 <b>속도도 같다</b>고 생각하기 쉽다. 컨베이어 벨트는 비유일 뿐이다. 해수의 순환은 유체의 순환이므로 어디에서나 이동 속도가 같을 수 없다. <b>표층 순환은 1초에 수 m까지 이동하기도 하지만, 심층 순환은 비교할 수 없을 만큼 느리다.</b><cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
     </section>
 
     <!-- TAB 2 : 에크만 수송 -->
@@ -743,24 +703,26 @@
       </div>
       <div class="mini-grid" id="c9-grid"></div>
     </section>
+
+    <section class="tab-panel" data-panel="10" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">11 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
+    </section>
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 
+<script src="../assets/theme.js"></script>
 <script>
 (function () {
   "use strict";
 
-  /* ---------- theme toggle ---------- */
-  var root = document.documentElement;
-  var themeBtn = document.getElementById("themeToggle");
-  themeBtn.addEventListener("click", function () {
-    var cur = root.getAttribute("data-theme");
-    var next = cur === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    themeBtn.textContent = next === "dark" ? "라이트 모드" : "다크 모드";
-  });
+  /* 테마 전환과 탭 전환은 ../assets/theme.js 가 맡습니다 */
 
   /* ---------- tab switching ---------- */
   var tabBtns = document.querySelectorAll(".tab-btn");
@@ -2313,6 +2275,42 @@
     requestAnimationFrame(frame);
   })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("eshs-1-1");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[지구과학 Ⅰ-1] 해수의 순환과 대기의 변화",
+    items: [
+      {
+            "id": "w1",
+            "label": "수온약층이 생기는 까닭",
+            "hint": "깊이에 따른 수온 변화 그래프에서 수온약층이 어느 구간인지 짚고, 그 층이 왜 위아래 물의 섞임을 막는지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w2",
+            "label": "표층 순환과 심층 순환",
+            "hint": "두 순환을 움직이는 힘이 각각 무엇인지, 그리고 두 순환의 속도가 왜 다른지 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "일기도에서 읽은 것",
+            "hint": "온난 전선과 한랭 전선이 지나갈 때 기온·바람·강수가 어떻게 달라지는지 하나를 골라 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w4",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>
