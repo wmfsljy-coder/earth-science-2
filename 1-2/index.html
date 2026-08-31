@@ -33,6 +33,7 @@
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 기후 변화 요인</button>
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 온실 효과·온난화</button>
     <button class="tab-btn" data-tab="4"><span class="num">05</span> 기후 변화 대응</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
   </nav>
 
   <main>
@@ -42,6 +43,8 @@
         <div class="eyebrow">01 · 해수의 연직 이동</div>
         <h2 class="display">용승과 침강</h2>
         <p>바람 때문에 표층 해수가 수평으로 이동하면, 이를 채우기 위해 심층의 해수가 수직으로 이동합니다. 연안 용승·침강과 적도 용승 세 가지 유형을 비교해 보세요.</p>
+      
+        <span class="std-chip">12지구01-05</span><span class="std-chip">12지구01-06</span><div class="std-note"><b>[12지구01-05]</b> 대기와 해양의 상호 작용의 사례로서 해수의 용승과 침강, 엘니뇨-남방진동(ENSO) 현상의 진행 과정 및 관련 현상을 설명할 수 있다.<br><b>[12지구01-06]</b> 기후 변화의 원인을 자연적 요인과 인위적 요인으로 구분하여 설명하고, 인간 활동에 의한 기후 변화의 심각성을 인식할 수 있다.</div><div class="terms"><b>용승</b><b>침강</b><b>엔소(ENSO)</b><b>복사 강제력</b></div>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c0" width="900" height="520"></canvas></div>
@@ -96,6 +99,7 @@
         </div>
         <div class="info-card" id="c1m-info">카드를 클릭해 선택한 뒤, 놓을 칸을 클릭하세요.</div>
       </div>
+      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>에어로졸의 복사 강제력</b><br>모든 에어로졸이 지구의 기온을 낮추는 것은 아니다. <b>복사 에너지 흡수를 통해 지구의 기온을 높이는 에어로졸도 있고</b>, 태양 빛을 반사하여 지구의 기온을 낮추는 에어로졸도 있다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
     </section>
 
     <!-- TAB 2 : 기후 변화 자연적 요인 -->
@@ -166,6 +170,15 @@
         </div>
         <div class="info-card" id="c4-info">타임라인의 점 또는 완화 기술 버튼을 클릭해 보세요.</div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -710,6 +723,42 @@
   render();
 })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("eshs-1-2");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[지구과학 Ⅰ-2] 대기와 해양의 상호작용과 기후 변화",
+    items: [
+      {
+            "id": "w1",
+            "label": "용승이 일어나는 조건",
+            "hint": "어느 방향의 바람이 불 때 용승이 일어나는지, 에크만 수송과 연결해 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w2",
+            "label": "엘니뇨 때 달라지는 것",
+            "hint": "평상시와 엘니뇨 때 무역풍·수온약층·강수 지역이 어떻게 달라지는지 하나씩 짝지어 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "자연적 요인과 인위적 요인",
+            "hint": "기온 변화 그래프에서 인위적 요인을 빼면 설명되지 않는 구간이 어디인지 짚고 근거를 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w4",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>

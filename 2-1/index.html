@@ -45,6 +45,7 @@
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 절대연령과 반감기</button>
     <button class="tab-btn" data-tab="3"><span class="num">04</span> 퇴적암과 퇴적구조</button>
     <button class="tab-btn" data-tab="4"><span class="num">05</span> 지질 시대와 화석</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
   </nav>
 
   <main>
@@ -54,6 +55,8 @@
         <div class="eyebrow">01 · 지층 형성의 선후 관계</div>
         <h2 class="display">상대연령을 결정하는 법칙</h2>
         <p>아래 법칙 버튼을 눌러 각 법칙이 지층 단면에서 어떻게 적용되는지 확인해 보세요.</p>
+      
+        <span class="std-chip">12지구02-01</span><span class="std-chip">12지구02-02</span><div class="std-note"><b>[12지구02-01]</b> 지층 형성의 선후 관계를 결정짓는 법칙들을 활용하여 상대연령을 비교하고, 방사성 동위원소를 이용하여 절대연령을 구할 수 있다.<br><b>[12지구02-02]</b> 지질 시대를 기(紀) 수준에서 구분하고, 지층과 화석을 통해 지질 시대의 생물과 환경 변화를 해석할 수 있다.</div><div class="terms"><b>상대연령</b><b>절대연령</b><b>반감기</b><b>표준 화석</b></div>
       </div>
       <div class="stage-card">
         <div class="canvas-wrap"><canvas id="c0" width="900" height="480"></canvas></div>
@@ -71,6 +74,7 @@
         </div>
         <div class="info-card" id="c0-info"></div>
       </div>
+      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>동물군천이의 법칙</b><br>시간에 따라 <b>동물군뿐만 아니라 식물군도 진화하면서 천이가 일어난다.</b> 그래서 다른 문헌에서는 이를 합쳐 <b>생물군천이의 법칙</b>으로 표현한다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
     </section>
 
     <!-- TAB1 지층 대비 -->
@@ -158,6 +162,7 @@
         </div>
         <div class="info-card" id="c4-info"></div>
       </div>
+      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>중생대의 대형 파충류와 공룡</b><br>중생대 육상에서 살았던 <b>공룡상목에 속하는 파충류</b>를 공룡이라고 한다. 흔히 익룡을 중생대에 하늘을 날아다니던 공룡이라고 하는데 <b>익룡은 공룡이 아니다.</b> 어룡과 수장룡 또한 공룡이 아니다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
     </section>
 
     <!-- TAB4 지질시대 -->
@@ -187,6 +192,15 @@
         </div>
         <div class="info-card" id="c3m-info">화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.</div><div class="mission-stats" id="c3m-stats"><span class="stat-chip">시도 <b id="c3m-tries">0</b>회</span><span class="stat-chip">최고 기록 <b id="c3m-best">0</b>/7</span></div><div class="reward-badge" id="c3m-badge" hidden>🏆 <span>완벽 분류! 모든 표준 화석을 정확히 짝지었습니다.</span></div>
       </div>
+    </section>
+
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
+        <h2 class="display">정리하기</h2>
+        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
   </main>
 </div>
@@ -877,6 +891,42 @@
   reset();
 })();
 
+})();
+</script>
+
+<script>
+(function () {
+  window.sthUnit("eshs-2-1");
+  window.sthWork({
+    mount: "wk",
+    unitLabel: "[지구과학 Ⅱ-1] 지구의 역사",
+    items: [
+      {
+            "id": "w1",
+            "label": "상대연령을 정한 근거",
+            "hint": "지층 그림에서 어느 법칙을 어디에 적용했는지, 순서와 함께 쓰세요.",
+            "ph": "① … 법칙으로 … / ② … 법칙으로 …"
+      },
+      {
+            "id": "w2",
+            "label": "반감기로 나이 구하기",
+            "hint": "고른 시료의 남은 양과 반감기로 절대연령을 계산하고, 계산 과정을 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w3",
+            "label": "표준 화석의 조건",
+            "hint": "어떤 화석이 표준 화석이 되려면 무엇을 갖추어야 하는지, 이 단원에서 본 화석 하나를 예로 들어 쓰세요.",
+            "ph": ""
+      },
+      {
+            "id": "w4",
+            "label": "아직 헷갈리는 것",
+            "hint": "다음 시간에 여기서부터 시작합니다.",
+            "ph": ""
+      }
+]
+  });
 })();
 </script>
 </body>
