@@ -31,9 +31,10 @@
         <p>SiO₂ 함량 슬라이더로 마그마의 종류를, 냉각 속도 버튼으로 화산암·심성암을 선택해 완성되는 화성암을 확인해 보세요.</p><div class="info-card" style="margin:14px 0 0;max-width:640px;"><span class="tag" style="background:var(--brand-100);color:var(--brand-700)">분출 양식</span>SiO₂ 함량이 높을수록 마그마의 점성이 커지고, 마그마 속에 녹아 있던 화산 가스(주로 수증기·이산화 탄소)가 잘 빠져나가지 못해 압력이 쌓입니다. 그 결과 유문암질 마그마는 가스가 한꺼번에 터지며 <b>폭발적으로 분출</b>하고, 현무암질 마그마는 점성이 낮아 가스가 서서히 빠져나가며 <b>비교적 조용히 흘러나옵니다</b>. 실제 화산 재해 대응에서도 마그마 조성으로 예상되는 분출 양식을 파악해 대피 반경과 방식을 다르게 정합니다.
         <span class="std-chip">12지구02-03</span><span class="std-chip">12지구02-04</span><span class="std-chip">12지구02-05</span><div class="std-note"><b>[12지구02-03]</b> 변동대에서 마그마가 생성되고, 그 조성에 따라 다양한 화성암이 생성됨을 설명할 수 있다.<br><b>[12지구02-04]</b> 변성 작용의 종류와 지각 변동에 따른 구조를 변동대와 관련지어 설명하고, 지구시스템에서 암석이 순환함을 설명할 수 있다.<br><b>[12지구02-05]</b> 우리나라의 대표적인 지질공원의 지질학적 형성 과정을 추론하고, 지역사회와 함께하는 지질공원의 가치를 인식할 수 있다.</div><div class="terms"><b>현무암질 마그마</b><b>부분 용융</b><b>접촉 변성</b><b>광역 변성</b></div>
       </div>
+      <div class="gate loose" id="gt"></div>
       </div>
       <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c0" width="900" height="440"></canvas></div>
+        <div class="canvas-wrap" style="position:relative"><canvas id="c0" width="900" height="440"></canvas><div class="veil" id="vl"><p>예상을 고르면 화면이 열립니다.</p></div></div>
         <div class="controls">
           <div class="ctrl-group">
             <div class="ctrl-label">SiO₂ 함량(%)<span class="val" id="c0-sio2-val">52</span></div>
@@ -536,6 +537,26 @@
             "ph": ""
       }
 ]
+  });
+})();
+</script>
+
+<script>
+(function () {
+  window.sthGate({
+    gate: "gt", veil: "vl", key: "subduct",
+    question: "섭입대에서 마그마가 생기는 <b>가장 큰 까닭</b>은 무엇일까요?",
+    options: ["㉠ 판이 밀리며 생긴 마찰열", "㉡ 해양 지각이 직접 녹아서", "㉢ 물이 공급되어 위쪽 맨틀이 부분 용융", "㉣ 지구 중심의 열이 올라와서"],
+    onPick: function (i) {
+      var ok = (i === 2);
+      window.sthState("subductOK", ok ? "맞음" : "어긋남");
+      var msg = (ok ? "<b>맞았습니다.</b> " : "<b>정답은 ㉢ 입니다.</b> ") + "마찰열이 아닙니다." + " " + "섭입하는 해양 지각에서 빠져나온 <b>물이 위쪽 맨틀의 녹는점을 낮춰</b> 부분 용융이 일어납니다. 해양 지각이나 퇴적물이 직접 녹는 경우는 거의 없습니다.";
+      var g = document.getElementById("gt");
+      var box = g.parentNode.querySelector(".info-card");
+      if (box) box.innerHTML = msg;
+      else { var d = document.createElement("div"); d.className = "info-card"; d.style.margin = "18px 0 0";
+             d.innerHTML = msg; g.insertAdjacentElement("afterend", d); }
+    }
   });
 })();
 </script>

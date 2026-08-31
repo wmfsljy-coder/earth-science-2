@@ -373,10 +373,11 @@
       
         <span class="std-chip">12지구01-01</span><span class="std-chip">12지구01-02</span><span class="std-chip">12지구01-03</span><span class="std-chip">12지구01-04</span><div class="std-note"><b>[12지구01-01]</b> 해수의 물리적, 화학적 성질을 이해하고, 실측 자료를 활용하여 해수의 온도·염분·밀도 등의 분포를 설명할 수 있다.<br><b>[12지구01-02]</b> 심층 순환의 발생 원리와 분포를 알고, 표층 순환 및 기후 변화의 관련성을 추론할 수 있다.<br><b>[12지구01-03]</b> 중위도 저기압과 고기압이 통과할 때 날씨의 변화를 일기도, 위성 영상, 레이더 영상을 종합하여 해석할 수 있다.<br><b>[12지구01-04]</b> 태풍의 발생·이동·소멸 과정 및 태풍 영향권에서 날씨를 예측하고, 뇌우·집중 호우·폭설·강풍 등을 설명할 수 있다.</div><div class="terms"><b>수온약층</b><b>심층 순환</b><b>전선</b><b>태풍</b></div>
       </div>
+      <div class="gate loose" id="gt"></div>
       <div class="stage-card">
-        <div class="canvas-wrap">
+        <div class="canvas-wrap" style="position:relative">
           <canvas id="c6" width="900" height="560"></canvas>
-        </div>
+        <div class="veil" id="vl"><p>예상을 고르면 화면이 열립니다.</p></div></div>
         <div class="controls">
           <div class="ctrl-group">
             <div class="ctrl-label">위도대</div>
@@ -2310,6 +2311,26 @@
             "ph": ""
       }
 ]
+  });
+})();
+</script>
+
+<script>
+(function () {
+  window.sthGate({
+    gate: "gt", veil: "vl", key: "current",
+    question: "대기 대순환의 방향과 표층 해류의 방향은 <b>같을까요?</b>",
+    options: ["㉠ 정확히 같다", "㉡ 대체로 비슷하지만 정확히 일치하지는 않는다", "㉢ 서로 반대다", "㉣ 아무 관계가 없다"],
+    onPick: function (i) {
+      var ok = (i === 1);
+      window.sthState("currentOK", ok ? "맞음" : "어긋남");
+      var msg = (ok ? "<b>맞았습니다.</b> " : "<b>정답은 ㉡ 입니다.</b> ") + "표층 해류는 바람이 만들지만, 방향이 그대로 옮겨지지는 않습니다." + " " + "<b>전향력</b> 때문에 해류는 바람의 방향에서 비껴갑니다. 전향력은 위도가 높아질수록 커지므로 어긋나는 정도도 위도에 따라 달라집니다.";
+      var g = document.getElementById("gt");
+      var box = g.parentNode.querySelector(".info-card");
+      if (box) box.innerHTML = msg;
+      else { var d = document.createElement("div"); d.className = "info-card"; d.style.margin = "18px 0 0";
+             d.innerHTML = msg; g.insertAdjacentElement("afterend", d); }
+    }
   });
 })();
 </script>
