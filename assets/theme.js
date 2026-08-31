@@ -52,6 +52,22 @@
     else if (mq.addListener) mq.addListener(onScheme);
   }
 
+  /* ---------- 허브로 돌아가는 길 ----------
+     단원 페이지의 .brand 안 '← 과목' 링크 앞에 허브 링크를 하나 넣는다.
+     44개 단원이 각자 마크업을 고칠 필요 없이 여기서 한 번에 붙는다. */
+  (function () {
+    var brand = document.querySelector(".rail .brand");
+    if (!brand || brand.querySelector("a.hub")) return;
+    var a = document.createElement("a");
+    a.className = "home hub";
+    a.href = "https://wmfsljy-coder.github.io/science-teacher-hub/";
+    a.textContent = "← 허브";
+    a.style.marginRight = "10px";
+    var home = brand.querySelector("a.home");
+    if (home) brand.insertBefore(a, home);
+    else brand.insertBefore(a, brand.firstChild);
+  })();
+
   /* ---------- 탭 ---------- */
   var tabBtns = document.querySelectorAll(".tab-btn");
   var panels = document.querySelectorAll(".tab-panel");
