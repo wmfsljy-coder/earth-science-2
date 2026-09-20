@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>태양계 행성의 겉보기 운동 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/story.css">
 <style>
-  /* 공용 부품(.std-chip .gate .veil .miscon .work .recap table.obs)은 ../assets/theme.css 에 있습니다 */
   .phase-cell canvas { width: 34px !important; height: 34px !important; display: inline-block; vertical-align: middle; }
 </style>
 </head>
@@ -19,1370 +19,480 @@
       <div class="eyebrow">Ⅲ-1 · 태양계 천체</div>
       <h1 class="display">태양계 행성의 <br>겉보기 운동</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 천구의 방위</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 순행과 역행</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 이각과 관측</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 주전원</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 식 현상</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 거꾸로 가는 별</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 해 지고 나서 한 시간</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 그림자가 지나간 자리</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
   </nav>
 
   <main>
 
-  <!-- ========================= 01 천구의 방위 ========================= -->
-  <section class="tab-panel" data-panel="0">
-    <div class="stage-head">
-      <div class="std-chip">12지구03-01</div>
-      <div class="eyebrow">01 · 겉보기 운동을 읽기 위한 좌표</div>
-      <h2 class="display">천구에서 동쪽은 어느 쪽인가</h2>
-      <p>행성이 <b>서에서 동으로</b> 가는지 <b>동에서 서로</b> 가는지 읽으려면, 하늘에서 동서가 어느 쪽인지부터 정해야 합니다. 먼저 스스로 정해 보고, 별을 움직여 확인하세요.</p>
-      <ul class="goal">
-        <li>모형을 이용하여 행성의 겉보기 운동을 설명할 수 있다.</li>
-        <li>천체 관측 프로그램을 활용하여 3차원 공간에서 나타나는 행성의 운동을 설명할 수 있다.</li>
-      </ul>
-      <div class="terms"><b>행성의 겉보기 운동</b><b>순행</b><b>역행</b><b>이각</b></div>
-    </div>
-
-    <div class="stage-card">
-      <div class="canvas-wrap">
-        <div class="badge-row"><span class="badge" id="t0-badge">관측자는 남쪽을 보고 있습니다</span></div>
-        <canvas id="c0" width="900" height="420"></canvas>
+    <!-- =====================================================================
+         01 천구의 방위 · 순행과 역행 · 주전원 — 이야기 「거꾸로 가는 별」
+         ===================================================================== -->
+    <section class="tab-panel" data-panel="0">
+      <div class="stage-head">
+        <div class="eyebrow">01 · 천구의 방위와 순행·역행 · 이야기 한 편</div>
+        <h2 class="display">거꾸로 가는 별</h2>
+        <p>천문 동아리가 여덟 달 동안 같은 시각, 같은 하늘을 찍었습니다. 화성만 별들 사이에서 가던 길을 되돌아왔습니다. 그런데 그 기록의 첫 줄에 이미 실수가 하나 숨어 있습니다.</p>
+        <span class="std-chip">12지구03-01</span><div class="std-note"><b>[12지구03-01]</b> 태양-지구-달 시스템에서의 식 현상을 이해하고 모형으로 행성의 겉보기 운동을 설명할 수 있다.</div><div class="terms"><b>천구</b><b>일주 운동</b><b>순행</b><b>역행</b><b>유</b><b>주전원</b></div>
       </div>
-      <div class="controls">
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">동쪽을 어느 쪽에 붙일까요?</div>
-          <div class="toggle-row">
-            <button class="chip" id="t0-left">왼쪽이 동쪽</button>
-            <button class="chip" id="t0-right">오른쪽이 동쪽</button>
+
+      <div class="episode" id="epA">
+        <section class="scene" data-title="관측 일지의 모순">
+          <div class="story narr"><div class="who">🔭</div><div class="say"><span class="name">이야기</span>천문 동아리 ‘남중’ 은 2024년 8월부터 매주 같은 시각에 남쪽 하늘을 찍었습니다. 배경 별자리는 그대로인데 <b>화성</b>만 사진마다 조금씩 자리를 옮깁니다. 그러다 겨울이 되자 화성이 <b>가던 길을 되돌아오기</b> 시작했습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 1학년</span>“선배님, 일지에 이렇게 적었어요. ‘12월 사진에서 화성이 별자리에 대해 <b>오른쪽</b>으로 옮겨 갔다. 그러므로 화성은 <b>동쪽</b>으로 갔다.’ 지도에서도 오른쪽이 동쪽이잖아요.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“잠깐. 그 한 줄이 이 일지 전체를 뒤집을 수 있어요. 우리는 <b>남쪽 하늘</b>을 찍었죠? 그러면 먼저 하늘에서 동쪽이 어느 쪽인지부터 정하고 가야 합니다. 고르고 시작합시다.”</div></div>
+          <div class="case-file"><b class="k">일지에 적힌 것</b> 관측 기간 2024년 8월 ~ 2025년 여름 &nbsp;|&nbsp; 같은 시각, 같은 남쪽 하늘 &nbsp;|&nbsp; 배경 별자리는 그대로 &nbsp;|&nbsp; 화성만 자리를 옮김 &nbsp;|&nbsp; 12월~2월에 되돌아옴 &nbsp;|&nbsp; 같은 기간 금성도 한 번 되돌아옴 (그런데 금성은 해 질 무렵에만 보임)</div>
+          <div class="gate loose" id="a-gate"></div>
+        </section>
+
+        <section class="scene" data-title="하늘에 동서를 붙인다">
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“하늘의 동서를 정하는 방법은 하나뿐입니다. <b>별이 실제로 어느 쪽에서 떠서 어느 쪽으로 지는지</b> 보는 것이죠. 지구가 서에서 동으로 자전하니까 천체는 <b>동쪽에서 떠서 서쪽으로</b> 집니다. 이건 바뀌지 않아요.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“아래 화면은 남쪽을 바라본 하늘입니다. <b>천구 적도 위의 별</b> 하나를 놓았어요. 관측 시각과 그 별이 남중하는 시각을 움직이면, 별의 고도와 방위를 계산해 줍니다. 별을 지평선까지 데려가 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-sky" width="900" height="430"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">지금 시각<span class="val" id="a-time-val">21시 00분</span></div>
+                <input type="range" id="a-time" min="18" max="30" step="0.25" value="21">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">이 별이 남중하는 시각<span class="val" id="a-tran-val">22시 00분</span></div>
+                <input type="range" id="a-tran" min="18" max="30" step="0.25" value="22">
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">화면에 이름표 붙이기</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="a-east-left">왼쪽이 동쪽</button>
+                  <button type="button" class="chip" id="a-east-right">오른쪽이 동쪽</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--brand)"></span><span class="txt" id="a-sky-read">시간각: —</span></div>
+            </div>
+            <div class="info-card" id="a-sky-info"></div>
           </div>
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">확인</div>
-          <div class="btn-row">
-            <button class="btn primary" id="t0-run">별을 움직여 확인</button>
-            <button class="btn" id="t0-reset">다시</button>
+          <div class="mission" id="m-a2"><span class="m-tag">미션</span>별을 지평선까지 데려가면 하늘의 동서가 저절로 드러납니다.<ul>
+            <li id="m-a2a">별이 <b>지평선에서 막 떠오르는</b> 순간 만들기 (시간각 −6시간)</li>
+            <li id="m-a2b">별이 <b>남중</b>하는 순간 만들기 (시간각 0)</li>
+            <li id="m-a2c">별이 <b>지평선으로 막 지는</b> 순간 만들기 (시간각 +6시간)</li>
+            <li id="m-a2d">떠오른 쪽에 <b>올바른 이름표</b> 붙이기</li>
+          </ul></div>
+          <div class="miscon">
+            <span class="tag">오개념 지도</span><br>
+            지상에서의 방위 체계(북쪽을 바라볼 때)에 익숙한 학생들은 <b>오른쪽을 동쪽, 왼쪽을 서쪽</b>으로 인식할 수 있다.
+            천구상의 천체의 이동 방향을 알아볼 때는 주로 <b>남쪽을 바라볼 때</b>이고, <b>왼쪽이 동쪽, 오른쪽이 서쪽</b>이다.
+            <cite>지구과학 교사용 교과서 151쪽</cite>
           </div>
-        </div>
-      </div>
-      <div class="info-card" id="t0-info">먼저 동쪽 방향을 골라 보세요. 고른 뒤에 별을 움직이면, 별이 뜨고 지는 방향과 맞는지 알 수 있습니다.</div>
-      <div class="miscon">
-        <span class="tag">오개념 지도</span><br>
-        지상에서의 방위 체계(북쪽을 바라볼 때)에 익숙한 학생들은 <b>오른쪽을 동쪽, 왼쪽을 서쪽</b>으로 인식할 수 있다.
-        천구상의 천체의 이동 방향을 알아볼 때는 주로 <b>남쪽을 바라볼 때</b>이고, <b>왼쪽이 동쪽, 오른쪽이 서쪽</b>이다.
-        <cite>지구과학 교사용 교과서 151쪽</cite>
-      </div>
-      <p class="foot-note">별의 일주 운동: 지구가 서에서 동으로 자전하므로, 천체는 동쪽에서 떠서 서쪽으로 집니다.</p>
-    </div>
-  </section>
+        </section>
 
-  <!-- ========================= 02 순행과 역행 ========================= -->
-  <section class="tab-panel" data-panel="1" hidden>
-    <div class="stage-head">
-      <div class="eyebrow">02 · 궤도면에서 일어나는 일과 하늘에서 보이는 일</div>
-      <h2 class="display">순행과 역행</h2>
-      <p>위쪽은 <b>천구</b>(배경별과 황도), 아래쪽은 <b>공전 궤도면</b>입니다. 지구에서 행성으로 그은 시선이 천구의 어디를 가리키는지 따라가 보세요.</p>
-    </div>
-
-    <div class="stage-card">
-      <div class="gate" id="t1-gate">
-        <h4>먼저 예상해 봅시다</h4>
-        <p>지구가 화성을 안쪽 궤도에서 <b>추월하는 동안</b>, 배경별을 기준으로 화성은 하늘에서 어느 쪽으로 움직일까요?</p>
-        <div class="opts">
-          <button class="opt" data-a="0">㉠ 계속 동쪽으로만</button>
-          <button class="opt" data-a="1">㉡ 계속 서쪽으로만</button>
-          <button class="opt" data-a="2">㉢ 동 → 서 → 동</button>
-          <button class="opt" data-a="3">㉣ 서 → 동 → 서</button>
-        </div>
-      </div>
-
-      <div class="canvas-wrap" style="position:relative">
-        <div class="badge-row">
-          <span class="badge" id="t1-date">—</span>
-          <span class="badge" id="t1-state">—</span>
-        </div>
-        <canvas id="c1" width="900" height="640"></canvas>
-        <div class="veil" id="t1-veil"><p>예상을 고르면 하늘이 열립니다.<br>고르기 전에 답을 보면, 놀랄 기회가 사라집니다.</p></div>
-      </div>
-
-      <div class="controls">
-        <div class="ctrl-group">
-          <div class="ctrl-label">날짜 <span class="val" id="t1-dval">2024-08-01</span></div>
-          <input type="range" id="t1-d" min="0" max="760" step="1" value="0">
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">행성</div>
-          <div class="seg" id="t1-planet">
-            <button class="on" data-p="화성">화성</button>
-            <button data-p="금성">금성</button>
-            <button data-p="목성">목성</button>
+        <section class="scene" data-title="여덟 달을 이어 붙인다">
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 1학년</span>“그럼 제 일지는 거꾸로 적힌 거네요. 화성은 동쪽이 아니라 <b>서쪽</b>으로 간 겁니다. 그런데 화성이 왜 갑자기 뒤로 가죠? 브레이크를 밟기라도 하나요?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“아래 화면은 위가 <b>천구</b>(배경별과 황도), 아래가 <b>공전 궤도면</b>입니다. 날짜를 밀면 지구에서 행성으로 그은 <b>시선</b>이 천구에 자취를 남깁니다. 파란 자취는 순행(서→동), 붉은 자취는 역행(동→서), 노란 동그라미는 방향이 바뀌는 순간인 <b>유</b>입니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap">
+              <div class="badge-row"><span class="badge" id="a-date">—</span><span class="badge" id="a-state">—</span></div>
+              <canvas id="a-c-retro" width="900" height="640"></canvas>
+            </div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">2024-08-01 로부터<span class="val" id="a-day-val">0일</span></div>
+                <input type="range" id="a-day" min="0" max="760" step="2" value="0">
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">따라갈 행성</div>
+                <div class="seg" id="a-planet">
+                  <button type="button" class="on" data-p="화성">화성</button>
+                  <button type="button" data-p="금성">금성</button>
+                  <button type="button" data-p="목성">목성</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--coral)"></span><span class="txt" id="a-retro-read">겉보기 운동: —</span></div>
+            </div>
+            <div class="stat-row">
+              <div class="stat-box"><div class="lbl">궤도면에서 행성이 방향을 바꾼 횟수</div><div class="num" id="a-orbflip">0</div></div>
+              <div class="stat-box"><div class="lbl">하늘에서 방향이 바뀐 횟수 (유)</div><div class="num" id="a-skyflip">0</div></div>
+              <div class="stat-box"><div class="lbl">지금 겉보기 운동</div><div class="num" id="a-mode">—</div></div>
+              <div class="stat-box"><div class="lbl">이각</div><div class="num" id="a-elong">—</div></div>
+            </div>
+            <div class="legend-row">
+              <span><span class="sw" style="background:var(--brand)"></span>순행 (서→동)</span>
+              <span><span class="sw" style="background:var(--coral)"></span>역행 (동→서)</span>
+              <span><span class="sw" style="background:var(--amber)"></span>유 (방향이 바뀌는 순간)</span>
+              <span><span class="sw" style="background:var(--mist)"></span>시선</span>
+            </div>
+            <div class="info-card" id="a-retro-info"></div>
           </div>
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">진행</div>
-          <div class="btn-row">
-            <button class="btn primary" id="t1-play">재생</button>
-            <button class="btn" id="t1-step">교과서 간격 (지구 30°)</button>
-            <button class="btn" id="t1-clear">궤적 지우기</button>
+          <div class="mission" id="m-a3"><span class="m-tag">미션</span>외행성과 내행성은 <b>역행하는 자리</b>가 다릅니다.<ul>
+            <li id="m-a3a">화성에서 <b>유를 두 번</b> 만들어 역행 구간을 통째로 지나가기</li>
+            <li id="m-a3b">화성이 <b>역행하는 동안</b> 이각이 <b>150° 이상</b>인 날 찾기</li>
+            <li id="m-a3c">금성으로 바꿔 금성에서도 <b>유를 두 번</b> 만들기</li>
+            <li id="m-a3d">금성이 <b>역행하는 날</b>에 서서 이각이 <b>30° 이하</b>임을 확인하기</li>
+          </ul></div>
+          <div class="miscon" id="a-mis" hidden>
+            <span class="tag">확인해 봅시다</span><br>
+            하늘에서 화성이 되돌아가는 동안에도, <b>궤도면에서 화성이 방향을 바꾼 횟수는 0</b>입니다.
+            역행은 행성이 실제로 뒤로 가는 현상이 아니라, <b>지구가 안쪽에서 더 빨리 돌며 행성을 앞질러 갈 때</b>
+            시선의 방향이 되돌아가는 현상입니다.
+            <cite>04번 탭에서 옛사람들이 이 현상을 어떻게 설명했는지 볼 수 있습니다</cite>
           </div>
-        </div>
-      </div>
+          <p class="foot-note">위 상자는 화성에서 유가 두 번 나타나면 저절로 열립니다. 옛사람들의 설명은 <b>바로 다음 장면</b>에 있습니다.</p>
+        </section>
 
-      <div class="stat-row">
-        <div class="stat-box"><div class="lbl">궤도면에서 행성이 방향을 바꾼 횟수</div><div class="num" id="t1-orbflip">0</div></div>
-        <div class="stat-box"><div class="lbl">하늘에서 방향이 바뀐 횟수 (유)</div><div class="num" id="t1-skyflip">0</div></div>
-        <div class="stat-box"><div class="lbl">지금 겉보기 운동</div><div class="num" id="t1-mode">순행</div></div>
-        <div class="stat-box"><div class="lbl">이각</div><div class="num" id="t1-elong">—</div></div>
-      </div>
-
-      <div class="legend-row">
-        <span><span class="sw" style="background:var(--brand)"></span>순행 (서→동)</span>
-        <span><span class="sw" style="background:var(--coral)"></span>역행 (동→서)</span>
-        <span><span class="sw" style="background:var(--amber)"></span>유 (방향이 바뀌는 순간)</span>
-        <span><span class="sw" style="background:var(--mist)"></span>시선</span>
-      </div>
-
-      <div class="info-card" id="t1-info"></div>
-      <div class="miscon" id="t1-mis" hidden>
-        <span class="tag">확인해 봅시다</span><br>
-        하늘에서 화성이 되돌아가는 동안에도, <b>궤도면에서 화성이 방향을 바꾼 횟수는 0</b>입니다.
-        역행은 행성이 실제로 뒤로 가는 현상이 아니라, <b>지구가 안쪽에서 더 빨리 돌며 행성을 앞질러 갈 때</b>
-        시선의 방향이 되돌아가는 현상입니다.
-        <cite>04번 탭에서 옛사람들이 이 현상을 어떻게 설명했는지 볼 수 있습니다</cite>
-      </div>
-      <p class="foot-note">교과서 152쪽 작은탐구와 같은 방식입니다. ‘교과서 간격’ 버튼은 지구를 30°씩(화성은 약 15°씩) 옮깁니다.</p>
-    </div>
-  </section>
-
-  <!-- ========================= 03 이각과 관측 ========================= -->
-  <section class="tab-panel" data-panel="2" hidden>
-    <div class="stage-head">
-      <div class="eyebrow">03 · 교과서 156쪽 탐구를 도구로</div>
-      <h2 class="display">이각과 관측 조건</h2>
-      <p><b>이각</b>은 지구에서 볼 때 행성이 태양으로부터 떨어져 있는 각거리입니다. 이각이 정해지면 그 행성을 언제 어느 쪽 하늘에서 볼 수 있는지, 어떤 모양으로 보이는지가 따라 나옵니다.</p>
-    </div>
-
-    <div class="stage-card">
-      <div class="canvas-wrap">
-        <div class="badge-row"><span class="badge" id="t2-badge">—</span></div>
-        <canvas id="c2" width="900" height="470"></canvas>
-      </div>
-      <div class="controls">
-        <div class="ctrl-group">
-          <div class="ctrl-label">날짜 <span class="val" id="t2-dval">2024-10-15</span></div>
-          <input type="range" id="t2-d" min="0" max="900" step="1" value="0">
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">행성</div>
-          <div class="seg" id="t2-planet">
-            <button data-p="수성">수성</button>
-            <button class="on" data-p="금성">금성</button>
-            <button data-p="화성">화성</button>
-            <button data-p="목성">목성</button>
+        <section class="scene" data-title="옛사람의 답 — 주전원">
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 1학년</span>“지구가 앞지르기 때문이라는 건 알겠어요. 그런데 옛날 사람들은 지구가 가만히 있다고 믿었잖아요. 그럼 역행을 어떻게 설명했어요? 설명을 못 했으니까 틀린 거죠?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“그게 이 이야기의 반전입니다. <b>설명했습니다.</b> 그것도 아주 잘요. 프톨레마이오스는 행성의 궤도 위에 작은 원 하나를 더 얹었어요. 그 작은 원이 <b>주전원</b>입니다. 왼쪽은 태양 중심 모형, 오른쪽은 주전원 모형입니다. 주전원 반지름을 바꿔 가며 두 모형이 가리키는 방향을 맞춰 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-epi" width="900" height="580"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">2024-08-01 로부터<span class="val" id="a-epiday-val">0일</span></div>
+                <input type="range" id="a-epiday" min="0" max="760" step="2" value="0">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">주전원 반지름 (지구 궤도 반지름의 몇 배)<span class="val" id="a-epir-val">0.85 배</span></div>
+                <input type="range" id="a-epir" min="0" max="2" step="0.01" value="0.85">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--violet)"></span><span class="txt" id="a-epi-read">두 모형의 최대 차이: —</span></div>
+            </div>
+            <div class="info-card" id="a-epi-info"></div>
           </div>
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">표</div>
-          <div class="btn-row"><button class="btn primary" id="t2-add">이 날짜를 표에 추가</button></div>
-        </div>
-      </div>
-      <div class="readout" style="margin:0 22px 18px">
-        <span class="dot" id="t2-dot"></span>
-        <span class="txt" id="t2-read"></span>
-      </div>
-      <div class="tbl-wrap">
-        <table class="obs">
-          <thead>
-            <tr>
-              <th rowspan="2">행성</th><th rowspan="2">날짜</th>
-              <th colspan="2">이각</th>
-              <th colspan="3">관측 가능 시각</th>
-              <th rowspan="2">관측되는 모양</th>
-            </tr>
-            <tr><th>방향</th><th>크기(°)</th><th>초저녁</th><th>한밤중</th><th>새벽</th></tr>
-          </thead>
-          <tbody id="t2-tbody"></tbody>
-        </table>
-      </div>
-      <p class="foot-note">
-        △ 는 그 시각에 행성이 지평선에 아주 가까워(고도 여유 1시간 미만) 실제로는 보기 어려운 경우입니다.
-        교과서 156쪽 표의 여섯 줄이 기본으로 들어가 있습니다 — 도구가 계산한 값과 교과서 값을 맞춰 보세요.
-      </p>
-    </div>
-  </section>
-
-  <!-- ========================= 04 주전원 ========================= -->
-  <section class="tab-panel" data-panel="3" hidden>
-    <div class="stage-head">
-      <div class="eyebrow">04 · 같은 하늘, 두 개의 모형</div>
-      <h2 class="display">주전원으로도 역행이 설명된다</h2>
-      <p>왼쪽은 태양 중심 모형, 오른쪽은 프톨레마이오스의 지구 중심 모형입니다. 두 모형이 만들어 내는 <b>천구 위의 궤적이 같은지</b> 확인해 보세요.</p>
-    </div>
-    <div class="stage-card">
-      <div class="canvas-wrap"><canvas id="c3" width="900" height="560"></canvas></div>
-      <div class="controls">
-        <div class="ctrl-group">
-          <div class="ctrl-label">날짜 <span class="val" id="t3-dval">2024-08-01</span></div>
-          <input type="range" id="t3-d" min="0" max="760" step="1" value="0">
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">진행</div>
-          <div class="btn-row">
-            <button class="btn primary" id="t3-play">재생</button>
-            <button class="btn" id="t3-clear">궤적 지우기</button>
+          <div class="mission" id="m-a4"><span class="m-tag">미션</span>주전원 반지름 하나로 두 모형을 포갤 수 있습니다.<ul>
+            <li id="m-a4a">두 모형이 가리키는 방향의 <b>최대 차이를 0.01° 아래로</b> 만들기</li>
+            <li id="m-a4b">날짜를 밀어 <b>유가 두 번</b> 나타나게 하기 (역행 한 번을 통째로 보기)</li>
+            <li id="m-a4c">주전원 반지름을 <b>0.70배 아래로</b> 줄여, 주전원 모형에서 역행이 사라지는 것 확인하기</li>
+          </ul></div>
+          <div class="miscon">
+            <span class="tag">과학 이야기</span><br>
+            프톨레마이오스의 지구 중심설에서는 모든 천체가 지구를 중심으로 원운동을 하며,
+            천체의 공전 궤도 위에 중심을 둔 작은 원 궤도인 <b>주전원</b>을 도입하여 행성의 역행을 설명하였다.
+            … 코페르니쿠스의 태양 중심설이 등장하기까지 약 1400년 동안 인정받았다.
+            <cite>지구과학 교사용 교과서 158쪽</cite>
           </div>
-        </div>
-      </div>
-      <div class="info-card" id="t3-info"></div>
-      <div class="miscon">
-        <span class="tag">과학 이야기</span><br>
-        프톨레마이오스의 지구 중심설에서는 모든 천체가 지구를 중심으로 원운동을 하며,
-        천체의 공전 궤도 위에 중심을 둔 작은 원 궤도인 <b>주전원</b>을 도입하여 행성의 역행을 설명하였다.
-        … 코페르니쿠스의 태양 중심설이 등장하기까지 약 1400년 동안 인정받았다.
-        <cite>지구과학 교사용 교과서 158쪽</cite>
-      </div>
-      <p class="foot-note">
-        주전원 반지름을 지구 궤도 반지름과 같게, 주전원 중심을 행성의 실제 공전 방향으로 돌리면
-        두 모형의 시선 방향은 <b>완전히 일치</b>합니다. 역행을 설명하는 데 주전원이 꼭 필요한 것은 아니라는 뜻입니다.
-      </p>
-    </div>
-  </section>
+        </section>
 
-  <!-- ========================= 05 식 현상 ========================= -->
-  <section class="tab-panel" data-panel="4" hidden>
-    <div class="stage-head">
-      <div class="eyebrow">05 · 태양-지구-달 시스템</div>
-      <h2 class="display">일식과 월식</h2>
-      <p>달의 공전 궤도면은 지구의 공전 궤도면(황도면)에 대해 약 <b>5.1°</b> 기울어져 있습니다. 그래서 삭과 망마다 식이 일어나지는 않습니다.</p>
-    </div>
-    <div class="stage-card">
-      <div class="canvas-wrap">
-        <div class="badge-row"><span class="badge" id="t4-badge">—</span></div>
-        <canvas id="c4" width="900" height="500"></canvas>
-      </div>
-      <div class="controls">
-        <div class="ctrl-group">
-          <div class="ctrl-label">달의 위치 <span class="val" id="t4-mval">삭</span></div>
-          <input type="range" id="t4-m" min="0" max="359" step="1" value="0">
-        </div>
-        <div class="ctrl-group">
-          <div class="ctrl-label">교점(궤도가 황도면과 만나는 선)의 방향 <span class="val" id="t4-nval">0°</span></div>
-          <input type="range" id="t4-n" min="0" max="359" step="1" value="0">
-        </div>
-        <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
-          <div class="ctrl-label">기울기</div>
-          <div class="seg" id="t4-inc">
-            <button class="on" data-i="5.1">5.1° (실제)</button>
-            <button data-i="0">0° (기울지 않았다면)</button>
+        <section class="scene" data-title="결말 — 역행은 추월이다">
+          <div class="ending">
+            <h4>🔭 화성은 한 번도 뒤로 간 적이 없다</h4>
+            <p>일지의 첫 줄부터 고쳐야 했습니다. <b>남쪽 하늘에서는 왼쪽이 동쪽, 오른쪽이 서쪽</b>입니다. 별은 왼쪽(동)에서 떠서 오른쪽(서)으로 지니까요. 그러니 12월 사진에서 화성이 오른쪽으로 옮겨 간 것은 <b>동에서 서로</b>, 곧 <b>역행</b>이었습니다.</p>
+            <p>그리고 궤도면의 계수기는 여덟 달 내내 <b>0</b>을 가리켰습니다. 화성은 단 한 번도 방향을 바꾸지 않았습니다. 안쪽 궤도에서 더 빨리 도는 <b>지구가 화성을 앞지르는 동안</b> 시선의 방향이 되돌아간 것뿐입니다. 그래서 외행성은 <b>충 부근</b>(이각 150° 이상)에서 역행하고, 내행성인 금성은 <b>내합 부근</b>(이각 30° 이하)에서 역행합니다 — 역행하는 자리가 아예 다릅니다.</p>
+            <p>반전은 마지막에 있었습니다. 지구가 돌지 않는다고 믿은 프톨레마이오스도 <b>주전원</b> 하나로 같은 하늘을 그려 냈습니다. 주전원 반지름을 지구 궤도 반지름과 같게 두면 두 모형의 차이는 <b>0.00°</b>입니다. 역행만으로는 두 모형을 가를 수 없었다는 뜻입니다. 승부는 다른 곳에서 났습니다.</p>
+            <div class="vs" id="a-vs"></div>
+            <span class="stamp">사건 파일 ① 해결</span>
           </div>
-        </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 궤도 계산은 케플러 궤도(이심률과 궤도 경사까지 넣은 J2000 궤도 요소)로 했고, 섭동은 넣지 않았습니다. 그래서 유가 일어나는 날짜는 실제보다 하루 이틀 어긋날 수 있습니다. 천구 화면의 <b>황위는 보기 쉽게 세로로 확대</b>해 그렸습니다 — 실제 역행 고리는 이보다 훨씬 납작합니다. 일주 운동 화면은 <b>천구 적도 위의 별</b>(적위 0°)을 위도 36.5°에서 본 것으로 계산했으며, 대기에 의한 굴절과 지평선의 장애물은 넣지 않았습니다. 주전원 모형은 원 궤도만 쓰는 프톨레마이오스의 원형이 아니라, <b>이심률까지 살린 채</b> 주전원 반지름만 바꿀 수 있게 만든 것입니다. 실제 프톨레마이오스 체계는 원 궤도만으로 관측을 맞추려고 이심(離心)과 대심(對心) 같은 장치를 계속 덧붙여야 했습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkA"></div></div>
+        </section>
       </div>
-      <div class="info-card" id="t4-info"></div>
-      <div class="miscon">
-        <span class="tag">오개념 지도</span><br>
-        <b>일식 때 본그림자의 이동 방향</b> — 같은 시간 동안 달의 공전 각도가 지구의 자전 각도보다 작아서
-        달의 본그림자가 서쪽으로 진행할 것이라고 생각할 수 있지만, 지구에서 달까지의 거리가 매우 멀어
-        실제 달의 본그림자가 이동하는 거리는 상대적으로 더 길다.
-        <cite>지구과학 교사용 교과서, 오개념 지도</cite>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--rose)">
-          달의 공전 속도 약 <b>1.02 km/s</b> · 적도에서 지구의 자전 속도 약 <b>0.46 km/s</b>
-          → 본그림자는 지표를 <b>서에서 동으로</b> 약 0.56 km/s로 지나갑니다.
-        </div>
-      </div>
-    </div>
-  </section>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
+    </section>
 
-  <!-- ========================= 06 정리하기 ========================= -->
-  <section class="tab-panel" data-panel="5" hidden>
-    <div class="stage-head">
-      <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
-      <h2 class="display">정리하기</h2>
-      <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
-    </div>
-    <div class="stage-card">
-      <div id="wk"></div>
-    </div>
-  </section>
+    <!-- =====================================================================
+         02 이각과 관측 — 이야기 「해 지고 나서 한 시간」
+         ===================================================================== -->
+    <section class="tab-panel" data-panel="1" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">02 · 이각과 관측 조건 · 이야기 한 편</div>
+        <h2 class="display">해 지고 나서 한 시간</h2>
+        <p>금성은 밤하늘에서 달 다음으로 밝습니다. 그런데 한밤중에 금성을 본 사람은 아무도 없습니다. 밝기로는 설명이 안 됩니다. 이 제약이 결국 두 우주관의 승부를 갈랐습니다.</p>
+        <span class="std-chip">12지구03-01</span><div class="std-note"><b>[12지구03-01]</b> 태양-지구-달 시스템에서의 식 현상을 이해하고 모형으로 행성의 겉보기 운동을 설명할 수 있다.</div><div class="terms"><b>이각</b><b>최대 이각</b><b>내행성</b><b>외행성</b><b>내합·외합</b><b>충</b><b>금성의 위상</b></div>
+      </div>
+
+      <div class="episode" id="epB">
+        <section class="scene" data-title="샛별과 개밥바라기">
+          <div class="story narr"><div class="who">🌆</div><div class="say"><span class="name">이야기</span>같은 동아리, 다음 주. 이번 과제는 ‘<b>하룻밤 동안 한 행성 따라가기</b>’ 입니다. 금성을 맡은 모둠이 해 진 뒤 서쪽 하늘에서 금성을 찾아 사진을 찍었습니다. 그리고 한밤중에 다시 나가 보았습니다. 금성이 없습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">금성 모둠</span>“구름도 없었어요. 화성 모둠은 자정에도 잘만 찍었다는데요. 금성이 화성보다 훨씬 밝은데 왜 저희만 못 찍죠?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“밝기 문제가 아닙니다. 옛사람들은 초저녁 서쪽의 금성을 <b>개밥바라기</b>, 새벽 동쪽의 금성을 <b>샛별</b> 이라 부르며 다른 별인 줄 알았어요. 그런데 그 둘이 같은 별이고, 한밤중에는 <b>절대로</b> 볼 수 없습니다. 왜 그럴까요?”</div></div>
+          <div class="case-file"><b class="k">모둠의 관측 기록</b> 해 진 직후 서쪽 하늘 — 금성 ○ &nbsp;|&nbsp; 자정 남쪽 하늘 — 금성 ✕, 화성 ○ &nbsp;|&nbsp; 해 뜨기 전 동쪽 하늘 — 금성 ○(다른 날) &nbsp;|&nbsp; 금성이 태양에서 가장 멀리 떨어져 보인 날에도 주먹 다섯 개 남짓</div>
+          <div class="gate loose" id="b-gate"></div>
+        </section>
+
+        <section class="scene" data-title="최대 이각을 계산한다">
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“<b>이각</b>은 지구에서 볼 때 행성이 태양에서 떨어져 보이는 각거리입니다. 내행성은 이각이 아무리 커져도 한계가 있어요. 지구에서 그은 시선이 행성의 궤도에 <b>접할 때</b>가 그 한계입니다.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“궤도를 원으로 어림하면 계산이 아주 단순해집니다. 행성의 궤도 반지름을 움직여 보세요. 접선이 만드는 각이 곧 <b>최대 이각</b>입니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-elong" width="900" height="440"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">행성의 궤도 반지름<span class="val" id="b-a-val">0.55 AU</span></div>
+                <input type="range" id="b-a" min="0.2" max="5.2" step="0.01" value="0.55">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--amber)"></span><span class="txt" id="b-elong-read">최대 이각: —</span></div>
+            </div>
+            <div class="info-card" id="b-elong-info"></div>
+          </div>
+          <div class="mission" id="m-b2"><span class="m-tag">미션</span>궤도 반지름 하나로 최대 이각이 정해집니다.<ul>
+            <li id="m-b2a">반지름을 <b>수성 자리(0.39 AU)</b> 에 맞춰 최대 이각을 읽기</li>
+            <li id="m-b2b">반지름을 <b>금성 자리(0.72 AU)</b> 에 맞춰 최대 이각을 읽기</li>
+            <li id="m-b2c">반지름을 <b>1.00 AU 보다 크게</b> 해서, 외행성에는 최대 이각이 없다는 것 확인하기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="하루 중 언제 보이는가">
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">금성 모둠</span>“46°면 태양이 진 뒤 <b>세 시간</b>쯤 뒤에는 금성도 진다는 뜻이네요. 그런데 그날그날 몇 시까지 보이는지는 어떻게 알아요?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“이각만 알면 다 나옵니다. 이각이 <b>동쪽(동방)</b> 이면 행성이 태양보다 늦게 지니까 <b>초저녁 서쪽 하늘</b>, <b>서쪽(서방)</b> 이면 태양보다 먼저 뜨니까 <b>새벽 동쪽 하늘</b>입니다. 오른쪽 막대가 시각별로 지평선 위에 얼마나 여유가 있는지 보여 줍니다. 마음에 드는 날짜는 표에 쌓아 두세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap">
+              <div class="badge-row"><span class="badge" id="b-badge">—</span></div>
+              <canvas id="b-c-obs" width="900" height="470"></canvas>
+            </div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">날짜<span class="val" id="b-day-val">2024-10-15</span></div>
+                <input type="range" id="b-day" min="0" max="900" step="1" value="0">
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">행성</div>
+                <div class="seg" id="b-planet">
+                  <button type="button" data-p="수성">수성</button>
+                  <button type="button" class="on" data-p="금성">금성</button>
+                  <button type="button" data-p="화성">화성</button>
+                  <button type="button" data-p="목성">목성</button>
+                </div>
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">표</div>
+                <div class="btn-row"><button class="btn primary" type="button" id="b-add">이 날짜를 표에 추가</button></div>
+              </div>
+              <div class="readout"><span class="dot" id="b-dot" style="background:var(--violet)"></span><span class="txt" id="b-obs-read">—</span></div>
+            </div>
+            <div class="tbl-wrap">
+              <table class="obs">
+                <thead>
+                  <tr>
+                    <th rowspan="2">행성</th><th rowspan="2">날짜</th>
+                    <th colspan="2">이각</th>
+                    <th colspan="3">관측 가능 시각</th>
+                    <th rowspan="2">관측되는 모양</th>
+                  </tr>
+                  <tr><th>방향</th><th>크기(°)</th><th>초저녁</th><th>한밤중</th><th>새벽</th></tr>
+                </thead>
+                <tbody id="b-tbody"></tbody>
+              </table>
+            </div>
+            <div class="info-card" id="b-obs-info"></div>
+            <p class="foot-note">△ 는 그 시각에 행성이 지평선에 아주 가까워(고도 여유 1시간 미만) 실제로는 보기 어려운 경우입니다. 교과서 156쪽 표의 여섯 줄이 기본으로 들어가 있습니다 — 도구가 계산한 값과 교과서 값을 맞춰 보세요.</p>
+          </div>
+          <div class="mission" id="m-b3"><span class="m-tag">미션</span>내행성과 외행성은 <b>보이는 시각</b>이 다릅니다.<ul>
+            <li id="m-b3a">금성이 <b>동방 최대 이각</b> 가까이(동쪽 44° 이상) 있는 날 찾기</li>
+            <li id="m-b3b">금성이 <b>서방 최대 이각</b> 가까이(서쪽 44° 이상) 있는 날 찾기</li>
+            <li id="m-b3c">화성이나 목성으로 바꿔, <b>한밤중에 관측되는</b> 날 찾기 (이각 150° 이상)</li>
+            <li id="m-b3d">표에 <b>세 줄 이상</b> 쌓기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="갈릴레이가 본 것">
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“1610년, 갈릴레이가 망원경을 금성에 돌렸습니다. 그가 본 것은 <b>달처럼 차고 기우는 금성</b>이었어요. 그것도 모양이 바뀔 때 <b>크기까지</b> 함께 바뀌었습니다. 이게 왜 결정적이었을까요?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“프톨레마이오스 체계에서 금성은 <b>늘 지구와 태양 사이</b>에 있어야 했습니다. 그러면 금성의 밝은 면은 언제나 태양 쪽, 곧 우리 반대쪽을 향하죠. 두 모형이 예측하는 모양을 나란히 놓고 날짜를 밀어 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-phase" width="900" height="480"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">날짜<span class="val" id="b-pday-val">2024-10-15</span></div>
+                <input type="range" id="b-pday" min="0" max="900" step="1" value="0">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="b-phase-read">—</span></div>
+            </div>
+            <div class="info-card" id="b-phase-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="b-q1"></div></div>
+          <div class="mission" id="m-b4"><span class="m-tag">미션</span>모양과 크기를 함께 보아야 판가름이 납니다.<ul>
+            <li id="m-b4a">태양 중심 모형에서 금성이 <b>보름에 가까운 모양</b>(밝은 비율 90 % 이상)이 되는 날 찾기</li>
+            <li id="m-b4b">금성이 <b>가장 크게 보이는</b> 날 찾기 (시직경 55″ 이상)</li>
+            <li id="m-b4c">두 모형의 밝은 비율이 <b>60 %p 이상</b> 벌어지는 날 찾기</li>
+            <li id="m-b4d">아래 물음에 답하기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 금성은 한밤중에 뜨지 않는다">
+          <div class="ending">
+            <h4>🌅 태양에서 46°까지가 금성이 갈 수 있는 전부다</h4>
+            <p>금성이 한밤중에 보이지 않는 까닭은 밝기가 아니라 <b>이각</b>이었습니다. 지구에서 그은 시선이 금성 궤도에 접할 때가 한계이므로 최대 이각은 <b>약 46°</b>(수성은 약 23°)입니다. 태양보다 동쪽에 있으면 태양보다 늦게 져서 <b>초저녁 서쪽 하늘</b>, 서쪽에 있으면 태양보다 먼저 떠서 <b>새벽 동쪽 하늘</b> — 개밥바라기와 샛별은 같은 별이었습니다. 반대로 외행성은 이각이 180°까지 커질 수 있어서, <b>충</b> 부근이면 해 질 때 떠서 자정에 남중하고 해 뜰 때 집니다. 화성 모둠이 자정에 찍을 수 있었던 까닭입니다.</p>
+            <p>그리고 갈릴레이의 금성이 승부를 갈랐습니다. 지구 중심 모형에서 금성은 늘 지구와 태양 사이에 있어야 하므로 밝은 비율이 <b>35 %를 넘을 수 없습니다</b> — 영원히 초승달 모양이지요. 그런데 실제 금성은 <b>보름에 가까운 모양</b>까지 보여 주었고, 그때 크기는 가장 작았으며(먼 쪽), 가늘어질수록 크게 보였습니다(가까운 쪽). 이건 금성이 <b>태양 뒤편까지 돌아간다</b>는 뜻입니다. 주전원으로는 설명할 수 없는 관측이었습니다.</p>
+            <div class="vs" id="b-vs"></div>
+            <span class="stamp">사건 파일 ② 해결</span>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 최대 이각 화면은 궤도를 <b>완전한 원</b>으로 어림해 sin⁻¹(행성 궤도 반지름 ÷ 지구 궤도 반지름)으로 계산했습니다. 금성은 궤도가 거의 원이라 46°가 실제(47° 안팎)와 잘 맞지만, <b>수성은 이심률이 0.21이나 되어</b> 실제 최대 이각이 18°에서 28° 사이에서 달라집니다(교과서는 흔히 약 28°로 싣습니다). 오른쪽 관측 막대는 <b>춘분·추분 무렵</b>처럼 해가 6시에 뜨고 18시에 지는 상황으로 단순하게 잡은 것이라, 계절에 따라 실제 시각은 달라집니다. 금성의 시직경은 반지름 6,052 km 를 거리로 나누어 구했고, 대기의 산란 때문에 실제로는 가장 가까울 때 아주 가는 초승달만 보입니다. <b>외합</b> 부근의 ‘보름 금성’ 은 태양과 같은 방향이라 실제로는 관측하기 어렵고, 갈릴레이가 본 것은 보름에 가까운 <b>기운 모양</b>이었습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkB"></div></div>
+        </section>
+      </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
+    </section>
+
+    <!-- =====================================================================
+         03 식 현상 — 이야기 「그림자가 지나간 자리」
+         ===================================================================== -->
+    <section class="tab-panel" data-panel="2" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">03 · 일식과 월식 · 이야기 한 편</div>
+        <h2 class="display">그림자가 지나간 자리</h2>
+        <p>삭은 한 달에 한 번 옵니다. 그런데 일식은 몇 해에 한 번, 그것도 좁은 띠 위에서만 볼 수 있습니다. 한 달에 한 번 있는 일이 왜 몇 해에 한 번이 되는지, 그리고 왜 어떤 일식은 검고 어떤 일식은 반지 모양인지 직접 만들어 봅니다.</p>
+        <span class="std-chip">12지구03-01</span><div class="std-note"><b>[12지구03-01]</b> 태양-지구-달 시스템에서의 식 현상을 이해하고 모형으로 행성의 겉보기 운동을 설명할 수 있다.</div><div class="terms"><b>삭·망</b><b>교점</b><b>황도면</b><b>백도면</b><b>식한</b><b>개기·부분·금환</b><b>본그림자</b></div>
+      </div>
+
+      <div class="episode" id="epC">
+        <section class="scene" data-title="한 달에 한 번인데 몇 해에 한 번">
+          <div class="story narr"><div class="who">🌑</div><div class="say"><span class="name">이야기</span>2024년 4월 8일, 북아메리카를 가로지르는 좁은 띠 위에 대낮의 어둠이 4분 동안 내려앉았습니다. 그 띠에서 100 km 만 벗어나면 해는 일부만 가려졌습니다. 그리고 그해 10월 2일, 남아메리카 남쪽에서는 해가 완전히 가려지지 않고 <b>반지 모양</b>으로 남았습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 2학년</span>“이상해요. <b>삭</b>은 한 달에 한 번이잖아요. 삭이면 태양–달–지구가 한 줄로 서는 거니까, 일식도 한 달에 한 번이어야 하지 않나요? 그런데 왜 몇 해에 한 번이죠?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“‘한 줄’ 이라는 말이 함정입니다. 삭은 <b>태양과 달의 황경이 같아지는 것</b>이지, 셋이 한 직선 위에 놓이는 것이 아니에요. 먼저 예상부터 고르고 들어갑시다.”</div></div>
+          <div class="case-file"><b class="k">기록된 사실</b> 삭은 평균 29.53일마다 &nbsp;|&nbsp; 2024-04-08 개기일식 &nbsp;|&nbsp; 2024-10-02 금환일식 &nbsp;|&nbsp; 2025-03-14 개기월식 &nbsp;|&nbsp; 2025-09-07 개기월식 &nbsp;|&nbsp; 개기일식이 보이는 띠의 폭은 대개 100~200 km &nbsp;|&nbsp; 달의 공전 궤도면은 황도면에 약 5.1° 기울어져 있음</div>
+          <div class="gate loose" id="c-gate"></div>
+        </section>
+
+        <section class="scene" data-title="5도의 기울기">
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달의 공전 궤도면(<b>백도면</b>)은 황도면에 약 <b>5.1°</b> 기울어져 있습니다. 두 면이 만나는 선을 <b>교점선</b>이라 하고, 달이 그 선을 지나는 자리를 <b>교점</b>이라 합니다. 달이 교점에서 멀리 떨어진 채로 삭이 되면, 달은 태양의 <b>위나 아래</b>를 지나가 버립니다.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달이 교점에서 얼마나 떨어져 있는지를 움직여 보세요. 그 각도에서 달의 <b>황위</b>가 계산됩니다. 그리고 기울기를 0° 로 두면 어떤 일이 벌어지는지도 꼭 확인하세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap">
+              <div class="badge-row"><span class="badge" id="c-badge">—</span></div>
+              <canvas id="c-c-tilt" width="900" height="500"></canvas>
+            </div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">달이 교점에서 떨어진 각<span class="val" id="c-lam-val">60°</span></div>
+                <input type="range" id="c-lam" min="-180" max="180" step="1" value="60">
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">달의 위치</div>
+                <div class="seg" id="c-phase">
+                  <button type="button" class="on" data-k="new">삭 (태양 쪽)</button>
+                  <button type="button" data-k="full">망 (반대쪽)</button>
+                </div>
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">백도면의 기울기</div>
+                <div class="seg" id="c-inc">
+                  <button type="button" class="on" data-i="5.1">5.1° (실제)</button>
+                  <button type="button" data-i="0">0° (기울지 않았다면)</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--violet)"></span><span class="txt" id="c-tilt-read">달의 황위: —</span></div>
+            </div>
+            <div class="info-card" id="c-tilt-info"></div>
+          </div>
+          <div class="mission" id="m-c2"><span class="m-tag">미션</span>5°가 있느냐 없느냐로 하늘이 완전히 달라집니다.<ul>
+            <li id="m-c2a">기울기를 <b>0°</b> 로 두고 삭을 만들어, 교점에서 아무리 멀어도(60° 이상) 일식이 일어나는 것 확인하기</li>
+            <li id="m-c2b">기울기 <b>5.1°</b> 에서 달을 교점에서 <b>90° 떨어진 자리</b>(황위가 가장 큰 자리)에 두어, 삭인데도 일식이 아닌 것 확인하기</li>
+            <li id="m-c2c">기울기 <b>5.1°</b> 에서 <b>일식</b>이 일어나는 배치 만들기</li>
+            <li id="m-c2d">기울기 <b>5.1°</b> 에서 <b>월식</b>이 일어나는 배치 만들기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="검은 해와 반지 모양의 해">
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 2학년</span>“교점 가까이에서 삭이 되면 일식이라는 건 알겠어요. 그런데 4월 8일은 해가 완전히 가려졌고 10월 2일은 반지가 남았어요. 같은 달, 같은 해인데요.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달도 지구도 <b>원이 아니라 타원</b> 궤도를 돕니다. 달이 가까우면 크게 보이고 멀면 작게 보이죠. 태양도 마찬가지고요. <b>달이 태양보다 크게 보이면 개기, 작게 보이면 금환</b>입니다. 두 거리를 움직여 직접 만들어 보세요. 본그림자가 지표에 만드는 띠의 폭까지 계산해 줍니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-shadow" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">지구에서 달까지<span class="val" id="c-dm-val">380,700 km</span></div>
+                <input type="range" id="c-dm" min="356500" max="406700" step="100" value="380700">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">지구에서 태양까지<span class="val" id="c-ds-val">1억 4,960만 km</span></div>
+                <input type="range" id="c-ds" min="147100000" max="152100000" step="100000" value="149600000">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--amber)"></span><span class="txt" id="c-shadow-read">판정: —</span></div>
+            </div>
+            <div class="info-card" id="c-shadow-info"></div>
+          </div>
+          <div class="mission" id="m-c3"><span class="m-tag">미션</span>개기와 금환을 가르는 것은 <b>거리</b>입니다.<ul>
+            <li id="m-c3a"><b>개기 일식</b> 만들기 (본그림자 띠의 폭 50 km 이상)</li>
+            <li id="m-c3b"><b>금환 일식</b> 만들기 (본그림자가 지표에 닿지 못하고 50 km 이상 모자람)</li>
+            <li id="m-c3c">개기 일식의 띠를 <b>150 km 이상</b>으로 넓히기</li>
+            <li id="m-c3d">태양을 <b>가장 먼 자리(원일점)</b> 에 두어, 개기 일식이 되기 가장 쉬운 조건 만들기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="다음 일식은 언제인가">
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 2학년</span>“그럼 <b>언제</b> 일식인지도 미리 알 수 있는 거 아니에요? 삭이 오는 주기랑 달이 교점을 지나는 주기만 알면요.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“바로 그겁니다. 삭에서 삭까지는 <b>29.53일</b>(삭망월), 교점에서 같은 교점까지는 <b>27.21일</b>(교점월). 두 주기가 어긋나 있어서, 식이 일어날 수 있는 기간(<b>식의 계절</b>)이 약 <b>173일</b>마다 돌아옵니다. 2024년 4월 8일 개기일식을 0번으로 두고, 삭과 망을 하나씩 넘겨 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap">
+              <div class="badge-row"><span class="badge" id="c-when-badge">—</span></div>
+              <canvas id="c-c-when" width="900" height="480"></canvas>
+            </div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">2024-04-08 부터 몇 번째 달인가<span class="val" id="c-n-val">1번째</span></div>
+                <input type="range" id="c-n" min="0" max="36" step="1" value="1">
+              </div>
+              <div class="ctrl-group" style="flex:0 0 auto;min-width:0">
+                <div class="ctrl-label">그달의 어느 쪽을 볼까</div>
+                <div class="seg" id="c-sf">
+                  <button type="button" class="on" data-k="new">삭 (일식 차례)</button>
+                  <button type="button" data-k="full">망 (월식 차례)</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--rose)"></span><span class="txt" id="c-when-read">—</span></div>
+            </div>
+            <div class="info-card" id="c-when-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-sort"></div></div>
+          <div class="mission" id="m-c4"><span class="m-tag">미션</span>두 주기의 어긋남이 식의 달력을 만듭니다.<ul>
+            <li id="m-c4a"><b>일식</b>이 일어나는 삭 찾기</li>
+            <li id="m-c4b"><b>삭인데 일식이 일어나지 않는</b> 달 찾기 (그때 달의 황위가 4° 이상)</li>
+            <li id="m-c4c"><b>월식</b>이 일어나는 망 찾기</li>
+            <li id="m-c4d">서로 다른 <b>식의 계절 세 곳</b>에서 식 찾기</li>
+            <li id="m-c4e">아래에서 일식·월식에 해당하는 것을 나누기</li>
+          </ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 5도가 만든 달력">
+          <div class="ending">
+            <h4>🌑 삭마다 일식이 아닌 까닭, 그리고 그림자가 가는 쪽</h4>
+            <p>답은 <b>5.1°</b> 였습니다. 백도면이 황도면에 기울어져 있어서, 삭이 되어도 달이 태양의 위나 아래를 비껴 지나갑니다. 달이 <b>교점 가까이</b>에 있을 때 삭이나 망이 되어야만 식이 일어나고, 그 한계가 <b>식한</b>입니다 — 교점에서 약 <b>16°</b> 안쪽(일식), 약 <b>11°</b> 안쪽(월식). 기울기를 0° 로 두어 보면 삭마다 일식, 망마다 월식이 되어 한 달에 두 번씩 식이 일어납니다.</p>
+            <p>같은 일식인데 모양이 다른 까닭은 <b>거리</b>였습니다. 달이 가까워 크게 보이면 본그림자가 지표에 닿아 <b>개기 일식</b>이 되고(띠의 폭은 넓어야 200 km 남짓), 달이 멀어 작게 보이면 본그림자가 지표에 못 미쳐 <b>금환 일식</b>이 됩니다. 그리고 삭망월 29.53일과 교점월 27.21일이 어긋나 있어서 <b>식의 계절이 약 173일마다</b> 돌아옵니다 — 그래서 식은 몰려서 일어납니다.</p>
+            <div class="vs" id="c-vs"></div>
+            <span class="stamp">사건 파일 ③ 해결</span>
+          </div>
+          <div class="miscon">
+            <span class="tag">오개념 지도</span><br>
+            <b>일식 때 본그림자의 이동 방향</b> — 같은 시간 동안 달의 공전 각도가 지구의 자전 각도보다 작아서
+            달의 본그림자가 서쪽으로 진행할 것이라고 생각할 수 있지만, 지구에서 달까지의 거리가 매우 멀어
+            실제 달의 본그림자가 이동하는 거리는 상대적으로 더 길다.
+            <cite>지구과학 교사용 교과서, 오개념 지도</cite>
+            <div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--rose)">
+              달의 공전 속도 약 <b>1.02 km/s</b> · 적도에서 지구의 자전 속도 약 <b>0.46 km/s</b>
+              → 본그림자는 지표를 <b>서에서 동으로</b> 약 0.56 km/s로 지나갑니다.
+            </div>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 식의 달력은 <b>삭망월 29.5306일 · 교점월 27.2122일</b> 두 주기만 쓴 단순 모형입니다. 2024년 4월 8일의 삭을 출발점으로 잡았기 때문에 실제 식 날짜와 <b>하루 안팎</b>으로 어긋날 수 있고, 달과 태양의 궤도 속도가 일정하지 않다는 점도 넣지 않았습니다. 식한을 일식 황위 1.4°, 월식 1.0° 로 잡았는데 실제로는 ‘반드시 일어나는 한계’ 와 ‘일어날 수도 있는 한계’ 가 따로 있어, 경계 가까이에서는 이 모형이 틀립니다(2024년 9월 18일의 아주 작은 부분월식이 그런 경우입니다). 또 이 모형은 날짜만 맞힐 뿐 <b>개기인지 금환인지는 가리지 못합니다</b> — 그건 앞 장면에서 본 것처럼 그날의 거리가 정합니다. 그림자 계산은 달 반지름 1,737 km, 태양 반지름 696,000 km, 지구 반지름 6,378 km 를 쓴 원뿔 모형이며, 본그림자가 지표에 비스듬히 닿을 때 띠가 더 넓어지는 효과는 넣지 않았습니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkC"></div></div>
+        </section>
+      </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
+    </section>
+
+    <!-- ===================================================================== 04 정리하기 -->
+    <section class="tab-panel" data-panel="3" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">04 · 세 사건을 하나로</div>
+        <h2 class="display">정리하기</h2>
+        <p>세 이야기의 결과가 아래에 모입니다. 세 사건을 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+      </div>
+      <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
+    </section>
+
+    <!-- ===================================================================== 05 우리 반 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>내가 해결한 사건과 알아낸 값을 우리 반에 올리고, 친구들은 어떻게 풀었는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
 
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">다크 모드</button>
-
 <script src="../assets/theme.js"></script>
-<script>
-(function () {
-  "use strict";
-  var D2R = Math.PI / 180, R2D = 180 / Math.PI;
-
-  /* =========================================================
-     궤도 요소 (J2000) — a(AU), e, 근일점 경도 ϖ, 평균 경도 L0, 공전 주기 P(일)
-     원 궤도가 아니라 케플러 궤도로 계산하므로, 교과서 156쪽 표의 값이 그대로 나옵니다.
-     ========================================================= */
-  var ORB = {
-    "수성": { a: 0.387098, e: 0.205630, w:  77.457, L0: 252.250, P:    87.969, i: 7.005, N:  48.331, c: "--mist",   rad: 2.6 },
-    "금성": { a: 0.723332, e: 0.006772, w: 131.602, L0: 181.979, P:   224.701, i: 3.395, N:  76.680, c: "--violet", rad: 4.2 },
-    "지구": { a: 1.000000, e: 0.016709, w: 102.937, L0: 100.464, P:   365.256, i: 0.000, N:   0.000, c: "--brand",  rad: 4.4 },
-    "화성": { a: 1.523679, e: 0.093394, w: 336.041, L0: 355.453, P:   686.980, i: 1.850, N:  49.558, c: "--coral",  rad: 3.6 },
-    "목성": { a: 5.202887, e: 0.048386, w:  14.728, L0:  34.396, P:  4332.589, i: 1.303, N: 100.464, c: "--amber",  rad: 7.0 },
-    "토성": { a: 9.536676, e: 0.053862, w:  92.599, L0:  49.954, P: 10759.220, i: 2.485, N: 113.665, c: "--rose",   rad: 6.2 }
-  };
-  var ZODIAC = ["물고기자리","양자리","황소자리","쌍둥이자리","게자리","사자자리",
-                "처녀자리","천칭자리","전갈자리","궁수자리","염소자리","물병자리"];
-
-  function norm360(x) { x %= 360; return x < 0 ? x + 360 : x; }
-  function wrap180(x) { return norm360(x + 180) - 180; }
-
-  /* J2000(2000-01-01 12:00 UT)으로부터의 일수 */
-  var J2000 = Date.UTC(2000, 0, 1, 12, 0, 0);
-  function daysOf(ms) { return (ms - J2000) / 86400000; }
-  function dateStr(ms) {
-    var d = new Date(ms);
-    return d.getUTCFullYear() + "-" + ("0" + (d.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + d.getUTCDate()).slice(-2);
-  }
-
-  /* 태양 중심 위치. 궤도 경사(i)와 승교점 경도(N)까지 넣어 황위(z)를 낸다.
-     경사를 넣어야 역행 궤적이 교과서 그림처럼 '고리'를 그린다. */
-  function helio(name, dd) {
-    var o = ORB[name];
-    var M = norm360(o.L0 + 360 * dd / o.P - o.w), Mr = M * D2R, e = o.e;
-    var C = ((2 * e - e * e * e / 4) * Math.sin(Mr)
-           + 1.25 * e * e * Math.sin(2 * Mr)
-           + (13 / 12) * e * e * e * Math.sin(3 * Mr)) * R2D;
-    var nu = M + C;
-    var r = o.a * (1 - e * e) / (1 + e * Math.cos(nu * D2R));
-    var u = (nu + o.w - o.N) * D2R;                  /* 승교점에서 잰 위도 인수 */
-    var N = o.N * D2R, ii = o.i * D2R;
-    var x = r * (Math.cos(N) * Math.cos(u) - Math.sin(N) * Math.sin(u) * Math.cos(ii));
-    var y = r * (Math.sin(N) * Math.cos(u) + Math.cos(N) * Math.sin(u) * Math.cos(ii));
-    var z = r * Math.sin(u) * Math.sin(ii);
-    return { lam: norm360(Math.atan2(y, x) * R2D), r: r, x: x, y: y, z: z };
-  }
-
-  /* 지구 중심에서 본 값 */
-  function geo(name, dd) {
-    var p = helio(name, dd), E = helio("지구", dd);
-    var dx = p.x - E.x, dy = p.y - E.y, dz = p.z - E.z;
-    var lam = norm360(Math.atan2(dy, dx) * R2D);
-    var lamSun = norm360(Math.atan2(-E.y, -E.x) * R2D);
-    var delta = Math.sqrt(dx * dx + dy * dy + dz * dz);
-    var beta = Math.asin(dz / delta) * R2D;          /* 겉보기 황위 */
-    var cosi = (p.r * p.r + delta * delta - E.r * E.r) / (2 * p.r * delta);
-    cosi = Math.max(-1, Math.min(1, cosi));
-    return {
-      lam: lam, beta: beta, lamSun: lamSun, dist: delta, r: p.r,
-      elong: wrap180(lam - lamSun),   /* + 동방 / − 서방 */
-      k: (1 + cosi) / 2,              /* 밝게 보이는 비율 */
-      p: p, E: E
-    };
-  }
-
-  /* 이각으로부터 뜨는·남중·지는 시각(태양시, 시간) */
-  function riseSet(el) {
-    var tr = norm360((12 + el / 15) * 15) / 15;
-    return { rise: (tr + 18) % 24, transit: tr, set: (tr + 6) % 24 };
-  }
-  /* 어떤 시각 h 에 지평선 위로 얼마나 여유가 있는가(시간) */
-  function margin(el, h) {
-    var tr = (12 + el / 15 + 48) % 24;
-    var dh = ((h - tr + 36) % 24) - 12;
-    return 6 - Math.abs(dh);
-  }
-  function oxMark(el, h) {
-    var m = margin(el, h);
-    return m >= 0.5 ? "O" : (m > 0 ? "△" : "X");
-  }
-  function hhmm(h) {
-    var t = ((h % 24) + 24) % 24, H = Math.floor(t), M = Math.round((t - H) * 60);
-    if (M === 60) { M = 0; H = (H + 1) % 24; }
-    return ("0" + H).slice(-2) + ":" + ("0" + M).slice(-2);
-  }
-
-  /* 배경별 — 씨앗 고정 난수로 항상 같은 하늘 */
-  function mulberry(a) {
-    return function () {
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
-      var t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  var STARS = (function () {
-    var rnd = mulberry(20260831), s = [];
-    for (var i = 0; i < 900; i++) {
-      s.push({ lam: rnd() * 360, b: (rnd() - 0.5) * 34, m: Math.pow(rnd(), 2.4) });
-    }
-    return s;
-  })();
-
-  function V(n) { return window.cssVar(n); }
-  function withA(hex, a) {
-    hex = (hex || "#888").trim();
-    if (hex.charAt(0) !== "#") return hex;
-    if (hex.length === 4) hex = "#" + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
-    var r = parseInt(hex.substr(1, 2), 16), g = parseInt(hex.substr(3, 2), 16), b = parseInt(hex.substr(5, 2), 16);
-    return "rgba(" + r + "," + g + "," + b + "," + a + ")";
-  }
-
-  /* 천구 띠 그리기. 동쪽이 왼쪽, 서쪽이 오른쪽 (남쪽을 바라볼 때) */
-  function drawSky(ctx, box, lamC, spanDeg, opts) {
-    opts = opts || {};
-    var x0 = box.x, y0 = box.y, w = box.w, h = box.h;
-    var k = w / spanDeg;                       /* 화면 px / 경도 1° */
-    var toX = function (lam) { return x0 + w / 2 - wrap180(lam - lamC) * k; };
-
-    ctx.save();
-    ctx.beginPath(); ctx.rect(x0, y0, w, h); ctx.clip();
-
-    var night = "#0a1424";
-    var g = ctx.createLinearGradient(0, y0, 0, y0 + h);
-    g.addColorStop(0, night); g.addColorStop(1, "#111f33");
-    ctx.fillStyle = g; ctx.fillRect(x0, y0, w, h);
-
-    /* 별 */
-    var i, s, sx, sy;
-    for (i = 0; i < STARS.length; i++) {
-      s = STARS[i];
-      if (Math.abs(wrap180(s.lam - lamC)) > spanDeg / 2 + 2) continue;
-      sx = toX(s.lam); sy = y0 + h / 2 + s.b * (h / 44);
-      if (sy < y0 + 6 || sy > y0 + h - 6) continue;
-      ctx.globalAlpha = 0.35 + 0.65 * s.m;
-      ctx.fillStyle = "#dbe7f7";
-      ctx.beginPath(); ctx.arc(sx, sy, 0.5 + 2.0 * s.m, 0, 6.2832); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    /* 황도 */
-    ctx.strokeStyle = "rgba(255,214,120,.55)"; ctx.lineWidth = 1.5;
-    ctx.setLineDash([7, 5]);
-    ctx.beginPath(); ctx.moveTo(x0, y0 + h / 2); ctx.lineTo(x0 + w, y0 + h / 2); ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(255,214,120,.8)"; ctx.font = "600 11px 'Gothic A1',sans-serif";
-    ctx.textAlign = "left"; ctx.fillText("황도", x0 + 8, y0 + h / 2 - 8);
-
-    /* 황도 12궁 이름과 30° 눈금 */
-    ctx.textAlign = "center";
-    for (i = 0; i < 12; i++) {
-      var c = i * 30 + 15;
-      if (Math.abs(wrap180(c - lamC)) > spanDeg / 2) continue;
-      ctx.fillStyle = "rgba(190,208,232,.55)"; ctx.font = "600 11px 'Gothic A1',sans-serif";
-      ctx.fillText(ZODIAC[i], toX(c), y0 + 20);
-    }
-    for (i = 0; i < 12; i++) {
-      var e = i * 30;
-      if (Math.abs(wrap180(e - lamC)) > spanDeg / 2) continue;
-      ctx.strokeStyle = "rgba(160,180,210,.20)"; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(toX(e), y0); ctx.lineTo(toX(e), y0 + h); ctx.stroke();
-    }
-
-    /* 동 / 서 */
-    if (opts.dirs !== false) {
-      ctx.font = "800 13px 'Gothic A1',sans-serif";
-      ctx.fillStyle = "rgba(150,210,255,.95)";
-      ctx.textAlign = "left";  ctx.fillText(opts.eastLabel || "동", x0 + 10, y0 + h - 12);
-      ctx.textAlign = "right"; ctx.fillText(opts.westLabel || "서", x0 + w - 10, y0 + h - 12);
-    }
-    ctx.restore();
-    ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 2;
-    ctx.strokeRect(x0 + 1, y0 + 1, w - 2, h - 2);
-    return toX;
-  }
-
-  /* =========================================================
-     01 — 천구의 방위
-     ========================================================= */
-  (function () {
-    var cv = document.getElementById("c0");
-    if (!cv) return;
-    var ctx = window.setupCanvas(cv), W = cv._w, H = cv._h;
-    var pick = null, t = 0, running = false, judged = false;
-    var info = document.getElementById("t0-info");
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = withA(V("--card-2"), 1); ctx.fillRect(0, 0, W, H);
-
-      var box = { x: 40, y: 30, w: W - 80, h: H - 130 };
-      /* 하늘: 관측자가 남쪽을 볼 때의 시야. 별은 t 에 따라 서쪽(오른쪽)으로 흐른다 */
-      var lamC = 90 - t * 0.9;
-      var toX = drawSky(ctx, box, lamC, 120, {
-        dirs: false
-      });
-
-      /* 지평선과 관측자 */
-      var hy = box.y + box.h;
-      ctx.strokeStyle = withA(V("--ink"), .35); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(box.x, hy + 6); ctx.lineTo(box.x + box.w, hy + 6); ctx.stroke();
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "700 12px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center"; ctx.fillText("지평선", box.x + box.w / 2, hy + 24);
-      ctx.font = "800 13px 'Gothic A1',sans-serif"; ctx.fillStyle = withA(V("--ink"), 1);
-      ctx.fillText("남", box.x + box.w / 2, hy + 46);
-      ctx.font = "600 11.5px 'Gothic A1',sans-serif"; ctx.fillStyle = withA(V("--mist"), 1);
-      ctx.fillText("↑ 관측자가 바라보는 방향", box.x + box.w / 2, hy + 64);
-
-      /* 학생이 붙인 이름표 */
-      if (pick) {
-        var eastLeft = (pick === "left");
-        var lx = box.x + 14, rx = box.x + box.w - 14;
-        ctx.font = "800 15px 'Gothic A1',sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillStyle = withA(V("--brand"), 1);
-        ctx.fillText(eastLeft ? "동" : "서", lx, box.y + box.h - 14);
-        ctx.textAlign = "right";
-        ctx.fillText(eastLeft ? "서" : "동", rx, box.y + box.h - 14);
-      } else {
-        ctx.textAlign = "center"; ctx.font = "700 13px 'Gothic A1',sans-serif";
-        ctx.fillStyle = "rgba(210,225,245,.75)";
-        ctx.fillText("동 · 서 이름표를 아직 붙이지 않았습니다", box.x + box.w / 2, box.y + box.h - 16);
-      }
-
-      /* 확인 중이면 흐르는 방향 화살표 */
-      if (running || judged) {
-        var ay = box.y + 40, ax0 = box.x + box.w * 0.32, ax1 = box.x + box.w * 0.68;
-        ctx.strokeStyle = "rgba(255,180,120,.95)"; ctx.fillStyle = "rgba(255,180,120,.95)";
-        ctx.lineWidth = 2.5;
-        window.drawArrow(ctx, ax0, ay, ax1, ay, 9);
-        ctx.font = "800 12px 'Gothic A1',sans-serif"; ctx.textAlign = "center";
-        ctx.fillText("별이 흘러가는 방향 (일주 운동)", (ax0 + ax1) / 2, ay - 12);
-      }
-    }
-
-    function judge() {
-      judged = true;
-      var ok = (pick === "left");
-      info.innerHTML = ok
-        ? "<b>맞습니다.</b> 별은 <b>동쪽에서 떠서 서쪽으로</b> 집니다. 화면에서 별이 왼쪽에서 오른쪽으로 흘렀으므로, 왼쪽이 동쪽입니다. "
-          + "이제 02번 탭에서 ‘서에서 동으로’와 ‘동에서 서로’를 제대로 읽을 수 있습니다."
-        : "<b>어긋납니다.</b> 별은 동쪽에서 떠서 서쪽으로 지는데, 화면에서 별은 <b>왼쪽 → 오른쪽</b>으로 흘렀습니다. "
-          + "오른쪽을 동쪽이라고 두면 별이 서쪽에서 떠서 동쪽으로 지는 셈이 됩니다. "
-          + "지도를 볼 때는 북쪽을 위로 두어 오른쪽이 동쪽이지만, <b>천구는 남쪽을 바라볼 때</b>가 기준이라 좌우가 뒤집힙니다.";
-      info.style.background = ok ? withA(V("--green-100"), 1) : withA(V("--rose-100"), 1);
-      info.style.borderColor = ok ? withA(V("--green-100"), 1) : withA(V("--rose-100"), 1);
-      window.STH_state.dir = ok ? "정답" : "오답";
-      save();
-    }
-
-    document.getElementById("t0-left").addEventListener("click", function () {
-      pick = "left"; this.classList.add("on");
-      document.getElementById("t0-right").classList.remove("on"); draw();
-    });
-    document.getElementById("t0-right").addEventListener("click", function () {
-      pick = "right"; this.classList.add("on");
-      document.getElementById("t0-left").classList.remove("on"); draw();
-    });
-    document.getElementById("t0-run").addEventListener("click", function () {
-      if (!pick) { info.textContent = "먼저 동쪽 방향을 골라 주세요."; return; }
-      if (running) return;
-      running = true; t = 0;
-      (function step() {
-        t += 1.2; draw();
-        if (t < 60) { requestAnimationFrame(step); }
-        else { running = false; judge(); }
-      })();
-    });
-    document.getElementById("t0-reset").addEventListener("click", function () {
-      pick = null; t = 0; judged = false;
-      document.getElementById("t0-left").classList.remove("on");
-      document.getElementById("t0-right").classList.remove("on");
-      info.style.background = ""; info.style.borderColor = "";
-      info.textContent = "먼저 동쪽 방향을 골라 보세요. 고른 뒤에 별을 움직이면, 별이 뜨고 지는 방향과 맞는지 알 수 있습니다.";
-      draw();
-    });
-    cv._redraw = draw;
-    draw();
-  })();
-
-  /* =========================================================
-     02 — 순행과 역행 (핵심)
-     ========================================================= */
-  var T1 = { d0: daysOf(Date.UTC(2024, 7, 1)), planet: "화성", day: 0, playing: false, trail: [], flips: 0, pred: null };
-
-  (function () {
-    var cv = document.getElementById("c1");
-    if (!cv) return;
-    var ctx = window.setupCanvas(cv), W = cv._w, H = cv._h;
-    var gate = document.getElementById("t1-gate"), veil = document.getElementById("t1-veil");
-    var info = document.getElementById("t1-info"), mis = document.getElementById("t1-mis");
-    var SKY = { x: 24, y: 22, w: W - 48, h: 250 };
-    var ORBBOX = { cx: W / 2, cy: 470, R: 150 };
-
-    var ANS = ["㉠ 계속 동쪽으로만", "㉡ 계속 서쪽으로만", "㉢ 동 → 서 → 동", "㉣ 서 → 동 → 서"];
-
-    function curDays() { return T1.d0 + T1.day; }
-    function scaleOf() {
-      var a = ORB[T1.planet].a;
-      return ORBBOX.R / (a > 2 ? a * 1.08 : a * 1.25);
-    }
-
-    function collect() {
-      /* 궤적: 이틀 간격으로 현재까지의 겉보기 경도와 황위 */
-      T1.trail = [];
-      for (var i = 0; i <= T1.day; i += 2) {
-        var g = geo(T1.planet, T1.d0 + i);
-        T1.trail.push({ d: i, lam: g.lam, beta: g.beta });
-      }
-    }
-
-    /* 궤적에 실제로 나타난 방향의 차례를 ㉠~㉣ 중 하나로 읽는다 */
-    function actualPattern() {
-      var runs = [], sgn = null, i, s;
-      for (i = 1; i < T1.trail.length; i++) {
-        s = wrap180(T1.trail[i].lam - T1.trail[i - 1].lam) >= 0 ? 1 : -1;
-        if (s !== sgn) { runs.push(s); sgn = s; }
-      }
-      var word = runs.map(function (r) { return r > 0 ? "동" : "서"; });
-      if (word.length > 3) word = word.slice(0, 3);
-      var text = word.join(" → ");
-      var idx = -1;
-      if (word.length === 1) idx = (word[0] === "동") ? 0 : 1;
-      else if (word.length >= 3 && word[0] === "동") idx = 2;
-      else if (word.length >= 3 && word[0] === "서") idx = 3;
-      else if (word.length === 2) idx = (word[0] === "동") ? 2 : 3;
-      var mark = ["㉠ ", "㉡ ", "㉢ ", "㉣ "][idx] || "";
-      return { idx: idx, text: mark + text };
-    }
-
-    function flipsSoFar() {
-      var n = 0, prev = null, sgn = null;
-      for (var i = 1; i < T1.trail.length; i++) {
-        var dl = wrap180(T1.trail[i].lam - T1.trail[i - 1].lam);
-        var s = dl >= 0 ? 1 : -1;
-        if (sgn !== null && s !== sgn) n++;
-        sgn = s;
-      }
-      return n;
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = withA(V("--card-2"), 1); ctx.fillRect(0, 0, W, H);
-
-      var dd = curDays(), g = geo(T1.planet, dd);
-      var col = withA(V(ORB[T1.planet].c), 1);
-
-      /* ---------- 천구 ----------
-         지금까지 그린 궤적이 한 화면에 다 들어오도록 시야를 맞춘다.
-         그래야 역행이 만드는 고리 전체가 보인다. */
-      var span = 70, lamC = g.lam;
-      if (T1.trail.length > 2) {
-        var lo = 0, hi = 0, ref = T1.trail[0].lam, dv;
-        for (var t = 0; t < T1.trail.length; t++) {
-          dv = wrap180(T1.trail[t].lam - ref);
-          if (dv < lo) lo = dv; if (dv > hi) hi = dv;
-        }
-        span = Math.max(45, Math.min(150, (hi - lo) * 1.25 + 14));
-        lamC = norm360(ref + (lo + hi) / 2);
-      }
-      var toX = drawSky(ctx, SKY, lamC, span, {});
-
-      /* 황위를 화면 세로로. 실제 각도는 작아서 보기 쉽게 확대한다 */
-      var BS = 16;
-      var toY = function (beta) { return SKY.y + SKY.h / 2 - beta * BS; };
-
-      /* 궤적 */
-      var i, p, q, dl, sgn;
-      ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.lineJoin = "round";
-      for (i = 1; i < T1.trail.length; i++) {
-        p = T1.trail[i - 1]; q = T1.trail[i];
-        if (Math.abs(wrap180(p.lam - lamC)) > span / 2 || Math.abs(wrap180(q.lam - lamC)) > span / 2) continue;
-        dl = wrap180(q.lam - p.lam); sgn = dl >= 0 ? 1 : -1;
-        ctx.strokeStyle = sgn > 0 ? withA(V("--brand"), .95) : withA(V("--coral"), .95);
-        ctx.beginPath();
-        ctx.moveTo(toX(p.lam), toY(p.beta));
-        ctx.lineTo(toX(q.lam), toY(q.beta));
-        ctx.stroke();
-      }
-      /* 유(留) 표시 */
-      var prevS = null;
-      for (i = 1; i < T1.trail.length; i++) {
-        dl = wrap180(T1.trail[i].lam - T1.trail[i - 1].lam); sgn = dl >= 0 ? 1 : -1;
-        if (prevS !== null && sgn !== prevS) {
-          var sx = toX(T1.trail[i].lam), sy2 = toY(T1.trail[i].beta);
-          if (Math.abs(wrap180(T1.trail[i].lam - lamC)) <= span / 2) {
-            ctx.strokeStyle = withA(V("--amber"), 1); ctx.lineWidth = 2.5;
-            ctx.beginPath(); ctx.arc(sx, sy2, 8, 0, 6.2832); ctx.stroke();
-            ctx.fillStyle = withA(V("--amber"), 1); ctx.font = "800 12px 'Gothic A1',sans-serif";
-            ctx.textAlign = "center"; ctx.fillText("유", sx, sy2 - 16);
-          }
-        }
-        prevS = sgn;
-      }
-      /* 현재 행성 위치 */
-      var px = toX(g.lam), py = toY(g.beta);
-      ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(px, py, 7, 0, 6.2832); ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 1.6; ctx.stroke();
-      ctx.fillStyle = "#eef4ff"; ctx.font = "800 12.5px 'Gothic A1',sans-serif"; ctx.textAlign = "center";
-      ctx.fillText(T1.planet, px, py - 16);
-      /* 태양 방향 — 태양은 늘 황도 위(황위 0°)에 있다 */
-      if (Math.abs(wrap180(g.lamSun - lamC)) <= span / 2) {
-        var sxx = toX(g.lamSun);
-        ctx.fillStyle = "rgba(255,200,90,.95)";
-        ctx.beginPath(); ctx.arc(sxx, toY(0), 9, 0, 6.2832); ctx.fill();
-        ctx.fillStyle = "rgba(255,220,150,1)"; ctx.font = "800 12px 'Gothic A1',sans-serif";
-        ctx.fillText("태양", sxx, toY(0) - 20);
-      }
-      ctx.fillStyle = "rgba(200,216,240,.75)"; ctx.font = "600 11px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("천구 · 배경별을 기준으로 본 하늘 (황위는 보기 쉽게 확대)", SKY.x + SKY.w / 2, SKY.y + SKY.h - 12);
-
-      /* ---------- 연결선 ---------- */
-      ctx.strokeStyle = withA(V("--mist"), .5); ctx.lineWidth = 1.5; ctx.setLineDash([4, 5]);
-      ctx.beginPath(); ctx.moveTo(px, SKY.y + SKY.h); ctx.lineTo(px, SKY.y + SKY.h + 22); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center"; ctx.fillText("↑ 이 시선이 하늘의 이 지점을 가리킵니다", px, SKY.y + SKY.h + 36);
-
-      /* ---------- 궤도면 ---------- */
-      var S = scaleOf(), cx = ORBBOX.cx, cy = ORBBOX.cy;
-      var E = g.E, P = g.p;
-
-      ctx.lineWidth = 1.6;
-      [ "지구", T1.planet ].forEach(function (n) {
-        ctx.strokeStyle = withA(V(ORB[n].c), .45);
-        ctx.beginPath(); ctx.arc(cx, cy, ORB[n].a * S, 0, 6.2832); ctx.stroke();
-      });
-
-      /* 태양 */
-      ctx.fillStyle = "#ffb02e";
-      ctx.beginPath(); ctx.arc(cx, cy, 9, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center"; ctx.fillText("태양", cx, cy + 24);
-
-      var ex = cx + E.x * S, ey = cy - E.y * S;
-      var ppx = cx + P.x * S, ppy = cy - P.y * S;
-
-      /* 시선 */
-      ctx.strokeStyle = withA(V("--mist"), .85); ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
-      var ux = (ppx - ex), uy = (ppy - ey), un = Math.hypot(ux, uy);
-      ctx.beginPath(); ctx.moveTo(ex, ey);
-      ctx.lineTo(ex + ux / un * (ORBBOX.R + 46), ey + uy / un * (ORBBOX.R + 46));
-      ctx.stroke(); ctx.setLineDash([]);
-
-      /* 지구·행성 */
-      ctx.fillStyle = withA(V("--brand"), 1);
-      ctx.beginPath(); ctx.arc(ex, ey, ORB["지구"].rad + 1, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("지구", ex, ey - 12);
-      ctx.fillStyle = col;
-      ctx.beginPath(); ctx.arc(ppx, ppy, ORB[T1.planet].rad + 1.5, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1);
-      ctx.fillText(T1.planet, ppx, ppy - 12);
-
-      /* 공전 방향 화살표 — 늘 같은 쪽 */
-      function arrowOn(name, color) {
-        var o = ORB[name], h1 = helio(name, dd), h2 = helio(name, dd + Math.max(3, o.P / 90));
-        var x1 = cx + h1.x * S, y1 = cy - h1.y * S, x2 = cx + h2.x * S, y2 = cy - h2.y * S;
-        var n = Math.hypot(x2 - x1, y2 - y1);
-        if (n < 1) return;
-        ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.4;
-        window.drawArrow(ctx, x1 + (x2 - x1) / n * 12, y1 + (y2 - y1) / n * 12,
-                              x1 + (x2 - x1) / n * 34, y1 + (y2 - y1) / n * 34, 7);
-      }
-      arrowOn("지구", withA(V("--brand"), .9));
-      arrowOn(T1.planet, col);
-
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11.5px 'Gothic A1',sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("공전 궤도면 (위에서 내려다본 모습) — 화살표는 공전 방향입니다", 24, H - 14);
-    }
-
-    function refresh() {
-      var dd = curDays(), g = geo(T1.planet, dd);
-      collect();
-      var f = flipsSoFar();
-      T1.flips = f;
-      document.getElementById("t1-dval").textContent = dateStr(J2000 + dd * 86400000);
-      document.getElementById("t1-date").textContent = dateStr(J2000 + dd * 86400000);
-      document.getElementById("t1-orbflip").textContent = "0";
-      document.getElementById("t1-skyflip").textContent = f;
-      var mode = "—";
-      if (T1.trail.length > 1) {
-        var n = T1.trail.length;
-        mode = wrap180(T1.trail[n - 1].lam - T1.trail[n - 2].lam) >= 0 ? "순행" : "역행";
-      }
-      document.getElementById("t1-mode").textContent = mode;
-      document.getElementById("t1-state").textContent = mode;
-      var el = g.elong;
-      document.getElementById("t1-elong").textContent =
-        (el >= 0 ? "동방 " : "서방 ") + Math.abs(el).toFixed(0) + "°";
-
-      var msg = "";
-      if (mode === "역행") {
-        msg = "<b>지금 역행 중입니다.</b> 배경별을 기준으로 " + T1.planet + "이(가) <b>동에서 서로</b> 움직이고 있습니다. "
-            + "그런데 아래 궤도면을 보세요 — " + T1.planet + "의 공전 방향 화살표는 바뀌지 않았습니다.";
-      } else if (mode === "순행") {
-        msg = "<b>순행 중입니다.</b> 배경별을 기준으로 " + T1.planet + "이(가) <b>서에서 동으로</b> 움직이고 있습니다.";
-      } else {
-        msg = "날짜 슬라이더를 밀거나 재생을 눌러 보세요. 시선이 천구에 남기는 자취가 곧 겉보기 운동입니다.";
-      }
-      if (f >= 2 && T1.pred !== null) {
-        var actual = actualPattern();
-        var right = (T1.pred === actual.idx);
-        msg += "<br><br><b>예상:</b> " + ANS[T1.pred] + " &nbsp;/&nbsp; <b>실제:</b> " + actual.text
-             + (right ? " &nbsp;— 맞았습니다." : " &nbsp;— 어긋났습니다. 어디서 갈렸는지 궤적을 되짚어 보세요.");
-        mis.hidden = false;
-        window.STH_state.retro = (right ? "예상 적중" : "예상 어긋남")
-          + " (예상 " + ANS[T1.pred] + " / 실제 " + actual.text + ")";
-        save();
-      }
-      document.getElementById("t1-info").innerHTML = msg;
-      draw();
-    }
-
-    /* 예측 게이트 */
-    Array.prototype.forEach.call(gate.querySelectorAll(".opt"), function (b) {
-      b.addEventListener("click", function () {
-        Array.prototype.forEach.call(gate.querySelectorAll(".opt"), function (o) { o.classList.remove("picked"); });
-        b.classList.add("picked");
-        T1.pred = +b.getAttribute("data-a");
-        gate.classList.add("done");
-        veil.hidden = true;
-        window.STH_state.pred = ANS[T1.pred];
-        save();
-        refresh();
-      });
-    });
-
-    var sl = document.getElementById("t1-d");
-    sl.addEventListener("input", function () { T1.day = +sl.value; refresh(); });
-
-    document.getElementById("t1-step").addEventListener("click", function () {
-      T1.day = Math.min(760, T1.day + 30.44);
-      sl.value = Math.round(T1.day); refresh();
-    });
-    document.getElementById("t1-clear").addEventListener("click", function () {
-      T1.day = 0; sl.value = 0; document.getElementById("t1-mis").hidden = true; refresh();
-    });
-
-    var playBtn = document.getElementById("t1-play");
-    playBtn.addEventListener("click", function () {
-      T1.playing = !T1.playing;
-      playBtn.textContent = T1.playing ? "일시 정지" : "재생";
-      if (T1.playing) tick();
-    });
-    function tick() {
-      if (!T1.playing) return;
-      T1.day += 3;
-      if (T1.day > 760) { T1.day = 760; T1.playing = false; playBtn.textContent = "재생"; }
-      sl.value = Math.round(T1.day);
-      refresh();
-      if (T1.playing) setTimeout(function () { requestAnimationFrame(tick); }, 40);
-    }
-
-    Array.prototype.forEach.call(document.querySelectorAll("#t1-planet button"), function (b) {
-      b.addEventListener("click", function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#t1-planet button"), function (o) { o.classList.remove("on"); });
-        b.classList.add("on");
-        T1.planet = b.getAttribute("data-p");
-        T1.day = 0; sl.value = 0; document.getElementById("t1-mis").hidden = true;
-        refresh();
-      });
-    });
-
-    cv._redraw = draw;
-    refresh();
-  })();
-
-  /* =========================================================
-     03 — 이각과 관측 조건
-     ========================================================= */
-  (function () {
-    var cv = document.getElementById("c2");
-    if (!cv) return;
-    var ctx = window.setupCanvas(cv), W = cv._w, H = cv._h;
-    var base = daysOf(Date.UTC(2024, 9, 15));
-    var planet = "금성", day = 0;
-    var tbody = document.getElementById("t2-tbody");
-
-    var BOOK = [
-      { p: "금성", y: 2024, m: 10, d: 15 }, { p: "금성", y: 2025, m: 1, d: 15 }, { p: "금성", y: 2025, m: 4, d: 15 },
-      { p: "화성", y: 2024, m: 10, d: 15 }, { p: "화성", y: 2025, m: 1, d: 15 }, { p: "화성", y: 2025, m: 4, d: 15 }
-    ];
-    var extra = [];
-
-    function phaseCanvas(k, el, size) {
-      var c = document.createElement("canvas");
-      c.width = size * 2; c.height = size * 2;
-      c.style.width = size + "px"; c.style.height = size + "px";
-      var g = c.getContext("2d"); g.scale(2, 2);
-      var r = size / 2 - 2, cx = size / 2, cy = size / 2;
-      g.fillStyle = "#3a3f52"; g.beginPath(); g.arc(cx, cy, r, 0, 6.2832); g.fill();
-      /* 밝은 쪽: 동방 이각이면 서쪽(오른쪽)이 밝다 */
-      g.fillStyle = "#ffd27a";
-      g.beginPath();
-      var lit = 2 * k - 1;               /* -1 .. 1 */
-      g.save();
-      g.beginPath(); g.arc(cx, cy, r, -Math.PI / 2, Math.PI / 2, el >= 0); g.closePath(); g.fill();
-      g.beginPath(); g.ellipse(cx, cy, Math.abs(lit) * r, r, 0, 0, 6.2832);
-      g.fillStyle = (lit >= 0) ? "#ffd27a" : "#3a3f52"; g.fill();
-      g.restore();
-      g.strokeStyle = "rgba(120,130,160,.6)"; g.lineWidth = 1;
-      g.beginPath(); g.arc(cx, cy, r, 0, 6.2832); g.stroke();
-      return c;
-    }
-
-    function rowHtml(p, ms, mine) {
-      var dd = daysOf(ms), g = geo(p, dd);
-      var el = g.elong, dir = el >= 0 ? "동쪽" : "서쪽";
-      var rs = riseSet(el);
-      var marks = [19, 24, 5].map(function (h) { return oxMark(el, h); });
-      var cls = { "O": "o", "X": "x", "△": "t" };
-      var tr = document.createElement("tr");
-      if (mine) tr.className = "mine";
-      tr.innerHTML =
-        "<td>" + p + "</td>" +
-        "<td class='num'>" + dateStr(ms) + "</td>" +
-        "<td>" + dir + "</td>" +
-        "<td class='num'>" + Math.abs(el).toFixed(1) + "</td>" +
-        marks.map(function (m) { return "<td class='ox " + cls[m] + "'>" + m + "</td>"; }).join("") +
-        "<td class='phase-cell'></td>";
-      tr.lastChild.appendChild(phaseCanvas(g.k, el, 30));
-      tr.lastChild.insertAdjacentHTML("beforeend",
-        "<div style='font-size:10.5px;color:var(--mist);margin-top:2px'>" + Math.round(g.k * 100) + "%</div>");
-      tr.title = "뜨는 시각 " + hhmm(rs.rise) + " · 남중 " + hhmm(rs.transit) + " · 지는 시각 " + hhmm(rs.set);
-      return tr;
-    }
-
-    function fillTable() {
-      tbody.innerHTML = "";
-      BOOK.forEach(function (b) {
-        tbody.appendChild(rowHtml(b.p, Date.UTC(b.y, b.m - 1, b.d), false));
-      });
-      extra.forEach(function (e) { tbody.appendChild(rowHtml(e.p, e.ms, true)); });
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = withA(V("--card-2"), 1); ctx.fillRect(0, 0, W, H);
-      var dd = base + day, g = geo(planet, dd);
-      var a = ORB[planet].a;
-      var S = 165 / Math.max(1.25, a * 1.1);
-      var cx = 300, cy = H / 2;
-
-      /* 궤도 */
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 1.5;
-      ["지구", planet].forEach(function (n) {
-        ctx.beginPath(); ctx.arc(cx, cy, ORB[n].a * S, 0, 6.2832); ctx.stroke();
-      });
-      var ex = cx + g.E.x * S, ey = cy - g.E.y * S;
-      var px = cx + g.p.x * S, py = cy - g.p.y * S;
-
-      /* 이각 각도 표시 — 지구에서 본 '태양 방향'과 '행성 방향' 사이의 각 */
-      var aS = Math.atan2(cy - ey, cx - ex);      /* 지구 → 태양 */
-      var aP = Math.atan2(py - ey, px - ex);      /* 지구 → 행성 */
-      var sweep = ((aP - aS + Math.PI * 3) % (Math.PI * 2)) - Math.PI;   /* -π..π 짧은 쪽 */
-      ctx.strokeStyle = withA(V("--amber"), .9); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(ex, ey, 46, aS, aS + sweep, sweep < 0); ctx.stroke();
-      var aMid = aS + sweep / 2;
-      ctx.fillStyle = withA(V("--amber-700"), 1); ctx.font = "800 13px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("이각 " + Math.abs(g.elong).toFixed(0) + "°", ex + Math.cos(aMid) * 66, ey + Math.sin(aMid) * 66 + 4);
-
-      /* 시선 */
-      ctx.strokeStyle = withA(V("--mist"), .8); ctx.lineWidth = 1.5; ctx.setLineDash([5, 4]);
-      ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(px, py); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(cx, cy); ctx.stroke();
-      ctx.setLineDash([]);
-
-      /* 천체 */
-      ctx.fillStyle = "#ffb02e"; ctx.beginPath(); ctx.arc(cx, cy, 10, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 12px 'Gothic A1',sans-serif";
-      ctx.textAlign = "center"; ctx.fillText("태양", cx, cy + 26);
-      ctx.fillStyle = withA(V("--brand"), 1); ctx.beginPath(); ctx.arc(ex, ey, 6, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.fillText("지구", ex, ey - 14);
-      ctx.fillStyle = withA(V(ORB[planet].c), 1);
-      ctx.beginPath(); ctx.arc(px, py, ORB[planet].rad + 1.5, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.fillText(planet, px, py - 14);
-
-      /* 오른쪽: 하루 동안의 지평선 그림 */
-      var bx = 590, bw = 280, by = 90, bh = 230;
-      ctx.fillStyle = withA(V("--card"), 1);
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "800 13px 'Gothic A1',sans-serif";
-      ctx.textAlign = "left"; ctx.fillText("하루 동안 지평선 위에 있는 시간", bx, by - 14);
-
-      var rs = riseSet(g.elong);
-      var hours = ["18시", "21시", "24시", "03시", "06시"];
-      var hv = [18, 21, 24, 27, 30];
-      for (var i = 0; i < hv.length; i++) {
-        var yy = by + 26 + i * ((bh - 50) / 4);
-        var m = margin(g.elong, hv[i] % 24);
-        var wpx = Math.max(0, Math.min(6, m)) / 6 * (bw - 110);
-        ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11.5px 'Gothic A1',sans-serif";
-        ctx.textAlign = "left"; ctx.fillText(hours[i], bx + 10, yy + 4);
-        ctx.fillStyle = withA(V("--line"), 1);
-        ctx.fillRect(bx + 56, yy - 7, bw - 110, 14);
-        ctx.fillStyle = m >= 0.5 ? withA(V("--green"), .95) : (m > 0 ? withA(V("--amber"), .95) : withA(V("--rose"), .55));
-        ctx.fillRect(bx + 56, yy - 7, Math.max(3, wpx), 14);
-        ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 11px 'Gothic A1',sans-serif";
-        ctx.textAlign = "right";
-        ctx.fillText(m > 0 ? "고도 여유 " + m.toFixed(1) + "h" : "지평선 아래", bx + bw - 8, yy + 4);
-      }
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11px 'Gothic A1',sans-serif";
-      ctx.textAlign = "left";
-      ctx.fillText("뜨는 시각 " + hhmm(rs.rise) + " · 남중 " + hhmm(rs.transit) + " · 지는 시각 " + hhmm(rs.set),
-                   bx, by + bh + 20);
-    }
-
-    function refresh() {
-      var dd = base + day, g = geo(planet, dd), ms = J2000 + dd * 86400000;
-      document.getElementById("t2-dval").textContent = dateStr(ms);
-      document.getElementById("t2-badge").textContent = planet + " · " + dateStr(ms);
-      var el = g.elong;
-      document.getElementById("t2-dot").style.background = withA(V(ORB[planet].c), 1);
-      document.getElementById("t2-read").innerHTML =
-        "이각 <b>" + (el >= 0 ? "동방" : "서방") + " " + Math.abs(el).toFixed(1) + "°</b> · "
-        + "밝게 보이는 비율 <b>" + Math.round(g.k * 100) + "%</b> · 지구까지 <b>" + g.dist.toFixed(2) + " AU</b>"
-        + " — " + (el >= 0
-            ? "태양보다 동쪽에 있으므로 해가 진 뒤 <b>서쪽 하늘</b>에서 찾습니다."
-            : "태양보다 서쪽에 있으므로 해 뜨기 전 <b>동쪽 하늘</b>에서 찾습니다.");
-      draw();
-    }
-
-    document.getElementById("t2-d").addEventListener("input", function () { day = +this.value; refresh(); });
-    Array.prototype.forEach.call(document.querySelectorAll("#t2-planet button"), function (b) {
-      b.addEventListener("click", function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#t2-planet button"), function (o) { o.classList.remove("on"); });
-        b.classList.add("on"); planet = b.getAttribute("data-p"); refresh();
-      });
-    });
-    document.getElementById("t2-add").addEventListener("click", function () {
-      extra.push({ p: planet, ms: J2000 + (base + day) * 86400000 });
-      if (extra.length > 6) extra.shift();
-      fillTable();
-      window.STH_state.rows = extra.length;
-      save();
-    });
-
-    cv._redraw = draw;
-    fillTable(); refresh();
-  })();
-
-  /* =========================================================
-     04 — 주전원
-     ========================================================= */
-  (function () {
-    var cv = document.getElementById("c3");
-    if (!cv) return;
-    var ctx = window.setupCanvas(cv), W = cv._w, H = cv._h;
-    var d0 = daysOf(Date.UTC(2024, 7, 1)), day = 0, playing = false, trail = [];
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = withA(V("--card-2"), 1); ctx.fillRect(0, 0, W, H);
-      var dd = d0 + day, g = geo("화성", dd);
-      var S = 62;
-
-      /* --- 왼쪽: 태양 중심 --- */
-      var cx = 225, cy = 250;
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 1.5;
-      ["지구", "화성"].forEach(function (n) {
-        ctx.beginPath(); ctx.arc(cx, cy, ORB[n].a * S, 0, 6.2832); ctx.stroke();
-      });
-      ctx.fillStyle = "#ffb02e"; ctx.beginPath(); ctx.arc(cx, cy, 8, 0, 6.2832); ctx.fill();
-      var ex = cx + g.E.x * S, ey = cy - g.E.y * S, px = cx + g.p.x * S, py = cy - g.p.y * S;
-      ctx.strokeStyle = withA(V("--mist"), .8); ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]);
-      ctx.beginPath(); ctx.moveTo(ex, ey); ctx.lineTo(px, py); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = withA(V("--brand"), 1); ctx.beginPath(); ctx.arc(ex, ey, 5, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--coral"), 1); ctx.beginPath(); ctx.arc(px, py, 5, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "800 13px 'Gothic A1',sans-serif"; ctx.textAlign = "center";
-      ctx.fillText("태양 중심 모형", cx, 40);
-      ctx.font = "600 11.5px 'Gothic A1',sans-serif"; ctx.fillStyle = withA(V("--mist"), 1);
-      ctx.fillText("태양이 가운데, 지구와 화성이 각자 돈다", cx, 60);
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("지구", ex, ey - 11); ctx.fillText("화성", px, py - 11);
-
-      /* --- 오른쪽: 지구 중심 + 주전원 --- */
-      var gx = 675, gy = 250;
-      var Dr = ORB["화성"].a * S;               /* 이심원(deferent) 반지름 = 화성 궤도 반지름 */
-      var er = ORB["지구"].a * S;               /* 주전원 반지름 = 지구 궤도 반지름 */
-      /* 주전원 모형: 이심원 중심 = 지구, 이심원 위의 점 = 행성의 태양 중심 위치,
-         거기서 다시 '태양 → 지구'의 반대 방향으로 지구 궤도 반지름만큼 간 곳이 행성.
-         황도면 성분(x, y)을 그대로 쓰므로 태양 중심 모형과 방향이 정확히 같아진다. */
-      var hm = helio("화성", dd), he = helio("지구", dd);
-      var ccx = gx + hm.x * S, ccy = gy - hm.y * S;
-      var qx = ccx - he.x * S, qy = ccy + he.y * S;
-
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(gx, gy, Dr, 0, 6.2832); ctx.stroke();
-      ctx.strokeStyle = withA(V("--violet"), .75); ctx.setLineDash([4, 4]);
-      ctx.beginPath(); ctx.arc(ccx, ccy, er, 0, 6.2832); ctx.stroke(); ctx.setLineDash([]);
-      ctx.strokeStyle = withA(V("--mist"), .5); ctx.lineWidth = 1.2;
-      ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(ccx, ccy); ctx.stroke();
-
-      ctx.fillStyle = withA(V("--brand"), 1); ctx.beginPath(); ctx.arc(gx, gy, 6, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--violet"), 1); ctx.beginPath(); ctx.arc(ccx, ccy, 3.5, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--coral"), 1); ctx.beginPath(); ctx.arc(qx, qy, 5, 0, 6.2832); ctx.fill();
-      ctx.strokeStyle = withA(V("--mist"), .8); ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4;
-      ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(qx, qy); ctx.stroke(); ctx.setLineDash([]);
-
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "800 13px 'Gothic A1',sans-serif"; ctx.textAlign = "center";
-      ctx.fillText("지구 중심 모형 (주전원)", gx, 40);
-      ctx.font = "600 11.5px 'Gothic A1',sans-serif"; ctx.fillStyle = withA(V("--mist"), 1);
-      ctx.fillText("지구가 가운데, 화성은 작은 원(주전원) 위를 돈다", gx, 60);
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("지구", gx, gy + 20); ctx.fillText("화성", qx, qy - 11);
-      ctx.fillStyle = withA(V("--violet-700"), 1);
-      ctx.fillText("주전원", ccx, ccy - er - 8);
-
-      /* --- 아래: 두 모형의 겉보기 경도 비교 --- */
-      var by = 430, bh = 96, bx = 60, bw = W - 120;
-      ctx.fillStyle = withA(V("--card"), 1); ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif"; ctx.textAlign = "left";
-      ctx.fillText("두 모형이 가리키는 겉보기 경도 (가로: 시간, 세로: 경도)", bx + 8, by - 8);
-
-      if (trail.length > 1) {
-        var lo = 1e9, hi = -1e9, i;
-        for (i = 0; i < trail.length; i++) { lo = Math.min(lo, trail[i].u); hi = Math.max(hi, trail[i].u); }
-        var pad = Math.max(4, (hi - lo) * 0.12); lo -= pad; hi += pad;
-        ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 10.5px 'Gothic A1',sans-serif";
-        ctx.textAlign = "right";
-        ctx.fillText(hi.toFixed(0) + "°", bx - 6, by + 14);
-        ctx.fillText(lo.toFixed(0) + "°", bx - 6, by + bh - 4);
-        ctx.textAlign = "left";
-        var X = function (i) { return bx + 8 + (bw - 16) * i / Math.max(1, trail.length - 1); };
-        var Y = function (v) { return by + bh - 10 - (bh - 20) * (v - lo) / Math.max(1e-6, hi - lo); };
-        ctx.strokeStyle = withA(V("--brand"), 1); ctx.lineWidth = 5; ctx.lineCap = "round";
-        ctx.beginPath();
-        for (i = 0; i < trail.length; i++) { i ? ctx.lineTo(X(i), Y(trail[i].u)) : ctx.moveTo(X(i), Y(trail[i].u)); }
-        ctx.stroke();
-        ctx.strokeStyle = withA(V("--coral"), 1); ctx.lineWidth = 1.8; ctx.setLineDash([6, 5]);
-        ctx.beginPath();
-        for (i = 0; i < trail.length; i++) { i ? ctx.lineTo(X(i), Y(trail[i].v)) : ctx.moveTo(X(i), Y(trail[i].v)); }
-        ctx.stroke(); ctx.setLineDash([]);
-      }
-      ctx.fillStyle = withA(V("--brand"), 1); ctx.fillRect(bx + 8, by + bh + 10, 22, 5);
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("태양 중심", bx + 36, by + bh + 16);
-      ctx.fillStyle = withA(V("--coral"), 1); ctx.fillRect(bx + 110, by + bh + 12, 22, 2);
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.fillText("주전원 (겹칩니다)", bx + 138, by + bh + 16);
-    }
-
-    function refresh() {
-      var dd = d0 + day;
-      trail = [];
-      for (var i = 0; i <= day; i += 4) {
-        var g = geo("화성", d0 + i);
-        var hm = helio("화성", d0 + i), he = helio("지구", d0 + i);
-        var qx = hm.x - he.x, qy = hm.y - he.y;
-        trail.push({ u: g.lam, v: norm360(Math.atan2(qy, qx) * R2D) });
-      }
-      document.getElementById("t3-dval").textContent = dateStr(J2000 + dd * 86400000);
-      var diff = 0;
-      for (var j = 0; j < trail.length; j++) diff = Math.max(diff, Math.abs(wrap180(trail[j].u - trail[j].v)));
-      document.getElementById("t3-info").innerHTML =
-        "두 모형이 가리키는 방향의 최대 차이: <b>" + diff.toFixed(6) + "°</b>. "
-        + "주전원 반지름을 지구 궤도 반지름과 같게 두면 두 모형은 <b>수학적으로 완전히 같습니다</b>. "
-        + "그래서 프톨레마이오스도 역행을 설명할 수 있었습니다. "
-        + "다만 주전원 모형은 행성마다 원을 계속 덧붙여야 했고, 금성의 위상 변화는 설명하지 못했습니다.";
-      draw();
-    }
-
-    document.getElementById("t3-d").addEventListener("input", function () { day = +this.value; refresh(); });
-    var pb = document.getElementById("t3-play");
-    pb.addEventListener("click", function () {
-      playing = !playing; pb.textContent = playing ? "일시 정지" : "재생";
-      (function loop() {
-        if (!playing) return;
-        day += 4; if (day > 760) { day = 760; playing = false; pb.textContent = "재생"; }
-        document.getElementById("t3-d").value = day; refresh();
-        if (playing) setTimeout(function () { requestAnimationFrame(loop); }, 45);
-      })();
-    });
-    document.getElementById("t3-clear").addEventListener("click", function () {
-      day = 0; document.getElementById("t3-d").value = 0; refresh();
-    });
-    cv._redraw = draw;
-    refresh();
-  })();
-
-  /* =========================================================
-     05 — 식 현상
-     ========================================================= */
-  (function () {
-    var cv = document.getElementById("c4");
-    if (!cv) return;
-    var ctx = window.setupCanvas(cv), W = cv._w, H = cv._h;
-    var mphase = 0, node = 0, inc = 5.1;
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.fillStyle = withA(V("--card-2"), 1); ctx.fillRect(0, 0, W, H);
-
-      /* 위에서 본 그림 */
-      var cx = 300, cy = 230, R = 150;
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, 6.2832); ctx.stroke();
-      /* 태양 방향(왼쪽 바깥) */
-      ctx.fillStyle = "#ffb02e";
-      ctx.beginPath(); ctx.arc(60, cy, 26, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 12px 'Gothic A1',sans-serif"; ctx.textAlign = "center";
-      ctx.fillText("태양", 60, cy + 44);
-      ctx.strokeStyle = withA(V("--amber"), .35); ctx.lineWidth = 1;
-      for (var i = -2; i <= 2; i++) {
-        ctx.beginPath(); ctx.moveTo(86, cy + i * 12); ctx.lineTo(cx - 30, cy + i * 12); ctx.stroke();
-      }
-      /* 지구 */
-      ctx.fillStyle = withA(V("--brand"), 1);
-      ctx.beginPath(); ctx.arc(cx, cy, 17, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.fillText("지구", cx, cy + 34);
-      /* 지구 그림자 */
-      ctx.fillStyle = withA(V("--ink"), .16);
-      ctx.beginPath(); ctx.moveTo(cx, cy - 15); ctx.lineTo(cx + R + 60, cy - 26);
-      ctx.lineTo(cx + R + 60, cy + 26); ctx.lineTo(cx, cy + 15); ctx.closePath(); ctx.fill();
-
-      /* 달 */
-      var ang = mphase * D2R;
-      var mx = cx + R * Math.cos(ang), my = cy - R * Math.sin(ang) * 0.42;
-      /* 교점선 */
-      ctx.strokeStyle = withA(V("--violet"), .8); ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
-      ctx.beginPath();
-      ctx.moveTo(cx + R * Math.cos(node * D2R), cy - R * Math.sin(node * D2R) * 0.42);
-      ctx.lineTo(cx - R * Math.cos(node * D2R), cy + R * Math.sin(node * D2R) * 0.42);
-      ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = withA(V("--violet-700"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("교점선", cx + R * Math.cos(node * D2R) * 0.62, cy - R * Math.sin(node * D2R) * 0.42 - 10);
-
-      ctx.fillStyle = withA(V("--mist"), 1);
-      ctx.beginPath(); ctx.arc(mx, my, 8, 0, 6.2832); ctx.fill();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "700 11.5px 'Gothic A1',sans-serif";
-      ctx.fillText("달", mx, my - 14);
-
-      /* 옆에서 본 그림 — 5.1° 기울기 */
-      var sy = 400, sx0 = 60, sx1 = 540;
-      ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(sx0, sy); ctx.lineTo(sx1, sy); ctx.stroke();
-      ctx.fillStyle = withA(V("--mist"), 1); ctx.font = "600 11.5px 'Gothic A1',sans-serif"; ctx.textAlign = "left";
-      ctx.fillText("황도면 (옆에서 본 모습)", sx0, sy + 18);
-      var tilt = inc * 3.6 * D2R;
-      ctx.strokeStyle = withA(V("--violet"), .9); ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(sx0, sy + Math.tan(tilt) * (sx1 - sx0) / 2);
-      ctx.lineTo(sx1, sy - Math.tan(tilt) * (sx1 - sx0) / 2);
-      ctx.stroke();
-      ctx.fillStyle = withA(V("--violet-700"), 1);
-      ctx.fillText("달의 공전 궤도면 (" + inc.toFixed(1) + "°)", sx0, sy - 26);
-
-      /* 판정 */
-      var sepPhase = Math.abs(wrap180(mphase - node));            /* 교점으로부터의 각거리 */
-      var beta = inc * Math.abs(Math.sin(wrap180(mphase - node) * D2R));  /* 황위 근사 */
-      var isNew = Math.abs(wrap180(mphase - 180)) < 12;           /* 삭: 태양 쪽 */
-      var isFull = Math.abs(wrap180(mphase)) < 12;                /* 망: 그림자 쪽 */
-
-      /* 오른쪽 판정 패널 */
-      var bx = 600, by = 90, bw = 260;
-      ctx.fillStyle = withA(V("--card"), 1); ctx.strokeStyle = withA(V("--line"), 1); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.rect(bx, by, bw, 230); ctx.fill(); ctx.stroke();
-      ctx.fillStyle = withA(V("--ink"), 1); ctx.font = "800 13.5px 'Gothic A1',sans-serif"; ctx.textAlign = "left";
-      ctx.fillText("지금 이 배치에서는", bx + 16, by + 28);
-      ctx.font = "600 12.5px 'Gothic A1',sans-serif"; ctx.fillStyle = withA(V("--mist"), 1);
-      var lines = [
-        "달의 위치 : " + (isNew ? "삭 (태양 쪽)" : isFull ? "망 (반대쪽)" : "삭도 망도 아님"),
-        "황위 : 약 " + beta.toFixed(2) + "°",
-        "달의 시반지름 : 약 0.26°",
-        "본그림자에 들어가려면 : 황위 0.5° 이내"
-      ];
-      lines.forEach(function (t, i) { ctx.fillText(t, bx + 16, by + 58 + i * 24); });
-
-      var verdict, vcol;
-      if (isNew && beta < 0.5) { verdict = "일식이 일어납니다"; vcol = V("--green-700"); }
-      else if (isFull && beta < 0.9) { verdict = "월식이 일어납니다"; vcol = V("--green-700"); }
-      else if (isNew) { verdict = "삭이지만 달이 황도면에서 벗어나 일식이 아닙니다"; vcol = V("--rose-700"); }
-      else if (isFull) { verdict = "망이지만 달이 황도면에서 벗어나 월식이 아닙니다"; vcol = V("--rose-700"); }
-      else { verdict = "삭도 망도 아니므로 식이 일어나지 않습니다"; vcol = V("--mist"); }
-      ctx.fillStyle = withA(vcol, 1); ctx.font = "800 13px 'Gothic A1',sans-serif";
-      wrapText(ctx, verdict, bx + 16, by + 172, bw - 32, 20);
-
-      document.getElementById("t4-badge").textContent = verdict;
-      document.getElementById("t4-info").innerHTML =
-        (inc === 0
-          ? "<b>기울기를 0°로 두면</b> 삭마다 일식이, 망마다 월식이 일어납니다. 한 달에 두 번씩 식이 있다는 뜻입니다. "
-            + "실제로는 그렇지 않지요 — 달의 궤도면이 <b>5.1° 기울어져 있기 때문</b>입니다."
-          : "달의 궤도면이 황도면에 대해 5.1° 기울어져 있어서, 삭과 망이 <b>교점 부근</b>에서 일어날 때만 식이 생깁니다. "
-            + "교점선 슬라이더를 돌려 보면 언제 식이 가능해지는지 알 수 있습니다.");
-    }
-
-    function wrapText(c, text, x, y, maxW, lh) {
-      var words = text.split(" "), line = "", i;
-      for (i = 0; i < words.length; i++) {
-        var test = line + words[i] + " ";
-        if (c.measureText(test).width > maxW && line) { c.fillText(line, x, y); line = words[i] + " "; y += lh; }
-        else line = test;
-      }
-      c.fillText(line, x, y);
-    }
-
-    document.getElementById("t4-m").addEventListener("input", function () {
-      mphase = +this.value;
-      var lbl = Math.abs(wrap180(mphase - 180)) < 12 ? "삭" : (Math.abs(wrap180(mphase)) < 12 ? "망" : mphase + "°");
-      document.getElementById("t4-mval").textContent = lbl;
-      draw();
-    });
-    document.getElementById("t4-n").addEventListener("input", function () {
-      node = +this.value; document.getElementById("t4-nval").textContent = node + "°"; draw();
-    });
-    Array.prototype.forEach.call(document.querySelectorAll("#t4-inc button"), function (b) {
-      b.addEventListener("click", function () {
-        Array.prototype.forEach.call(document.querySelectorAll("#t4-inc button"), function (o) { o.classList.remove("on"); });
-        b.classList.add("on"); inc = parseFloat(b.getAttribute("data-i")); draw();
-      });
-    });
-    cv._redraw = draw;
-    document.getElementById("t4-m").value = 180; mphase = 180;
-    document.getElementById("t4-mval").textContent = "삭";
-    draw();
-  })();
-
-  /* =========================================================
-     06 — 정리하기 : 공용 부품(sthUnit / sthWork)에 맡긴다
-     ========================================================= */
-  window.sthUnit("eshs-3-1");
-  function save() { /* 저장은 공용 부품이 맡습니다 */ }
-  window.STH_state = {
-    set dir(v)   { window.sthState("dir", v); },        get dir()   { return window.sthState("dir"); },
-    set pred(v)  { window.sthState("pred", v); },       get pred()  { return window.sthState("pred"); },
-    set retro(v) { window.sthState("retro", v); },      get retro() { return window.sthState("retro"); },
-    set rows(v)  { window.sthState("rows", v + "줄"); }, get rows()  { return window.sthState("rows"); }
-  };
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[지구과학 Ⅲ-1] 태양계 행성의 겉보기 운동  ·  [12지구03-01]",
-    recap: [{"key": "dir", "label": "01 천구의 방위"}, {"key": "pred", "label": "02 예상한 답"}, {"key": "retro", "label": "02 예상과 실제"}, {"key": "rows", "label": "03 표에 추가한 줄"}],
-    items: [
-      {
-            "id": "w1",
-            "label": "02번 탭에서 확인한 것",
-            "hint": "궤도면의 계수기와 하늘의 계수기가 어떻게 달랐는지를 근거로 쓰세요.",
-            "ph": "화성이 역행하는 동안 화성의 공전 방향은 (          )였다. 그런데 하늘에서 되돌아간 것처럼 보인 까닭은 (          ) 때문이다."
-      },
-      {
-            "id": "w2",
-            "label": "교과서 151쪽 확인 문제",
-            "hint": "2024년 3월 30일과 4월 30일의 하늘을 비교했을 때, 별자리에 대해 <b>동에서 서로</b> 이동한 행성은 무엇인가? 03번 탭에서 두 날짜의 이각을 확인하고 답하세요.",
-            "ph": "행성 이름과, 그렇게 판단한 근거를 함께 쓰세요."
-      },
-      {
-            "id": "w3",
-            "label": "03번 탭의 표에서 고른 한 줄",
-            "hint": "어느 행성, 어느 날짜를 골랐는지 쓰고 — 그 행성이 그 시각에 보이는(또는 보이지 않는) 까닭을 이각으로 설명하세요.",
-            "ph": ""
-      },
-      {
-            "id": "w4",
-            "label": "아직 헷갈리는 것",
-            "hint": "설명하기 어려웠던 지점을 한 문장으로 적어 두세요. 다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-
-  /* 테마가 바뀌면 캔버스 색도 따라가게 */
-  window.addEventListener("theme-changed", function () {
-    if (window.redrawCanvases) window.redrawCanvases();
-  });
-})();
-</script>
+<script src="../assets/story.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
+<script src="episodes.js"></script>
 </body>
 </html>
