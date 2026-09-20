@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>한반도의 암석 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/story.css">
 </head>
 <body>
 
@@ -15,550 +16,379 @@
       <div class="eyebrow" style="margin-top:8px">Ⅱ-2 · 한반도의 암석</div>
       <h1 class="display">화성암과<br>변성암</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 마그마와 화성암</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 암석의 순환</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 변성 작용</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 우리나라 지질공원</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 정리하기</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 같은 마그마, 다른 돌</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 돌 한 덩이의 일생</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 지질공원 해설사</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
   </nav>
 
   <main>
-    <!-- TAB0 -->
+
+    <!-- =====================================================================
+         01 마그마의 생성과 화성암 — 이야기 「같은 마그마, 다른 돌」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 마그마의 화학 조성과 냉각 속도</div>
-        <h2 class="display">마그마로부터 생성되는 화성암</h2>
-        <p>SiO₂ 함량 슬라이더로 마그마의 종류를, 냉각 속도 버튼으로 화산암·심성암을 선택해 완성되는 화성암을 확인해 보세요.</p><div class="info-card" style="margin:14px 0 0;max-width:640px;"><span class="tag" style="background:var(--brand-100);color:var(--brand-700)">분출 양식</span>SiO₂ 함량이 높을수록 마그마의 점성이 커지고, 마그마 속에 녹아 있던 화산 가스(주로 수증기·이산화 탄소)가 잘 빠져나가지 못해 압력이 쌓입니다. 그 결과 유문암질 마그마는 가스가 한꺼번에 터지며 <b>폭발적으로 분출</b>하고, 현무암질 마그마는 점성이 낮아 가스가 서서히 빠져나가며 <b>비교적 조용히 흘러나옵니다</b>. 실제 화산 재해 대응에서도 마그마 조성으로 예상되는 분출 양식을 파악해 대피 반경과 방식을 다르게 정합니다.
-        <span class="std-chip">12지구02-03</span><span class="std-chip">12지구02-04</span><span class="std-chip">12지구02-05</span><div class="std-note"><b>[12지구02-03]</b> 변동대에서 마그마가 생성되고, 그 조성에 따라 다양한 화성암이 생성됨을 설명할 수 있다.<br><b>[12지구02-04]</b> 변성 작용의 종류와 지각 변동에 따른 구조를 변동대와 관련지어 설명하고, 지구시스템에서 암석이 순환함을 설명할 수 있다.<br><b>[12지구02-05]</b> 우리나라의 대표적인 지질공원의 지질학적 형성 과정을 추론하고, 지역사회와 함께하는 지질공원의 가치를 인식할 수 있다.</div><div class="terms"><b>현무암질 마그마</b><b>부분 용융</b><b>접촉 변성</b><b>광역 변성</b></div>
+        <div class="eyebrow">01 · 마그마의 생성과 화성암 · 이야기 한 편</div>
+        <h2 class="display">같은 마그마, 다른 돌</h2>
+        <p>다큐멘터리 원고 한 장이 자문 위원의 책상에 놓였습니다. 첫 문장부터 틀려 있습니다. 그리고 책상 위에는 화학 성분이 거의 똑같은데 생김새는 전혀 다른 돌 두 덩이가 놓여 있습니다.</p>
+        <span class="std-chip">12지구02-03</span><div class="std-note"><b>[12지구02-03]</b> 변동대에서 마그마가 생성되고, 그 조성에 따라 다양한 화성암이 생성됨을 설명할 수 있다.</div><div class="terms"><b>부분 용융</b><b>현무암질 마그마</b><b>SiO₂ 함량</b><b>화산암과 심성암</b><b>세립질·조립질</b><b>분출 양식</b></div>
       </div>
-      <div class="gate loose" id="gt"></div>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap" style="position:relative"><canvas id="c0" width="900" height="440"></canvas><div class="veil" id="vl"><p>예상을 고르면 화면이 열립니다.</p></div></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">SiO₂ 함량(%)<span class="val" id="c0-sio2-val">52</span></div>
-            <input type="range" id="c0-sio2" min="45" max="70" step="1" value="52">
-          </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">냉각 속도</div>
-            <div class="seg" id="c0-cool">
-              <button class="on" data-c="fast">급냉 (화산암·세립질)</button>
-              <button data-c="slow">서냉 (심성암·조립질)</button>
+
+      <div class="episode" id="epA">
+        <section class="scene" data-title="원고에 적힌 한 문장">
+          <div class="story narr"><div class="who">🎬</div><div class="say"><span class="name">이야기</span>방송국 편집실. 다큐멘터리 「불의 고리, 한반도」 의 내레이션 원고가 스크린에 떠 있습니다. 첫 장면은 섭입대에서 마그마가 올라오는 컴퓨터 그래픽입니다.</div></div>
+          <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“읽어 볼게요. ‘두 판이 부딪치며 생긴 <b>어마어마한 마찰열</b>로 바닥의 암석이 녹아 마그마가 된다.’ 어떤가요? 그림도 벌써 다 만들어 놨습니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“거기서 멈추시죠. 그 한 문장 때문에 이 다큐 전체가 틀려집니다. 그리고 뒷장의 ‘마그마가 식으면 화강암이 된다’ 도 반만 맞습니다. <b>같은 마그마에서 전혀 다른 돌 두 개</b>가 나올 수 있으니까요.”</div></div>
+          <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“같은 마그마에서 다른 돌이요? 성분이 같으면 같은 돌 아닌가요?”</div></div>
+          <div class="case-file"><b class="k">원고에서 확인해야 할 것</b> 마그마는 무엇 때문에 생기는가 &nbsp;|&nbsp; SiO₂ 함량이 무엇을 정하는가 &nbsp;|&nbsp; 왜 어떤 돌은 알갱이가 보이고 어떤 돌은 안 보이는가 &nbsp;|&nbsp; 왜 어떤 화산은 흘러내리고 어떤 화산은 터지는가</div>
+          <div class="gate loose" id="a-gate"></div>
+        </section>
+
+        <section class="scene" data-title="돌을 녹이는 세 가지 방법">
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“땅속 암석은 원래 <b>거의 녹지 않은 채</b> 있습니다. 깊이 들어갈수록 뜨거워지긴 하지만, 동시에 <b>압력도 높아져서 녹는점이 함께 올라가거든요.</b> 그래서 평소에는 아슬아슬하게 고체입니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“마그마가 생기려면 이 균형을 깨야 합니다. 방법은 셋뿐이에요. <b>열을 더 주거나</b>, <b>압력을 낮추거나</b>, <b>물을 넣거나.</b> 아래 화면에서 직접 깨 보세요. 가로축이 온도, 세로축이 깊이입니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-melt" width="900" height="500"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">맨틀 물질이 있는 깊이<span class="val" id="a-depth-val">100 km</span></div>
+                <input type="range" id="a-depth" min="0" max="200" step="5" value="100">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">그 물질의 온도<span class="val" id="a-temp-val">1000 °C</span></div>
+                <input type="range" id="a-temp" min="700" max="1600" step="10" value="1000">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">물(H₂O) 공급</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="a-water">섭입하는 판에서 물 공급</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--coral)"></span><span class="txt" id="a-melt-read">지금 상태: —</span></div>
             </div>
+            <div class="info-card" id="a-melt-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c0-info"></div>
+          <div class="mission" id="m1-2"><span class="m-tag">미션</span>같은 암석을 세 가지 서로 다른 방법으로 녹여 보세요.<ul><li id="m1-2a"><b>열을 더 주어</b> 녹이기 — 깊이 100 km 보다 깊은 곳에서, 물 없이 온도만 올리기</li><li id="m1-2b"><b>압력을 낮추어</b> 녹이기 — 온도를 1300 °C 쯤에 둔 채, 깊이만 70 km 보다 얕게 올리기</li><li id="m1-2c"><b>물을 넣어</b> 녹이기 — 건조할 때는 녹지 않던 온도에서 물을 공급해 녹이기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="조성이 이름을, 깊이가 알갱이를">
+          <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“이제 아까 그 돌 두 덩이를 설명해 주세요. 분석표를 보니 둘 다 SiO₂ 가 <b>72 %</b> 인데, 하나는 알갱이가 쌀알만 하고 하나는 매끈합니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“<b>SiO₂ 함량은 이름의 절반</b>만 정합니다. 나머지 절반은 <b>어디서 식었느냐</b>가 정해요. 깊은 곳에서 천천히 식으면 결정이 크게 자라 <b>조립질</b>이 되고, 지표 가까이에서 빨리 식으면 결정이 자랄 틈이 없어 <b>세립질</b>이 됩니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-rock" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">마그마의 SiO₂ 함량<span class="val" id="a-sio2-val">52 %</span></div>
+                <input type="range" id="a-sio2" min="45" max="75" step="1" value="52">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">마그마가 굳은 깊이<span class="val" id="a-crust-val">3.0 km</span></div>
+                <input type="range" id="a-crust" min="0" max="20" step="0.5" value="3">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="a-rock-read">완성된 암석: —</span></div>
+            </div>
+            <div class="info-card" id="a-rock-info"></div>
+          </div>
+          <div class="mission" id="m1-3"><span class="m-tag">미션</span>네 가지 화성암을 모두 만들어 내세요. 만들 때마다 결정 크기가 어떻게 달라지는지 보세요.<ul><li id="m1-3a"><b>현무암</b> 만들기</li><li id="m1-3b"><b>반려암</b> 만들기</li><li id="m1-3c"><b>유문암</b> 만들기</li><li id="m1-3d"><b>화강암</b> 만들기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="조용히 흐를까, 터질까">
+          <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“마지막 장면이 화산 분출입니다. 자료 화면을 두 개 받았는데요, 하나는 시뻘건 용암이 강처럼 흐르는 장면이고 하나는 잿빛 기둥이 하늘로 솟구치는 장면입니다. 어느 쪽을 써야 하죠?”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“그건 마그마가 정합니다. <b>점성</b>이 열쇠예요. 끈적할수록 가스가 못 빠져나가 안에서 압력이 쌓이고, 결국 터집니다. 아래에서 직접 만들어 보시죠.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-erupt" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">SiO₂ 함량<span class="val" id="a-si2-val">60 %</span></div>
+                <input type="range" id="a-si2" min="45" max="75" step="1" value="60">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">마그마의 온도<span class="val" id="a-temp2-val">1000 °C</span></div>
+                <input type="range" id="a-temp2" min="700" max="1250" step="10" value="1000">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">녹아 있는 화산 가스<span class="val" id="a-h2o-val">2.0 %</span></div>
+                <input type="range" id="a-h2o" min="0" max="6" step="0.5" value="2">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--rose)"></span><span class="txt" id="a-erupt-read">분출 양식: —</span></div>
+            </div>
+            <div class="info-card" id="a-erupt-info"></div>
+          </div>
+          <div class="info-card" style="margin:14px 0 0"><span class="tag" style="background:var(--brand-100);color:var(--brand-700)">분출 양식</span>SiO₂ 함량이 높을수록 마그마의 점성이 커지고, 마그마 속에 녹아 있던 화산 가스(주로 수증기·이산화 탄소)가 잘 빠져나가지 못해 압력이 쌓입니다. 그 결과 유문암질 마그마는 가스가 한꺼번에 터지며 <b>폭발적으로 분출</b>하고, 현무암질 마그마는 점성이 낮아 가스가 서서히 빠져나가며 <b>비교적 조용히 흘러나옵니다</b>. 실제 화산 재해 대응에서도 마그마 조성으로 예상되는 분출 양식을 파악해 대피 반경과 방식을 다르게 정합니다.</div>
+          <div class="stage-card" style="margin-top:14px"><div id="a-q1"></div></div>
+          <div class="mission" id="m1-4"><span class="m-tag">미션</span>같은 화산이라도 마그마가 달라지면 분출 양식이 달라집니다.<ul><li id="m1-4a"><b>조용히 흘러나오는</b> 분출 만들기 (용암류)</li><li id="m1-4b"><b>폭발적인</b> 분출 만들기 (화산재·화쇄류)</li><li id="m1-4c">아래 물음에 답하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 원고에서 고친 두 줄">
+          <div class="ending">
+            <h4>🌋 마찰열이 아니라, 물이 녹였다</h4>
+            <p>원고의 첫 문장을 고쳤습니다. 섭입대에서 암석을 녹이는 것은 <b>마찰열이 아닙니다.</b> 섭입하는 해양 지각과 퇴적물에 들어 있던 <b>물이 빠져나와 위쪽 맨틀로 올라가고, 그 물이 맨틀의 녹는점을 끌어내려</b> 부분 용융이 일어납니다. 해양 지각이 통째로 녹는 것도 아닙니다. 그 밖에 맨틀이 위로 솟아오르며 <b>압력이 낮아져</b> 녹는 곳(해령·열점)과, 아래에서 <b>열이 더 공급되어</b> 녹는 곳도 있습니다.</p>
+            <p>뒷장의 문장도 고쳤습니다. 마그마가 식으면 언제나 화강암이 되는 것이 아닙니다. <b>SiO₂ 함량</b>이 현무암질·안산암질·유문암질을 가르고, <b>어디에서 식었는가</b>가 세립질(화산암)과 조립질(심성암)을 가릅니다. 그래서 SiO₂ 가 똑같이 72 % 여도 지하 깊은 곳에서 굳으면 <b>화강암</b>, 지표로 흘러나와 굳으면 <b>유문암</b>입니다. 그리고 그 끈적함이 마지막 장면까지 정합니다 — 묽으면 흘러내리고, 끈적하면 터집니다.</p>
+            <div class="vs" id="a-vs"></div>
+            <span class="stamp">사건 파일 ① 해결</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>섭입대의 마그마 생성</b><br><b>판이 섭입하면서 생긴 마찰열로 암석이 녹는다고 생각하지 않도록</b> 지도한다. 해양 지각이나 해양 퇴적물이 직접 녹아 마그마가 생성되는 경우는 거의 없다. 대부분 <b>섭입대 위쪽의 맨틀이 부분 용융</b>되어 생성된다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 이 화면의 용융 곡선과 지온 곡선은 실제 실험값의 <b>모양만 따온 단순한 직선·곡선</b>입니다. 실제 맨틀 암석(감람암)의 건조 용융 곡선과 물 포화 용융 곡선은 깊이에 따라 곧게 휘어지지 않고, 물이 얼마나 들어 있느냐에 따라 위치가 크게 달라집니다. 결정 크기를 ‘깊이의 제곱에 비례하는 냉각 시간’ 으로 계산한 것도 교실용 어림입니다. 실제 결정 크기는 깊이보다 <b>마그마 덩어리의 크기</b>와 들어 있던 물의 양에 더 크게 좌우됩니다. 점성과 폭발 지수 식도 실제 측정값의 경향을 본떠 만든 것이며, 실제 화산의 분출 양식은 통로의 모양·주변 지하수 같은 조건까지 함께 봐야 합니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkA"></div></div>
+        </section>
       </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>섭입대의 마그마 생성</b><br><b>판이 섭입하면서 생긴 마찰열로 암석이 녹는다고 생각하지 않도록</b> 지도한다. 해양 지각이나 해양 퇴적물이 직접 녹아 마그마가 생성되는 경우는 거의 없다. 대부분 <b>섭입대 위쪽의 맨틀이 부분 용융</b>되어 생성된다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB1 -->
+    <!-- =====================================================================
+         02 변성 작용과 암석의 순환 — 이야기 「돌 한 덩이의 일생」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="1" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 지구시스템 속 암석의 이동</div>
-        <h2 class="display">암석의 순환</h2>
-        <p>화성암·퇴적암·변성암은 서로 다른 암석으로 끊임없이 변합니다. 순환도의 각 단계를 클릭해 어떤 작용으로 암석이 바뀌는지 확인해 보세요.</p>
+        <div class="eyebrow">02 · 변성 작용과 암석의 순환 · 이야기 한 편</div>
+        <h2 class="display">돌 한 덩이의 일생</h2>
+        <p>학교 화단에서 주운 자갈 하나. 검고 흰 줄무늬가 고물고물 휘어 있습니다. 이 돌은 어디서 왔고, 지금까지 무슨 일을 겪었으며, 앞으로 무엇이 될까요.</p>
+        <span class="std-chip">12지구02-04</span><div class="std-note"><b>[12지구02-04]</b> 변성 작용의 종류와 지각 변동에 따른 구조를 변동대와 관련지어 설명하고, 지구시스템에서 암석이 순환함을 설명할 수 있다.</div><div class="terms"><b>변성 작용</b><b>접촉 변성</b><b>광역 변성</b><b>엽리</b><b>편암과 편마암</b><b>암석의 순환</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
-        <div class="info-card" id="c1-info">순환도의 원이나 화살표를 클릭해 보세요.</div>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c1b" width="900" height="480"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group" style="flex:1 1 100%">
-            <div class="ctrl-label">현재 암석</div>
-            <div class="seg" id="c1b-start">
-              <button class="on" data-i="0">화성암</button>
-              <button data-i="1">퇴적암</button>
-              <button data-i="2">변성암</button>
-              <button data-i="3">마그마</button>
+
+      <div class="episode" id="epB">
+        <section class="scene" data-title="손바닥 위의 줄무늬">
+          <div class="story narr"><div class="who">🪨</div><div class="say"><span class="name">이야기</span>점심시간, 화단 가장자리. 주먹만 한 자갈 하나를 주웠습니다. 검은 띠와 흰 띠가 번갈아 나 있고, 그 띠가 물결처럼 휘어 있습니다. 과학실로 들고 갔습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">나</span>“선생님, 이거 줄무늬가 있는 걸 보면 퇴적암 아닌가요? 층층이 쌓인 것처럼 생겼는데요.”</div></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“아니야. 이건 <b>편마암</b>이란다. 우리 학교가 서 있는 경기 일대 땅의 바탕을 이루는 돌이지. 나이가 무려 <b>선캄브리아 시대</b>까지 올라가. 그런데 그 줄무늬, 쌓여서 생긴 게 아니야.”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">나</span>“쌓인 게 아니면… 녹았다가 다시 굳으면서 층이 진 건가요?”</div></div>
+          <div class="case-file"><b class="k">이 자갈에서 알아낼 것</b> 검고 흰 띠(엽리)는 어떻게 생겼는가 &nbsp;|&nbsp; 이 돌이 되기 전에는 무엇이었는가 &nbsp;|&nbsp; 얼마나 뜨겁고 얼마나 깊은 곳에 있었는가 &nbsp;|&nbsp; 앞으로 무엇이 될 수 있는가</div>
+          <div class="gate loose" id="b-gate"></div>
+        </section>
+
+        <section class="scene" data-title="녹지 않고 바뀐다">
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“변성 작용의 핵심은 이거야. <b>녹지 않는다.</b> 고체인 채로 원자가 자리를 옮겨 광물이 새로 자라고, 눌리는 방향에 <b>수직으로</b> 납작한 광물들이 줄을 서. 그 줄이 바로 <b>엽리</b>야. 한번 만들어 보자.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-meta" width="900" height="490"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group" style="flex:1 1 100%">
+                <div class="ctrl-label">변성되기 전의 암석(원암)</div>
+                <div class="seg" id="b-proto">
+                  <button type="button" class="on" data-p="shale">셰일 (진흙이 굳은 암석)</button>
+                  <button type="button" data-p="lime">석회암</button>
+                  <button type="button" data-p="sand">사암</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">받은 온도<span class="val" id="b-t-val">100 °C</span></div>
+                <input type="range" id="b-t" min="0" max="1000" step="10" value="100">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">묻힌 깊이(압력)<span class="val" id="b-d-val">20 km</span></div>
+                <input type="range" id="b-d" min="0" max="40" step="1" value="20">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--violet)"></span><span class="txt" id="b-meta-read">지금 이 암석: —</span></div>
             </div>
+            <div class="info-card" id="b-meta-info"></div>
           </div>
-          <div class="ctrl-group" style="flex:1 1 100%">
-            <div class="ctrl-label">다음 암석으로의 진행률(%)<span class="val" id="c1b-p-val">0</span></div>
-            <input type="range" id="c1b-p" min="0" max="100" step="1" value="0">
+          <div class="mission" id="m2-2"><span class="m-tag">미션</span>같은 셰일 한 덩이가 온도에 따라 어디까지 바뀌는지 따라가 보세요.<ul><li id="m2-2a">셰일을 깊이 묻은 채 온도를 올려 <b>점판암 → 편암 → 편마암</b>을 차례로 만들기</li><li id="m2-2b">석회암을 <b>얕은 곳(8 km 보다 얕게)</b>에서 구워 <b>대리암</b> 만들기</li><li id="m2-2c">온도를 더 올려 <b>부분 용융</b>이 시작되는 지점까지 가 보기 (변성 작용의 끝)</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="누가 구웠나, 누가 눌렀나">
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“변성에는 두 가지 방식이 있어. 마그마가 옆에 끼어들어 <b>구워 버리는</b> 접촉 변성, 그리고 조산 운동처럼 넓은 지역이 통째로 <b>눌리면서 뜨거워지는</b> 광역 변성. 둘은 <b>영향을 받는 넓이</b>부터가 다르단다.”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">나</span>“마그마 옆이면 얼마나 멀리까지 변하나요? 1 km? 10 km?”</div></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“그게 재미있어. <b>관입한 마그마 덩어리가 클수록</b> 변성대가 넓어져. 직접 재 보렴.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-aur" width="900" height="450"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">관입한 마그마 덩어리의 반지름<span class="val" id="b-size-val">300 m</span></div>
+                <input type="range" id="b-size" min="50" max="1500" step="50" value="300">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">관입체 가장자리에서의 거리<span class="val" id="b-dist-val">100 m</span></div>
+                <input type="range" id="b-dist" min="0" max="2000" step="20" value="100">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--coral)"></span><span class="txt" id="b-aur-read">접촉 변성대의 폭: —</span></div>
+            </div>
+            <div class="info-card" id="b-aur-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c1b-info"></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“이제 나눠 보자. 아래 토막들이 접촉 변성 쪽인지 광역 변성 쪽인지 갈라 보렴.”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="b-sort"></div></div>
+          <div class="mission" id="m2-3"><span class="m-tag">미션</span>변성대의 폭은 마그마 덩어리의 크기가 정합니다.<ul><li id="m2-3a">변성대의 폭을 <b>500 m 이상</b>으로 넓히기</li><li id="m2-3b">변성대의 폭을 <b>100 m 이하</b>로 좁히기</li><li id="m2-3c">변성대 <b>바깥</b>(전혀 변성되지 않은 곳)까지 나가 보기</li><li id="m2-3d">아래에서 접촉 변성과 광역 변성 나누기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="순환을 직접 돌려 보기">
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“마지막 물음이 남았지. ‘앞으로 무엇이 될까.’ 답은 <b>무엇이든 될 수 있다</b> 야. 암석은 한 번 만들어지면 끝이 아니라, 지구 시스템 안에서 <b>돌고 돈단다.</b> 직접 돌려 보렴.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-cycle" width="900" height="490"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group" style="flex:1 1 100%">
+                <div class="ctrl-label">이 돌에게 일어날 일을 고르세요</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="b-a1">❄️ 냉각 · 고결</button>
+                  <button type="button" class="chip" id="b-a3">🧱 다져짐 · 굳어짐(속성 작용)</button>
+                  <button type="button" class="chip" id="b-a4">🔥 열과 압력(변성 작용)</button>
+                  <button type="button" class="chip" id="b-a5">🌋 더 큰 열 — 용융</button>
+                  <button type="button" class="chip" id="b-a2">🌧️ 풍화 · 침식 · 운반</button>
+                </div>
+              </div>
+              <div class="ctrl-group" style="flex:1 1 100%">
+                <div class="ctrl-label">순환의 다른 자리에서 출발해 보기</div>
+                <div class="seg" id="b-start">
+                  <button type="button" class="on" data-s="magma">마그마</button>
+                  <button type="button" data-s="ign">화성암</button>
+                  <button type="button" data-s="sedi">퇴적물</button>
+                  <button type="button" data-s="sed">퇴적암</button>
+                  <button type="button" data-s="meta">변성암</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--brand)"></span><span class="txt" id="b-cycle-read">지금 이 돌은: —</span></div>
+            </div>
+            <div class="info-card" id="b-cycle-info"></div>
+          </div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">나</span>“그럼 제 손에 있는 이 편마암도 어딘가에서 이 길을 한참 돌아온 거네요. 순서를 맞춰 볼게요.”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="b-order"></div></div>
+          <div class="mission" id="m2-4"><span class="m-tag">미션</span>순환의 길은 하나가 아닙니다. 지름길도 있습니다.<ul><li id="m2-4a"><b>퇴적물 → 퇴적암</b> 만들기 (속성 작용)</li><li id="m2-4b"><b>퇴적암 → 변성암</b> 만들기</li><li id="m2-4c"><b>화성암 → 변성암</b> 으로 <b>곧장</b> 가기 (퇴적암을 거치지 않는 지름길)</li><li id="m2-4d"><b>변성암 → 마그마 → 화성암</b> 으로 한 바퀴 잇기</li><li id="m2-4e">이 편마암 자갈의 이력을 순서대로 늘어놓기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 줄무늬는 쌓인 것이 아니다">
+          <div class="ending">
+            <h4>🪨 녹지 않은 채, 눌리는 방향에 수직으로</h4>
+            <p>손바닥 위 자갈의 줄무늬는 <b>쌓여서 생긴 것도, 녹았다가 다시 굳어 생긴 것도 아니었습니다.</b> 변성 작용은 암석이 <b>고체인 채로</b> 바뀌는 일입니다. 강한 압력을 받으면 운모처럼 납작한 광물이 <b>누르는 힘의 방향에 수직으로</b> 줄을 서고, 온도가 더 오르면 밝은 광물과 어두운 광물이 띠를 이루어 갈라섭니다. 이것이 <b>엽리</b>이고, 줄무늬가 가늘면 편암, 굵은 띠로 갈라지면 편마암입니다.</p>
+            <p>같은 셰일도 어떤 일을 겪었느냐에 따라 다른 돌이 됩니다. 마그마 옆에서 <b>열만</b> 받으면 엽리 없는 <b>혼펠스</b>가 되고, 석회암이면 <b>대리암</b>, 사암이면 <b>규암</b>이 됩니다(접촉 변성). 조산대처럼 넓은 지역이 <b>열과 압력을 함께</b> 받으면 점판암 → 편암 → 편마암으로 등급이 올라가지요(광역 변성). 그리고 온도가 더 올라가면 마침내 <b>부분 용융</b>이 시작되어 변성 작용이 끝나고 마그마가 됩니다 — 순환의 출발점으로 돌아간 것입니다.</p>
+            <div class="vs" id="b-vs"></div>
+            <span class="stamp">사건 파일 ② 해결</span>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 변성암 화면의 온도·깊이 경계선(200 · 400 · 600 · 800 °C, 8 km)은 이해를 돕기 위해 <b>곧은 선으로 잘라 놓은 것</b>입니다. 실제 변성암의 이름은 온도·압력뿐 아니라 원암의 성분과 들어 있는 물의 양에 따라 달라지고, 경계도 곧은 선이 아니라 넓은 띠입니다. 접촉 변성대의 온도를 ‘거리에 따라 지수적으로 떨어진다’ 고 계산한 것도 열전도의 가장 단순한 모형이며, 실제로는 지하수의 흐름이 열을 훨씬 멀리 나르기도 합니다. 순환 화면의 소요 시간은 <b>대표적인 시간 규모</b>일 뿐, 실제로는 경우마다 수십 배씩 차이가 납니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkB"></div></div>
+        </section>
       </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>암상과 암맥의 결정 크기</b><br>관입암과 달리 암상과 암맥은 세립질 결정들로 이루어져 있어 <b>분출암으로 잘못 판단할 수 있다.</b> 결정이 작은 까닭은 대규모 관입암체에 비해 <b>지표면 근처의 차가운 암석에 관입해 온도 차이가 커서 빨리 냉각</b>되었기 때문이다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB2 -->
+    <!-- =====================================================================
+         03 우리나라의 지질공원 — 이야기 「지질공원 해설사」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 열과 압력에 의한 조직 변화</div>
-        <h2 class="display">접촉 변성과 광역 변성</h2>
-        <p>온도와 압력을 조절하며 변성암에 엽리(줄무늬 조직)가 어떻게 발달하는지, 접촉 변성과 광역 변성의 차이를 관찰해 보세요.</p>
+        <div class="eyebrow">03 · 우리나라의 지질공원 · 이야기 한 편</div>
+        <h2 class="display">지질공원 해설사</h2>
+        <p>국가지질공원 해설사 실기 시험장. 책상 위에 번호표를 단 암석 시료가 놓여 있습니다. “이 돌이 어떻게 만들어졌는지 말해 보세요.” 첫 번째 시료부터 함정입니다.</p>
+        <span class="std-chip">12지구02-05</span><div class="std-note"><b>[12지구02-05]</b> 우리나라의 대표적인 지질공원의 지질학적 형성 과정을 추론하고, 지역사회와 함께하는 지질공원의 가치를 인식할 수 있다.</div><div class="terms"><b>국가지질공원</b><b>주상절리</b><b>용암대지</b><b>관입암체</b><b>한반도의 지질</b><b>지오투어리즘</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c2" width="900" height="420"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">변성 유형</div>
-            <div class="seg" id="c2-type">
-              <button class="on" data-t="contact">접촉 변성</button>
-              <button data-t="regional">광역 변성</button>
+
+      <div class="episode" id="epC">
+        <section class="scene" data-title="첫 번째 시료">
+          <div class="story narr"><div class="who">🎒</div><div class="say"><span class="name">이야기</span>국가지질공원 해설사 양성 과정의 마지막 실기 시험. 책상 위에 시료 상자가 놓입니다. 1번 시료는 손톱으로 긁어도 알갱이 하나 보이지 않는 <b>새까맣고 매끈한 돌</b>입니다.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">지원자(나)</span>“1번은 쉽습니다. 결정이 전혀 안 보이는 <b>세립질</b>이니까 지표로 흘러나와 빨리 식은 <b>화산암</b>입니다. 현무암이요.”</div></div>
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“조직만 보고 그렇게 단정하셨군요. 그럼 사진 한 장 더 보시죠. 이 시료를 떼어 온 노두 사진입니다. 이 돌이 <b>주변 퇴적층을 비스듬히 가로질러 자르고 있는데요.</b>”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">지원자(나)</span>“…가로질러 자른다면, 지표로 나온 게 아니라 <b>뚫고 들어간</b> 거네요. 그런데 관입암인데 왜 이렇게 세립질이죠?”</div></div>
+          <div class="case-file"><b class="k">오늘의 시료</b> ① 결정이 안 보이는 검은 돌(퇴적층을 자르고 있음) &nbsp;|&nbsp; ② 쌀알 같은 결정이 가득한 밝은 돌 &nbsp;|&nbsp; ③ 육각 기둥으로 갈라진 돌 &nbsp;|&nbsp; ④ 줄무늬가 휜 돌 &nbsp;|&nbsp; ⑤ 조개껍데기 자국이 있는 흰 돌 &nbsp;|&nbsp; ⑥ 구멍이 숭숭 뚫린 돌</div>
+          <div class="gate loose" id="c-gate"></div>
+        </section>
+
+        <section class="scene" data-title="얼마나 빨리 식었나">
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“결정 크기를 정하는 건 ‘지표냐 지하냐’ 가 아니라 <b>얼마나 빨리 식었느냐</b> 하나뿐입니다. 그리고 식는 속도는 <b>마그마 덩어리가 얼마나 두꺼운가</b>에 가장 크게 좌우됩니다. 계산해 보시죠.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-grain" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">마그마가 채운 공간의 두께<span class="val" id="c-thick-val">600 m</span></div>
+                <input type="range" id="c-thick" min="10" max="5000" step="10" value="600">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">관입한 깊이(둘레 암석의 온도)<span class="val" id="c-depth-val">3.0 km</span></div>
+                <input type="range" id="c-depth" min="0" max="15" step="0.5" value="3">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">노두에서 볼 것</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="c-field">주변 암석과의 관계 보기</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--amber)"></span><span class="txt" id="c-grain-read">결정 크기: —</span></div>
             </div>
+            <div class="info-card" id="c-grain-info"></div>
           </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">압력 강도<span class="val" id="c2-p-val">2</span></div>
-            <input type="range" id="c2-p" min="1" max="10" step="1" value="2">
+          <div class="mission" id="m3-2"><span class="m-tag">미션</span>두께를 바꿔 가며 결정 크기가 어떻게 달라지는지 확인하세요.<ul><li id="m3-2a">결정 크기를 <b>0.1 mm 이하</b>로 만들기 (눈으로는 알갱이가 보이지 않는 조직)</li><li id="m3-2b">결정 크기를 <b>2 mm 이상</b>으로 키우기 (쌀알처럼 보이는 화강암 조직)</li><li id="m3-2c"><b>세립질(1 mm 미만)</b>인 상태에서 <b>주변 암석과의 관계</b>를 확인해, 세립질인데도 관입암인 경우 찾아내기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="기둥은 왜 육각형인가">
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“3번 시료로 갑시다. 해설사 시험에서 가장 많이 나오는 질문이 이겁니다. ‘왜 기둥 모양으로 갈라져요?’ 관광객이 물으면 뭐라고 답하시겠습니까.”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">지원자(나)</span>“용암이 식으면서 <b>부피가 줄어들기</b> 때문입니다. 줄어든 만큼 잡아당겨져서 갈라지는데, 가장 적은 힘으로 갈라지는 모양이 <b>육각형</b>이라… 그럼 기둥 굵기는 무엇이 정하나요?”</div></div>
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“역시 <b>식는 속도</b>입니다. 천천히 식을수록 기둥이 굵어집니다. 실제 지질공원 세 곳을 놓고 맞춰 보시죠.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-col" width="900" height="450"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group" style="flex:1 1 100%">
+                <div class="ctrl-label">설명할 곳</div>
+                <div class="seg" id="c-place">
+                  <button type="button" class="on" data-k="0">제주 중문·대포</button>
+                  <button type="button" data-k="1">한탄강</button>
+                  <button type="button" data-k="2">무등산</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">한 번에 쌓인 용암(화산암)층의 두께<span class="val" id="c-flow-val">20 m</span></div>
+                <input type="range" id="c-flow" min="5" max="120" step="5" value="20">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="c-col-read">기둥의 굵기: —</span></div>
+            </div>
+            <div class="info-card" id="c-col-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c2-info"></div>
+          <div class="mission" id="m3-3"><span class="m-tag">미션</span>두꺼울수록 천천히 식고, 천천히 식을수록 기둥이 굵어집니다.<ul><li id="m3-3a">기둥 지름을 <b>1 m 이상</b>으로 굵게 만들기</li><li id="m3-3b">기둥 지름을 <b>0.6 m 이하</b>로 가늘게 만들기</li><li id="m3-3c">세 곳의 설명을 <b>모두</b> 읽어 보기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="지도 위의 지질공원">
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“마지막 문제입니다. 지도에서 지질공원을 하나씩 눌러 보시고, 한반도의 돌이 <b>언제 무엇으로</b> 만들어졌는지 큰 흐름을 말해 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-map" width="900" height="600"></canvas></div>
+            <div class="info-card" id="c-map-info">지도의 표식을 눌러 보세요. 여섯 곳을 모두 확인해야 합니다.</div>
+          </div>
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“이제 시료를 만들어진 방식대로 나눠 보세요.”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-sort"></div></div>
+          <div class="story"><div class="who">👩‍🌾</div><div class="say"><span class="name">마을 주민</span>“저는 이 동네에서 30년 살았습니다. 솔직히 궁금해서요 — 여기가 지질공원이 되면 우리 마을은 뭐가 달라집니까? 출입 금지 구역이 되는 건 아니죠?”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-q1"></div></div>
+          <div class="mission" id="m3-4"><span class="m-tag">미션</span><ul><li id="m3-4a">지도에서 <b>여섯 곳을 모두</b> 눌러 확인하기</li><li id="m3-4b">시료를 만들어진 방식대로 나누기</li><li id="m3-4c">마을 주민의 물음에 답하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 세립질이라고 화산암은 아니다">
+          <div class="ending">
+            <h4>🗺️ 조직만 보지 말고, 주변과의 관계를 보라</h4>
+            <p>1번 시료는 현무암이 맞았지만 <b>흘러나온 용암이 아니었습니다.</b> 주변 퇴적층을 비스듬히 가로질러 자르고 있었으니 <b>뚫고 들어간 암맥</b>입니다. 지하에서 굳었는데도 결정이 보이지 않았던 까닭은, 대규모 관입암체와 달리 암맥·암상은 <b>얇은 판 모양</b>이라 둘레의 차가운 암석에 열을 금방 빼앗겨 <b>빠르게 식었기</b> 때문입니다. 결정 크기를 정하는 것은 ‘지표냐 지하냐’ 가 아니라 언제나 <b>식는 속도</b>입니다.</p>
+            <p>같은 눈으로 보면 우리나라 지질공원의 돌도 읽힙니다. 제주와 한탄강의 <b>현무암</b>은 묽은 용암이 조용히 흘러 굳은 것이고, 무등산의 주상절리는 중생대 <b>화산암</b>이 식으며 수축해 갈라진 것입니다. 경기 일대의 <b>편마암</b>은 선캄브리아 시대에 깊은 곳에서 눌리고 구워진 돌이며, 강원 태백의 <b>석회암</b>은 고생대 얕은 바다에 쌓인 퇴적암입니다. 그리고 지질공원은 이 돌들을 울타리로 막아 두는 곳이 아니라, <b>보전하면서 교육과 관광에 쓰고 그 몫이 지역으로 돌아가게</b> 하는 제도입니다.</p>
+            <div class="vs" id="c-vs"></div>
+            <span class="stamp">사건 파일 ③ 해결</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>암상과 암맥의 결정 크기</b><br>관입암과 달리 암상과 암맥은 세립질 결정들로 이루어져 있어 <b>분출암으로 잘못 판단할 수 있다.</b> 결정이 작은 까닭은 대규모 관입암체에 비해 <b>지표면 근처의 차가운 암석에 관입해 온도 차이가 커서 빨리 냉각</b>되었기 때문이다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 냉각 시간을 ‘두께의 제곱 ÷ 열확산 계수’ 로 계산한 것은 열전도의 가장 단순한 모형입니다. 실제로는 마그마가 굳을 때 나오는 열, 둘레를 도는 지하수, 여러 번 나누어 들어온 마그마 때문에 값이 크게 달라집니다. 주상절리의 기둥 굵기를 냉각 시간만으로 계산한 식도 <b>경향을 보여 주기 위한 교실용 모형</b>이며, 실제 기둥의 굵기는 같은 절벽 안에서도 위아래가 다릅니다(위쪽은 가늘고 불규칙한 경우가 많습니다). 지질공원의 인증 현황과 구역은 바뀌므로 <b>국가지질공원 누리집</b>에서 최신 정보를 확인하세요.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkC"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB3 -->
+    <!-- ===================================================================== 04 정리하기 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 국가지질공원</div>
-        <h2 class="display">우리나라의 지질 명소</h2>
-        <p>지도의 지질공원 표식을 클릭해 어떤 암석과 지질 구조를 관찰할 수 있는지 확인해 보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c3" width="900" height="600"></canvas></div>
-        <div class="info-card" id="c3-info">지도의 표식을 클릭해 보세요.</div>
-      </div>
-    </section>
-
-    <section class="tab-panel" data-panel="4" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">05 · 오늘 알아낸 것을 문장으로</div>
+        <div class="eyebrow">04 · 세 사건을 하나로</div>
         <h2 class="display">정리하기</h2>
-        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+        <p>세 이야기의 결과가 아래에 모입니다. 세 사건을 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
+
+    <!-- ===================================================================== 05 우리 반 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>내가 해결한 사건과 알아낸 값을 우리 반에 올리고, 친구들은 어떻게 풀었는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
+
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
-
 <script src="../assets/theme.js"></script>
-<script>
-(function () {
-"use strict";
-
-/* TAB0 마그마와 화성암 */
-(function () {
-  var canvas = document.getElementById("c0");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var sio2 = 52, cooling = "fast";
-  var info = document.getElementById("c0-info");
-
-  document.getElementById("c0-sio2").addEventListener("input", function (e) { sio2 = +e.target.value; document.getElementById("c0-sio2-val").textContent = sio2; render(); });
-  document.querySelectorAll("#c0-cool button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      cooling = b.getAttribute("data-c");
-      document.querySelectorAll("#c0-cool button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      render();
-    });
-  });
-
-  function magmaType() {
-    if (sio2 < 52) return { name: "현무암질 마그마", key: "basaltic" };
-    if (sio2 < 63) return { name: "안산암질 마그마", key: "andesitic" };
-    return { name: "유문암질 마그마", key: "rhyolitic" };
-  }
-  var rockTable = {
-    basaltic: { fast: "현무암", slow: "반려암" },
-    andesitic: { fast: "안산암", slow: "섬록암" },
-    rhyolitic: { fast: "유문암", slow: "화강암" }
-  };
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    // SiO2 gradient bar
-    var barX = 60, barY = 60, barW = W - 120, barH = 22;
-    var grad = ctx.createLinearGradient(barX, 0, barX + barW, 0);
-    grad.addColorStop(0, cssVar("--coral")); grad.addColorStop(.5, cssVar("--teal")); grad.addColorStop(1, cssVar("--violet"));
-    ctx.fillStyle = grad; ctx.fillRect(barX, barY, barW, barH);
-    var markX = barX + (sio2 - 45) / (70 - 45) * barW;
-    ctx.save(); ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.moveTo(markX, barY - 6); ctx.lineTo(markX, barY + barH + 6); ctx.stroke();
-    ctx.restore();
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
-    ctx.fillText("45% (현무암질)", barX, barY + barH + 24);
-    ctx.textAlign = "right"; ctx.fillText("70% (유문암질)", barX + barW, barY + barH + 24);
-
-    var mt = magmaType();
-    var rock = rockTable[mt.key][cooling];
-
-    // texture visualization
-    var boxX = W / 2 - 140, boxY = 160, boxW = 280, boxH = 200;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.strokeRect(boxX, boxY, boxW, boxH);
-    ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(boxX, boxY, boxW, boxH);
-    var rand = mulberry32(sio2 * 100 + (cooling === "fast" ? 1 : 2));
-    if (cooling === "fast") {
-      for (var i = 0; i < 260; i++) {
-        ctx.fillStyle = i % 3 === 0 ? cssVar("--teal") : cssVar("--mist");
-        ctx.globalAlpha = 0.7;
-        ctx.beginPath();
-        ctx.arc(boxX + rand() * boxW, boxY + rand() * boxH, 1.6, 0, 7);
-        ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-    } else {
-      for (var j = 0; j < 40; j++) {
-        ctx.save();
-        ctx.translate(boxX + rand() * boxW, boxY + rand() * boxH);
-        ctx.rotate(rand() * Math.PI);
-        ctx.fillStyle = j % 2 === 0 ? cssVar("--teal") : cssVar("--coral");
-        ctx.globalAlpha = 0.75;
-        var s = 6 + rand() * 10;
-        ctx.fillRect(-s / 2, -s / 2, s, s);
-        ctx.restore();
-      }
-    }
-    ctx.font = "700 16px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-    ctx.fillText(rock, W / 2, boxY + boxH + 32);
-    ctx.font = "12px Segoe UI"; ctx.fillStyle = cssVar("--mist");
-    ctx.fillText(mt.name + " · " + (cooling === "fast" ? "급냉(세립질 조직)" : "서냉(조립질 조직)"), W / 2, boxY - 16);
-
-    info.innerHTML = "SiO₂ 함량 " + sio2 + "%는 <b>" + mt.name + "</b>에 해당합니다. " + (cooling === "fast" ? "지표 부근에서 빠르게 식으면(화산암) 입자가 작은 세립질 조직이 됩니다." : "지하 깊은 곳에서 서서히 식으면(심성암) 입자가 큰 조립질 조직이 됩니다.") + " 완성된 암석은 <b>" + rock + "</b>입니다.";
-  }
-  function mulberry32(a) {
-    return function () {
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
-      var t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-  render();
-})();
-
-/* TAB1 암석의 순환 */
-(function () {
-  var canvas = document.getElementById("c1");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c1-info");
-
-  var nodes = [
-    { name: "화성암", x: W / 2, y: 90, color: "var(--coral)", desc: "마그마가 냉각되어 굳어진 암석입니다." },
-    { name: "퇴적암", x: W - 160, y: H / 2, color: "var(--teal)", desc: "풍화·침식된 퇴적물이 다져지고 굳어져(속성 작용) 만들어진 암석입니다." },
-    { name: "변성암", x: W / 2, y: H - 90, color: "var(--violet)", desc: "열과 압력을 받아 조직과 광물이 변한 암석입니다." },
-    { name: "마그마", x: 160, y: H / 2, color: "var(--cold)", desc: "암석이 지하 깊은 곳에서 다시 녹아 생긴 용융물입니다." }
-  ];
-  var edges = [
-    { a: 0, b: 1, label: "풍화·침식·퇴적", desc: "화성암이 풍화·침식을 받아 퇴적물이 되고, 쌓여서 퇴적암이 됩니다." },
-    { a: 1, b: 2, label: "열과 압력(매몰)", desc: "퇴적암이 깊이 묻혀 열과 압력을 받으면 변성암이 됩니다." },
-    { a: 2, b: 3, label: "용융", desc: "변성암이 높은 열을 받아 다시 녹으면 마그마가 됩니다." },
-    { a: 3, b: 0, label: "냉각", desc: "마그마가 식어 굳으면 화성암이 됩니다." },
-    { a: 0, b: 2, label: "열과 압력", desc: "화성암도 열과 압력을 받으면 직접 변성암이 될 수 있습니다." },
-    { a: 1, b: 3, label: "용융", desc: "퇴적암이 매우 깊이 묻혀 녹으면 마그마가 될 수 있습니다." }
-  ];
-
-  canvas.addEventListener("click", function (e) {
-    var rect = canvas.getBoundingClientRect();
-    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
-    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
-    var hit = null;
-    nodes.forEach(function (n) { if (Math.hypot(mx - n.x, my - n.y) < 45) hit = n; });
-    if (hit) { info.innerHTML = "<b>" + hit.name + "</b> — " + hit.desc; render(); return; }
-    edges.forEach(function (ed) {
-      var A = nodes[ed.a], B = nodes[ed.b];
-      var mxid = (A.x + B.x) / 2, myid = (A.y + B.y) / 2;
-      if (Math.hypot(mx - mxid, my - myid) < 30) { info.innerHTML = "<b>" + ed.label + "</b> — " + ed.desc; }
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    edges.forEach(function (ed) {
-      var A = nodes[ed.a], B = nodes[ed.b];
-      ctx.save();
-      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-      ctx.restore();
-      var mxid = (A.x + B.x) / 2, myid = (A.y + B.y) / 2;
-      ctx.save();
-      ctx.fillStyle = cssVar("--panel-2"); ctx.strokeStyle = cssVar("--line");
-      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(mxid - 46, myid - 12, 92, 24, 6) : ctx.rect(mxid - 46, myid - 12, 92, 24);
-      ctx.fill(); ctx.stroke();
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "10.5px Segoe UI"; ctx.textAlign = "center";
-      ctx.fillText(ed.label, mxid, myid + 4);
-      ctx.restore();
-    });
-    nodes.forEach(function (n) {
-      ctx.save();
-      ctx.fillStyle = cssVar(n.color.replace("var(", "").replace(")", ""));
-      ctx.beginPath(); ctx.arc(n.x, n.y, 42, 0, 7); ctx.fill();
-      ctx.restore();
-      ctx.font = "700 14px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
-      ctx.fillText(n.name, n.x, n.y + 5);
-    });
-  }
-  render();
-})();
-
-/* TAB1b 암석 순환 경과 시간 시뮬레이터 */
-(function () {
-  var canvas = document.getElementById("c1b");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c1b-info");
-  var start = 0, progress = 0;
-
-  var nodes = [
-    { name: "화성암", x: W / 2, y: 90, color: "--coral" },
-    { name: "퇴적암", x: W - 160, y: H / 2, color: "--teal" },
-    { name: "변성암", x: W / 2, y: H - 90, color: "--violet" },
-    { name: "마그마", x: 160, y: H / 2, color: "--cold" }
-  ];
-  // 각 암석에서 순환의 다음 단계로 넘어가는 데 걸리는 대표적인(수량화된) 시간 규모
-  var nextOf = [1, 2, 3, 0];
-  var transitions = [
-    { label: "풍화 · 침식 · 퇴적 · 속성 작용", years: 1e6, note: "지표에서 풍화·침식을 받아 퇴적물이 되고, 쌓이고 다져져(속성 작용) 퇴적암이 되기까지 걸리는 대표적인 시간입니다." },
-    { label: "매몰과 열·압력에 의한 변성 작용", years: 1e7, note: "퇴적암이 지하 깊이 매몰되어 높은 열과 압력을 받아 변성암으로 바뀌기까지 걸리는 대표적인 시간입니다." },
-    { label: "용융(변성암 → 마그마)", years: 1e6, note: "변성암이 지하 깊은 곳에서 높은 열을 받아 다시 녹아 마그마가 되기까지 걸리는 대표적인 시간입니다." },
-    { label: "냉각과 고결(마그마 → 화성암)", years: 1e4, note: "마그마가 식어 굳어 화성암이 되는 시간으로, 지표 부근(화산암)은 수일~수년, 지하 깊은 곳(심성암)은 수만~수십만 년으로 큰 차이가 있습니다." }
-  ];
-
-  document.querySelectorAll("#c1b-start button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      start = +b.getAttribute("data-i");
-      document.querySelectorAll("#c1b-start button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      render();
-    });
-  });
-  document.getElementById("c1b-p").addEventListener("input", function (e) {
-    progress = +e.target.value;
-    document.getElementById("c1b-p-val").textContent = progress;
-    render();
-  });
-
-  function fmtYears(y) {
-    if (y >= 1e6) return (y / 1e6).toFixed(y % 1e6 === 0 ? 0 : 1) + "백만 년";
-    if (y >= 1e4) return (y / 1e4).toFixed(y % 1e4 === 0 ? 0 : 1) + "만 년";
-    return y.toLocaleString() + "년";
-  }
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    var A = nodes[start], toIdx = nextOf[start], B = nodes[toIdx];
-    var tr = transitions[start];
-
-    // 배경 순환 고리(연하게)
-    nodes.forEach(function (n, i) {
-      var m = nodes[nextOf[i]];
-      ctx.save(); ctx.strokeStyle = cssVar("--line"); ctx.globalAlpha = .5; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y); ctx.stroke();
-      ctx.restore();
-    });
-    // 현재 경로 강조
-    ctx.save(); ctx.strokeStyle = cssVar("--foam"); ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-    ctx.restore();
-
-    nodes.forEach(function (n, i) {
-      ctx.save();
-      ctx.fillStyle = cssVar(n.color); ctx.globalAlpha = (i === start || i === toIdx) ? 1 : 0.35;
-      ctx.beginPath(); ctx.arc(n.x, n.y, 42, 0, 7); ctx.fill();
-      ctx.restore();
-      ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
-      ctx.fillText(n.name, n.x, n.y + 5);
-    });
-
-    // 진행 위치 마커
-    var p = progress / 100;
-    var mx = A.x + (B.x - A.x) * p, my = A.y + (B.y - A.y) * p;
-    ctx.save(); ctx.fillStyle = cssVar("--foam");
-    ctx.beginPath(); ctx.arc(mx, my, 12, 0, 7); ctx.fill();
-    ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.stroke();
-    ctx.restore();
-
-    var elapsed = tr.years * p;
-    ctx.font = "700 13px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-    ctx.fillText(tr.label, W / 2, 30);
-
-    info.innerHTML = "<b>" + A.name + "</b>에서 <b>" + B.name + "</b>(으)로 향하는 <b>" + tr.label + "</b> 과정이 <b>" + progress + "%</b> 진행되었습니다(경과 " + fmtYears(elapsed) + " · 전체 대표 소요 시간 약 " + fmtYears(tr.years) + "). " + tr.note;
-  }
-  render();
-})();
-
-/* TAB2 변성작용 */
-(function () {
-  var canvas = document.getElementById("c2");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var type = "contact", pressure = 2;
-  var info = document.getElementById("c2-info");
-
-  document.querySelectorAll("#c2-type button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      type = b.getAttribute("data-t");
-      document.querySelectorAll("#c2-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      render();
-    });
-  });
-  document.getElementById("c2-p").addEventListener("input", function (e) { pressure = +e.target.value; document.getElementById("c2-p-val").textContent = pressure; render(); });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var boxX = 220, boxY = 60, boxW = 460, boxH = 260;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.strokeRect(boxX, boxY, boxW, boxH);
-
-    if (type === "contact") {
-      ctx.save();
-      ctx.fillStyle = cssVar("--coral"); ctx.globalAlpha = .5;
-      ctx.beginPath(); ctx.arc(boxX + boxW / 2, boxY + boxH / 2, 60, 0, 7); ctx.fill();
-      ctx.restore();
-      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-      ctx.fillText("마그마 관입 (열)", boxX + boxW / 2, boxY + boxH / 2 + 5);
-      // dots randomly scattered, no orientation (no foliation)
-      for (var i = 0; i < 200; i++) {
-        var rx = boxX + Math.random() * boxW, ry = boxY + Math.random() * boxH;
-        if (Math.hypot(rx - (boxX + boxW / 2), ry - (boxY + boxH / 2)) < 65) continue;
-        ctx.fillStyle = cssVar("--mist"); ctx.globalAlpha = .6;
-        ctx.beginPath(); ctx.arc(rx, ry, 2, 0, 7); ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-      info.innerHTML = "<b>접촉 변성 작용</b>: 마그마가 관입할 때 주변 암석이 열의 영향만 주로 받아 변성됩니다. 압력의 영향이 적어 엽리가 거의 나타나지 않습니다. 예) 혼펠스, 대리암.";
-    } else {
-      var lines = 6 + pressure * 3;
-      var angle = -0.15 - pressure * 0.03;
-      for (var l = 0; l < lines; l++) {
-        var yy = boxY + 15 + (l / lines) * (boxH - 30);
-        ctx.save();
-        ctx.strokeStyle = cssVar("--violet"); ctx.globalAlpha = .8; ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(boxX + 10, yy + Math.sin(l) * 4);
-        ctx.lineTo(boxX + boxW - 10, yy + angle * boxW + Math.sin(l) * 4);
-        ctx.stroke();
-        ctx.restore();
-      }
-      ctx.save(); ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 4;
-      drawArrow(ctx, boxX + boxW / 2, boxY - 20, boxX + boxW / 2, boxY + 10, 8);
-      drawArrow(ctx, boxX + boxW / 2, boxY + boxH + 20, boxX + boxW / 2, boxY + boxH - 10, 8);
-      ctx.restore();
-      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-      ctx.fillText("광역적인 압력(조산 운동)", boxX + boxW / 2, boxY - 28);
-      info.innerHTML = "<b>광역 변성 작용</b>: 넓은 지역에 걸쳐 높은 열과 강한 압력을 함께 받아 변성됩니다. 압력이 강할수록(현재 " + pressure + "단계) 광물이 한 방향으로 배열되는 <b>엽리</b>가 뚜렷하게 발달합니다. 예) 편암, 편마암.";
-    }
-  }
-  render();
-})();
-
-/* TAB3 지질공원 지도 */
-(function () {
-  var canvas = document.getElementById("c3");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c3-info");
-  var peninsula = [
-    [430, 70], [470, 90], [455, 160], [500, 230], [470, 300],
-    [510, 360], [470, 420], [430, 470], [390, 500], [370, 460],
-    [400, 400], [360, 340], [390, 270], [350, 210], [380, 140], [400, 90]
-  ];
-  var spots = [
-    { name: "한탄강 (연천·포천)", x: 430, y: 140, desc: "용암이 흘러 형성된 현무암 협곡과 주상절리를 관찰할 수 있습니다. 세계지질공원으로 지정되었습니다." },
-    { name: "청송 국가지질공원", x: 470, y: 300, desc: "화강암 침식 지형과 다양한 중생대 화산암을 관찰할 수 있는 세계지질공원입니다." },
-    { name: "무등산 국가지질공원", x: 400, y: 400, desc: "중생대에 형성된 화산암으로 이루어진 주상절리(입석대·서석대)를 볼 수 있습니다." },
-    { name: "제주도 국가지질공원", x: 380, y: 520, desc: "신생대 화산 활동으로 형성된 섬으로, 현무암 용암동굴과 다양한 화산 지형이 있습니다." },
-    { name: "울릉도·독도 지질공원", x: 560, y: 260, desc: "신생대 화산 활동으로 형성된 화산섬으로, 조면암 등 다양한 화산암을 관찰할 수 있습니다." }
-  ];
-
-  canvas.addEventListener("click", function (e) {
-    var rect = canvas.getBoundingClientRect();
-    var scaleX = canvas._w / rect.width, scaleY = canvas._h / rect.height;
-    var mx = (e.clientX - rect.left) * scaleX, my = (e.clientY - rect.top) * scaleY;
-    var hit = null;
-    spots.forEach(function (s) { if (Math.hypot(mx - s.x, my - s.y) < 22) hit = s; });
-    if (hit) info.innerHTML = "<b>" + hit.name + "</b> — " + hit.desc;
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    ctx.beginPath();
-    peninsula.forEach(function (p, i) { if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]); });
-    ctx.closePath();
-    ctx.fillStyle = cssVar("--panel-2"); ctx.fill();
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2; ctx.stroke();
-
-    spots.forEach(function (s) {
-      ctx.save();
-      ctx.fillStyle = cssVar("--coral");
-      ctx.beginPath(); ctx.arc(s.x, s.y, 9, 0, 7); ctx.fill();
-      ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.stroke();
-      ctx.restore();
-      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "left";
-      ctx.fillText(s.name, s.x + 14, s.y + 4);
-    });
-  }
-  render();
-})();
-
-})();
-</script>
-
-<script>
-(function () {
-  window.sthUnit("eshs-2-2");
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[지구과학 Ⅱ-2] 한반도의 암석",
-    items: [
-      {
-            "id": "w1",
-            "label": "마그마가 녹는 진짜 이유",
-            "hint": "섭입대에서 마그마가 생기는 과정을 물의 공급과 부분 용융으로 설명하세요. \"마찰열\"이라는 말은 쓰지 말 것.",
-            "ph": ""
-      },
-      {
-            "id": "w2",
-            "label": "같은 성분, 다른 조직",
-            "hint": "화강암과 유문암은 성분이 비슷한데 결정 크기가 다릅니다. 왜 그런지 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w3",
-            "label": "암석의 순환",
-            "hint": "고른 암석 하나가 다른 암석으로 바뀌는 경로를 두 가지 이상 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w4",
-            "label": "아직 헷갈리는 것",
-            "hint": "다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-})();
-</script>
-
-<script>
-(function () {
-  window.sthGate({
-    gate: "gt", veil: "vl", key: "subduct",
-    question: "섭입대에서 마그마가 생기는 <b>가장 큰 까닭</b>은 무엇일까요?",
-    options: ["㉠ 판이 밀리며 생긴 마찰열", "㉡ 해양 지각이 직접 녹아서", "㉢ 물이 공급되어 위쪽 맨틀이 부분 용융", "㉣ 지구 중심의 열이 올라와서"],
-    onPick: function (i) {
-      var ok = (i === 2);
-      window.sthState("subductOK", ok ? "맞음" : "어긋남");
-      var msg = (ok ? "<b>맞았습니다.</b> " : "<b>정답은 ㉢ 입니다.</b> ") + "마찰열이 아닙니다." + " " + "섭입하는 해양 지각에서 빠져나온 <b>물이 위쪽 맨틀의 녹는점을 낮춰</b> 부분 용융이 일어납니다. 해양 지각이나 퇴적물이 직접 녹는 경우는 거의 없습니다.";
-      var g = document.getElementById("gt");
-      var box = g.parentNode.querySelector(".info-card");
-      if (box) box.innerHTML = msg;
-      else { var d = document.createElement("div"); d.className = "info-card"; d.style.margin = "18px 0 0";
-             d.innerHTML = msg; g.insertAdjacentElement("afterend", d); }
-    }
-  });
-})();
-</script>
+<script src="../assets/story.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
+<script src="episodes.js"></script>
 </body>
 </html>
