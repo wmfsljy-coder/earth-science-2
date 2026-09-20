@@ -5,31 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>지구의 역사 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/story.css">
 <style>
-  .strat-columns { display: flex; gap: 24px; flex-wrap: wrap; padding: 18px 20px 0; }
-  .strat-col { flex: 1 1 220px; min-width: 200px; }
-  .strat-col-title { font-size: 12.5px; font-weight: 700; color: var(--foam); margin-bottom: 8px; text-align: center; }
-  .strat-layer { border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 4px; font-size: 12px; color: var(--mist); display: flex; align-items: center; gap: 8px; background: var(--panel-2); transition: all .15s; }
-  .strat-layer.has-fossil { cursor: pointer; }
-  .strat-layer.has-fossil:hover { border-color: var(--teal-dim); }
-  .strat-layer .fossil-ico { font-size: 17px; }
-  .strat-layer.selected { border-color: var(--foam); box-shadow: 0 0 0 2px var(--foam) inset; }
-  .strat-layer.paired-0 { border-color: var(--teal); background: rgba(63,201,176,0.12); }
-  .strat-layer.paired-1 { border-color: var(--violet); background: rgba(160,120,240,0.12); }
-  .strat-layer.flash-wrong { border-color: var(--coral) !important; }
-
-  .fossil-pool { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 20px 0; }
-  .fossil-chip { border: 1.5px solid var(--line); background: var(--panel-2); color: var(--mist); padding: 8px 14px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all .15s; }
-  .fossil-chip:hover { border-color: var(--teal-dim); }
-  .fossil-chip.selected { border-color: var(--foam); box-shadow: 0 0 0 2px var(--foam) inset; }
-  .fossil-chip.placed { cursor: pointer; }
-  .fossil-chip.correct { border-color: var(--teal); background: rgba(63,201,176,0.15); color: var(--foam); }
-  .fossil-chip.wrong { border-color: var(--coral); background: rgba(242,150,92,0.15); color: var(--foam); }
-  .fossil-baskets { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; padding: 16px 20px 0; }
-  .fossil-basket { border: 1.5px dashed var(--line); border-radius: 10px; padding: 10px 12px; min-height: 76px; cursor: pointer; }
-  .fossil-basket .basket-title { font-weight: 700; font-size: 12.5px; color: var(--foam); margin-bottom: 8px; }
-  .fossil-basket .basket-items { display: flex; gap: 6px; flex-wrap: wrap; }
-.mission-stats{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}.stat-chip{background:var(--panel-2);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--mist);}.stat-chip b{color:var(--teal-dim);}.reward-badge{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:linear-gradient(135deg,#fff7ed,#ffe8d3);border:2px solid #ffb774;border-radius:999px;padding:10px 20px;font-size:14.5px;font-weight:800;color:#c2590f;animation:badge-pop .5s cubic-bezier(.34,1.56,.64,1);}.reward-badge[hidden]{display:none;}@keyframes badge-pop{0%{transform:scale(0) rotate(-8deg);opacity:0;}60%{transform:scale(1.15) rotate(3deg);opacity:1;}100%{transform:scale(1) rotate(0);}}</style>
+  .data-mini-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 4px 0 0; }
+  .data-mini-table th, .data-mini-table td { border: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+  .data-mini-table th { background: var(--card-2); color: var(--mist); font-weight: 700; }
+</style>
 </head>
 <body>
 
@@ -40,894 +21,374 @@
       <div class="eyebrow" style="margin-top:8px">Ⅱ-1 · 지구의 역사</div>
       <h1 class="display">지층과<br>지질 시대</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 상대연령 법칙</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 지층 대비</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 절대연령과 반감기</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 퇴적암과 퇴적구조</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 지질 시대와 화석</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 절벽에 적힌 순서</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 반으로, 또 반으로</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 화석 달력</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
   </nav>
 
   <main>
-    <!-- TAB0 상대연령 법칙 -->
+
+    <!-- =====================================================================
+         01 상대연령 법칙 · 퇴적암과 퇴적구조 — 이야기 「절벽에 적힌 순서」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 지층 형성의 선후 관계</div>
-        <h2 class="display">상대연령을 결정하는 법칙</h2>
-        <p>아래 법칙 버튼을 눌러 각 법칙이 지층 단면에서 어떻게 적용되는지 확인해 보세요.</p>
-      
-        <span class="std-chip">12지구02-01</span><span class="std-chip">12지구02-02</span><div class="std-note"><b>[12지구02-01]</b> 지층 형성의 선후 관계를 결정짓는 법칙들을 활용하여 상대연령을 비교하고, 방사성 동위원소를 이용하여 절대연령을 구할 수 있다.<br><b>[12지구02-02]</b> 지질 시대를 기(紀) 수준에서 구분하고, 지층과 화석을 통해 지질 시대의 생물과 환경 변화를 해석할 수 있다.</div><div class="terms"><b>상대연령</b><b>절대연령</b><b>반감기</b><b>표준 화석</b></div>
+        <div class="eyebrow">01 · 상대연령과 퇴적구조 · 이야기 한 편</div>
+        <h2 class="display">절벽에 적힌 순서</h2>
+        <p>도로 공사로 잘려 나간 산비탈에서 지층 단면 하나가 통째로 드러났습니다. 글자는 한 자도 없지만, 이 절벽에는 수억 년 동안 일어난 사건이 순서대로 적혀 있습니다. 읽는 법을 아는 사람에게만요.</p>
+        <span class="std-chip">12지구02-01</span><div class="std-note"><b>[12지구02-01]</b> 지층 형성의 선후 관계를 결정짓는 법칙들을 활용하여 상대연령을 비교하고, 방사성 동위원소를 이용하여 절대연령을 구할 수 있다.</div><div class="terms"><b>상대연령</b><b>수평 퇴적</b><b>지층 누중</b><b>관입</b><b>부정합</b><b>퇴적구조</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c0" width="900" height="480"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">법칙 선택</div>
-            <div class="toggle-row">
-              <button class="chip on" data-law="horizontal">수평퇴적</button>
-              <button class="chip" data-law="superposition">지층 누중</button>
-              <button class="chip" data-law="faunal">동물군천이</button>
-              <button class="chip" data-law="intrusion">관입</button>
-              <button class="chip" data-law="unconformity">부정합</button>
+
+      <div class="episode" id="epA">
+        <section class="scene" data-title="글자 없는 기록">
+          <div class="story narr"><div class="who">⛰️</div><div class="say"><span class="name">이야기</span>국도를 넓히려고 산비탈을 깎아 내자, 높이 30 m 가 넘는 <b>지층 단면</b>이 드러났습니다. 색이 다른 암석층이 비스듬히 누워 있고, 그 위로 다른 층들이 덮여 있으며, 전체를 가로질러 굳은 흰 암맥이 하나 박혀 있습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">공사 감독</span>“문화재·지질 조사가 끝나야 공사를 다시 할 수 있답니다. 조사관님, 이 절벽에서 <b>무슨 일이 먼저 있었고 무슨 일이 나중이었는지</b> 순서만 정리해 주시면 됩니다. 며칠이나 걸릴까요?”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“시료를 실험실에 보내 <b>절대연령</b>을 재면 몇 주가 걸립니다. 하지만 <b>순서</b>만 알면 되신다면 오늘 안에 됩니다. 절대연령 말고 <b>상대연령</b>을 읽으면 되니까요. 그런데 이 절벽에는 함정이 하나 있어 보입니다.”</div></div>
+          <div class="case-file"><b class="k">절벽에서 눈에 띄는 것</b> 비스듬히 기울어진 아래쪽 지층 세 장 &nbsp;|&nbsp; 그 위를 덮은 거의 수평인 지층 두 장 &nbsp;|&nbsp; 둘 사이의 울퉁불퉁한 경계면 &nbsp;|&nbsp; 전체를 가로지르는 흰 암맥 &nbsp;|&nbsp; 암맥 속에 박힌 석회암 조각 &nbsp;|&nbsp; 셰일층에서 쏟아져 나온 <b>고사리 화석</b>(동물 화석은 한 점도 없음)</div>
+          <div class="gate loose" id="a-gate"></div>
+        </section>
+
+        <section class="scene" data-title="위아래를 가리는 자">
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“순서를 읽는 출발점은 <b>지층 누중의 법칙</b>입니다. 아래가 먼저, 위가 나중. 그런데 이 법칙에는 ‘<b>지층이 역전되지 않았다면</b>’ 이라는 단서가 붙어요. 그러니 먼저 <b>어느 쪽이 위였는지</b>부터 증명해야 합니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“그 증거가 <b>퇴적구조</b>입니다. 퇴적구조는 퇴적물이 쌓이던 순간의 환경이 굳어 버린 흔적이에요. 먼저 퇴적구조 하나가 어떻게 만들어지는지, <b>입자가 가라앉는 속도</b>부터 계산해 봅시다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-fall" width="900" height="420"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">입자 지름<span class="val" id="a-grain-val">0.500 mm</span></div>
+                <input type="range" id="a-grain" min="10" max="2000" step="10" value="500">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">물의 깊이<span class="val" id="a-depth-val">50 m</span></div>
+                <input type="range" id="a-depth" min="5" max="200" step="5" value="50">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="a-fall-read">가라앉는 데 걸리는 시간: —</span></div>
             </div>
+            <div class="info-card" id="a-fall-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c0-info"></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“이제 진짜 자를 씁시다. 아래 화면의 지층에는 퇴적구조가 하나씩 들어 있습니다. <b>지층 뒤집기</b>를 켜면 지각 변동으로 역전된 상태가 됩니다. 구조만 보고 <b>어느 쪽이 위(젊은 쪽)</b>인지 판정해 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-updown" width="900" height="400"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">퇴적구조</div>
+                <div class="seg" id="a-str">
+                  <button type="button" class="on" data-s="cross">사층리</button>
+                  <button type="button" data-s="graded">점이층리</button>
+                  <button type="button" data-s="mud">건열</button>
+                  <button type="button" data-s="ripple">연흔</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">지각 변동</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="a-flip">지층 뒤집기</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">내 판정 — 위(젊은 쪽)는?</div>
+                <div class="toggle-row">
+                  <button type="button" class="chip" id="a-ans-top">그림의 위쪽</button>
+                  <button type="button" class="chip" id="a-ans-bot">그림의 아래쪽</button>
+                </div>
+              </div>
+            </div>
+            <div class="info-card" id="a-updown-info"></div>
+          </div>
+          <div class="mission" id="m1-2"><span class="m-tag">미션</span>가라앉는 속도가 곧 지층의 무늬가 됩니다.<ul><li id="m1-2a">입자를 아주 곱게 해, 바닥에 닿는 데 <b>하루(24시간)가 넘게</b> 걸리게 만들기</li><li id="m1-2b">입자를 굵게 해, <b>1분 안에</b> 바닥에 닿게 만들기</li><li id="m1-2c">네 가지 <b>퇴적구조를 모두</b> 살펴보기</li><li id="m1-2d"><b>뒤집힌 지층</b>에서 위쪽이 어디인지 올바로 판정하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="빠진 시간 — 부정합">
+          <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">공사 감독</span>“조사관님, 아래 지층하고 위 지층 사이의 저 울퉁불퉁한 선은 뭡니까? 그냥 층 하나 바뀌는 자리 아닌가요?”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“아닙니다. 저건 <b>없어진 시간</b>이에요. 땅이 솟아올라 물 밖으로 나오면 쌓이는 대신 <b>깎입니다.</b> 그러다 다시 가라앉아 그 위에 새로 쌓이면, 두 지층 사이에는 몇천만 년이 통째로 비어 있게 되지요. 이것이 <b>부정합</b>입니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“직접 만들어 봅시다. 지층을 얼마나 <b>기울였는지</b>, 물 밖에서 얼마나 <b>오래 깎였는지</b>에 따라 부정합의 종류가 달라집니다. 침식 속도는 1년에 0.01 mm 로 두겠습니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-unc" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">지각 변동으로 기울어진 각도<span class="val" id="a-tilt-val">0°</span></div>
+                <input type="range" id="a-tilt" min="0" max="40" step="5" value="0">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">물 밖에서 깎인 기간<span class="val" id="a-erode-val">0만 년</span></div>
+                <input type="range" id="a-erode" min="0" max="4000" step="100" value="0">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--coral)"></span><span class="txt" id="a-unc-read">깎여 나간 두께: 0 m</span></div>
+            </div>
+            <div class="info-card" id="a-unc-info"></div>
+          </div>
+          <div class="mission" id="m1-3"><span class="m-tag">미션</span>세 가지 부정합을 모두 만들어 보세요. 아래 지층 다섯 장의 두께는 모두 합해 200 m 이고, 그 아래는 화강암 기반암입니다.<ul><li id="m1-3a"><b>평행 부정합</b> 만들기 (기울지 않은 채 깎였다가 다시 쌓인 경우)</li><li id="m1-3b"><b>경사 부정합</b> 만들기 (기울어진 뒤 깎였다가 다시 쌓인 경우)</li><li id="m1-3c"><b>난정합</b> 만들기 (침식이 화강암 기반암까지 닿은 경우)</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="절벽의 순서를 복원한다">
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“이제 도구가 다 모였습니다. 절벽 단면의 각 부분을 눌러 증거를 확인하세요. <b>자른 쪽이 나중</b>이라는 것, 그리고 <b>남의 조각을 품고 있는 쪽이 나중</b>이라는 것만 기억하면 됩니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-sec" width="900" height="520"></canvas></div>
+            <div class="info-card" id="a-sec-info">절벽 단면에서 알아보고 싶은 부분을 눌러 보세요.</div>
+          </div>
+          <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">공사 감독</span>“그런데 아까부터 마음에 걸리는 게 있는데요. 셰일층에서 나온 건 <b>고사리 화석</b>뿐이잖습니까. 화석으로 순서를 따지는 건 ‘<b>동물</b>군천이의 법칙’이라던데, 식물만 나오면 그 법칙은 못 쓰는 거 아닙니까?”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="a-q1"></div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“자, 마지막입니다. 이 절벽에서 일어난 일을 <b>일어난 차례대로</b> 늘어놓아 보세요.”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="a-order"></div></div>
+          <div class="mission" id="m1-4"><span class="m-tag">미션</span><ul><li id="m1-4a">절벽 단면의 <b>여덟 곳을 모두</b> 눌러 증거 확인하기</li><li id="m1-4b">고사리 화석에 대한 물음에 답하기</li><li id="m1-4c">사건을 <b>일어난 순서대로</b> 늘어놓기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 절벽이 적어 둔 여섯 문장">
+          <div class="ending">
+            <h4>⛰️ 잘린 쪽이 먼저, 자른 쪽이 나중</h4>
+            <p>이 절벽의 함정은 <b>아래쪽 지층 무리가 뒤집혀 있었다</b>는 것이었습니다. 지층 누중의 법칙은 ‘역전되지 않았다면’ 이라는 조건 위에서만 성립합니다. 사층리가 <b>위쪽에서 잘려 나가고</b>, 건열의 쐐기가 <b>아래로 갈수록 뾰족</b>해지는 방향을 읽어 위아래를 먼저 정한 다음에야 순서를 말할 수 있었습니다.</p>
+            <p>나머지는 세 개의 법칙이 정리해 주었습니다. 퇴적물은 처음에는 <b>수평으로</b> 쌓이므로 기울어진 지층은 나중에 지각 변동을 겪은 것이고(<b>수평 퇴적의 법칙</b>), 남의 지층을 <b>가로질러 자른</b> 암맥은 잘린 지층보다 나중이며(<b>관입의 법칙</b>), 암맥 안에 <b>석회암 조각(포획암)</b>이 박혀 있다는 것은 석회암이 먼저 있었다는 뜻입니다. 그리고 두 지층 무리 사이의 울퉁불퉁한 면은 <b>부정합면</b>, 곧 통째로 사라진 시간이었습니다.</p>
+            <div class="vs" id="a-vs"></div>
+            <span class="stamp">사건 파일 ① 해결</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>동물군천이의 법칙</b><br>시간에 따라 <b>동물군뿐만 아니라 식물군도 진화하면서 천이가 일어난다.</b> 그래서 다른 문헌에서는 이를 합쳐 <b>생물군천이의 법칙</b>으로 표현한다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 침강 속도는 <b>스토크스 법칙</b>으로 계산했습니다. 이 식은 아주 고운 입자에만 잘 맞고, 굵은 모래처럼 빠르게 가라앉는 입자에서는 물의 저항이 달라져 <b>실제보다 훨씬 빠른 값</b>이 나옵니다(1 mm 모래의 실제 침강 속도는 초속 10 cm 안팎입니다). 침식 속도 ‘1년에 0.01 mm’ 도 지역과 기후에 따라 수십 배씩 달라지는 값을 하나로 고정한 것입니다. 또 실제 절벽에서 지층의 역전을 판정할 때는 퇴적구조 하나만 보지 않고 여러 증거를 함께 씁니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkA"></div></div>
+        </section>
       </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>동물군천이의 법칙</b><br>시간에 따라 <b>동물군뿐만 아니라 식물군도 진화하면서 천이가 일어난다.</b> 그래서 다른 문헌에서는 이를 합쳐 <b>생물군천이의 법칙</b>으로 표현한다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB1 지층 대비 -->
+    <!-- =====================================================================
+         02 절대연령과 반감기 · 지층 대비 — 이야기 「반으로, 또 반으로」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="1" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 서로 떨어진 지층 비교하기</div>
-        <h2 class="display">암상 대비와 화석 대비</h2>
-        <p>가까운 두 지역은 암석의 종류(암상)로, 멀리 떨어진 두 지역은 화석으로 지층을 대비합니다. 기준을 눌러 같은 시기에 쌓인 지층이 어떻게 연결되는지 확인해 보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c1" width="900" height="480"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">대비 기준</div>
-            <div class="seg" id="c1-mode">
-              <button class="on" data-m="lith">암상 대비 (가까운 지역)</button>
-              <button data-m="fossil">화석 대비 (먼 지역)</button>
-            </div>
-          </div>
-        </div>
-        <div class="info-card" id="c1-info"></div>
+        <div class="eyebrow">02 · 절대연령과 지층 대비 · 이야기 한 편</div>
+        <h2 class="display">반으로, 또 반으로</h2>
+        <p>순서는 알아냈습니다. 그런데 “몇 년 전이냐”는 물음에는 순서만으로 답할 수 없습니다. 실험실에는 저절로 줄어드는 시계가 있습니다. 다만 시계마다 잴 수 있는 시간의 폭이 다릅니다.</p>
+        <span class="std-chip">12지구02-01</span><div class="std-note"><b>[12지구02-01]</b> 지층 형성의 선후 관계를 결정짓는 법칙들을 활용하여 상대연령을 비교하고, 방사성 동위원소를 이용하여 절대연령을 구할 수 있다.</div><div class="terms"><b>절대연령</b><b>반감기</b><b>방사성 동위원소</b><b>모원소와 자원소</b><b>지층 대비</b><b>건층</b></div>
       </div>
 
-      <div class="stage-head" style="margin-top:30px;">
-        <div class="eyebrow">🔎 미션 · 표준 화석으로 직접 대비하기</div>
-        <h2 class="display" style="font-size:20px;">두 지역의 지층을 화석으로 연결해 보세요</h2>
-        <p>두 지역은 서로 멀리 떨어져 있어 암석의 종류가 다르지만, 같은 시기에 살았던 표준 화석이 공통으로 들어 있는 지층이 있습니다. 화석이 있는 지층을 클릭한 뒤, 같은 화석이 들어 있는 다른 지역의 지층을 클릭해 짝을 지어 보세요.</p>
+      <div class="episode" id="epB">
+        <section class="scene" data-title="시료 네 개가 도착했다">
+          <div class="story narr"><div class="who">🧪</div><div class="say"><span class="name">이야기</span>연대 측정 실험실. 오늘 아침 상자 네 개가 들어왔습니다. 유적에서 나온 <b>숯</b> 한 덩어리, 공룡 발자국 지층 바로 위에서 떼어 온 <b>응회암</b>, 산 속 <b>화강암</b>, 그리고 사막에서 주운 <b>운석</b> 조각.</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">실습 연구원</span>“전부 탄소-14로 재면 되는 거 아닌가요? 뉴스에서 화석 나이를 잴 때 늘 탄소 연대 측정이라고 하던데요.”</div></div>
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“그 말부터 확인하고 갑시다. 탄소-14의 반감기는 <b>5,730년</b>입니다. 공룡이 살던 때는 <b>수천만 년</b> 전이고요. 자, 예상부터.”</div></div>
+          <div class="case-file"><b class="k">오늘의 시료</b> ㉠ 유적의 숯 (약 1만 2천 년) &nbsp;|&nbsp; ㉡ 공룡 지층 위의 응회암 (약 7,000만 년) &nbsp;|&nbsp; ㉢ 화강암 (약 20억 년) &nbsp;|&nbsp; ㉣ 운석 (약 45억 6천만 년)</div>
+          <div class="gate loose" id="b-gate"></div>
+        </section>
+
+        <section class="scene" data-title="반으로, 또 반으로">
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“원리는 놀랄 만큼 단순합니다. 방사성 원소(<b>모원소</b>)는 저절로 다른 원소(<b>자원소</b>)로 바뀌는데, 그 양이 <b>절반으로 줄어드는 데 걸리는 시간</b>이 늘 일정해요. 그것이 <b>반감기</b>입니다. 온도를 올리든 압력을 주든 바뀌지 않습니다.”</div></div>
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“그러니 우리가 잴 것은 딱 하나, <b>모원소가 얼마나 남았는가</b>입니다. 남은 비율을 움직여 보면서, 그것이 반감기 몇 번에 해당하는지 확인하세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-half" width="900" height="450"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">남아 있는 모원소<span class="val" id="b-left-val">80.00 %</span></div>
+                <input type="range" id="b-left" min="1" max="100" step="0.25" value="80">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">쓰고 있는 방사성 동위원소</div>
+                <div class="seg" id="b-iso">
+                  <button type="button" data-i="C14">¹⁴C</button>
+                  <button type="button" class="on" data-i="K40">⁴⁰K</button>
+                  <button type="button" data-i="U238">²³⁸U</button>
+                </div>
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--violet)"></span><span class="txt" id="b-half-read">절대연령: —</span></div>
+            </div>
+            <div class="info-card" id="b-half-info"></div>
+          </div>
+          <div class="mission" id="m2-2"><span class="m-tag">미션</span>남은 모원소의 비율만으로 지나간 반감기 횟수를 읽어 내세요.<ul><li id="m2-2a">모원소와 자원소가 <b>1 : 1</b> 이 되게 만들기 (반감기 1번)</li><li id="m2-2b">모원소와 자원소가 <b>1 : 7</b> 이 되게 만들기 (반감기 3번)</li><li id="m2-2c">¹⁴C 를 골라 남은 모원소를 <b>5 % 아래</b>로 내리고, ‘측정 한계’ 경고가 뜨는 것 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="어떤 시계를 쓸 것인가">
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“시계는 세 개가 있습니다. 반감기가 <b>5,730년</b>인 ¹⁴C, <b>12억 5천만 년</b>인 ⁴⁰K, <b>44억 7천만 년</b>인 ²³⁸U. 재려는 나이가 반감기에 견주어 <b>너무 길면</b> 모원소가 남지 않아 못 재고, <b>너무 짧으면</b> 자원소가 거의 생기지 않아 못 잽니다.”</div></div>
+          <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">실습 연구원</span>“그러니까 초시계로 한 해를 재려 해도 안 되고, 달력으로 100 m 달리기를 재려 해도 안 된다는 말씀이군요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-pick" width="900" height="440"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">시료 고르기</div>
+                <div class="seg" id="b-sample">
+                  <button type="button" class="on" data-k="0">㉠ 숯</button>
+                  <button type="button" data-k="1">㉡ 응회암</button>
+                  <button type="button" data-k="2">㉢ 화강암</button>
+                  <button type="button" data-k="3">㉣ 운석</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">써 볼 동위원소</div>
+                <div class="seg" id="b-iso2">
+                  <button type="button" class="on" data-i="C14">¹⁴C (5,730년)</button>
+                  <button type="button" data-i="K40">⁴⁰K (12.5억 년)</button>
+                  <button type="button" data-i="U238">²³⁸U (44.7억 년)</button>
+                </div>
+              </div>
+            </div>
+            <div class="info-card" id="b-pick-info"></div>
+          </div>
+          <div class="mission" id="m2-3"><span class="m-tag">미션</span>시계가 맞아야 잴 수 있습니다.<ul><li id="m2-3a">네 시료 <b>모두</b>에 대해 ‘잴 수 있다’ 판정을 받아 보기</li><li id="m2-3b">㉡ 응회암을 <b>¹⁴C</b> 로 재 보고, 모원소가 남지 않아 못 재는 것 확인하기</li><li id="m2-3c">㉠ 숯을 <b>⁴⁰K</b> 로 재 보고, 자원소가 거의 생기지 않아 못 재는 것 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="떨어진 두 지역을 잇는 법">
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지층 대비 담당</span>“절대연령은 아무 층에서나 잴 수 있는 게 아닙니다. 화산재가 굳은 <b>응회암</b>처럼 <b>짧은 시간에 넓은 지역에 한꺼번에 쌓인 층</b>이라야 값이 제대로 나와요. 그런 층은 멀리 떨어진 두 지역을 잇는 기준, 곧 <b>건층(열쇠층)</b>이 됩니다.”</div></div>
+          <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지층 대비 담당</span>“가 지역과 나 지역, 두 곳 모두에서 같은 응회암 두 장이 나왔습니다. 아래 응회암은 <b>7,400만 년 전</b>, 위 응회암은 <b>6,900만 년 전</b>. 두 층 사이는 <b>500만 년</b>이라는 뜻이지요. 그런데 그 사이에 쌓인 지층의 두께는 두 지역이 딴판입니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-corr" width="900" height="500"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">조사할 지역</div>
+                <div class="seg" id="b-site">
+                  <button type="button" class="on" data-k="0">가 지역 (두께 250 m)</button>
+                  <button type="button" data-k="1">나 지역 (두께 60 m)</button>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">내가 넣은 퇴적 속도<span class="val" id="b-rate-val">0.030 mm/년</span></div>
+                <input type="range" id="b-rate" min="2" max="100" step="1" value="30">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="b-corr-read">계산한 두께: —</span></div>
+            </div>
+            <div class="info-card" id="b-corr-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="b-sort"></div></div>
+          <div class="mission" id="m2-4"><span class="m-tag">미션</span>같은 500만 년인데 왜 두께가 다를까요.<ul><li id="m2-4a">가 지역의 두께 250 m 가 나오도록 <b>퇴적 속도</b> 맞히기</li><li id="m2-4b">나 지역의 두께 60 m 가 나오도록 <b>퇴적 속도</b> 맞히기</li><li id="m2-4c">아래에서 대비에 쓸 수 있는 것과 없는 것을 나누기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 시계마다 잴 수 있는 시간이 다르다">
+          <div class="ending">
+            <h4>⏳ 절반이 되는 데 걸리는 시간은 언제나 같다</h4>
+            <p>모원소가 남은 비율 하나만 재면 <b>지나간 반감기 횟수</b>가 나오고, 거기에 반감기를 곱하면 <b>절대연령</b>이 나옵니다. 50 % 면 1번, 25 % 면 2번, 12.5 % 면 3번. 반감기는 온도나 압력으로 바뀌지 않기 때문에 이 시계는 언제 어디서나 같은 속도로 갑니다.</p>
+            <p>다만 시계마다 잴 수 있는 폭이 다릅니다. 반감기 5,730년인 <b>¹⁴C</b> 로는 길어야 수만 년까지가 한계여서, 공룡 시대 암석에 쓰면 모원소가 아예 남아 있지 않습니다. 반대로 반감기가 수십억 년인 <b>⁴⁰K·²³⁸U</b> 를 몇천 년짜리 숯에 쓰면 자원소가 거의 생기지 않아 잴 수가 없지요. 그리고 멀리 떨어진 두 지역은 <b>건층(응회암 같은 열쇠층)</b>과 <b>표준 화석</b>으로 이어 붙입니다. 같은 500만 년 사이에 가 지역은 250 m, 나 지역은 60 m 가 쌓였습니다 — <b>두께가 같은 시간을 뜻하지는 않습니다.</b></p>
+            <div class="vs" id="b-vs"></div>
+            <span class="stamp">사건 파일 ② 해결</span>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 반감기 값은 ¹⁴C 5,730년, ⁴⁰K 12.5억 년, ²³⁸U 44.7억 년을 썼습니다. 교과서에 따라 ⁴⁰K 를 13억 년, ²³⁸U 를 45억 년으로 반올림해 싣기도 합니다. ‘반감기의 1/50 ~ 10배가 잴 수 있는 범위’ 라는 기준은 실제 측정에서 쓰는 어림이며, 장비의 정밀도에 따라 달라집니다. 또 이 화면은 처음에 자원소가 하나도 없었다고 가정했지만, 실제 암석에는 처음부터 들어 있던 자원소가 있어 그 몫을 따로 빼 주어야 합니다. 퇴적 속도도 실제로는 시기마다 크게 달라지므로, 두께를 일정한 속도로 나눈 값은 <b>평균</b>일 뿐입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkB"></div></div>
+        </section>
       </div>
-      <div class="stage-card">
-        <div class="strat-columns" id="c1m-columns"></div>
-        <div class="toggle-row" style="margin:14px 20px 0;">
-          <button class="chip" id="c1m-new">다시 섞기</button>
-        </div>
-        <div class="info-card" id="c1m-info">화석이 있는 지층(🐚, 🐠)을 순서대로 클릭해 두 지역을 연결해 보세요.</div>
-      </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB2 절대연령 -->
+    <!-- =====================================================================
+         03 지질 시대와 화석 — 이야기 「다섯 번의 대멸종과 화석 달력」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 방사성 동위원소 붕괴</div>
-        <h2 class="display">반감기로 절대연령 구하기</h2>
-        <p>경과한 반감기 횟수를 조절하며 모원소와 자원소의 비율이 어떻게 변하는지, 실제 절대연령이 얼마나 되는지 확인해 보세요.</p>
+        <div class="eyebrow">03 · 지질 시대와 화석 · 이야기 한 편</div>
+        <h2 class="display">다섯 번의 대멸종과 화석 달력</h2>
+        <p>박물관이 ‘공룡관’ 을 통째로 고쳐 짓습니다. 전시 목록을 받아 든 학예사가 고개를 갸웃합니다. 이 목록에는 공룡이 아닌 것이 세 종류나 섞여 있고, 46억 년을 한 방에 담을 방법도 아직 없습니다.</p>
+        <span class="std-chip">12지구02-02</span><div class="std-note"><b>[12지구02-02]</b> 지질 시대를 기(紀) 수준에서 구분하고, 지층과 화석을 통해 지질 시대의 생물과 환경 변화를 해석할 수 있다.</div><div class="terms"><b>지질 시대</b><b>표준 화석</b><b>시상 화석</b><b>대멸종</b><b>기(紀)</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c2" width="900" height="460"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">경과한 반감기 횟수<span class="val" id="c2-n-val">1.0</span></div>
-            <input type="range" id="c2-n" min="0" max="5" step="0.1" value="1">
-          </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">방사성 동위원소</div>
-            <div class="seg" id="c2-iso">
-              <button data-iso="C14">¹⁴C (5,730년)</button>
-              <button class="on" data-iso="K40">⁴⁰K (13억 년)</button>
-              <button data-iso="U238">²³⁸U (45.1억 년)</button>
+
+      <div class="episode" id="epC">
+        <section class="scene" data-title="공룡관 전시 목록">
+          <div class="story narr"><div class="who">🦕</div><div class="say"><span class="name">이야기</span>시립 자연사 박물관, 개관 준비 회의. 새 ‘공룡관’ 의 전시 목록이 스크린에 떠 있습니다. 티라노사우루스, 트리케라톱스, 하늘을 나는 <b>익룡</b>, 바다의 <b>어룡</b>과 <b>수장룡</b>. 그리고 방 한가운데에는 <b>46억 년 지구 연표</b>를 놓을 예정입니다.</div></div>
+          <div class="story"><div class="who">👩‍🎨</div><div class="say"><span class="name">전시 기획자</span>“공룡관이니까 중생대 큰 파충류는 다 넣었습니다. 하늘·땅·바다 세 구역으로 나누면 아이들이 좋아할 거예요.”</div></div>
+          <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“기획은 좋습니다. 그런데 안내판 문구는 조심해야 합니다. 먼저 하나 정하고 갑시다.”</div></div>
+          <div class="case-file"><b class="k">회의에서 정해야 할 것</b> 공룡관에 넣을 것과 뺄 것 &nbsp;|&nbsp; 46억 년을 한 방에 담는 방법 &nbsp;|&nbsp; ‘다섯 번의 대멸종’ 코너의 주인공 &nbsp;|&nbsp; 시대를 가르는 기준이 될 표준 화석 고르기</div>
+          <div class="gate loose" id="c-gate"></div>
+        </section>
+
+        <section class="scene" data-title="46억 년을 1년으로 줄이면">
+          <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“46억 년은 숫자로는 아무도 못 느낍니다. 그러니 <b>1월 1일 0시에 지구가 태어나고 12월 31일 밤 24시가 지금</b> 인 달력으로 줄여 봅시다. 날짜를 옮기면 그때가 몇 년 전인지 계산해 줍니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-cal" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">달력의 날짜<span class="val" id="c-day-val">1월 1일</span></div>
+                <input type="range" id="c-day" min="1" max="365" step="1" value="1">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">그날의 시각<span class="val" id="c-hour-val">0시 00분</span></div>
+                <input type="range" id="c-hour" min="0" max="24" step="0.5" value="0">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--brand)"></span><span class="txt" id="c-cal-read">지금 이 시각은 —</span></div>
             </div>
+            <div class="info-card" id="c-cal-info"></div>
           </div>
-          <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="c2-age">절대연령: —</span></div>
-        </div>
-        <div class="info-card">모원소의 양이 처음의 1/2로 줄어드는 데 걸리는 시간이 <b>반감기</b>입니다. 반감기가 n번 지나면 모원소는 (1/2)ⁿ만큼 남습니다.</div>
+          <div class="mission" id="m3-2"><span class="m-tag">미션</span>세 시대의 시작을 달력 위에서 찾아내세요.<ul><li id="m3-2a"><b>고생대</b>가 시작된 때(5억 3,880만 년 전)에 서 보기</li><li id="m3-2b"><b>중생대</b>가 시작된 때(2억 5,190만 년 전)에 서 보기</li><li id="m3-2c"><b>신생대</b>가 시작된 때(6,600만 년 전)에 서 보기</li><li id="m3-2d">12월 31일 <b>밤 11시 30분 이후</b>로 가서, 사람이 나타난 때를 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="다섯 번, 거의 다 지워졌다">
+          <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“지질 시대를 <b>대(代)와 기(紀)</b> 로 가르는 기준은 암석의 색깔이 아니라 <b>생물계의 큰 변화</b>입니다. 특히 <b>대멸종</b>이 시대의 경계가 되지요. 시간 슬라이더를 움직여 다섯 번의 대멸종을 모두 찾아보세요.”</div></div>
+          <div class="story"><div class="who">👩‍🎨</div><div class="say"><span class="name">전시 기획자</span>“다섯 번 중에 가장 컸던 건 역시 공룡이 사라진 그 사건이겠죠?”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-ext" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">지금 보고 있는 때<span class="val" id="c-t-val">541백만 년 전</span></div>
+                <input type="range" id="c-t" min="0" max="541" step="1" value="541">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--rose)"></span><span class="txt" id="c-ext-read">멸종률: —</span></div>
+            </div>
+            <div class="info-card" id="c-ext-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-q1"></div></div>
+          <div class="mission" id="m3-3"><span class="m-tag">미션</span><ul><li id="m3-3a">다섯 번의 대멸종을 <b>모두</b> 찾아 서 보기</li><li id="m3-3b">아래 물음에 답하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="좋은 표준 화석의 조건">
+          <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“마지막입니다. 시대를 가르는 데 쓰는 화석을 <b>표준 화석</b>이라고 합니다. 그런데 아무 화석이나 되는 게 아니에요. <b>얼마나 짧게 살았는지</b>와 <b>얼마나 넓게 퍼졌는지</b>, 두 가지가 동시에 맞아야 합니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-index" width="900" height="420"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">이 생물이 살았던 기간<span class="val" id="c-span-val">5,000만 년</span></div>
+                <input type="range" id="c-span" min="50" max="20000" step="50" value="5000">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">화석이 나오는 대륙 수<span class="val" id="c-area-val">5곳</span></div>
+                <input type="range" id="c-area" min="1" max="6" step="1" value="5">
+              </div>
+              <div class="readout"><span class="dot" style="background:var(--amber)"></span><span class="txt" id="c-index-read">판정: —</span></div>
+            </div>
+            <div class="info-card" id="c-index-info"></div>
+          </div>
+          <div class="story"><div class="who">👩‍🎨</div><div class="say"><span class="name">전시 기획자</span>“조건은 알겠습니다. 그럼 실제 화석들을 시대별로 나눠 주세요. 안내판에 시대와 그때의 환경까지 같이 적어야 하거든요.”</div></div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-sort"></div></div>
+          <div class="mission" id="m3-4"><span class="m-tag">미션</span>너무 오래 살아도, 너무 좁게 퍼져도 표준 화석이 되지 못합니다.<ul><li id="m3-4a"><b>좋은 표준 화석</b> 조건 만들기</li><li id="m3-4b">살았던 기간을 <b>1억 년 이상</b>으로 늘려, 시대를 가르지 못하게 되는 것 확인하기</li><li id="m3-4c">나오는 대륙을 <b>1곳</b>으로 줄여, 다른 지역과 대비할 수 없게 되는 것 확인하기</li><li id="m3-4d">아래에서 표준 화석을 시대별로 나누기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 공룡관에서 빼야 할 것 셋">
+          <div class="ending">
+            <h4>🦕 익룡·어룡·수장룡은 공룡이 아니다</h4>
+            <p>전시 목록에서 세 종류를 ‘공룡’ 이라는 이름표에서 빼기로 했습니다. 하늘의 <b>익룡</b>, 바다의 <b>어룡</b>과 <b>수장룡</b> 은 모두 중생대에 번성한 큰 파충류이지만 공룡은 아닙니다. 대신 ‘<b>공룡과 같은 시대를 살았던 파충류</b>’ 구역을 따로 만들기로 했습니다.</p>
+            <p>46억 년을 1년으로 줄이면 고생대는 <b>11월 중순</b>에야 시작되고, 공룡이 사라진 것은 <b>12월 26일</b>, 사람은 <b>12월 31일 밤 11시 반</b>이 넘어서야 나타납니다. 그 사이 생물은 <b>다섯 번</b>이나 거의 지워졌고, 가장 컸던 것은 공룡이 사라진 백악기 말이 아니라 <b>고생대가 끝난 페름기 말</b>이었습니다. 지질 시대를 대와 기로 가르는 기준이 바로 이 생물계의 큰 변화이고, 그 변화를 지층에서 읽어 내는 열쇠가 <b>짧게 살고 넓게 퍼진</b> 표준 화석입니다.</p>
+            <div class="vs" id="c-vs"></div>
+            <span class="stamp">사건 파일 ③ 해결</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>중생대의 대형 파충류와 공룡</b><br>중생대 육상에서 살았던 <b>공룡상목에 속하는 파충류</b>를 공룡이라고 한다. 흔히 익룡을 중생대에 하늘을 날아다니던 공룡이라고 하는데 <b>익룡은 공룡이 아니다.</b> 어룡과 수장룡 또한 공룡이 아니다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 지질 시대의 경계 연대는 국제층서위원회가 새 측정값이 나올 때마다 조금씩 고칩니다(이 화면은 고생대 시작 5억 3,880만 년 전, 중생대 2억 5,190만 년 전, 신생대 6,600만 년 전을 썼습니다). 다양성 곡선은 해양 생물 <b>속(屬)</b> 의 수를 본떠 만든 <b>모형</b>이며 실제 자료가 아닙니다. 멸종률 값도 연구마다 크게 달라, 여기서는 널리 인용되는 속 기준의 어림값을 썼습니다. 다만 <b>페름기 말이 가장 컸다</b>는 순위는 어느 자료에서나 같습니다. ‘살았던 기간 1,000만 년 이하, 대륙 4곳 이상’ 이라는 기준도 이해를 돕기 위해 정한 선입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkC"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB3 (NEW) 퇴적암과 퇴적구조 -->
+    <!-- ===================================================================== 04 정리하기 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 퇴적물이 굳어 암석이 되기까지</div>
-        <h2 class="display">퇴적암과 퇴적구조로 알아보는 지층의 위아래</h2>
-        <p>퇴적물은 다짐 작용과 교결 작용(속성 작용)을 거쳐 퇴적암이 됩니다. 퇴적 당시의 환경을 알려주는 대표적인 퇴적구조를 선택해 생성 과정과, 그 구조로 지층의 <b>상하(위아래)</b>를 어떻게 판단하는지 확인해 보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c4" width="900" height="460"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">퇴적구조</div>
-            <div class="seg" id="c4-mode">
-              <button class="on" data-m="cross">사층리</button>
-              <button data-m="graded">점이층리</button>
-              <button data-m="mudcrack">건열</button>
-              <button data-m="ripple">연흔</button>
-            </div>
-          </div>
-        </div>
-        <div class="info-card" id="c4-info"></div>
-      </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>중생대의 대형 파충류와 공룡</b><br>중생대 육상에서 살았던 <b>공룡상목에 속하는 파충류</b>를 공룡이라고 한다. 흔히 익룡을 중생대에 하늘을 날아다니던 공룡이라고 하는데 <b>익룡은 공룡이 아니다.</b> 어룡과 수장룡 또한 공룡이 아니다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
-    </section>
-
-    <!-- TAB4 지질시대 -->
-    <section class="tab-panel" data-panel="4" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">05 · 46억 년의 지구 역사</div>
-        <h2 class="display">지질 시대와 표준 화석</h2>
-        <p>지질 시대 막대를 클릭해 각 시대의 환경과 대표적인 표준 화석을 확인해 보세요. 지질 시대는 생물계의 큰 변화를 기준으로 구분합니다.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c3" width="900" height="260"></canvas></div>
-        <div class="info-card" id="c3-info">지질 시대 막대를 클릭해 보세요.</div>
-      </div>
-      <p class="foot-note">지질 시대 막대는 상대적 길이를 강조하기 위해 실제 비율을 과장하여 표현했습니다 (선캄브리아 시대가 전체의 약 88%를 차지합니다).</p>
-
-      <div class="stage-head" style="margin-top:30px;">
-        <div class="eyebrow">🔎 미션 · 표준 화석 분류하기</div>
-        <h2 class="display" style="font-size:20px;">화석을 알맞은 지질 시대에 분류해 보세요</h2>
-        <p>화석 카드를 클릭해 선택한 뒤, 그 화석이 번성했던 지질 시대 칸을 클릭해 옮겨 보세요. 이미 놓인 화석을 다시 클릭하면 목록으로 돌아옵니다.</p>
-      </div>
-      <div class="stage-card">
-        <div class="fossil-pool" id="c3m-pool"></div>
-        <div class="fossil-baskets" id="c3m-baskets"></div>
-        <div class="toggle-row" style="margin:14px 20px 0;">
-          <button class="chip" id="c3m-check">채점하기</button>
-          <button class="chip" id="c3m-new">다시 섞기</button>
-        </div>
-        <div class="info-card" id="c3m-info">화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요.</div><div class="mission-stats" id="c3m-stats"><span class="stat-chip">시도 <b id="c3m-tries">0</b>회</span><span class="stat-chip">최고 기록 <b id="c3m-best">0</b>/7</span></div><div class="reward-badge" id="c3m-badge" hidden>🏆 <span>완벽 분류! 모든 표준 화석을 정확히 짝지었습니다.</span></div>
-      </div>
-    </section>
-
-    <section class="tab-panel" data-panel="5" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
+        <div class="eyebrow">04 · 세 사건을 하나로</div>
         <h2 class="display">정리하기</h2>
-        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+        <p>세 이야기의 결과가 아래에 모입니다. 세 사건을 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
+
+    <!-- ===================================================================== 05 우리 반 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>내가 해결한 사건과 알아낸 값을 우리 반에 올리고, 친구들은 어떻게 풀었는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
+
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
-
 <script src="../assets/theme.js"></script>
-<script>
-(function () {
-"use strict";
-
-/* TAB0 상대연령 법칙 */
-(function () {
-  var canvas = document.getElementById("c0");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var law = "horizontal";
-  var info = document.getElementById("c0-info");
-  var texts = {
-    horizontal: "<b>수평퇴적의 법칙</b>: 퇴적물은 중력의 영향으로 일반적으로 수평으로 쌓입니다. 지층이 기울어지거나 휘어져 있다면, 퇴적된 후 지각 변동을 받았다고 해석할 수 있습니다.",
-    superposition: "<b>지층 누중의 법칙</b>: 지층이 역전되지 않았다면, 아래쪽 지층이 위쪽 지층보다 먼저 쌓인 것입니다 (오래된 지층일수록 아래에 위치).",
-    faunal: "<b>동물군천이의 법칙</b>: 생물은 멸종과 출현을 거듭하며 진화하므로, 먼저 쌓인 지층일수록 더 원시적인 화석이, 나중에 쌓인 지층일수록 더 진화된 화석이 발견됩니다.",
-    intrusion: "<b>관입의 법칙</b>: 마그마가 기존 지층의 틈을 뚫고 들어가 굳으면(관입), 관입한 암석이 관입당한 암석보다 나중에 생성된 것입니다.",
-    unconformity: "<b>부정합의 법칙</b>: 부정합면을 경계로 상하 지층 사이에 오랜 시간 간격(퇴적 중단)이 있습니다. 융기·침식 후 다시 침강·퇴적되어 형성됩니다."
-  };
-  document.querySelectorAll("[data-law]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      law = b.getAttribute("data-law");
-      document.querySelectorAll("[data-law]").forEach(function (x) { x.classList.toggle("on", x === b); });
-      info.innerHTML = texts[law];
-      render();
-    });
-  });
-
-  var colors;
-  function render() {
-    colors = [cssVar("--teal"), cssVar("--cold"), cssVar("--coral"), cssVar("--violet"), cssVar("--teal-dim")];
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var x0 = 150, x1 = W - 150, y0 = 60, y1 = H - 60;
-
-    if (law === "horizontal") {
-      // two panels: horizontal vs tilted
-      drawLayers(x0, y0, (x1 - x0) / 2 - 20, y1 - y0, 5, false, "정상 퇴적(수평)");
-      drawLayers(x0 + (x1 - x0) / 2 + 20, y0, (x1 - x0) / 2 - 20, y1 - y0, 5, true, "지각 변동 후(기울어짐)");
-    } else if (law === "superposition") {
-      drawLayers(x0, y0, x1 - x0, y1 - y0, 6, false, null);
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left";
-      ctx.fillText("가장 오래된 지층 →", x1 + 6, y1 - 20);
-      ctx.fillText("가장 젊은 지층 →", x1 + 6, y0 + 20);
-    } else if (law === "faunal") {
-      drawLayers(x0, y0, x1 - x0, y1 - y0, 5, false, null);
-      var lh = (y1 - y0) / 5;
-      for (var i = 0; i < 5; i++) {
-        var cy = y0 + lh * i + lh / 2;
-        ctx.save(); ctx.fillStyle = cssVar("--foam"); ctx.font = "20px Segoe UI"; ctx.textAlign = "center";
-        var complexity = 5 - i;
-        ctx.fillText("●".repeat(Math.min(complexity, 3)), (x0 + x1) / 2, cy + 6);
-        ctx.restore();
-      }
-      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
-      ctx.fillText("단순한 화석 (오래됨)", x1 + 6, y1 - 20);
-      ctx.fillText("복잡한 화석 (최근)", x1 + 6, y0 + 20);
-    } else if (law === "intrusion") {
-      drawLayers(x0, y0, x1 - x0, y1 - y0, 5, false, null);
-      // intrusion dike
-      ctx.save();
-      ctx.fillStyle = cssVar("--coral");
-      ctx.beginPath();
-      ctx.moveTo((x0 + x1) / 2 - 20, y0);
-      ctx.lineTo((x0 + x1) / 2 + 20, y0);
-      ctx.lineTo((x0 + x1) / 2 + 8, y1);
-      ctx.lineTo((x0 + x1) / 2 - 8, y1);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-      ctx.fillText("관입암 (나중 생성)", (x0 + x1) / 2, y0 - 12);
-    } else if (law === "unconformity") {
-      drawLayers(x0, y0, x1 - x0, (y1 - y0) * 0.4, 3, false, null);
-      ctx.save();
-      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 3; ctx.setLineDash([8, 4]);
-      ctx.beginPath(); ctx.moveTo(x0, y0 + (y1 - y0) * 0.42); ctx.lineTo(x1, y0 + (y1 - y0) * 0.4); ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.restore();
-      ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--coral"); ctx.textAlign = "center";
-      ctx.fillText("부정합면 (긴 시간 간격)", (x0 + x1) / 2, y0 + (y1 - y0) * 0.42 + 20);
-      drawLayers(x0, y0 + (y1 - y0) * 0.48, x1 - x0, (y1 - y0) * 0.52, 4, false, null);
-    }
-  }
-  function drawLayers(x, y, w, h, n, tilt, label) {
-    var lh = h / n;
-    for (var i = 0; i < n; i++) {
-      ctx.save();
-      if (tilt) { ctx.translate(x + w / 2, y + h / 2); ctx.rotate(-0.12); ctx.translate(-(x + w / 2), -(y + h / 2)); }
-      ctx.fillStyle = colors[i % colors.length];
-      ctx.globalAlpha = 0.75;
-      ctx.fillRect(x, y + i * lh, w, lh - 2);
-      ctx.restore();
-    }
-    if (label) {
-      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
-      ctx.fillText(label, x + w / 2, y + h + 20);
-    }
-  }
-  info.innerHTML = texts.horizontal;
-  render();
-})();
-
-/* TAB1 지층대비 */
-(function () {
-  var canvas = document.getElementById("c1");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var mode = "lith";
-  var info = document.getElementById("c1-info");
-  document.querySelectorAll("#c1-mode button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      mode = b.getAttribute("data-m");
-      document.querySelectorAll("#c1-mode button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      render();
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var colA = 200, colB = W - 200, y0 = 50, y1 = H - 50, colW = 90;
-    var patternA, patternB, matchIdx;
-    if (mode === "lith") {
-      patternA = ["sand", "shale", "tuff", "sand", "shale"];
-      patternB = ["shale", "sand", "tuff", "shale", "sand"];
-      matchIdx = 2;
-      info.innerHTML = "두 지역 모두에서 <b>응회암(tuff)층</b>이 관찰됩니다. 화산재가 짧은 시기에 광범위하게 쌓여 만들어지는 응회암층은 지층 대비의 좋은 기준(열쇠층)이 됩니다.";
-    } else {
-      patternA = ["A", "B", "C", "D", "E"];
-      patternB = ["X", "B", "Y", "Z", "E"];
-      matchIdx = -1;
-      info.innerHTML = "서로 멀리 떨어진 지역은 암석 종류가 다를 수 있으므로, 특정 시기에만 번성했던 생물의 <b>화석</b>을 기준으로 대비합니다. 같은 표준 화석이 나오는 지층끼리 연결됩니다 (양쪽에 표시된 B, E층).";
-    }
-    var lh = (y1 - y0) / patternA.length;
-    var palette = { sand: cssVar("--coral"), shale: cssVar("--mist"), tuff: cssVar("--violet") };
-
-    function drawCol(x, pattern) {
-      pattern.forEach(function (p, i) {
-        ctx.save();
-        if (mode === "lith") { ctx.fillStyle = palette[p]; ctx.globalAlpha = .8; }
-        else { ctx.fillStyle = (p === "B" || p === "E") ? cssVar("--teal") : cssVar("--panel-2"); ctx.globalAlpha = .85; ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1; }
-        ctx.fillRect(x, y0 + i * lh, colW, lh - 2);
-        if (mode !== "lith") ctx.strokeRect(x, y0 + i * lh, colW, lh - 2);
-        ctx.restore();
-        ctx.fillStyle = cssVar("--foam"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
-        ctx.fillText(mode === "lith" ? p : p, x + colW / 2, y0 + i * lh + lh / 2 + 4);
-      });
-    }
-    drawCol(colA, patternA);
-    drawCol(colB, patternB);
-
-    ctx.font = "12px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
-    ctx.fillText("A 지역", colA + colW / 2, y0 - 14);
-    ctx.fillText("B 지역", colB + colW / 2, y0 - 14);
-
-    ctx.save();
-    ctx.strokeStyle = cssVar("--teal"); ctx.setLineDash([6, 4]); ctx.lineWidth = 2;
-    if (mode === "lith") {
-      var yMatch = y0 + matchIdx * lh + lh / 2;
-      ctx.beginPath(); ctx.moveTo(colA + colW, yMatch); ctx.lineTo(colB, yMatch); ctx.stroke();
-    } else {
-      [1, 4].forEach(function (i) {
-        var yMatch = y0 + i * lh + lh / 2;
-        ctx.beginPath(); ctx.moveTo(colA + colW, yMatch); ctx.lineTo(colB, yMatch); ctx.stroke();
-      });
-    }
-    ctx.restore();
-  }
-  render();
-})();
-
-/* TAB1 미션 — 표준 화석으로 대비하기 */
-(function () {
-  var colEl = document.getElementById("c1m-columns");
-  var infoEl = document.getElementById("c1m-info");
-  var newBtn = document.getElementById("c1m-new");
-  if (!colEl) return;
-
-  var colA = [
-    { rock: "석회암", fossil: null },
-    { rock: "셰일", fossil: "🐠" },
-    { rock: "이암", fossil: null },
-    { rock: "사암", fossil: "🐚" }
-  ]; // index 0 = top(젊음) ... index 3 = bottom(오래됨), 표시는 위에서부터 그대로 렌더링
-
-  var colBBase = [
-    { rock: "석회암", fossil: null },
-    { rock: "셰일", fossil: "🐚" },
-    { rock: "응회암", fossil: null },
-    { rock: "사암", fossil: "🐠" },
-    { rock: "역암", fossil: null }
-  ];
-
-  var colB = [];
-  var selectedA = null;
-  var pairs = []; // {aIdx, bIdx, color}
-  var colorClasses = ["paired-0", "paired-1"];
-
-  function shuffle(arr) {
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
-  }
-
-  function reset() {
-    colB = shuffle(colBBase);
-    selectedA = null;
-    pairs = [];
-    infoEl.style.color = "";
-    infoEl.textContent = "화석이 있는 지층(🐚, 🐠)을 순서대로 클릭해 두 지역을 연결해 보세요.";
-    render();
-  }
-
-  function pairColorFor(colName, idx) {
-    for (var i = 0; i < pairs.length; i++) {
-      if (colName === "A" && pairs[i].aIdx === idx) return colorClasses[i];
-      if (colName === "B" && pairs[i].bIdx === idx) return colorClasses[i];
-    }
-    return null;
-  }
-
-  function render() {
-    colEl.innerHTML = "";
-
-    var wrapA = document.createElement("div");
-    wrapA.className = "strat-col";
-    var titleA = document.createElement("div");
-    titleA.className = "strat-col-title";
-    titleA.textContent = "기준 지역";
-    wrapA.appendChild(titleA);
-    colA.forEach(function (layer, idx) {
-      var el = document.createElement("div");
-      var pc = pairColorFor("A", idx);
-      el.className = "strat-layer" + (layer.fossil && !pc ? " has-fossil" : "") + (selectedA === idx ? " selected" : "") + (pc ? " " + pc : "");
-      el.innerHTML = (layer.fossil ? '<span class="fossil-ico">' + layer.fossil + '</span>' : '<span class="fossil-ico">·</span>') + '<span>' + layer.rock + (layer.fossil ? "" : " (화석 없음)") + '</span>';
-      if (layer.fossil && !pc) {
-        el.addEventListener("click", function () {
-          selectedA = (selectedA === idx) ? null : idx;
-          render();
-        });
-      }
-      wrapA.appendChild(el);
-    });
-    colEl.appendChild(wrapA);
-
-    var wrapB = document.createElement("div");
-    wrapB.className = "strat-col";
-    var titleB = document.createElement("div");
-    titleB.className = "strat-col-title";
-    titleB.textContent = "먼 지역";
-    wrapB.appendChild(titleB);
-    colB.forEach(function (layer, idx) {
-      var el = document.createElement("div");
-      var pc = pairColorFor("B", idx);
-      el.className = "strat-layer" + (layer.fossil && !pc ? " has-fossil" : "") + (pc ? " " + pc : "");
-      el.innerHTML = (layer.fossil ? '<span class="fossil-ico">' + layer.fossil + '</span>' : '<span class="fossil-ico">·</span>') + '<span>' + layer.rock + (layer.fossil ? "" : " (화석 없음)") + '</span>';
-      if (layer.fossil && !pc) {
-        el.addEventListener("click", function () {
-          if (selectedA === null) return;
-          var aLayer = colA[selectedA];
-          if (aLayer.fossil === layer.fossil) {
-            pairs.push({ aIdx: selectedA, bIdx: idx, color: colorClasses[pairs.length] });
-            selectedA = null;
-            render();
-            if (pairs.length === 2) {
-              infoEl.style.color = "var(--teal)";
-              infoEl.innerHTML = "<b>두 지역 모두 연결했습니다!</b> 암석의 종류(암상)는 서로 다르지만, 같은 표준 화석이 들어 있는 지층은 같은 시기에 쌓인 지층입니다. 이렇게 표준 화석을 이용하면 멀리 떨어진 지역도 대비할 수 있습니다.";
-            } else {
-              infoEl.style.color = "var(--teal)";
-              infoEl.textContent = "연결되었습니다! 나머지 화석 지층도 연결해 보세요.";
-            }
-          } else {
-            el.classList.add("flash-wrong");
-            infoEl.style.color = "var(--coral)";
-            infoEl.textContent = "화석이 서로 다릅니다. 같은 화석이 들어 있는 지층끼리 연결해야 합니다.";
-            setTimeout(function () { el.classList.remove("flash-wrong"); }, 500);
-          }
-        });
-      }
-      wrapB.appendChild(el);
-    });
-    colEl.appendChild(wrapB);
-  }
-
-  newBtn.addEventListener("click", reset);
-  reset();
-})();
-
-/* TAB2 절대연령 */
-(function () {
-  var canvas = document.getElementById("c2");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var n = 1.0;
-  var iso = "K40";
-  var halflife = { C14: { t: 5730, label: "5,730년" }, K40: { t: 1300000000, label: "13억 년" }, U238: { t: 4510000000, label: "45.1억 년" } };
-
-  document.getElementById("c2-n").addEventListener("input", function (e) { n = +e.target.value; document.getElementById("c2-n-val").textContent = n.toFixed(1); render(); });
-  document.querySelectorAll("#c2-iso button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      iso = b.getAttribute("data-iso");
-      document.querySelectorAll("#c2-iso button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      render();
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    var remain = Math.pow(0.5, n);
-    // decay curve
-    var x0 = 60, x1 = 480, y0 = 40, y1 = H - 60;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
-    ctx.beginPath();
-    for (var px = 0; px <= 200; px++) {
-      var nn = px / 200 * 5;
-      var yy = y1 - Math.pow(0.5, nn) * (y1 - y0);
-      var xx = x0 + px / 200 * (x1 - x0);
-      if (px === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
-    }
-    ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 2.5; ctx.stroke();
-
-    var curX = x0 + (n / 5) * (x1 - x0), curY = y1 - remain * (y1 - y0);
-    ctx.save();
-    ctx.fillStyle = cssVar("--coral");
-    ctx.beginPath(); ctx.arc(curX, curY, 6, 0, 7); ctx.fill();
-    ctx.restore();
-
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
-    ctx.fillText("모원소 비율", x0, y0 - 10);
-    ctx.textAlign = "center"; ctx.fillText("경과한 반감기 수 →", (x0 + x1) / 2, y1 + 30);
-
-    // pie chart parent vs daughter
-    var pieX = 680, pieY = 200, r = 90;
-    ctx.save();
-    ctx.beginPath(); ctx.moveTo(pieX, pieY);
-    ctx.arc(pieX, pieY, r, -Math.PI / 2, -Math.PI / 2 + remain * Math.PI * 2);
-    ctx.closePath();
-    ctx.fillStyle = cssVar("--teal"); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(pieX, pieY);
-    ctx.arc(pieX, pieY, r, -Math.PI / 2 + remain * Math.PI * 2, -Math.PI / 2 + Math.PI * 2);
-    ctx.closePath();
-    ctx.fillStyle = cssVar("--cold"); ctx.fill();
-    ctx.restore();
-    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
-    ctx.fillStyle = cssVar("--teal"); ctx.fillText("모원소 " + (remain * 100).toFixed(1) + "%", pieX, pieY + r + 24);
-    ctx.fillStyle = cssVar("--cold"); ctx.fillText("자원소 " + ((1 - remain) * 100).toFixed(1) + "%", pieX, pieY + r + 44);
-
-    var age = n * halflife[iso].t;
-    document.getElementById("c2-age").innerHTML = "절대연령: <b>" + formatAge(age) + "</b> (반감기 " + halflife[iso].label + " × " + n.toFixed(1) + "회)";
-  }
-  function formatAge(y) {
-    if (y >= 1e8) return (y / 1e8).toFixed(2) + "억 년";
-    if (y >= 1e4) return (y / 1e4).toFixed(1) + "만 년";
-    return Math.round(y) + "년";
-  }
-  render();
-})();
-
-/* TAB3 (NEW) 퇴적암과 퇴적구조 */
-(function () {
-  var canvas = document.getElementById("c4");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var mode = "cross";
-  var info = document.getElementById("c4-info");
-  var texts = {
-    cross: "<b>사층리</b>: 바람이나 물의 흐름 방향을 따라 비스듬한 엽리(층리)가 쌓입니다. 비스듬한 엽리는 <b>위쪽 경계면에서 잘려나가고</b>, 아래쪽 경계면에는 접하듯 완만하게 이어집니다 → 엽리가 잘린 쪽이 <b>위(젊은 지층)</b>입니다.",
-    graded: "<b>점이층리</b>: 하나의 지층 안에서 굵은 입자가 먼저 가라앉고 고운 입자가 나중에 가라앉아, 아래에서 위로 갈수록 <b>입자 크기가 작아집니다</b> → 입자가 <b>작아지는 방향이 위(젊은 지층)</b>입니다.",
-    mudcrack: "<b>건열</b>: 얕은 물 밑 진흙이 대기 중에 노출되어 마르면서 갈라진 쐐기 모양의 틈입니다. 쐐기는 <b>위가 넓고 아래로 갈수록 뾰족</b>해집니다 → 쐐기가 <b>좁아지는 방향이 아래(오래된 지층)</b>입니다.",
-    ripple: "<b>연흔(물결자국)</b>: 얕은 물이나 바람에 의해 표면에 물결 모양의 흔적이 남습니다. 봉우리는 <b>둥글고 골은 뾰족</b>합니다 → 둥근 봉우리가 있는 쪽이 <b>위(젊은 지층)</b>입니다."
-  };
-  document.querySelectorAll("#c4-mode button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      mode = b.getAttribute("data-m");
-      document.querySelectorAll("#c4-mode button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      info.innerHTML = texts[mode];
-      render();
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var x0 = 220, x1 = W - 220, y0 = 60, y1 = H - 80;
-
-    if (mode === "cross") {
-      // outer bed boundaries (several stacked beds), middle bed has diagonal laminae truncated at top
-      var bedH = (y1 - y0) / 3;
-      for (var bi = 0; bi < 3; bi++) {
-        ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-        ctx.strokeRect(x0, y0 + bi * bedH, x1 - x0, bedH);
-      }
-      // cross laminae in middle bed
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, y0 + bedH, x1 - x0, bedH);
-      ctx.clip();
-      ctx.strokeStyle = cssVar("--teal"); ctx.lineWidth = 1.5;
-      for (var lx = x0 - 60; lx < x1 + 60; lx += 22) {
-        ctx.beginPath();
-        ctx.moveTo(lx, y0 + bedH * 1.9);
-        ctx.quadraticCurveTo(lx + 40, y0 + bedH * 1.5, lx + 90, y0 + bedH);
-        ctx.stroke();
-      }
-      ctx.restore();
-      ctx.fillStyle = cssVar("--coral"); ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
-      ctx.fillText("↑ 위쪽 경계에서 엽리가 잘림", x1 + 10, y0 + bedH + 6);
-      ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
-      ctx.fillText("위(젊음)", x0 + (x1-x0)/2, y0 - 14);
-      ctx.fillText("아래(오래됨)", x0 + (x1-x0)/2, y1 + 24);
-    } else if (mode === "graded") {
-      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-      var rows = 7;
-      for (var r = 0; r < rows; r++) {
-        var frac = r / (rows - 1);
-        var grainR = 14 - frac * 10;
-        var ry = y1 - (r + 0.5) * (y1 - y0) / rows;
-        var n = Math.floor((x1 - x0) / (grainR * 2.4));
-        for (var i = 0; i < n; i++) {
-          var gx = x0 + 10 + i * (x1 - x0 - 20) / Math.max(n - 1, 1);
-          ctx.beginPath();
-          ctx.fillStyle = cssVar("--teal");
-          ctx.globalAlpha = 0.75;
-          ctx.arc(gx, ry, grainR * 0.8, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-        }
-      }
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
-      ctx.fillText("작은 입자 = 위(젊음)", x0 + (x1-x0)/2, y0 - 14);
-      ctx.fillText("굵은 입자 = 아래(오래됨)", x0 + (x1-x0)/2, y1 + 24);
-    } else if (mode === "mudcrack") {
-      // top-down polygon cracks (left) + cross-section V shape (right)
-      var midX = (x0 + x1) / 2;
-      ctx.save();
-      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2;
-      var cx0 = x0, cx1 = midX - 20, cy0 = y0, cy1 = y1;
-      var cxm = (cx0+cx1)/2, cym = (cy0+cy1)/2;
-      [[cx0,cy0],[cxm,cy0],[cx1,cy0],[cx0,cym],[cx1,cym],[cx0,cy1],[cxm,cy1],[cx1,cy1]].forEach(function(pt){
-        ctx.beginPath(); ctx.moveTo(cxm, cym); ctx.lineTo(pt[0], pt[1]); ctx.stroke();
-      });
-      ctx.restore();
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
-      ctx.fillText("위에서 본 갈라진 진흙(평면)", (cx0+cx1)/2, cy1 + 24);
-
-      var sx0 = midX + 20, sx1 = x1, sy0 = y0, sy1 = y1;
-      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-      ctx.strokeRect(sx0, sy0, sx1 - sx0, sy1 - sy0);
-      ctx.save();
-      ctx.fillStyle = cssVar("--panel");
-      ctx.beginPath();
-      var vx = (sx0+sx1)/2;
-      ctx.moveTo(vx - 55, sy0);
-      ctx.lineTo(vx + 55, sy0);
-      ctx.lineTo(vx + 8, sy1);
-      ctx.lineTo(vx - 8, sy1);
-      ctx.closePath();
-      ctx.fillStyle = cssVar("--abyss");
-      ctx.fill();
-      ctx.strokeStyle = cssVar("--coral"); ctx.lineWidth = 2; ctx.stroke();
-      ctx.restore();
-      ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "center";
-      ctx.fillText("옆에서 본 단면 (쐐기 모양)", (sx0+sx1)/2, sy1 + 24);
-      ctx.fillStyle = cssVar("--coral"); ctx.font="700 12px Segoe UI";
-      ctx.fillText("위(넓음)", vx, sy0 - 10);
-      ctx.fillText("아래(뾰족)", vx, sy1 + 44);
-    } else if (mode === "ripple") {
-      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(x0, y0, x1-x0, y1-y0);
-      ctx.clip();
-      ctx.fillStyle = cssVar("--teal");
-      ctx.globalAlpha = 0.7;
-      ctx.beginPath();
-      ctx.moveTo(x0, y1);
-      var amp = 22, wavelength = 90;
-      for (var xx2 = x0; xx2 <= x1; xx2 += 4) {
-        var phase = (xx2 - x0) / wavelength * Math.PI * 2;
-        // asymmetric wave: sharper trough, rounder crest
-        var yy2 = (y0+y1)/2 - amp * Math.sin(phase) - amp*0.3*Math.sin(phase*2);
-        ctx.lineTo(xx2, yy2);
-      }
-      ctx.lineTo(x1, y1);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
-      ctx.fillText("둥근 봉우리 = 위(젊음)", x0 + (x1-x0)/2, y0 - 14);
-      ctx.fillText("뾰족한 골 = 아래쪽 방향", x0 + (x1-x0)/2, y1 + 24);
-    }
-  }
-  info.innerHTML = texts.cross;
-  render();
-})();
-
-/* TAB3 지질시대 */
-(function () {
-  var canvas = document.getElementById("c3");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c3-info");
-
-  var eras = [
-    { name: "선캄브리아 시대", w: 0.60, color: "var(--mist)", desc: "46억 년 전 지구 탄생부터 약 5.4억 년 전까지. 초기 대기는 산소가 거의 없었고, 말기에 다세포 생물이 출현했습니다. 전체 지질 시대의 약 88%를 차지합니다.", fossil: "스트로마톨라이트(남세균)" },
-    { name: "고생대", w: 0.16, color: "var(--teal)", desc: "다양한 생물이 폭발적으로 등장(캄브리아 대폭발)했고, 말기에는 초대륙 판게아가 형성되었습니다.", fossil: "삼엽충, 방추충" },
-    { name: "중생대", w: 0.12, color: "var(--coral)", desc: "판게아가 분리되기 시작했고, 공룡을 비롯한 파충류가 번성한 시기입니다.", fossil: "암모나이트, 공룡" },
-    { name: "신생대", w: 0.12, color: "var(--violet)", desc: "포유류와 속씨식물이 번성했으며, 현재의 대륙 배치와 가까워졌습니다.", fossil: "화폐석, 매머드" }
-  ];
-  var x = 40, y = 90, w = W - 80, h = 60;
-
-  canvas.addEventListener("click", function (e) {
-    var rect = canvas.getBoundingClientRect();
-    var scaleX = canvas._w / rect.width;
-    var mx = (e.clientX - rect.left) * scaleX;
-    var acc = x;
-    eras.forEach(function (era) {
-      var ew = w * era.w;
-      if (mx >= acc && mx < acc + ew) {
-        info.innerHTML = "<b>" + era.name + "</b> — " + era.desc + " 대표 표준 화석: <b>" + era.fossil + "</b>";
-      }
-      acc += ew;
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var acc = x;
-    eras.forEach(function (era) {
-      var ew = w * era.w;
-      ctx.save();
-      ctx.fillStyle = cssVar(era.color.replace("var(", "").replace(")", ""));
-      ctx.globalAlpha = .85;
-      ctx.fillRect(acc, y, ew, h);
-      ctx.restore();
-      ctx.strokeStyle = cssVar("--abyss"); ctx.lineWidth = 2; ctx.strokeRect(acc, y, ew, h);
-      if (ew > 40) {
-        ctx.font = "700 11px Segoe UI"; ctx.fillStyle = cssVar("--abyss"); ctx.textAlign = "center";
-        ctx.fillText(era.name, acc + ew / 2, y + h / 2 + 4);
-      }
-      acc += ew;
-    });
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left";
-    ctx.fillText("46억 년 전 (지구 탄생)", x, y - 10);
-    ctx.textAlign = "right"; ctx.fillText("현재", x + w, y - 10);
-  }
-  render();
-})();
-
-/* TAB3 미션 — 표준 화석 분류하기 */
-(function () {
-  var poolEl = document.getElementById("c3m-pool");
-  var basketsEl = document.getElementById("c3m-baskets");
-  var checkBtn = document.getElementById("c3m-check");
-  var newBtn = document.getElementById("c3m-new");
-  if (!poolEl) return;
-
-  var eraKeys = ["pre", "paleo", "meso", "ceno"];
-  var eraNames = { pre: "선캄브리아 시대", paleo: "고생대", meso: "중생대", ceno: "신생대" };
-  var fossilData = [
-    { name: "스트로마톨라이트", era: "pre" },
-    { name: "삼엽충", era: "paleo" },
-    { name: "방추충", era: "paleo" },
-    { name: "암모나이트", era: "meso" },
-    { name: "공룡", era: "meso" },
-    { name: "화폐석", era: "ceno" },
-    { name: "매머드", era: "ceno" }
-  ];
-
-  var pool = [];
-  var baskets = {};
-  var selected = null;
-
-  function shuffle(arr) {
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
-  }
-
-  function reset() {
-    pool = shuffle(fossilData.map(function (f) { return f.name; }));
-    baskets = { pre: [], paleo: [], meso: [], ceno: [] };
-    selected = null;
-    var info = document.getElementById("c3m-info");
-    info.style.color = "";
-    info.textContent = "화석을 클릭해 선택한 뒤, 놓을 지질 시대 칸을 클릭하세요."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=true;}
-    render();
-  }
-
-  function eraOf(name) {
-    var f = fossilData.filter(function (d) { return d.name === name; })[0];
-    return f ? f.era : null;
-  }
-
-  function render(gradeMode) {
-    poolEl.innerHTML = "";
-    pool.forEach(function (name) {
-      var chip = document.createElement("div");
-      chip.className = "fossil-chip" + (selected === name ? " selected" : "");
-      chip.textContent = name;
-      chip.addEventListener("click", function () {
-        selected = (selected === name) ? null : name;
-        render();
-      });
-      poolEl.appendChild(chip);
-    });
-
-    basketsEl.innerHTML = "";
-    eraKeys.forEach(function (key) {
-      var basket = document.createElement("div");
-      basket.className = "fossil-basket";
-      var title = document.createElement("div");
-      title.className = "basket-title";
-      title.textContent = eraNames[key];
-      basket.appendChild(title);
-      var itemsWrap = document.createElement("div");
-      itemsWrap.className = "basket-items";
-      baskets[key].forEach(function (name) {
-        var chip = document.createElement("div");
-        var cls = "fossil-chip placed";
-        if (gradeMode) cls += (eraOf(name) === key ? " correct" : " wrong");
-        chip.className = cls;
-        chip.textContent = name;
-        chip.addEventListener("click", function () {
-          baskets[key] = baskets[key].filter(function (n) { return n !== name; });
-          pool.push(name);
-          render();
-        });
-        itemsWrap.appendChild(chip);
-      });
-      basket.appendChild(itemsWrap);
-      basket.addEventListener("click", function (e) {
-        if (e.target === basket || e.target === title) {
-          if (selected) {
-            baskets[key].push(selected);
-            pool = pool.filter(function (n) { return n !== selected; });
-            selected = null;
-            render();
-          }
-        }
-      });
-      basketsEl.appendChild(basket);
-    });
-  }
-
-  checkBtn.addEventListener("click", function () {
-    var info = document.getElementById("c3m-info");
-    if (pool.length > 0) {
-      info.style.color = "";
-      info.textContent = "아직 분류하지 않은 화석이 " + pool.length + "개 있습니다. 모든 화석을 지질 시대 칸에 놓아 주세요.";
-      return;
-    }
-    render(true); var _tr=document.getElementById("c3m-tries"); if(_tr){_tr.textContent=(parseInt(_tr.textContent,10)+1);}
-    var total = fossilData.length;
-    var correct = 0;
-    eraKeys.forEach(function (key) {
-      baskets[key].forEach(function (name) { if (eraOf(name) === key) correct++; });
-    });
-    if (correct === total) {
-      info.style.color = "var(--teal)";
-      info.innerHTML = "<b>전부 정답입니다!</b> 표준 화석은 특정 지질 시대에만 번성하고 넓은 지역에 분포해, 지층의 생성 시기를 알려주는 중요한 단서입니다."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=false;} var _bs=document.getElementById("c3m-best"); if(_bs){var _cur=parseInt(_bs.textContent,10)||0; if(correct>_cur){_bs.textContent=correct;}}
-    } else {
-      info.style.color = "var(--coral)";
-      info.textContent = total + "개 중 " + correct + "개가 맞았습니다. 빨간 테두리로 표시된 화석을 알맞은 시대로 옮겨 다시 시도해 보세요."; var _bd=document.getElementById("c3m-badge"); if(_bd){_bd.hidden=true;} var _bs=document.getElementById("c3m-best"); if(_bs){var _cur=parseInt(_bs.textContent,10)||0; if(correct>_cur){_bs.textContent=correct;}}
-    }
-  });
-
-  newBtn.addEventListener("click", reset);
-  reset();
-})();
-
-})();
-</script>
-
-<script>
-(function () {
-  window.sthUnit("eshs-2-1");
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[지구과학 Ⅱ-1] 지구의 역사",
-    items: [
-      {
-            "id": "w1",
-            "label": "상대연령을 정한 근거",
-            "hint": "지층 그림에서 어느 법칙을 어디에 적용했는지, 순서와 함께 쓰세요.",
-            "ph": "① … 법칙으로 … / ② … 법칙으로 …"
-      },
-      {
-            "id": "w2",
-            "label": "반감기로 나이 구하기",
-            "hint": "고른 시료의 남은 양과 반감기로 절대연령을 계산하고, 계산 과정을 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w3",
-            "label": "표준 화석의 조건",
-            "hint": "어떤 화석이 표준 화석이 되려면 무엇을 갖추어야 하는지, 이 단원에서 본 화석 하나를 예로 들어 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w4",
-            "label": "아직 헷갈리는 것",
-            "hint": "다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-})();
-</script>
+<script src="../assets/story.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
+<script src="episodes.js"></script>
 </body>
 </html>

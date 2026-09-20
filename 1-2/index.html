@@ -5,18 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>대기와 해양의 상호작용과 기후 변화 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
+<link rel="stylesheet" href="../assets/story.css">
 <style>
-  .enso-cards { display: flex; gap: 10px; flex-wrap: wrap; padding: 18px 20px 0; }
-  .enso-card { flex: 1 1 160px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 12px; line-height: 1.55; color: var(--mist); cursor: pointer; transition: all .15s; }
-  .enso-card:hover { border-color: var(--teal-dim); }
-  .enso-card.selected { border-color: var(--teal); box-shadow: 0 0 0 2px var(--teal) inset; }
-  .enso-slots { display: flex; gap: 10px; flex-wrap: wrap; padding: 16px 20px 0; }
-  .enso-slot { flex: 1 1 160px; min-height: 90px; border: 1.5px dashed var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all .15s; }
-  .enso-slot .slot-title { font-size: 12.5px; font-weight: 700; color: var(--foam); margin-bottom: 6px; }
-  .enso-slot .slot-body { font-size: 11.5px; line-height: 1.5; color: var(--mist); }
-  .enso-slot.filled { border-style: solid; background: var(--panel-2); }
-  .enso-slot.correct { border-color: var(--teal); }
-  .enso-slot.wrong { border-color: var(--coral); }
+  .data-mini-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 4px 0 0; }
+  .data-mini-table th, .data-mini-table td { border: 1px solid var(--line); padding: 6px 8px; text-align: center; }
+  .data-mini-table th { background: var(--card-2); color: var(--mist); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -28,738 +21,329 @@
       <div class="eyebrow" style="margin-top:8px">Ⅰ-2 · 대기와 해양</div>
       <h1 class="display">상호작용과<br>기후 변화</h1>
     </div>
-    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 용승과 침강</button>
-    <button class="tab-btn" data-tab="1"><span class="num">02</span> 엔소(ENSO)</button>
-    <button class="tab-btn" data-tab="2"><span class="num">03</span> 기후 변화 요인</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 온실 효과·온난화</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 기후 변화 대응</button>
-    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn active" data-tab="0"><span class="num">01</span> 멸치가 사라진 해</button>
+    <button class="tab-btn" data-tab="1"><span class="num">02</span> 기후를 흔드는 것들</button>
+    <button class="tab-btn" data-tab="2"><span class="num">03</span> 탄소를 줄이는 회의</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
   </nav>
 
   <main>
-    <!-- TAB 0 : 용승과 침강 -->
+
+    <!-- =====================================================================
+         01 용승과 침강 · 엔소 — 이야기 「멸치가 사라진 해」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="0">
       <div class="stage-head">
-        <div class="eyebrow">01 · 해수의 연직 이동</div>
-        <h2 class="display">용승과 침강</h2>
-        <p>바람 때문에 표층 해수가 수평으로 이동하면, 이를 채우기 위해 심층의 해수가 수직으로 이동합니다. 연안 용승·침강과 적도 용승 세 가지 유형을 비교해 보세요.</p>
-      
-        <span class="std-chip">12지구01-05</span><span class="std-chip">12지구01-06</span><div class="std-note"><b>[12지구01-05]</b> 대기와 해양의 상호 작용의 사례로서 해수의 용승과 침강, 엘니뇨-남방진동(ENSO) 현상의 진행 과정 및 관련 현상을 설명할 수 있다.<br><b>[12지구01-06]</b> 기후 변화의 원인을 자연적 요인과 인위적 요인으로 구분하여 설명하고, 인간 활동에 의한 기후 변화의 심각성을 인식할 수 있다.</div><div class="terms"><b>용승</b><b>침강</b><b>엔소(ENSO)</b><b>복사 강제력</b></div>
+        <div class="eyebrow">01 · 용승과 침강 · 엔소(ENSO) · 이야기 한 편</div>
+        <h2 class="display">멸치가 사라진 해</h2>
+        <p>세계에서 가장 많은 물고기가 잡히던 페루 앞바다에서, 어느 해 갑자기 그물이 비었습니다. 그해 바다는 오히려 더 <b>따뜻하고 잔잔했다</b>고 합니다. 어부의 기록에서 출발해, 바람 한 줄기가 지구 반대편의 가뭄까지 만들어 내는 길을 따라가 보세요.</p>
+        <span class="std-chip">12지구01-05</span><div class="std-note"><b>[12지구01-05]</b> 대기와 해양의 상호 작용의 사례로서 해수의 용승과 침강, 엘니뇨-남방진동(ENSO) 현상의 진행 과정 및 관련 현상을 설명할 수 있다.</div><div class="terms"><b>용승</b><b>침강</b><b>에크만 수송</b><b>엘니뇨</b><b>라니냐</b><b>엔소(ENSO)</b><b>워커 순환</b><b>남방 진동 지수</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c0" width="900" height="520"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">유형</div>
-            <div class="seg" id="c0-type">
-              <button class="on" data-t="coastal-up">연안 용승</button>
-              <button data-t="coastal-down">연안 침강</button>
-              <button data-t="equator">적도 용승</button>
+
+      <div class="episode" id="epA">
+        <section class="scene" data-title="크리스마스에 찾아온 따뜻한 물">
+          <div class="story narr"><div class="who">🐟</div><div class="say"><span class="name">이야기</span>남아메리카 페루 앞바다는 세계에서 손꼽히는 어장입니다. 이곳 어부들은 해마다 크리스마스 무렵 바닷물이 잠깐 따뜻해진다는 것을 오래전부터 알고 있었고, 그 따뜻한 흐름을 <b>‘아기 예수’</b>라는 뜻의 <b>엘니뇨(El Niño)</b>라고 불렀습니다. 그런데 몇 해에 한 번은, 그 따뜻한 물이 해가 바뀌어도 물러가지 않습니다.</div></div>
+          <div class="story"><div class="who">🧑‍🦰</div><div class="say"><span class="name">페루 어부</span>“1972년이 그랬습니다. 바다는 잔잔하고 미지근했어요. 그런데 그물이 텅텅 비었습니다. 세계에서 가장 많이 잡히던 <b>멸치(안초베타)</b>가 통째로 사라졌습니다. 이상하지 않습니까? 물이 따뜻해지면 고기가 더 잘 자라야 하는 것 아닌가요?”</div></div>
+          <div class="case-file"><b class="k">어부의 장부에 적힌 것</b> 페루 앞바다는 세계 최대 어장 가운데 하나 &nbsp;|&nbsp; 해마다 크리스마스 무렵 수온이 잠깐 오른다 &nbsp;|&nbsp; 1972~1973년에는 따뜻한 물이 오래 머물렀고 멸치 어획량이 무너졌다 &nbsp;|&nbsp; 같은 시기 인도네시아·오스트레일리아는 가뭄, 남아메리카 서해안은 홍수</div>
+          <div class="gate loose" id="a-gate"></div>
+        </section>
+
+        <section class="scene" data-title="바람이 끌어올리는 찬물">
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">해양 관측사</span>“따뜻한 바다가 곧 풍요로운 바다는 아닙니다. 페루 앞바다가 부자인 까닭은 오히려 <b>차가운 물</b> 덕분이에요. 깊은 바다의 찬물에는 플랑크톤이 자라는 데 쓰이는 <b>영양염</b>이 잔뜩 녹아 있거든요. 그 찬물을 끌어올리는 것이 바람입니다.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">해양 관측사</span>“여기는 <b>남반구</b>이고, 해안은 화면의 <b>오른쪽</b>, 바다는 왼쪽입니다. 바람이 표층 해수를 직각으로 밀어내는 <b>에크만 수송</b>을 떠올리면서, 바람의 방향과 세기를 바꿔 보세요. 표층 수온이 어떻게 달라지는지 지켜보시고요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-up" width="900" height="440"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">바람이 불어가는 방향<span class="val" id="a-wd-val">동 (90°)</span></div>
+                <input type="range" id="a-wd" min="0" max="355" step="5" value="90">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">바람의 세기<span class="val" id="a-ws-val">7.0 m/s</span></div>
+                <input type="range" id="a-ws" min="0" max="12" step="0.5" value="7">
+              </div>
             </div>
+            <div class="info-card" id="a-up-info"></div>
           </div>
-          <div class="readout"><span class="dot" id="c0-dot" style="background:var(--cold)"></span><span class="txt" id="c0-result">결과: —</span></div>
-        </div>
-        <div class="info-card" id="c0-info"></div>
+          <div class="mission" id="m1-2"><span class="m-tag">미션</span>같은 해안, 같은 바다인데 바람 하나로 결과가 뒤집힙니다.<ul><li id="m1-2a"><b>연안 용승</b>을 일으켜 표층 수온을 <b>18 ℃ 아래</b>로 낮추기</li><li id="m1-2b">바람 방향을 돌려 <b>연안 침강</b>을 일으키고, 표층 수온을 <b>22 ℃ 이상</b>으로 올리기</li><li id="m1-2c">바람의 세기를 <b>3 m/s 이하</b>로 줄여, 방향이 맞아도 용승이 약해지는 것 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="무역풍을 돌려 보다 — 워커 순환">
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“이제 페루 앞바다만 보지 말고 <b>열대 태평양 전체</b>를 봅시다. 적도에서는 <b>무역풍</b>이 동에서 서로 붑니다. 이 바람이 따뜻한 표층수를 서쪽으로 몰아 쌓고, 동쪽에서는 그 자리를 채우려 찬물이 올라오지요. 그래서 서태평양은 덥고 습하고, 동태평양은 서늘하고 건조합니다.”</div></div>
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“대기는 이 수온 차이를 따라 <b>워커 순환</b>이라는 고리를 만듭니다. 그러면 이렇게 물어봅시다 — <b>무역풍이 약해지면</b> 어떻게 될까요? 슬라이더를 평년(1.00배)에서 좌우로 밀어 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-enso" width="900" height="500"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">무역풍의 세기 (평년 = 1.00배)<span class="val" id="a-trade-val">1.00배</span></div>
+                <input type="range" id="a-trade" min="0.3" max="1.7" step="0.05" value="1">
+              </div>
+            </div>
+            <div class="info-card" id="a-enso-info"></div>
+          </div>
+          <div class="mission" id="m1-3"><span class="m-tag">미션</span>동태평양 수온 편차가 <b>+0.5 ℃ 이상</b>이면 엘니뇨, <b>−0.5 ℃ 이하</b>면 라니냐로 봅니다.<ul><li id="m1-3a">무역풍을 약화시켜 <b>엘니뇨</b>를 만들기</li><li id="m1-3b">무역풍을 강화시켜 <b>라니냐</b>를 만들기</li><li id="m1-3c">엘니뇨를 더 키워 <b>페루 어획 지수를 50 % 아래</b>로 떨어뜨리기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="지구 반대편의 가뭄 — 원격 영향">
+          <div class="story"><div class="who">🧑‍💼</div><div class="say"><span class="name">국제 곡물 조사관</span>“이상합니다. 페루 어부가 그물이 비었다고 하던 바로 그해에, <b>오스트레일리아 북부와 인도네시아는 극심한 가뭄</b>이었습니다. 지구 반대편인데 왜 같은 해에 같이 흔들립니까?”</div></div>
+          <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“열대 태평양의 수온이 바뀌면 <b>상승 기류가 서는 자리</b>가 통째로 옮겨 가기 때문입니다. 비구름이 서는 자리가 옮겨지면, 원래 비를 받던 곳은 가뭄이 들지요. 이것을 <b>원격 상관(원격 영향)</b>이라고 합니다. 수온 편차를 직접 넣어 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="a-c-tele" width="900" height="440"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">관측된 동태평양 수온 편차<span class="val" id="a-anom-val">+0.0 ℃</span></div>
+                <input type="range" id="a-anom" min="-3" max="3" step="0.1" value="0">
+              </div>
+            </div>
+            <div class="info-card" id="a-tele-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="a-sort"></div></div>
+          <div class="mission" id="m1-4"><span class="m-tag">미션</span><ul><li id="m1-4a">엘니뇨를 키워 <b>인도네시아·오스트레일리아 북부</b>의 강수를 평년보다 <b>40 % 이상 적게</b> 만들기</li><li id="m1-4b">라니냐로 바꿔 <b>페루 어획 지수를 120 % 이상</b>으로 올리기</li><li id="m1-4c">아래에서 관측 카드를 세 시기로 나누기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 바람이 멈추자 바다가 뒤집혔다">
+          <div class="ending">
+            <h4>🎣 멸치를 먹인 것은 따뜻한 물이 아니라 찬물이었다</h4>
+            <p>페루 앞바다가 세계 최대 어장이 된 까닭은 <b>연안 용승</b>이었습니다. 남반구에서 해안을 따라 부는 바람이 에크만 수송으로 표층수를 바다 쪽으로 밀어내면, 그 자리를 채우려 <b>영양염이 풍부한 찬 심층수</b>가 올라옵니다. 플랑크톤이 폭발적으로 늘고, 그것을 먹는 멸치 떼가 모입니다. 바람이 약해지거나 방향이 뒤집히면 용승 대신 <b>침강</b>이 일어나고, 따뜻하고 영양염이 없는 물만 남습니다.</p>
+            <p>1972년의 사건은 페루 앞바다만의 일이 아니었습니다. <b>무역풍이 약해지자</b> 서태평양에 쌓여 있던 따뜻한 물이 동쪽으로 퍼지고, 동태평양의 적도 용승이 약해져 수온이 올랐습니다. 이것이 <b>엘니뇨</b>이고, 반대로 무역풍이 강해져 동태평양이 더 차가워지는 시기가 <b>라니냐</b>입니다. 바다의 수온 변화와 대기의 기압 변화(<b>남방 진동</b>)는 한 몸이라 둘을 묶어 <b>엔소(ENSO)</b>라고 부릅니다. 비구름이 서는 자리가 통째로 옮겨 가면서, 페루의 홍수와 오스트레일리아의 가뭄이 같은 해에 일어났습니다.</p>
+            <div class="vs" id="a-vs"></div>
+            <span class="stamp">사건 파일 ① 해결</span>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 이 화면의 수온·어획 지수는 바람 한 가지만으로 계산하도록 <b>크게 단순화한 모형</b>입니다. 실제 용승의 세기는 해안선의 방향, 수온약층의 깊이, 해저 지형에 함께 좌우되고, 어획량은 바다의 상태뿐 아니라 잡는 양에도 달라집니다. 엘니뇨·라니냐의 판정 기준(수온 편차 ±0.5 ℃)은 실제로는 <b>여러 달 이어질 때</b> 적용하며, 엔소는 2~7년 간격으로 불규칙하게 되풀이됩니다. 원격 영향도 ‘반드시 그렇게 된다’가 아니라 <b>그렇게 될 가능성이 커진다</b>는 뜻입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkA"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB 1 : 엔소 -->
+    <!-- =====================================================================
+         02 기후 변화 요인 — 이야기 「기후를 흔드는 것들」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="1" hidden>
       <div class="stage-head">
-        <div class="eyebrow">02 · 열대 태평양의 대기-해양 상호작용</div>
-        <h2 class="display">엘니뇨·라니냐·워커 순환</h2>
-        <p>무역풍의 세기에 따라 열대 태평양의 수온·기압·강수 분포가 어떻게 달라지는지 관찰해 보세요. 엘니뇨와 라니냐는 각각 엔소(ENSO)의 '더운 시기'와 '차가운 시기'입니다.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c1" width="900" height="520"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">상태</div>
-            <div class="seg" id="c1-state">
-              <button data-s="nina">라니냐</button>
-              <button class="on" data-s="normal">평상시</button>
-              <button data-s="nino">엘니뇨</button>
-            </div>
-          </div>
-        </div>
-        <div class="info-card" id="c1-info"></div>
+        <div class="eyebrow">02 · 기후 변화의 자연적 요인과 인위적 요인 · 이야기 한 편</div>
+        <h2 class="display">기후를 흔드는 것들</h2>
+        <p>기온 기록에는 움푹 팬 자리가 몇 군데 있습니다. 화산이 터진 다음 해들입니다. 지구의 운동과 화산, 태양 활동을 직접 조절해 기온 곡선을 만들어 보고, 최근 100년의 상승만은 그 어떤 조합으로도 그려지지 않는다는 것을 확인하세요.</p>
+        <span class="std-chip">12지구01-06</span><div class="std-note"><b>[12지구01-06]</b> 기후 변화의 원인을 자연적 요인과 인위적 요인으로 구분하여 설명하고, 인간 활동에 의한 기후 변화의 심각성을 인식할 수 있다.</div><div class="terms"><b>밀란코비치 주기</b><b>세차 운동</b><b>자전축 기울기</b><b>이심률</b><b>에어로졸</b><b>복사 강제력</b><b>자연적 요인</b><b>인위적 요인</b></div>
       </div>
 
-      <div class="stage-head" style="margin-top:30px;">
-        <div class="eyebrow">🔎 미션 · 엔소 카드 매칭</div>
-        <h2 class="display" style="font-size:20px;">관측 카드를 알맞은 시기에 놓아보세요</h2>
-        <p>무역풍 세기와 동·서태평양의 날씨 단서가 적힌 카드 3장이 있습니다. 카드를 클릭해 선택한 뒤, 라니냐·평상시·엘니뇨 중 알맞은 칸을 클릭해 배치하고 채점해 보세요.</p>
+      <div class="episode" id="epB">
+        <section class="scene" data-title="기온 기록에 팬 자국">
+          <div class="story narr"><div class="who">🌋</div><div class="say"><span class="name">이야기</span>1991년 6월, 필리핀 <b>피나투보 화산</b>이 20세기에 손꼽히는 규모로 폭발했습니다. 화산재보다 멀리 간 것은 <b>성층권까지 올라간 아주 작은 알갱이들</b>이었습니다. 그 뒤 1~2년 동안 지구 평균 기온은 약 <b>0.5 ℃</b> 내려갔습니다.</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">기후 자료실장</span>“그래서 학생 연구원들이 늘 이렇게 결론을 냅니다. ‘공기 중의 작은 알갱이 — <b>에어로졸</b> — 는 햇빛을 막으니까 지구를 식힌다.’ 그런데 말이지요, 제 책상에는 정반대 자료도 있습니다. 경유차와 아궁이에서 나오는 <b>검댕(블랙 카본)</b> 자료예요.”</div></div>
+          <div class="case-file"><b class="k">자료실에 쌓인 것</b> 1991년 피나투보 분출 뒤 1~2년간 지구 평균 기온 약 0.5 ℃ 하강 &nbsp;|&nbsp; 지구 자전축 기울기는 약 22.1°~24.5° 사이를 약 4.1만 년 주기로 오간다 &nbsp;|&nbsp; 세차 운동 주기 약 2.6만 년 &nbsp;|&nbsp; 공전 궤도 이심률 변화 주기 약 10만 년 &nbsp;|&nbsp; 그리고 대기 중 이산화 탄소 농도 기록</div>
+          <div class="gate loose" id="b-gate"></div>
+        </section>
+
+        <section class="scene" data-title="지구가 스스로 흔들리는 세 가지 방법">
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“먼저 <b>지구 바깥의 요인</b>부터 정리합시다. 지구의 운동은 고정되어 있지 않습니다. 자전축의 <b>기울기</b>가 변하고, 자전축이 팽이처럼 도는 <b>세차 운동</b>을 하고, 공전 궤도의 <b>이심률</b>도 변합니다. 이 셋이 겹쳐 빙하기와 간빙기를 만든다는 생각이 <b>밀란코비치 주기</b>예요.”</div></div>
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“핵심은 <b>북반구 고위도의 여름 일사량</b>입니다. 여름이 시원해서 지난겨울에 쌓인 눈이 다 녹지 못하면, 해마다 눈이 조금씩 남아 빙상이 자랍니다. 세 슬라이더를 움직여 북위 65° 여름 일사량을 바꿔 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-milan" width="900" height="460"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">자전축 기울기<span class="val" id="b-tilt-val">23.4°</span></div>
+                <input type="range" id="b-tilt" min="22.1" max="24.5" step="0.1" value="23.4">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">공전 궤도 이심률<span class="val" id="b-ecc-val">0.017</span></div>
+                <input type="range" id="b-ecc" min="0" max="0.06" step="0.001" value="0.017">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">세차 운동 — 근일점에서 북반구의 계절<span class="val" id="b-prec-val">겨울</span></div>
+                <input type="range" id="b-prec" min="0" max="350" step="10" value="0">
+              </div>
+            </div>
+            <div class="info-card" id="b-milan-info"></div>
+          </div>
+          <div class="mission" id="m2-2"><span class="m-tag">미션</span>기준이 되는 북위 65° 여름 일사량은 지금 약 462 W/m² 입니다.<ul><li id="m2-2a">자전축 기울기를 줄여 여름 일사량을 <b>440 W/m² 아래</b>로 낮추기 (빙하기로 가는 조건)</li><li id="m2-2b">근일점의 계절·이심률·기울기를 함께 써서 여름 일사량을 <b>520 W/m² 이상</b>으로 올리기</li><li id="m2-2c">이심률을 <b>0</b>으로 두면 세차 슬라이더를 아무리 돌려도 일사량이 변하지 않는 것 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="에어로졸의 두 얼굴, 그리고 태양">
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자료실장</span>“이제 <b>지구 내적 요인</b>입니다. 화산이 뿜어낸 <b>황산염 에어로졸</b>은 성층권에서 햇빛을 되쏘아 지구를 식힙니다. 그런데 화석 연료가 덜 탄 채 나오는 <b>검댕</b>은 빛을 <b>흡수</b>해서 주변 공기를 데웁니다. 같은 ‘에어로졸’인데 부호가 반대예요.”</div></div>
+          <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자료실장</span>“기후를 밀고 당기는 힘의 크기는 <b>복사 강제력</b>(W/m²)으로 잽니다. 양수면 데우는 쪽, 음수면 식히는 쪽이에요. 종류와 양을 바꿔 가며 부호가 뒤집히는지 직접 확인해 보세요. 태양 활동도 함께 넣어 두었습니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-force" width="900" height="420"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">에어로졸의 종류<span class="val" id="b-atype-val">황산염(반사형)</span></div>
+                <div class="seg" id="b-atype"><button type="button" class="on" data-a="sulf">황산염(반사형)</button><button type="button" data-a="soot">검댕(흡수형)</button></div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">대기로 뿜어낸 양<span class="val" id="b-amt-val">0</span></div>
+                <input type="range" id="b-amt" min="0" max="100" step="1" value="0">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">태양 상수의 변화<span class="val" id="b-sun-val">0.0 W/m²</span></div>
+                <input type="range" id="b-sun" min="-2" max="2" step="0.1" value="0">
+              </div>
+            </div>
+            <div class="info-card" id="b-force-info"></div>
+          </div>
+          <div class="mission" id="m2-3"><span class="m-tag">미션</span><ul><li id="m2-3a">황산염 에어로졸을 뿜어 복사 강제력을 <b>−2.0 W/m² 아래</b>로 내리기 (큰 화산 분출 수준)</li><li id="m2-3b">종류를 <b>검댕</b>으로 바꿔, 같은 에어로졸인데 복사 강제력이 <b>양수</b>가 되는 것 확인하기</li><li id="m2-3c">태양 활동만으로 기온을 <b>+0.15 ℃ 이상</b> 올려 보고, 그 크기가 얼마나 작은지 확인하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="최근 100년만은 그려지지 않는다">
+          <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“자, 마지막입니다. 1900년부터 지금까지의 <b>관측 기온</b>이 검은 곡선입니다. 요인을 하나씩 켜서 모형 곡선을 그려 보고, 관측과 얼마나 맞는지 <b>맞춤도</b>를 보세요. 먼저 <b>자연 요인만</b> 켜 봅시다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="b-c-attr" width="900" height="470"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">모형에 넣을 요인</div>
+                <div class="toggle-row" id="b-fac">
+                  <button type="button" class="chip" data-f="nat">자연 요인 (태양·화산)</button>
+                  <button type="button" class="chip" data-f="ghg">인위 요인 — 온실 기체</button>
+                  <button type="button" class="chip" data-f="aer">인위 요인 — 에어로졸</button>
+                </div>
+              </div>
+            </div>
+            <div class="info-card" id="b-attr-info"></div>
+          </div>
+          <div class="stage-card" style="margin-top:14px"><div id="b-q1"></div></div>
+          <div class="mission" id="m2-4"><span class="m-tag">미션</span><ul><li id="m2-4a"><b>자연 요인만</b> 켜서, 최근 50년을 전혀 따라가지 못하는 것 확인하기</li><li id="m2-4b">세 요인을 <b>모두</b> 켜서 맞춤도를 <b>90 % 이상</b>으로 올리기</li><li id="m2-4c">아래 물음에 답하기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 자연은 흔들 뿐, 밀지는 않았다">
+          <div class="ending">
+            <h4>🌡️ 같은 ‘에어로졸’이 식히기도 하고 데우기도 한다</h4>
+            <p>기후를 흔드는 <b>자연적 요인</b>은 여럿입니다. 지구 <b>바깥</b>에서는 자전축 기울기·세차 운동·이심률이 겹쳐 북반구 고위도의 여름 일사량을 바꾸고(<b>밀란코비치 주기</b>), 그 결과 수만 년 규모로 빙하기와 간빙기가 오갑니다. 지구 <b>안</b>에서는 화산 분출이 성층권에 에어로졸을 뿌려 1~2년쯤 지구를 식히고, 태양 활동도 약하게나마 기여합니다. 그런데 여기서 반전이 하나 있었습니다 — <b>에어로졸이라고 다 식히는 것은 아니었습니다.</b></p>
+            <p>그리고 결정적인 것. 자연적 요인을 아무리 조합해도 <b>최근 100년, 특히 최근 50년의 가파른 상승</b>은 그려지지 않았습니다. 온실 기체를 넣었을 때 비로소 관측과 맞았습니다. 기후 변화의 원인을 <b>자연적 요인</b>과 <b>인위적 요인</b>으로 나누어 보아야 하는 까닭이 여기에 있습니다.</p>
+            <div class="vs" id="b-vs"></div>
+            <span class="stamp">사건 파일 ② 해결</span>
+          </div>
+          <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>에어로졸의 복사 강제력</b><br>모든 에어로졸이 지구의 기온을 낮추는 것은 아니다. <b>복사 에너지 흡수를 통해 지구의 기온을 높이는 에어로졸도 있고</b>, 태양 빛을 반사하여 지구의 기온을 낮추는 에어로졸도 있다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 밀란코비치 화면의 일사량 식은 <b>기울기 항과 거리 항만 남긴 아주 단순한 식</b>이고, 실제 계산은 위도·날짜별로 훨씬 복잡합니다. 복사 강제력 화면에서 기온 변화는 ‘강제력 × 기후 민감도’로 구한 <b>평형 상태의 값</b>입니다. 바다가 열을 흡수하며 천천히 데워지기 때문에, 화산처럼 1~2년 만에 끝나는 사건에서는 실제 기온 하강이 이 계산값보다 훨씬 작게 나타납니다(피나투보의 경우 약 0.5 ℃). 요인별 기온 곡선도 실제 기후 모형의 계산 결과를 본떠 만든 <b>모식 곡선</b>이며, 실제 관측 자료 파일이 아닙니다. 지구 자전축 기울기 범위·세 주기의 길이와 피나투보 분출 뒤의 기온 하강 폭은 실제 값입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkB"></div></div>
+        </section>
       </div>
-      <div class="stage-card">
-        <div class="enso-cards" id="c1m-cards"></div>
-        <div class="enso-slots" id="c1m-slots"></div>
-        <div class="toggle-row" style="margin:14px 20px 0;">
-          <button class="chip" id="c1m-check">채점하기</button>
-          <button class="chip" id="c1m-new">카드 새로 섞기</button>
-        </div>
-        <div class="info-card" id="c1m-info">카드를 클릭해 선택한 뒤, 놓을 칸을 클릭하세요.</div>
-      </div>
-      <div class="miscon loose"><span class="tag">오개념 지도</span><br><b>에어로졸의 복사 강제력</b><br>모든 에어로졸이 지구의 기온을 낮추는 것은 아니다. <b>복사 에너지 흡수를 통해 지구의 기온을 높이는 에어로졸도 있고</b>, 태양 빛을 반사하여 지구의 기온을 낮추는 에어로졸도 있다.<cite>지구과학 교사용 교과서, 오개념 지도</cite></div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB 2 : 기후 변화 자연적 요인 -->
+    <!-- =====================================================================
+         03 온실 효과·온난화 · 기후 변화 대응 — 이야기 「탄소를 줄이는 회의」
+         ===================================================================== -->
     <section class="tab-panel" data-panel="2" hidden>
       <div class="stage-head">
-        <div class="eyebrow">03 · 밀란코비치 이론</div>
-        <h2 class="display">지구 외적 요인과 기후 변화</h2>
-        <p>세차 운동·자전축 기울기·공전 궤도 이심률을 조절하며, 이 세 가지 지구 운동 변화가 북반구의 연교차(계절 차이)에 어떤 영향을 주는지 확인해 보세요.</p>
+        <div class="eyebrow">03 · 온실 효과와 지구 온난화 · 기후 변화 대응 · 이야기 한 편</div>
+        <h2 class="display">탄소를 줄이는 회의</h2>
+        <p>회의장에 숫자 하나가 걸려 있습니다. <b>1.5 ℃</b>. 온실 효과가 어떻게 지구를 데우는지 먼저 확인하고, 배출을 얼마나 빨리 줄여야 그 숫자 아래에 머무는지 직접 계산해 보세요. 그리고 이미 오르기 시작한 바다 앞에서 무엇을 해야 하는지도요.</p>
+        <span class="std-chip">12지구01-06</span><div class="std-note"><b>[12지구01-06]</b> 기후 변화의 원인을 자연적 요인과 인위적 요인으로 구분하여 설명하고, 인간 활동에 의한 기후 변화의 심각성을 인식할 수 있다.</div><div class="terms"><b>온실 효과</b><b>복사 평형</b><b>지구 온난화</b><b>탄소 중립</b><b>완화</b><b>적응</b><b>기후 협약</b></div>
       </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c2" width="900" height="520"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">세차 운동(자전축 방향)<span class="val" id="c2-prec-val">0°</span></div>
-            <input type="range" id="c2-prec" min="0" max="359" step="1" value="0">
+
+      <div class="episode" id="epC">
+        <section class="scene" data-title="회의장에 걸린 숫자, 1.5">
+          <div class="story narr"><div class="who">🌍</div><div class="say"><span class="name">이야기</span>2015년 파리. 195개 나라의 대표가 한자리에 모였습니다. 1992년 <b>유엔 기후 변화 협약</b>으로 시작해 1997년 <b>교토 의정서</b>, 그리고 이번 <b>파리 협정</b>까지. 이번 합의문에는 지구 평균 기온 상승을 산업화 이전보다 <b>2 ℃ 훨씬 아래로, 되도록 1.5 ℃로</b> 억제한다는 문장이 들어갔습니다.</div></div>
+          <div class="story"><div class="who">🧑‍⚖️</div><div class="say"><span class="name">협상 대표</span>“과학 자문관님, 솔직히 묻겠습니다. <b>1.5 ℃는 정치적인 구호입니까, 계산해서 나온 숫자입니까?</b> 그리고 우리가 해마다 몇 퍼센트씩 줄여야 그 숫자 아래에 머뭅니까? 내일 아침까지 답을 주셔야 합니다.”</div></div>
+          <div class="case-file"><b class="k">회의 탁자 위의 자료</b> 지금까지의 기온 상승 약 1.2 ℃(산업화 이전 대비) &nbsp;|&nbsp; 현재 연간 이산화 탄소 배출량 약 400억 t &nbsp;|&nbsp; 누적 배출 1조 t 마다 기온 약 0.45 ℃ 상승 &nbsp;|&nbsp; 1992 유엔 기후 변화 협약 → 1997 교토 의정서 → 2015 파리 협정 → 2021 글래스고 기후 합의</div>
+          <div class="gate loose" id="c-gate"></div>
+        </section>
+
+        <section class="scene" data-title="온실 효과 — 담요 한 장의 계산">
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“먼저 <b>온실 효과가 무엇인지</b>부터 못을 박읍시다. 지구는 태양 복사를 받은 만큼 <b>지구 복사(적외선)</b>로 내보내며 균형을 잡습니다. 이것이 <b>복사 평형</b>이에요. 그런데 대기가 그 적외선을 얼마쯤 <b>가로채서 다시 지표로 돌려보내면</b> 지표는 더 뜨거워야 균형이 맞습니다.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“대기를 한 장의 담요라고 보고, 그 담요가 적외선을 붙잡는 비율을 <b>흡수율</b>이라고 합시다. 지금 지구는 약 0.78입니다. 흡수율과 <b>반사율(알베도)</b>을 바꿔 가며 지표 온도를 직접 구해 보세요.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-green" width="900" height="450"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">대기의 적외선 흡수율<span class="val" id="c-eps-val">0.78</span></div>
+                <input type="range" id="c-eps" min="0" max="1" step="0.02" value="0.78">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">지구의 반사율(알베도)<span class="val" id="c-alb-val">0.30</span></div>
+                <input type="range" id="c-alb" min="0.1" max="0.5" step="0.01" value="0.3">
+              </div>
+            </div>
+            <div class="info-card" id="c-green-info"></div>
           </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">자전축 기울기<span class="val" id="c2-tilt-val">23.5°</span></div>
-            <input type="range" id="c2-tilt" min="21.5" max="24.5" step="0.1" value="23.5">
+          <div class="mission" id="m3-2"><span class="m-tag">미션</span>지금 값(흡수율 0.78 · 알베도 0.30)에서 지표 온도는 약 15 ℃, 온실 효과의 크기는 약 +33 ℃ 입니다.<ul><li id="m3-2a">흡수율을 내려 <b>온실 효과의 크기를 +2 ℃ 아래</b>로 만들고, 그때의 지표 온도를 확인하기</li><li id="m3-2b">흡수율을 올려 <b>온실 효과의 크기를 +40 ℃ 이상</b>으로 만들기</li><li id="m3-2c">알베도를 높여(빙하가 늘어난 지구) <b>흡수한 태양 복사를 200 W/m² 아래</b>로 줄이기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="2100년을 1.5 아래로 묶어라">
+          <div class="story"><div class="who">🧑‍⚖️</div><div class="say"><span class="name">협상 대표</span>“원리는 알겠습니다. 이제 <b>숫자</b>를 주십시오. 해마다 몇 퍼센트입니까?”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“다행히 계산이 간단합니다. 기온 상승은 <b>해마다 얼마나 배출했는가</b>보다 <b>지금까지 모두 합쳐 얼마나 배출했는가</b>에 거의 비례합니다. 누적 배출 1조 t 마다 약 0.45 ℃. 그러니 감축률을 넣고 2100년까지 더하기만 하면 됩니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-path" width="900" height="460"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">해마다 줄일 비율<span class="val" id="c-rate-val">1.00 %/년</span></div>
+                <input type="range" id="c-rate" min="0" max="8" step="0.25" value="1">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">2040년부터 CO₂ 포집·저장 도입<span class="val" id="c-ccs-val">도입 안 함</span></div>
+                <div class="seg" id="c-ccs"><button type="button" class="on" data-c="off">도입 안 함</button><button type="button" data-c="on">해마다 50억 t 포집</button></div>
+              </div>
+            </div>
+            <div class="info-card" id="c-path-info"></div>
           </div>
-          <div class="ctrl-group">
-            <div class="ctrl-label">공전 궤도 이심률<span class="val" id="c2-ecc-val">0.02</span></div>
-            <input type="range" id="c2-ecc" min="0" max="0.09" step="0.005" value="0.02">
+          <div class="stage-card" style="margin-top:14px"><div id="c-order"></div></div>
+          <div class="mission" id="m3-3"><span class="m-tag">미션</span>2100년 기온 상승(산업화 이전 대비)을 목표 아래로 묶어 보세요.<ul><li id="m3-3a">2100년 상승을 <b>2 ℃ 아래</b>로 묶기</li><li id="m3-3b">2100년 상승을 <b>1.5 ℃ 아래</b>로 묶기</li><li id="m3-3c">감축률을 <b>0 %</b>로 되돌려, 아무것도 하지 않았을 때의 2100년을 확인하기</li><li id="m3-3d">아래에서 국제 사회의 대응을 순서대로 놓기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="이미 오르기 시작한 바다 — 완화와 적응">
+          <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">연안 도시 시장</span>“줄이는 이야기는 알겠습니다. 그런데 <b>이미 오른 것</b>은 어떻게 합니까? 우리 도시는 해발 1 m 남짓한 매립지 위에 있습니다. 방조제를 얼마나 높여야 합니까? 예산은 한정되어 있습니다.”</div></div>
+          <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“바닷물은 데워지면 <b>부피가 늘고</b>, 육지의 빙하가 녹아 물이 더해집니다. 그래서 기온이 오르면 해수면도 오르지요. 2100년 기온 상승을 넣어 해수면 상승을 구하고, <b>폭풍 해일까지 견딜 만큼만</b> 방조제를 세워 보세요. 너무 낮으면 잠기고, 너무 높으면 예산이 낭비됩니다.”</div></div>
+          <div class="stage-card">
+            <div class="canvas-wrap"><canvas id="c-c-sea" width="900" height="450"></canvas></div>
+            <div class="controls">
+              <div class="ctrl-group">
+                <div class="ctrl-label">2100년 기온 상승<span class="val" id="c-dt-val">2.5 ℃</span></div>
+                <input type="range" id="c-dt" min="1" max="4" step="0.1" value="2.5">
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-label">새로 쌓을 방조제 높이<span class="val" id="c-wall-val">0 cm</span></div>
+                <input type="range" id="c-wall" min="0" max="160" step="5" value="0">
+              </div>
+            </div>
+            <div class="info-card" id="c-sea-info"></div>
           </div>
-        </div>
-        <div class="info-card" id="c2-info"></div>
+          <div class="stage-card" style="margin-top:14px"><div id="c-sort"></div></div>
+          <div class="mission" id="m3-4"><span class="m-tag">미션</span>폭풍 해일에 대비해 해수면보다 <b>60 cm</b>의 여유가 더 필요합니다.<ul><li id="m3-4a">기온 상승을 키워 2100년 해수면 상승을 <b>70 cm 이상</b>으로 만들어 보기</li><li id="m3-4b">기온 상승을 되돌려 해수면 상승을 <b>35 cm 아래</b>로 줄이기</li><li id="m3-4c">방조제를 <b>꼭 맞게</b> 세우기 — 필요한 높이 이상, 그러나 40 cm 넘게 더 쌓지 않기</li><li id="m3-4d">아래에서 대책을 완화와 적응으로 나누기</li></ul></div>
+        </section>
+
+        <section class="scene" data-title="결말 — 줄이는 일과 견디는 일">
+          <div class="ending">
+            <h4>🤝 1.5 ℃ 는 구호가 아니라 예산이었다</h4>
+            <p>온실 기체는 태양 복사는 대부분 통과시키고 지표가 내보내는 <b>지구 복사(적외선)</b>를 흡수했다가 다시 지표로 내보냅니다. 그래서 지표는 더 뜨거운 상태에서 <b>복사 평형</b>을 이룹니다. 대기가 없다면 지구 표면은 약 <b>−18 ℃</b>였을 것이고, 온실 효과 덕분에 약 <b>15 ℃</b>가 되었습니다. 문제는 그 담요가 <b>더 두꺼워지고 있다</b>는 것입니다.</p>
+            <p>기온 상승은 해마다의 배출량보다 <b>지금까지 쌓인 누적 배출량</b>에 거의 비례합니다. 그래서 1.5 ℃는 ‘앞으로 더 배출해도 되는 양’, 곧 <b>탄소 예산</b>으로 번역됩니다. 계산해 보면 배출을 해마다 <b>6 % 가까이</b> 줄여야 겨우 그 안에 들어갑니다. 그리고 줄이는 일(<b>완화</b>)만으로는 부족합니다. 이미 시작된 변화 앞에서 방조제를 세우고 작물을 바꾸는 일(<b>적응</b>)도 함께 해야 합니다.</p>
+            <div class="vs" id="c-vs"></div>
+            <span class="stamp">사건 파일 ③ 해결</span>
+          </div>
+          <div class="info-card" style="margin:0 0 14px">📎 과학자의 눈: 온실 효과 화면은 대기를 <b>한 층의 담요</b>로 본 가장 단순한 복사 평형 모형입니다. 실제 대기는 여러 층이고 기체마다 흡수하는 파장이 달라, 흡수율 하나로 요약할 수는 없습니다. 배출 경로 화면의 ‘누적 배출 1조 t 당 0.45 ℃’와 현재 배출량·현재 상승폭은 널리 쓰이는 <b>대푯값</b>이고, 실제로는 상당한 불확실성 범위를 함께 제시합니다. 해수면 상승 식도 기온 상승에 비례한다고 놓은 <b>어림</b>이며, 실제 해수면은 지역마다 다르게 오르고 남극 빙상이 어떻게 반응하느냐에 따라 폭이 크게 달라집니다. 이 이야기의 회의 장면과 등장인물은 꾸며 낸 것이지만, 협약의 이름과 연도, 파리 협정의 목표 문구는 실제입니다.</div>
+          <div class="stage-card" style="padding:6px 0 4px"><div id="wkC"></div></div>
+        </section>
       </div>
+      <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- TAB 3 : 온실효과와 온난화 -->
+    <!-- ===================================================================== 04 정리하기 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 지구 복사 평형</div>
-        <h2 class="display">온실 효과와 지구 온난화</h2>
-        <p>대기 중 온실 기체 농도를 조절하며, 대기의 재복사량과 지구 평균 기온이 어떻게 달라지는지 살펴보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c3" width="900" height="520"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">대기 중 CO₂ 농도(ppm)<span class="val" id="c3-co2-val">280</span></div>
-            <input type="range" id="c3-co2" min="280" max="500" step="5" value="280">
-          </div>
-          <div class="readout"><span class="dot" id="c3-dot" style="background:var(--teal)"></span><span class="txt" id="c3-temp">기온 편차: —</span></div>
-        </div>
-        <div class="info-card">온실 기체는 태양 복사(가시광선)는 통과시키지만, 지구 복사(적외선)는 흡수했다가 지표로 재복사합니다. 농도가 높아질수록 재복사량이 늘어 지표 기온이 상승합니다.</div>
-      </div>
-    </section>
-
-    <!-- TAB 4 : 기후변화 대응 -->
-    <section class="tab-panel" data-panel="4" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">05 · 국제 사회의 대응</div>
-        <h2 class="display">탄소 중립과 기후 협약</h2>
-        <p>타임라인의 점을 클릭해 주요 국제 기후 협약의 내용을 확인하고, 기후 변화를 완화하는 과학기술적 방법도 살펴보세요.</p>
-      </div>
-      <div class="stage-card">
-        <div class="canvas-wrap"><canvas id="c4" width="900" height="360"></canvas></div>
-        <div class="controls">
-          <div class="ctrl-group">
-            <div class="ctrl-label">완화 기술</div>
-            <div class="toggle-row">
-              <button class="chip" data-tech="hydrogen">그린 수소 에너지</button>
-              <button class="chip" data-tech="ccs">CO₂ 포집·저장</button>
-              <button class="chip" data-tech="albedo">태양 복사 조절</button>
-            </div>
-          </div>
-        </div>
-        <div class="info-card" id="c4-info">타임라인의 점 또는 완화 기술 버튼을 클릭해 보세요.</div>
-      </div>
-    </section>
-
-    <section class="tab-panel" data-panel="5" hidden>
-      <div class="stage-head">
-        <div class="eyebrow">06 · 오늘 알아낸 것을 문장으로</div>
+        <div class="eyebrow">04 · 세 사건을 하나로</div>
         <h2 class="display">정리하기</h2>
-        <p>조작한 것을 말이나 글로 옮기지 않으면 남지 않습니다. 아래를 채우고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
+        <p>세 이야기의 결과가 아래에 모입니다. 세 사건을 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
+
+    <!-- ===================================================================== 05 우리 반 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <h2 class="display">우리 반</h2>
+        <p>내가 해결한 사건과 알아낸 값을 우리 반에 올리고, 친구들은 어떻게 풀었는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
+      </div>
+      <div class="stage-card"><div id="share"></div></div>
+    </section>
+
   </main>
 </div>
 
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
-
 <script src="../assets/theme.js"></script>
-<script>
-(function () {
-"use strict";
-
-/* TAB0 용승과 침강 */
-(function () {
-  var canvas = document.getElementById("c0");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var type = "coastal-up";
-  var t = 0;
-  var info = document.getElementById("c0-info");
-  var result = document.getElementById("c0-result");
-  var dot = document.getElementById("c0-dot");
-
-  document.querySelectorAll("#c0-type button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      type = b.getAttribute("data-t");
-      document.querySelectorAll("#c0-type button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      updateInfo();
-    });
-  });
-  function updateInfo() {
-    if (type === "coastal-up") {
-      info.innerHTML = "북반구 대륙 서쪽 해안에서 <b>북풍</b>이 불면 에크만 수송으로 표층 해수가 먼바다 쪽으로 이동하고, 이를 채우기 위해 심층의 찬 해수가 올라오는 <b>연안 용승</b>이 일어납니다. 영양염이 풍부해져 좋은 어장이 형성됩니다.";
-      result.innerHTML = "결과: <b style='color:var(--cold)'>연안 용승</b> — 표층 수온 하강, 영양염 증가";
-      dot.style.background = "var(--cold)";
-    } else if (type === "coastal-down") {
-      info.innerHTML = "같은 해안에서 <b>남풍</b>이 불면 표층 해수가 해안 쪽으로 이동하여 <b>침강</b>이 일어납니다.";
-      result.innerHTML = "결과: <b style='color:var(--coral)'>연안 침강</b> — 표층수 해안에 쌓여 가라앉음";
-      dot.style.background = "var(--coral)";
-    } else {
-      info.innerHTML = "적도 부근에서는 무역풍의 영향으로 표층 해수가 북반구에서는 북쪽, 남반구에서는 남쪽으로 이동합니다. 이를 채우기 위해 적도에서 <b>적도 용승</b>이 일어납니다.";
-      result.innerHTML = "결과: <b style='color:var(--cold)'>적도 용승</b> — 적도 표층 수온이 주변보다 낮음";
-      dot.style.background = "var(--cold)";
-    }
-  }
-
-  function frame() {
-    if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    if (type !== "equator") {
-      var coastX = 170;
-      ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(0, 0, coastX, H);
-      ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(coastX, 0); ctx.lineTo(coastX, H); ctx.stroke();
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "center";
-      ctx.save(); ctx.translate(coastX / 2, H / 2); ctx.fillText("육지", 0, 0); ctx.restore();
-
-      var up = type === "coastal-up";
-      ctx.save();
-      ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral");
-      var wy1 = up ? 40 : H - 40, wy2 = up ? H - 40 : 40;
-      for (var i = 0; i < 3; i++) {
-        var wx = coastX + 40 + i * 40;
-        ctx.lineWidth = 4;
-        drawArrow(ctx, wx, wy1, wx, wy1 + (wy2 - wy1) * 0.8, 10);
-      }
-      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
-      ctx.fillText(up ? "북풍" : "남풍", coastX + 160, (wy1 + wy2) / 2);
-      ctx.restore();
-
-      var midY = H / 2;
-      ctx.save();
-      ctx.strokeStyle = cssVar("--teal"); ctx.fillStyle = cssVar("--teal"); ctx.lineWidth = 5;
-      if (up) drawArrow(ctx, coastX + 60, midY - 100, coastX + 240, midY - 100, 12);
-      else drawArrow(ctx, coastX + 240, midY - 100, coastX + 60, midY - 100, 12);
-      ctx.font = "700 12px Segoe UI"; ctx.fillText("에크만 수송", coastX + 60, midY - 112);
-      ctx.restore();
-
-      var grad = ctx.createLinearGradient(0, midY - 40, 0, H - 20);
-      grad.addColorStop(0, "rgba(63,201,176,.18)"); grad.addColorStop(1, "rgba(10,25,45,.55)");
-      ctx.fillStyle = grad; ctx.fillRect(coastX, midY - 40, W - coastX - 30, H - midY - 20 + 40);
-
-      for (var j = 0; j < 8; j++) {
-        var px = coastX + 30 + (j % 2) * 50;
-        var phase = (t * 0.6 + j * 0.2) % 1;
-        var py = up ? (H - 30) - phase * (H - 30 - (midY - 20)) : (midY - 10) + phase * (H - 30 - (midY - 10));
-        ctx.save(); ctx.fillStyle = up ? cssVar("--cold") : cssVar("--coral"); ctx.globalAlpha = .85;
-        ctx.beginPath(); ctx.arc(px, py, 5, 0, 7); ctx.fill(); ctx.restore();
-      }
-    } else {
-      var eqY = H / 2;
-      ctx.strokeStyle = cssVar("--mist"); ctx.setLineDash([4, 4]); ctx.globalAlpha = .5;
-      ctx.beginPath(); ctx.moveTo(40, eqY); ctx.lineTo(W - 40, eqY); ctx.stroke();
-      ctx.setLineDash([]); ctx.globalAlpha = 1;
-      ctx.fillStyle = cssVar("--mist"); ctx.font = "12px Segoe UI"; ctx.textAlign = "left"; ctx.fillText("적도", W - 70, eqY - 8);
-
-      ctx.save(); ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 4;
-      drawArrow(ctx, W / 2, eqY - 130, W / 2, eqY - 40, 10);
-      drawArrow(ctx, W / 2, eqY + 130, W / 2, eqY + 40, 10);
-      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
-      ctx.fillText("무역풍에 의한 표층수 이동(북쪽)", W / 2, eqY - 140);
-      ctx.fillText("무역풍에 의한 표층수 이동(남쪽)", W / 2, eqY + 150);
-      ctx.restore();
-
-      var n = 10;
-      for (var k = 0; k < n; k++) {
-        var phase2 = (t * 0.5 + k / n) % 1;
-        var py2 = (H - 30) - phase2 * (H - 30 - (eqY - 20));
-        ctx.save(); ctx.fillStyle = cssVar("--cold"); ctx.globalAlpha = .85;
-        ctx.beginPath(); ctx.arc(W / 2 - 20 + (k % 3) * 20, py2, 5, 0, 7); ctx.fill(); ctx.restore();
-      }
-    }
-    t += 1 / 60;
-    requestAnimationFrame(frame);
-  }
-  updateInfo();
-  requestAnimationFrame(frame);
-})();
-
-/* TAB1 엔소 */
-(function () {
-  var canvas = document.getElementById("c1");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var state = "normal";
-  var t = 0;
-  var info = document.getElementById("c1-info");
-  var texts = {
-    nina: "무역풍이 <b>강화</b>되어 동태평양의 용승이 강해지고 수온이 낮아지는 <b>라니냐</b> 시기입니다. 서태평양은 저기압·다우, 동태평양은 고기압·가뭄 경향이 더 뚜렷해집니다.",
-    normal: "<b>평상시</b>에는 무역풍이 서쪽으로 불어 따뜻한 표층수가 서태평양에 쌓이고, 동태평양은 용승으로 찬물이 유지됩니다. 서태평양은 저기압(다우), 동태평양은 고기압(맑음)입니다.",
-    nino: "무역풍이 <b>약화</b>되어 동태평양의 용승이 약해지고 수온이 높아지는 <b>엘니뇨</b> 시기입니다. 서태평양은 평소보다 건조해 가뭄, 동태평양은 강수량이 늘어 홍수 경향을 보입니다."
-  };
-  document.querySelectorAll("#c1-state button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      state = b.getAttribute("data-s");
-      document.querySelectorAll("#c1-state button").forEach(function (x) { x.classList.toggle("on", x === b); });
-      info.innerHTML = texts[state];
-    });
-  });
-
-  function frame() {
-    if (canvas.offsetParent === null) { requestAnimationFrame(frame); return; }
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    var seaTop = 60, seaBot = H - 100;
-    var westX = 100, eastX = W - 100;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-    ctx.strokeRect(westX - 40, seaTop, eastX - westX + 80, seaBot - seaTop);
-    ctx.fillStyle = cssVar("--mist"); ctx.font = "700 12px Segoe UI"; ctx.textAlign = "left";
-    ctx.fillText("서태평양", westX - 30, seaTop - 12);
-    ctx.textAlign = "right"; ctx.fillText("동태평양", eastX + 30, seaTop - 12);
-
-    var windStrength = state === "nino" ? 0.35 : state === "nina" ? 1.5 : 1.0;
-    var warmTilt = state === "nino" ? 0.3 : state === "nina" ? 0.75 : 0.55;
-
-    // warm water layer (wedge shape thicker on west)
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(westX - 40, seaTop + 20);
-    ctx.lineTo(eastX + 40, seaTop + 20 + (seaBot - seaTop - 40) * (1 - warmTilt));
-    ctx.lineTo(eastX + 40, seaBot);
-    ctx.lineTo(westX - 40, seaBot);
-    ctx.closePath();
-    ctx.fillStyle = "rgba(242,150,92,0.35)";
-    ctx.fill();
-    ctx.restore();
-    ctx.fillStyle = cssVar("--mist"); ctx.font = "11px Segoe UI"; ctx.textAlign = "center";
-    ctx.fillText("온난 수역", (westX + eastX) / 2, seaTop + 40);
-
-    // trade wind arrow (east->west)
-    ctx.save();
-    ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral");
-    ctx.lineWidth = 3 + windStrength * 3;
-    drawArrow(ctx, eastX, seaTop - 30, westX, seaTop - 30, 10 + windStrength * 4);
-    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
-    ctx.fillText("무역풍 (세기: " + windStrength.toFixed(2) + "×)", (westX + eastX) / 2, seaTop - 40);
-    ctx.restore();
-
-    // upwelling arrows east
-    ctx.save();
-    ctx.strokeStyle = cssVar("--cold"); ctx.fillStyle = cssVar("--cold");
-    ctx.lineWidth = 3 + (1 - warmTilt) * 4;
-    drawArrow(ctx, eastX, seaBot - 10, eastX, seaTop + 30, 10);
-    ctx.restore();
-
-    // pressure + weather labels
-    var westPressure = state === "nino" ? "고기압 · 건조" : state === "nina" ? "저기압 · 다우" : "저기압 · 다우";
-    var eastPressure = state === "nino" ? "저기압 · 다우" : state === "nina" ? "고기압 · 건조" : "고기압 · 맑음";
-    ctx.font = "700 13px Segoe UI"; ctx.textAlign = "left";
-    ctx.fillStyle = cssVar("--foam"); ctx.fillText(westPressure, westX - 30, H - 60);
-    ctx.textAlign = "right"; ctx.fillText(eastPressure, eastX + 30, H - 60);
-
-    // walker circulation arrows (loop)
-    ctx.save();
-    ctx.strokeStyle = cssVar("--violet"); ctx.globalAlpha = .6; ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(westX, seaTop - 55); ctx.lineTo(eastX, seaTop - 55);
-    ctx.stroke();
-    ctx.restore();
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--violet"); ctx.textAlign = "center";
-    ctx.fillText("워커 순환", (westX + eastX) / 2, seaTop - 62);
-
-    t += 1 / 60;
-    requestAnimationFrame(frame);
-  }
-  info.innerHTML = texts.normal;
-  requestAnimationFrame(frame);
-})();
-
-/* TAB1 미션 — 엔소 카드 매칭 */
-(function () {
-  var cardsEl = document.getElementById("c1m-cards");
-  var slotsEl = document.getElementById("c1m-slots");
-  var checkBtn = document.getElementById("c1m-check");
-  var newBtn = document.getElementById("c1m-new");
-  if (!cardsEl) return;
-
-  var slotNames = { nina: "라니냐", normal: "평상시", nino: "엘니뇨" };
-  var slotOrder = ["nina", "normal", "nino"];
-  var clues = {
-    nina: "무역풍이 평소보다 강하게 붑니다. 동태평양에서 용승이 강해져 표층 수온이 낮아졌고, 서태평양은 강수가 많고 동태평양은 가뭄 경향이 뚜렷합니다.",
-    normal: "무역풍이 평년 수준으로 붑니다. 따뜻한 표층수가 서태평양에 쌓이고 동태평양은 용승으로 찬물이 유지되어, 서태평양은 저기압(다우), 동태평양은 고기압(맑음)입니다.",
-    nino: "무역풍이 평소보다 약해졌습니다. 동태평양의 용승이 약해져 표층 수온이 평소보다 높고, 서태평양은 가뭄, 동태평양은 강수량이 늘어 홍수 경향을 보입니다."
-  };
-
-  var pool = [];
-  var slots = {};
-  var selected = null;
-
-  function shuffle(arr) {
-    var a = arr.slice();
-    for (var i = a.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-    }
-    return a;
-  }
-
-  function reset() {
-    pool = shuffle(slotOrder.slice());
-    slots = { nina: null, normal: null, nino: null };
-    selected = null;
-    var info = document.getElementById("c1m-info");
-    info.style.color = "";
-    info.textContent = "카드를 클릭해 선택한 뒤, 놓을 칸을 클릭하세요.";
-    render();
-  }
-
-  function render() {
-    cardsEl.innerHTML = "";
-    pool.forEach(function (key) {
-      var card = document.createElement("div");
-      card.className = "enso-card" + (selected === key ? " selected" : "");
-      card.textContent = clues[key];
-      card.addEventListener("click", function () {
-        selected = (selected === key) ? null : key;
-        render();
-      });
-      cardsEl.appendChild(card);
-    });
-
-    slotsEl.innerHTML = "";
-    slotOrder.forEach(function (targetKey) {
-      var slot = document.createElement("div");
-      var filledKey = slots[targetKey];
-      slot.className = "enso-slot" + (filledKey ? " filled" : "");
-      var title = document.createElement("div");
-      title.className = "slot-title";
-      title.textContent = slotNames[targetKey];
-      slot.appendChild(title);
-      var body = document.createElement("div");
-      body.className = "slot-body";
-      body.textContent = filledKey ? clues[filledKey] : "여기를 클릭해 선택한 카드를 놓으세요.";
-      slot.appendChild(body);
-      slot.addEventListener("click", function () {
-        if (filledKey) {
-          pool.push(filledKey);
-          slots[targetKey] = null;
-          render();
-        } else if (selected) {
-          slots[targetKey] = selected;
-          pool = pool.filter(function (k) { return k !== selected; });
-          selected = null;
-          render();
-        }
-      });
-      slotsEl.appendChild(slot);
-    });
-  }
-
-  checkBtn.addEventListener("click", function () {
-    var info = document.getElementById("c1m-info");
-    if (pool.length > 0) {
-      info.style.color = "";
-      info.textContent = "아직 배치하지 않은 카드가 있습니다. 카드 3장을 모두 알맞은 칸에 놓아 주세요.";
-      return;
-    }
-    var correctCount = 0;
-    slotsEl.querySelectorAll(".enso-slot").forEach(function (slotEl, i) {
-      var targetKey = slotOrder[i];
-      var ok = slots[targetKey] === targetKey;
-      slotEl.classList.remove("correct", "wrong");
-      slotEl.classList.add(ok ? "correct" : "wrong");
-      if (ok) correctCount++;
-    });
-    if (correctCount === 3) {
-      info.style.color = "var(--teal)";
-      info.innerHTML = "<b>3장 모두 정답입니다!</b> 무역풍의 세기 변화가 엔소(ENSO)의 세 시기를 구분하는 핵심 단서입니다.";
-    } else {
-      info.style.color = "var(--coral)";
-      info.innerHTML = correctCount + " / 3 칸이 맞았습니다. 빨간 테두리 칸을 다시 살펴보고 카드를 옮겨 보세요.";
-    }
-  });
-
-  newBtn.addEventListener("click", reset);
-  reset();
-})();
-
-/* TAB2 밀란코비치 */
-(function () {
-  var canvas = document.getElementById("c2");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var prec = 0, tilt = 23.5, ecc = 0.02;
-  var info = document.getElementById("c2-info");
-
-  document.getElementById("c2-prec").addEventListener("input", function (e) {
-    prec = +e.target.value; document.getElementById("c2-prec-val").textContent = prec + "°"; render();
-  });
-  document.getElementById("c2-tilt").addEventListener("input", function (e) {
-    tilt = +e.target.value; document.getElementById("c2-tilt-val").textContent = tilt.toFixed(1) + "°"; render();
-  });
-  document.getElementById("c2-ecc").addEventListener("input", function (e) {
-    ecc = +e.target.value; document.getElementById("c2-ecc-val").textContent = ecc.toFixed(3); render();
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    var cx = W / 2, cy = H / 2 + 10;
-    var a = 260, b = a * Math.sqrt(1 - ecc * ecc);
-    ctx.save();
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2); ctx.stroke();
-    ctx.restore();
-
-    // sun at focus
-    var c = Math.sqrt(a * a - b * b);
-    ctx.save();
-    ctx.fillStyle = cssVar("--coral");
-    ctx.beginPath(); ctx.arc(cx + c, cy, 12, 0, 7); ctx.fill();
-    ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--mist");
-    ctx.fillText("태양", cx + c, cy + 28);
-    ctx.restore();
-
-    var precRad = prec * Math.PI / 180;
-    // earth at "current" position: near aphelion side related to precession phase
-    function earthAt(angle) {
-      return { x: cx + a * Math.cos(angle), y: cy + b * Math.sin(angle) };
-    }
-    var posSummer = earthAt(Math.PI + precRad);
-    var posWinter = earthAt(precRad);
-
-    [{ p: posSummer, label: "북반구 여름", col: cssVar("--coral") }, { p: posWinter, label: "북반구 겨울", col: cssVar("--cold") }].forEach(function (o) {
-      ctx.save();
-      ctx.fillStyle = o.col;
-      ctx.beginPath(); ctx.arc(o.p.x, o.p.y, 9, 0, 7); ctx.fill();
-      // tilt axis indicator
-      var axisLen = 22 + (tilt - 21.5) * 10;
-      ctx.strokeStyle = o.col; ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(o.p.x, o.p.y - axisLen);
-      ctx.lineTo(o.p.x, o.p.y + axisLen);
-      ctx.stroke();
-      ctx.font = "11px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--mist");
-      ctx.fillText(o.label, o.p.x, o.p.y + axisLen + 16);
-      ctx.restore();
-    });
-
-    // distance readout
-    var dSummer = Math.hypot(posSummer.x - (cx + c), posSummer.y - cy);
-    var dWinter = Math.hypot(posWinter.x - (cx + c), posWinter.y - cy);
-    var closerInSummer = dSummer < dWinter;
-
-    var tiltEffect = (tilt - 23.0);
-    var eccEffect = ecc;
-    var seasonIntensity = Math.abs(tiltEffect) * 1.2 + eccEffect * 8 + (closerInSummer ? 1.4 : 0);
-
-    ctx.save();
-    ctx.textAlign = "left"; ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam");
-    ctx.fillText("연교차(계절 차이) 크기 추정:", 20, 30);
-    var barW = 260, level = Math.min(1, seasonIntensity / 4);
-    ctx.strokeStyle = cssVar("--line"); ctx.strokeRect(20, 40, barW, 14);
-    ctx.fillStyle = cssVar("--coral"); ctx.fillRect(20, 40, barW * level, 14);
-    ctx.restore();
-
-    info.innerHTML = "현재 지구는 여름철에 태양과 " + (closerInSummer ? "<b>더 가깝습니다</b> (연교차 감소 방향)" : "<b>더 멉니다</b> (연교차 증가 방향)") +
-      ". 자전축 기울기가 " + tilt.toFixed(1) + "°로 표준(23.5°)보다 " + (tiltEffect >= 0 ? "크고" : "작고") +
-      ", 이심률은 " + ecc.toFixed(3) + "입니다. 세 요인이 결합하여 북반구의 계절 차이(연교차)를 " + (level > 0.55 ? "크게" : level > 0.25 ? "보통으로" : "작게") + " 만듭니다.";
-  }
-  render();
-})();
-
-/* TAB3 온실효과 */
-(function () {
-  var canvas = document.getElementById("c3");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var co2 = 280;
-  var tempEl = document.getElementById("c3-temp");
-  var dot = document.getElementById("c3-dot");
-
-  document.getElementById("c3-co2").addEventListener("input", function (e) {
-    co2 = +e.target.value;
-    document.getElementById("c3-co2-val").textContent = co2;
-    render();
-  });
-
-  function tempAnomaly(c) {
-    // rough log relation, scaled for visualization purposes only
-    return 3.0 * Math.log(c / 280) / Math.log(2);
-  }
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-
-    var groundY = H - 70, skyTop = 40;
-    // sun radiation down
-    ctx.save();
-    ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 3;
-    for (var i = 0; i < 3; i++) {
-      var x = 180 + i * 60;
-      drawArrow(ctx, x, skyTop, x, groundY - 10, 8);
-    }
-    ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center";
-    ctx.fillText("태양 복사(가시광선) 통과", 270, skyTop - 10);
-    ctx.restore();
-
-    // ground
-    ctx.fillStyle = cssVar("--panel-2"); ctx.fillRect(0, groundY, W, H - groundY);
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist"); ctx.textAlign = "left"; ctx.fillText("지표", 12, groundY + 20);
-
-    // greenhouse layer thickness scales with co2
-    var layerThickness = 6 + (co2 - 280) * 0.35;
-    ctx.save();
-    ctx.fillStyle = "rgba(63,201,176," + (0.12 + (co2 - 280) / 500) + ")";
-    ctx.fillRect(0, skyTop + 20, W, layerThickness);
-    ctx.restore();
-    ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--teal"); ctx.textAlign = "left";
-    ctx.fillText("온실 기체층 (CO₂ " + co2 + " ppm)", 12, skyTop + 16);
-
-    // outgoing IR + reradiation arrows scale with co2
-    var n = 5;
-    for (var j = 0; j < n; j++) {
-      var xx = 550 + j * 55;
-      ctx.save();
-      ctx.strokeStyle = cssVar("--coral"); ctx.fillStyle = cssVar("--coral"); ctx.lineWidth = 2.5;
-      drawArrow(ctx, xx, groundY - 10, xx, skyTop + 30, 7);
-      ctx.restore();
-      var reradiate = (co2 - 280) / 220;
-      if (reradiate > j / n) {
-        ctx.save();
-        ctx.strokeStyle = cssVar("--violet"); ctx.fillStyle = cssVar("--violet"); ctx.lineWidth = 2.5;
-        drawArrow(ctx, xx + 15, skyTop + 35, xx + 15, groundY - 15, 7);
-        ctx.restore();
-      }
-    }
-    ctx.font = "700 12px Segoe UI"; ctx.fillStyle = cssVar("--foam"); ctx.textAlign = "center";
-    ctx.fillText("지구 복사(적외선) 방출 / 재복사", 660, skyTop - 10);
-
-    var anomaly = tempAnomaly(co2);
-    tempEl.innerHTML = "기온 편차: <b>+" + anomaly.toFixed(2) + "°C</b> (산업화 이전 대비, 단순화된 모델)";
-    dot.style.background = anomaly > 2 ? cssVar("--coral") : anomaly > 1 ? cssVar("--teal") : cssVar("--cold");
-  }
-  render();
-})();
-
-/* TAB4 기후변화 대응 */
-(function () {
-  var canvas = document.getElementById("c4");
-  var ctx = setupCanvas(canvas);
-  var W = canvas._w, H = canvas._h;
-  var info = document.getElementById("c4-info");
-
-  var events = [
-    { y: 1992, name: "유엔 기후 변화 협약", d: "기후 변화에 공동 대응하기 위한 국제 협약을 최초로 채택했습니다." },
-    { y: 1997, name: "교토 의정서", d: "선진국의 온실 기체 배출량 감축을 의무화했습니다." },
-    { y: 2015, name: "파리 기후 변화 협약", d: "모든 국가가 자국 상황에 맞는 감축 목표를 세우고, 지구 평균 기온 상승을 1.5°C로 제한하기로 합의했습니다." },
-    { y: 2021, name: "글래스고 기후 합의", d: "파리 협약 세부 이행 지침을 완성하고 화석 연료 감축에 합의했습니다." }
-  ];
-  var techTexts = {
-    hydrogen: "<b>그린 수소 에너지</b>: 재생 에너지로 물을 전기 분해해 생산 단계부터 온실 기체를 배출하지 않는 친환경 에너지입니다.",
-    ccs: "<b>CO₂ 포집·저장</b>: 산업 시설에서 발생하는 이산화 탄소를 포집해 해양이나 지층 속에 저장하는 기술입니다.",
-    albedo: "<b>태양 복사 에너지량 조절</b>: 성층권에 에어로졸을 뿌리거나 우주에 반사막을 설치해 지구에 흡수되는 태양 복사 에너지를 줄이는 방법입니다."
-  };
-
-  var minY = 1990, maxY = 2023;
-  function xOf(y) { return 60 + (y - minY) / (maxY - minY) * (W - 120); }
-
-  canvas.addEventListener("click", function (e) {
-    var rect = canvas.getBoundingClientRect();
-    var scaleX = canvas._w / rect.width;
-    var mx = (e.clientX - rect.left) * scaleX;
-    var best = null, bestD = 20;
-    events.forEach(function (ev) {
-      var d = Math.abs(xOf(ev.y) - mx);
-      if (d < bestD) { bestD = d; best = ev; }
-    });
-    if (best) info.innerHTML = "<b>" + best.y + "년 " + best.name + "</b> — " + best.d;
-  });
-  document.querySelectorAll("[data-tech]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      document.querySelectorAll("[data-tech]").forEach(function (x) { x.classList.remove("on"); });
-      b.classList.add("on");
-      info.innerHTML = techTexts[b.getAttribute("data-tech")];
-    });
-  });
-
-  function render() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = cssVar("--panel"); ctx.fillRect(0, 0, W, H);
-    var lineY = H / 2;
-    ctx.strokeStyle = cssVar("--line"); ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.moveTo(60, lineY); ctx.lineTo(W - 60, lineY); ctx.stroke();
-
-    events.forEach(function (ev) {
-      var x = xOf(ev.y);
-      ctx.save();
-      ctx.fillStyle = cssVar("--teal");
-      ctx.beginPath(); ctx.arc(x, lineY, 8, 0, 7); ctx.fill();
-      ctx.font = "700 12px Segoe UI"; ctx.textAlign = "center"; ctx.fillStyle = cssVar("--foam");
-      ctx.fillText(ev.y, x, lineY - 18);
-      ctx.font = "11px Segoe UI"; ctx.fillStyle = cssVar("--mist");
-      ctx.fillText(ev.name, x, lineY + 30);
-      ctx.restore();
-    });
-  }
-  render();
-})();
-
-})();
-</script>
-
-<script>
-(function () {
-  window.sthUnit("eshs-1-2");
-  window.sthWork({
-    mount: "wk",
-    unitLabel: "[지구과학 Ⅰ-2] 대기와 해양의 상호작용과 기후 변화",
-    items: [
-      {
-            "id": "w1",
-            "label": "용승이 일어나는 조건",
-            "hint": "어느 방향의 바람이 불 때 용승이 일어나는지, 에크만 수송과 연결해 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w2",
-            "label": "엘니뇨 때 달라지는 것",
-            "hint": "평상시와 엘니뇨 때 무역풍·수온약층·강수 지역이 어떻게 달라지는지 하나씩 짝지어 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w3",
-            "label": "자연적 요인과 인위적 요인",
-            "hint": "기온 변화 그래프에서 인위적 요인을 빼면 설명되지 않는 구간이 어디인지 짚고 근거를 쓰세요.",
-            "ph": ""
-      },
-      {
-            "id": "w4",
-            "label": "아직 헷갈리는 것",
-            "hint": "다음 시간에 여기서부터 시작합니다.",
-            "ph": ""
-      }
-]
-  });
-})();
-</script>
+<script src="../assets/story.js"></script>
+<script src="../assets/share-config.js"></script>
+<script src="../assets/share.js"></script>
+<script src="episodes.js"></script>
 </body>
 </html>
