@@ -1,0 +1,141 @@
+/* =========================================================================
+   이야기형 소단원(에피소드) 부품 — story.js 와 짝
+   한 탭(소단원) 안에서 장면이 차례로 열리고 결말에서 끝난다.
+   색은 theme.css 의 토큰만 쓴다.
+   ========================================================================= */
+
+.episode { margin: 0 0 40px; }
+
+/* ---- 진행 막대 ---- */
+.ep-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  margin: 0 0 14px; padding: 10px 14px; border-radius: 16px; background: var(--glass);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 2px solid var(--line); }
+.ep-bar .ep-name { font-family: "Jua"; font-size: 14px; color: var(--ink); margin-right: 6px; }
+.ep-dot { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--line); background: var(--card);
+  color: var(--mist); border-radius: 999px; padding: 5px 11px; font-size: 11.5px; font-weight: 800;
+  font-family: inherit; cursor: pointer; }
+.ep-dot:disabled { cursor: not-allowed; opacity: .55; }
+.ep-dot.cleared { background: var(--teal-100); border-color: var(--teal-100); color: var(--teal-700); }
+.ep-dot.now { border-color: var(--brand); color: var(--brand-700); background: var(--brand-100); }
+.ep-bar .ep-reset { margin-left: auto; border: none; background: none; color: var(--mist); font-size: 11.5px;
+  font-family: inherit; cursor: pointer; text-decoration: underline; }
+
+/* ---- 장면 ---- */
+.scene[hidden] { display: none; }
+.scene-head { margin: 4px 4px 12px; }
+.scene-head .eyebrow { font-size: 11.5px; letter-spacing: .1em; color: var(--teal-700); font-weight: 800; }
+.scene-head h3 { font-family: "Jua"; font-weight: 400; font-size: 22px; margin: 4px 0 0; color: var(--ink); }
+.scene-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 18px 4px 0; }
+.scene-foot .lock-note { font-size: 12.5px; color: var(--mist); }
+.scene-foot .btn.next:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- 이야기 말풍선 ---- */
+.story { display: flex; gap: 12px; align-items: flex-start; margin: 0 0 14px; }
+.story .who { flex: none; width: 46px; height: 46px; border-radius: 16px; background: var(--amber-100);
+  display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.story .say { flex: 1; background: var(--card); border: 2px solid var(--line); border-radius: 4px 18px 18px 18px;
+  padding: 13px 16px; font-size: 14px; line-height: 1.8; color: var(--ink); box-shadow: var(--shadow-card); }
+.story .say .name { display: block; font-size: 11.5px; font-weight: 800; color: var(--amber-700); margin-bottom: 2px; }
+.story.narr .who { background: var(--violet-100); }
+.story.narr .say .name { color: var(--violet-700); }
+.case-file { background: var(--card-2); border: 2px dashed var(--line); border-radius: 16px; padding: 14px 18px;
+  font-size: 13.5px; line-height: 1.8; color: var(--ink); margin: 0 0 14px; }
+.case-file b.k { color: var(--coral-700); }
+
+/* ---- 미션 상자 ---- */
+.mission { margin: 14px 0 0; padding: 14px 18px; border-radius: 16px; border: 2px solid var(--amber);
+  background: var(--amber-100); color: #3a2a00; font-size: 13.5px; line-height: 1.75; }
+.mission .m-tag { font-weight: 900; margin-right: 6px; }
+.mission.ok { border-color: var(--green); background: var(--green-100); color: var(--green-700); }
+.mission ul { margin: 6px 0 0; padding-left: 18px; }
+.mission li.done { text-decoration: line-through; opacity: .7; }
+
+/* ---- 분류 놀이 (sthSort) ---- */
+.sort { padding: 16px 18px 18px; }
+.sort .pool { display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; margin-bottom: 14px; }
+.sort .tok { border: 2px solid var(--line); background: var(--card); color: var(--ink); border-radius: 12px;
+  padding: 8px 12px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; text-align: left; }
+.sort .tok:hover { border-color: var(--brand); }
+.sort .tok.held { border-color: var(--brand); background: var(--brand-100); color: var(--brand-700); }
+.sort .tok.bad { border-color: var(--rose); background: var(--rose-100); color: var(--rose-700); }
+.sort .buckets { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 10px; }
+.sort .bucket { border: 2px dashed var(--line); border-radius: 16px; padding: 10px 12px 12px; min-height: 92px;
+  background: var(--card-2); cursor: pointer; font-family: inherit; text-align: left; color: var(--ink); }
+.sort .bucket:hover { border-color: var(--brand); }
+.sort .bucket .b-name { display: block; font-size: 12px; font-weight: 900; color: var(--teal-700); margin-bottom: 6px; }
+.sort .bucket .b-sub { display: block; font-size: 11px; color: var(--mist); margin: -4px 0 6px; }
+.sort .bucket .in { display: inline-block; margin: 3px 4px 0 0; padding: 4px 9px; border-radius: 999px; font-size: 11.5px;
+  font-weight: 700; background: var(--teal-100); color: var(--teal-700); }
+.sort .msg { font-size: 12.5px; color: var(--mist); margin-top: 12px; min-height: 18px; line-height: 1.7; }
+
+/* ---- 순서 맞추기 (sthOrder) ---- */
+.order { padding: 16px 18px 18px; }
+.order .slots { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; counter-reset: st; }
+.order .slot { border: 2px solid var(--line); border-radius: 12px; padding: 9px 12px 9px 40px; font-size: 13px;
+  min-height: 40px; position: relative; color: var(--ink); background: var(--card-2); }
+.order .slot::before { counter-increment: st; content: counter(st); position: absolute; left: 12px; top: 8px;
+  width: 20px; height: 20px; border-radius: 50%; background: var(--brand-100); color: var(--brand-700);
+  font-size: 11.5px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.order .slot.filled { background: var(--teal-100); border-color: var(--teal-100); color: var(--teal-700); font-weight: 700; }
+
+/* ---- 한 문제 (sthPick) ---- */
+.pick { padding: 16px 18px 18px; }
+.pick .q { font-size: 14px; line-height: 1.75; color: var(--ink); margin: 0 0 10px; font-weight: 700; }
+.pick .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 8px; }
+.pick .opt { text-align: left; background: var(--card); border: 2px solid var(--line); border-radius: 14px;
+  padding: 10px 13px; font-size: 13px; line-height: 1.6; font-family: inherit; color: var(--ink); cursor: pointer; }
+.pick .opt:hover { border-color: var(--brand); }
+.pick .opt.right { background: var(--green-100); border-color: var(--green); color: var(--green-700); font-weight: 700; }
+.pick .opt.wrong { background: var(--rose-100); border-color: var(--rose); color: var(--rose-700); }
+.pick .why { font-size: 12.5px; color: var(--mist); line-height: 1.7; margin-top: 10px; min-height: 18px; }
+
+/* ---- 결말 ---- */
+.ending { border-radius: 22px; padding: 22px 22px 20px; background: linear-gradient(135deg, var(--teal-100), var(--brand-100));
+  border: 2px solid var(--line); color: var(--ink); margin: 0 0 14px; }
+.ending h4 { font-family: "Jua"; font-weight: 400; font-size: 20px; margin: 0 0 8px; }
+.ending p { font-size: 14px; line-height: 1.85; margin: 0 0 8px; }
+.ending .stamp { display: inline-block; margin-top: 6px; padding: 6px 14px; border-radius: 999px; font-weight: 900;
+  font-size: 12.5px; background: var(--card); color: var(--teal-700); border: 2px solid var(--teal); }
+.ending .vs { font-size: 13px; background: var(--glass); border-radius: 12px; padding: 10px 14px; margin: 10px 0 0; line-height: 1.75; }
+.one-line { padding: 4px 18px 18px; }
+.one-line label { display: block; font-size: 13px; font-weight: 800; color: var(--ink); margin: 0 0 6px; }
+.one-line textarea { width: 100%; box-sizing: border-box; min-height: 74px; border-radius: 14px; border: 2px solid var(--line);
+  background: var(--card-2); color: var(--ink); padding: 10px 12px; font-size: 13.5px; line-height: 1.7; font-family: inherit; resize: vertical; }
+.one-line textarea:focus { outline: none; border-color: var(--brand); }
+
+.teacher-note { font-size: 11.5px; color: var(--mist); margin: 10px 4px 0; }
+.teacher-note a { color: inherit; }
+
+@media (max-width: 640px) {
+  .ep-bar { top: 0; padding: 8px 10px; }
+  .ep-dot span.t { display: none; }
+  .scene-head h3 { font-size: 19px; }
+}
+
+/* =========================================================================
+   우리 반 공유 탭 (share.js)
+   ========================================================================= */
+.share { padding: 18px 20px 22px; }
+.share h4 { font-family: "Jua"; font-weight: 400; font-size: 17px; margin: 18px 0 10px; color: var(--ink); }
+.share-id { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+.share-id label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: var(--mist); }
+.share-id input { border: 2px solid var(--line); border-radius: 12px; padding: 8px 12px; font-size: 14px; font-family: inherit;
+  background: var(--card-2); color: var(--ink); width: 150px; }
+.share-id input:focus { outline: none; border-color: var(--brand); }
+.sm-row { display: flex; gap: 10px; flex-wrap: wrap; padding: 9px 12px; border-radius: 12px; background: var(--card-2);
+  border: 2px solid var(--line); margin-bottom: 6px; font-size: 13px; color: var(--mist); }
+.sm-row b { color: var(--ink); }
+.sm-row.ok { background: var(--teal-100); border-color: var(--teal-100); color: var(--teal-700); }
+.share-act { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 14px; }
+.sh-check { font-size: 12.5px; color: var(--mist); width: 100%; }
+.sh-note { font-size: 13px; color: var(--mist); line-height: 1.7; margin: 16px 0 0; }
+.sh-bar { font-size: 12.5px; color: var(--ink); margin-bottom: 8px; }
+.sh-bar i { display: block; height: 8px; border-radius: 999px; background: var(--card-2); border: 1px solid var(--line); overflow: hidden; margin-top: 4px; }
+.sh-bar i b { display: block; height: 100%; background: var(--teal); }
+.sh-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 10px; margin-top: 14px; }
+.sh-card { border: 2px solid var(--line); border-radius: 16px; padding: 12px 14px; background: var(--card); font-size: 12.5px; line-height: 1.65; color: var(--ink); }
+.sh-card.me { border-color: var(--brand); }
+.sh-card .sh-nick { font-family: "Jua"; font-size: 15px; margin-bottom: 4px; }
+.sh-card p { margin: 0 0 4px; color: var(--mist); }
+.sh-card p b { color: var(--ink); }
+.sh-card blockquote { margin: 8px 0 0; padding: 8px 10px; border-radius: 10px; background: var(--amber-100); color: #3a2a00; }
