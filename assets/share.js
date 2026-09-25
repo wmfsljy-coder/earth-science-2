@@ -119,7 +119,7 @@
       fetch(URL_ + "?action=list&cls=" + encodeURIComponent(o.cls) + "&unit=" + encodeURIComponent(opt.unit))
         .then(function (r) { return r.json(); })
         .then(function (j) { if (!j.ok) throw new Error(j.error || "오류"); paintBoard(j.items || [], o); })
-        .catch(function (e) { board.innerHTML = ""; board.appendChild(el("p", "sh-note", "불러오지 못했습니다. (" + e.message + ")")); });
+        .catch(function (e) { board.innerHTML = ""; board.appendChild(el("p", "sh-note", "지금은 우리 반 화면을 불러올 수 없습니다. 선생님이 공유를 켜는 중일 수 있습니다. 잠시 뒤 ↻ 새로 고침을 눌러 보세요.")); });
       loadLog(o);
     }
 
@@ -131,7 +131,7 @@
       fetch(URL_ + "?action=classlog&cls=" + encodeURIComponent(o.cls))
         .then(function (r) { return r.json(); })
         .then(function (j) { if (!j.ok) throw new Error(j.error || "오류"); paintLog(j.units || [], o); })
-        .catch(function (e) { p.textContent = "활동 기록을 불러오지 못했습니다. (" + e.message + ")"; });
+        .catch(function (e) { p.textContent = "활동 기록은 잠시 뒤에 보입니다."; });
     }
     function paintLog(units, o) {
       logBox.innerHTML = "";
