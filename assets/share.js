@@ -188,10 +188,24 @@
         return;
       }
       postBtn.disabled = true; msg.textContent = "올리는 중…";
-      fetch(URL_, {
-        method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },      // 단순 요청이라 사전 요청(preflight)이 없다
-        body: JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, unit: opt.unit, unitLabel: opt.unitLabel || "", results: r, line: withLine && withLine.checked ? myLine() : "" })
-      }).then(function (res) { return res.json(); })
+      var body = JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, unit: opt.unit, unitLabel: opt.unitLabel || "", results: r, line: withLine && withLine.checked ? myLine() : "" });
+      /* 반 전체가 한꺼번에 누르면 시트에 줄이 생긴다. 뒷단이 '많습니다' 라고 하면
+         조금씩 다른 시간만큼 기다렸다가 스스로 다시 보낸다(최대 세 번). */
+      function send(tries) {
+        return fetch(URL_, {
+          method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },      // 단순 요청이라 사전 요청(preflight)이 없다
+          body: body
+        }).then(function (res) { return res.json(); })
+          .then(function (j) {
+            if (!j.ok && /많습니다|잠시 뒤/.test(j.error || "") && tries < 3) {
+              msg.textContent = "친구들이 한꺼번에 올리는 중이라 잠깐 기다립니다…";
+              return new Promise(function (ok) { setTimeout(ok, 1500 + Math.random() * 3500); })
+                .then(function () { return send(tries + 1); });
+            }
+            return j;
+          });
+      }
+      send(1)
         .then(function (j) { if (!j.ok) throw new Error(j.error || "오류"); msg.textContent = "올렸습니다."; load(); })
         .catch(function (e) { msg.textContent = "올리지 못했습니다. (" + e.message + ")"; })
         .then(function () { postBtn.disabled = false; setTimeout(function () { msg.textContent = ""; }, 2500); });
