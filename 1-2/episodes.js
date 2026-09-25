@@ -100,8 +100,8 @@ function bar(ctx, x, y, w, h, col, alpha) {
       ctx.strokeStyle = v("--line"); ctx.lineWidth = 2; ctx.strokeRect(lx, ly, lw, lh);
       text(ctx, "위에서 본 모습", lx, ly - 10, { s: 11.5, w: "800", c: v("--mist") });
       text(ctx, "↑ 북", lx + 12, ly + 20, { s: 11, w: "800", c: v("--mist") });
-      text(ctx, "육지", lx + lw - 25, ly + lh / 2, { s: 11, a: "center", w: "800", c: v("--mist") });
-      text(ctx, "바다", lx + 60, ly + lh / 2, { s: 11.5, a: "center", w: "800", c: v("--mist") });
+      text(ctx, "육지", lx + lw - 25, ly + lh - 10, { s: 11, a: "center", w: "800", c: v("--mist") });
+      text(ctx, "바다", lx + 60, ly + lh - 10, { s: 11.5, a: "center", w: "800", c: v("--mist") });
       var wv = azVec(az), ev = azVec(ekAz()), mx = lx + 160, my = ly + lh / 2;
       ctx.strokeStyle = v("--amber"); ctx.fillStyle = v("--amber"); ctx.lineWidth = 4;
       window.drawArrow(ctx, mx, my, mx + wv.x * 44, my + wv.y * 44, 11);
@@ -109,7 +109,7 @@ function bar(ctx, x, y, w, h, col, alpha) {
         { s: 11.5, a: "center", w: "800", c: v("--amber-700") });
       ctx.strokeStyle = v("--coral"); ctx.fillStyle = v("--coral");
       window.drawArrow(ctx, mx, my, mx + ev.x * 44, my + ev.y * 44, 11);
-      text(ctx, "에크만 수송", clamp(mx + ev.x * 70, lx + 44, lx + lw - 44), clamp(my + ev.y * 70 + 4, ly + 16, ly + lh - 8),
+      text(ctx, "에크만 수송", clamp(mx + ev.x * 70, lx + 70, lx + lw - 70), clamp(my + ev.y * 70 + 4, ly + 34, ly + lh - 20),
         { s: 11.5, a: "center", w: "800", c: v("--coral-700") });
 
       /* 오른쪽 : 해안 단면 */
@@ -326,7 +326,7 @@ function bar(ctx, x, y, w, h, col, alpha) {
         ctx.beginPath(); ctx.moveTo(x, y0 - 10); ctx.lineTo(x, y0 + 5 * 44 + 2); ctx.stroke(); ctx.globalAlpha = 1;
         text(ctx, (p > 0 ? "+" : "") + p + "%", x, y0 - 18, { s: 10.5, a: "center", c: v("--mist") });
       });
-      text(ctx, "평년 대비 강수량", cx, y0 - 38, { s: 12, a: "center", w: "800", c: v("--mist") });
+      text(ctx, "평년 대비 강수량", cx, y0 + 5 * 44 + 30, { s: 12, a: "center", w: "800", c: v("--mist") });
 
       REG.forEach(function (r, i) {
         var yy = y0 + i * 44 + 10, val = rain(i);
@@ -555,7 +555,7 @@ function bar(ctx, x, y, w, h, col, alpha) {
         var bx = x0 + 44 + i * 150, hpx = it.val * SC;
         bar(ctx, bx, hpx >= 0 ? base - hpx : base, 76, Math.max(Math.abs(hpx), 2), it.c, i === 2 ? 1 : 0.8);
         text(ctx, it.n, bx + 38, 326, { s: 11.5, a: "center", w: "800", c: v("--mist") });
-        text(ctx, (it.val > 0 ? "+" : "") + it.val.toFixed(2), bx + 38, it.val >= 0 ? base - hpx - 8 : base + Math.abs(hpx) + 18,
+        text(ctx, (it.val > 0 ? "+" : "") + it.val.toFixed(2), bx + 38, it.val >= 0 ? base - hpx - 8 : base - 10,
           { s: 13, a: "center", w: "900", c: v(it.c === "--coral" ? "--coral-700" : "--cold") });
       });
 

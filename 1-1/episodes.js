@@ -58,13 +58,23 @@ function azName(az) {
   var names = ["북", "북동", "동", "남동", "남", "남서", "서", "북서"];
   return names[Math.round(n / 45) % 8];
 }
-function compass(ctx, cx, cy, R) {
+/* busy : 화살표 이름표가 놓일 방위각들. 그쪽 방위 글자는 지워 글자끼리 겹치지 않게 한다 */
+function compass(ctx, cx, cy, R, busy) {
   ctx.strokeStyle = v("--line"); ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
-  text(ctx, "북", cx, cy - R - 8, { s: 11.5, a: "center", w: "800", c: v("--mist") });
-  text(ctx, "남", cx, cy + R + 18, { s: 11.5, a: "center", w: "800", c: v("--mist") });
-  text(ctx, "동", cx + R + 16, cy + 4, { s: 11.5, a: "center", w: "800", c: v("--mist") });
-  text(ctx, "서", cx - R - 16, cy + 4, { s: 11.5, a: "center", w: "800", c: v("--mist") });
+  function free(az) {
+    for (var i = 0; busy && i < busy.length; i++) {
+      var d = ((busy[i] - az) % 360 + 360) % 360;
+      if (d > 180) d = 360 - d;
+      if (d < 32) return false;
+    }
+    return true;
+  }
+  var O = { s: 11.5, a: "center", w: "800", c: v("--mist") };
+  if (free(0)) text(ctx, "북", cx, cy - R - 8, O);
+  if (free(180)) text(ctx, "남", cx, cy + R + 18, O);
+  if (free(90)) text(ctx, "동", cx + R + 16, cy + 4, O);
+  if (free(270)) text(ctx, "서", cx - R - 16, cy + 4, O);
 }
 
 /* =========================================================================
@@ -145,8 +155,8 @@ function compass(ctx, cx, cy, R) {
       text(ctx, "깊이(m)", TX0 - 8, PY0 - 12, { s: 11, a: "right", c: v("--mist") });
       for (var tt = 0; tt <= 30; tt += 10) text(ctx, tt + "℃", XT(tt), PY1 + 18, { s: 10.5, a: "center", c: v("--mist") });
       for (var ss = 33; ss <= 36; ss += 1) text(ctx, ss + "", XS(ss), PY1 + 18, { s: 10.5, a: "center", c: v("--mist") });
-      text(ctx, "수온 →", TX1, PY1 + 36, { s: 11, a: "right", c: v("--mist") });
-      text(ctx, "염분(psu) →", SX1, PY1 + 36, { s: 11, a: "right", c: v("--mist") });
+      text(ctx, "수온 →", TX1, PY1 + 34, { s: 11, a: "right", c: v("--mist") });
+      text(ctx, "염분(psu) →", SX1, PY1 + 34, { s: 11, a: "right", c: v("--mist") });
 
       /* 곡선 */
       ctx.strokeStyle = v("--coral"); ctx.lineWidth = 2.8; ctx.beginPath();
@@ -172,12 +182,12 @@ function compass(ctx, cx, cy, R) {
       if (lo !== null) text(ctx, "수온약층", (TX0 + TX1) / 2, YD((lo + hi) / 2) + 4, { s: 12, a: "center", w: "800", c: v("--teal-700") });
 
       var layer = (lo !== null && depth >= lo && depth <= hi) ? "수온약층" : (depth <= p.top + 10 ? "혼합층" : (lo === null ? "거의 균질한 층" : (depth < lo ? "혼합층" : "심해층")));
-      text(ctx, "깊이 " + depth + " m", 60, 372, { s: 15, w: "900" });
-      text(ctx, "수온 " + cT.toFixed(1) + " ℃", 230, 372, { s: 15, w: "900", c: v("--coral-700") });
-      text(ctx, "염분 " + cS.toFixed(2) + " psu", 400, 372, { s: 15, w: "900", c: v("--brand-700") });
-      text(ctx, "밀도 σt " + cD.toFixed(2), 610, 372, { s: 15, w: "900", c: v("--violet-700") });
-      text(ctx, "이 깊이의 층 : " + layer + "  ·  수온 변화율 " + g.toFixed(3) + " ℃/m", 60, 400, { s: 12.5, c: v("--mist") });
-      text(ctx, "σt = 밀도 − 1000 (클수록 무겁다)", 560, 400, { s: 11, c: v("--mist") });
+      text(ctx, "깊이 " + depth + " m", 60, 390, { s: 15, w: "900" });
+      text(ctx, "수온 " + cT.toFixed(1) + " ℃", 230, 390, { s: 15, w: "900", c: v("--coral-700") });
+      text(ctx, "염분 " + cS.toFixed(2) + " psu", 400, 390, { s: 15, w: "900", c: v("--brand-700") });
+      text(ctx, "밀도 σt " + cD.toFixed(2), 610, 390, { s: 15, w: "900", c: v("--violet-700") });
+      text(ctx, "이 깊이의 층 : " + layer + "  ·  수온 변화율 " + g.toFixed(3) + " ℃/m", 60, 414, { s: 12.5, c: v("--mist") });
+      text(ctx, "σt = 밀도 − 1000 (클수록 무겁다)", 560, 414, { s: 11, c: v("--mist") });
 
       var ch = false;
       if (lat === "low" && g >= 0.02 && !got.a) { got.a = ch = true; }
@@ -318,7 +328,7 @@ function compass(ctx, cx, cy, R) {
     var wind = { polar: true, westerlies: true, trade: true }, t = 0;
     var got = window.sthState("aGyre") || { a: false, b: false, c: false };
 
-    var BX0 = 190, BX1 = 840, YEQ = 250, BAND = 66;
+    var BX0 = 190, BX1 = 840, YEQ = 280, BAND = 66;
 
     function bands() {
       return [
@@ -442,18 +452,18 @@ function compass(ctx, cx, cy, R) {
 
       /* 오른쪽: 나침반 */
       var cx = 650, cy = 210, R = 120;
-      compass(ctx, cx, cy, R);
+      compass(ctx, cx, cy, R, [az, ek]);
       var wv = azVec(az), ev = azVec(ek);
       ctx.strokeStyle = v("--amber"); ctx.fillStyle = v("--amber"); ctx.lineWidth = 5;
       window.drawArrow(ctx, cx, cy, cx + wv.x * R, cy + wv.y * R, 13);
       ctx.strokeStyle = v("--coral"); ctx.fillStyle = v("--coral"); ctx.lineWidth = 5;
       window.drawArrow(ctx, cx, cy, cx + ev.x * R * 0.82, cy + ev.y * R * 0.82, 13);
-      text(ctx, "바람", clamp(cx + wv.x * (R + 30), 460, 870), clamp(cy + wv.y * (R + 30), 70, 350), { s: 12.5, a: "center", w: "900", c: v("--amber-700") });
-      text(ctx, "에크만 수송", clamp(cx + ev.x * (R + 34), 460, 840), clamp(cy + ev.y * (R + 34), 70, 350), { s: 12.5, a: "center", w: "900", c: v("--coral-700") });
+      text(ctx, "바람", clamp(cx + wv.x * (R + 38), 460, 870), clamp(cy + wv.y * (R + 38), 56, 372), { s: 12.5, a: "center", w: "900", c: v("--amber-700") });
+      text(ctx, "에크만 수송", clamp(cx + ev.x * (R + 38), 460, 840), clamp(cy + ev.y * (R + 38), 56, 372), { s: 12.5, a: "center", w: "900", c: v("--coral-700") });
 
-      text(ctx, "바람 " + azName(az) + "쪽 (" + az + "°)", 470, 380, { s: 14, w: "900", c: v("--amber-700") });
-      text(ctx, "순 수송 " + azName(ek) + "쪽 (" + ek + "°)", 640, 380, { s: 14, w: "900", c: v("--coral-700") });
-      text(ctx, hemi === "N" ? "북반구 : 바람의 오른쪽 90°" : "남반구 : 바람의 왼쪽 90°", 470, 404, { s: 11.5, c: v("--mist") });
+      text(ctx, "바람 " + azName(az) + "쪽 (" + az + "°)", 470, 392, { s: 14, w: "900", c: v("--amber-700") });
+      text(ctx, "순 수송 " + azName(ek) + "쪽 (" + ek + "°)", 640, 392, { s: 14, w: "900", c: v("--coral-700") });
+      text(ctx, hemi === "N" ? "북반구 : 바람의 오른쪽 90°" : "남반구 : 바람의 왼쪽 90°", 470, 414, { s: 11.5, c: v("--mist") });
 
       var ch = false;
       if (hemi === "N" && Math.abs(((ek - 90 + 540) % 360) - 180) <= 10 && !GOT5.a) { GOT5.a = ch = true; }
@@ -508,7 +518,7 @@ function compass(ctx, cx, cy, R) {
       text(ctx, "전향력", px + 78, py + 4, { s: 11.5, w: "800", c: v("--violet-700") });
       ctx.strokeStyle = v("--teal"); ctx.fillStyle = v("--teal"); ctx.lineWidth = 5;
       window.drawArrow(ctx, px, py + 34, px, py + 96, 12);
-      text(ctx, "지형류 — 두 힘이 평형을 이루어 등수압선과 나란히 흐른다", px + 14, py + 74, { s: 12, w: "800", c: v("--teal-700") });
+      text(ctx, "지형류 — 두 힘이 평형을 이루어 등수압선과 나란히 흐른다", px + 16, py + 112, { s: 12, w: "800", c: v("--teal-700") });
 
       /* 결과 */
       text(ctx, "지형류 = (g ÷ f) × 기울기", 660, 100, { s: 11.5, c: v("--mist") });
@@ -594,7 +604,7 @@ function compass(ctx, cx, cy, R) {
         ctx.beginPath(); ctx.moveTo(X(g), gy); ctx.lineTo(X(g), gy + 6); ctx.stroke();
         text(ctx, String(g), X(g), gy + 22, { s: 10.5, a: "center", c: v("--mist") });
       }
-      text(ctx, "밀도 σt →", gx1 + 10, gy + 4, { s: 11, c: v("--mist") });
+      text(ctx, "밀도 σt →", gx1, gy + 40, { s: 11, a: "right", c: v("--mist") });
       ctx.strokeStyle = v("--amber"); ctx.setLineDash([5, 5]); ctx.lineWidth = 2.5;
       ctx.beginPath(); ctx.moveTo(X(LIMIT), gy - 44); ctx.lineTo(X(LIMIT), gy + 10); ctx.stroke(); ctx.setLineDash([]);
       text(ctx, "심층수의 기준 27.8", clamp(X(LIMIT), 140, 380), gy - 52, { s: 11.5, a: "center", w: "800", c: v("--amber-700") });
@@ -747,8 +757,8 @@ function compass(ctx, cx, cy, R) {
       { n: "대마 난류", type: "warm", x: 480, y1: 34.0, y2: 37.0, d: "쿠로시오에서 갈라져 대한해협을 지나 동해로 들어옵니다." },
       { n: "동한 난류", type: "warm", x: 430, y1: 36.0, y2: 40.0, d: "대마 난류의 일부가 동해안을 따라 북상합니다." },
       { n: "황해 난류", type: "warm", x: 250, y1: 34.0, y2: 38.5, d: "쿠로시오의 일부가 황해로 들어와 북상하는, 세력이 약한 난류입니다." },
-      { n: "북한 한류", type: "cold", x: 380, y1: 42.0, y2: 37.5, d: "고위도에서 동해안을 따라 남하하여 동한 난류와 맞부딪칩니다." },
-      { n: "리만 해류", type: "cold", x: 320, y1: 43.0, y2: 39.0, d: "연해주 방면에서 남하하는 한류로 동해 북부의 수온을 낮춥니다." }
+      { n: "북한 한류", type: "cold", x: 455, y1: 42.0, y2: 37.5, d: "고위도에서 동해안을 따라 남하하여 동한 난류와 맞부딪칩니다." },
+      { n: "리만 해류", type: "cold", x: 520, y1: 43.0, y2: 39.0, d: "연해주 방면에서 남하하는 한류로 동해 북부의 수온을 낮춥니다." }
     ];
 
     function draw() {
@@ -1540,8 +1550,8 @@ function compass(ctx, cx, cy, R) {
       ctx.strokeStyle = v("--amber"); ctx.fillStyle = v("--amber"); ctx.lineWidth = 5;
       window.drawArrow(ctx, cx, cy, cx, cy - R - 40, 13);
       text(ctx, "태풍의 진행 방향", cx, cy - R - 52, { s: 12, a: "center", w: "900", c: v("--amber-700") });
-      text(ctx, "위험 반원 (오른쪽)", cx + R + 14, cy - 10, { s: 12, w: "900", c: v("--brand-700") });
-      text(ctx, "가항 반원 (왼쪽)", cx - R - 14, cy - 10, { s: 12, a: "right", w: "900", c: v("--teal-700") });
+      text(ctx, "위험 반원", cx + R + 14, cy - 10, { s: 12, w: "900", c: v("--brand-700") });
+      text(ctx, "가항 반원", cx - R - 14, cy - 10, { s: 12, a: "right", w: "900", c: v("--teal-700") });
       /* 관측 도시 */
       var ox = cx + (side === "R" ? 1 : -1) * R * 0.95;
       ctx.fillStyle = v("--ink");
@@ -1705,7 +1715,7 @@ function compass(ctx, cx, cy, R) {
           var ax = x0 + 170 + j * 96;
           window.drawArrow(ctx, ax, seaY - 12, ax, seaY - 24 - ch * (0.3 + j * 0.12), 9);
         }
-        text(ctx, "구름 꼭대기 높이 약 " + Math.round(ch * 14) + " m", x0 + 10, seaY - 40 - ch * 0.9, { s: 11.5, w: "800", c: v("--teal-700") });
+        text(ctx, "구름 꼭대기 높이 약 " + Math.round(ch * 14) + " m", x0 + 10, Math.max(seaY - 40 - ch * 0.9, 112), { s: 11.5, w: "800", c: v("--teal-700") });
       }
 
       var px = 660;

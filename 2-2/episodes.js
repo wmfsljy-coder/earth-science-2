@@ -689,7 +689,7 @@ function fmtMm(d) {
       text(ctx, "300 °C — 변성이 시작되는 온도", gx0 + 8, GY(300) - 6, { s: 10.5, c: v("--mist") });
       ctx.save(); ctx.fillStyle = v("--violet");
       ctx.beginPath(); ctx.arc(gx0 + dist * SC, GY(T), 6, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-      text(ctx, "가장자리에서의 거리 (m) →", gx1, gy1 + 20, { s: 10.5, a: "right", c: v("--mist") });
+      text(ctx, "거리 (m) →", gx1, gy1 + 20, { s: 10.5, a: "right", c: v("--mist") });
       [0, 1000, 2000, 3000].forEach(function (q) {
         var xx = gx0 + q * SC; if (xx > gx1) return;
         text(ctx, q + "", xx, gy1 + 20, { s: 10, a: "center", c: v("--mist") });

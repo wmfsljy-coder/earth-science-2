@@ -648,7 +648,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       text(ctx, "지구가 가운데, 화성은 작은 원 위를 돈다", gx, 82, { s: 11.5, a: "center", c: v("--mist") });
       text(ctx, "지구", gx, gy + 20, { s: 11.5, a: "center", w: "700" });
       text(ctx, "화성", clamp(qx, 470, 880), qy - 11, { s: 11.5, a: "center", w: "700" });
-      text(ctx, "주전원 (반지름 " + R.toFixed(2) + " 배)", clamp(ccx, 500, 860), clamp(ccy - er - 10, 100, 430),
+      text(ctx, "주전원 (반지름 " + R.toFixed(2) + " 배)", clamp(ccx, 500, 860), clamp(ccy - Math.max(er, 30) - 12, 100, 430),
         { s: 11.5, a: "center", w: "800", c: withA(v("--violet-700"), 1) });
 
       /* 아래 — 두 모형의 겉보기 경도 비교 */
@@ -1536,7 +1536,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
         ctx.beginPath(); ctx.moveTo(xx, sy); ctx.lineTo(xx, sy + 14); ctx.stroke();
         text(ctx, i + "", xx, sy + 28, { s: 10.5, a: "center", c: G.seasons.indexOf(i) >= 0 ? v("--teal-700") : v("--mist"), w: G.seasons.indexOf(i) >= 0 ? "900" : "500" });
       }
-      text(ctx, "찾은 식의 계절 " + G.seasons.length + " 곳", X0 + 640, sy + 28, { s: 12, w: "900", c: G.seasons.length >= 3 ? v("--teal-700") : v("--mist") });
+      text(ctx, "찾은 식의 계절 " + G.seasons.length + " 곳", X0 + 640, sy + 52, { s: 12, w: "900", c: G.seasons.length >= 3 ? v("--teal-700") : v("--mist") });
 
       var ch = false;
       if (kind === "new" && s.ok && !G.a) { G.a = ch = true; }
