@@ -45,12 +45,18 @@
 
     /* ---- 내 정보 ---- */
     var idBox = el("div", "share-id");
-    idBox.innerHTML = "<label>반 코드 <input id='sh-cls' maxlength='12' placeholder='예: 1-3' autocomplete='off'></label>"
+    /* 반 목록(window.STH_CLASSES = [{ v: "1-1", t: "1학년 1반" }, …])을 설정 파일에 두면 고르기로, 없으면 직접 입력 */
+    var CL = (window.STH_CLASSES || []).map(function (c) { return typeof c === "string" ? { v: c, t: c } : c; });
+    var clsField = CL.length
+      ? "<select id='sh-cls'><option value=''>— 반 고르기 —</option>" + CL.map(function (c) { return "<option value='" + c.v + "'>" + c.t + "</option>"; }).join("") + "</select>"
+      : "<input id='sh-cls' maxlength='12' placeholder='예: 1-3' autocomplete='off'>";
+    idBox.innerHTML = "<label>반 " + (CL.length ? "" : "코드 ") + clsField + "</label>"
       + "<label>별명 <input id='sh-nick' maxlength='12' placeholder='실명 대신 별명' autocomplete='off'></label>"
       + "<button class='btn' type='button' id='sh-save'>저장</button><span class='saved' id='sh-idmsg'></span>";
     mount.appendChild(idBox);
     var cls = idBox.querySelector("#sh-cls"), nick = idBox.querySelector("#sh-nick"), idmsg = idBox.querySelector("#sh-idmsg");
-    var m = me(); cls.value = m.cls || ""; nick.value = m.nick || "";
+    var m = me(); nick.value = m.nick || "";
+    cls.value = CL.length && !CL.some(function (c) { return c.v === m.cls; }) ? "" : (m.cls || "");
     idBox.querySelector("#sh-save").addEventListener("click", function () {
       var o = { cls: clean(cls.value, 12), nick: clean(nick.value, 12) };
       try { localStorage.setItem(ME, JSON.stringify(o)); } catch (e) { /* 저장이 막힌 기기 */ }
