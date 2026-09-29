@@ -1214,7 +1214,9 @@ window.sthWork({
   recap: [
     { key: "r1", label: "① 절벽에 적힌 순서" },
     { key: "r2", label: "② 반으로, 또 반으로" },
-    { key: "r3", label: "③ 다섯 번의 대멸종과 화석 달력" }
+    { key: "r3", label: "③ 다섯 번의 대멸종과 화석 달력" },
+    { key: "rQuiz", label: "수준별 문제" },
+    { key: "rLab", label: "응용 실험실" }
   ],
   items: [
     { id: "all", label: "세 사건을 꿰는 한 문장", hint: "지층은 순서를 말해 주고(상대연령), 방사성 동위원소는 햇수를 말해 주며(절대연령), 화석은 시대를 말해 줍니다. 세 이야기에서 ‘무엇이 먼저인가’ 와 ‘몇 년 전인가’ 가 어떻게 이어졌는지 한 문장으로 쓰세요." },
@@ -1228,7 +1230,9 @@ window.sthShare({
   rows: [
     { key: "r1", label: "① 절벽에 적힌 순서" },
     { key: "r2", label: "② 반으로, 또 반으로" },
-    { key: "r3", label: "③ 다섯 번의 대멸종과 화석 달력" }
+    { key: "r3", label: "③ 다섯 번의 대멸종과 화석 달력" },
+    { key: "rQuiz", label: "수준별 문제" },
+    { key: "rLab", label: "응용 실험실" }
   ],
   line: { id: "all", label: "세 사건을 꿰는 한 문장" }
 });

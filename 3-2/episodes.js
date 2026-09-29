@@ -2091,7 +2091,9 @@ window.sthWork({
     { key: "r1", label: "① 여자들의 별 목록" },
     { key: "r2", label: "② 질량이 정한 일생" },
     { key: "r3", label: "③ 은하 동물원" },
-    { key: "r4", label: "④ 팽창하는 우주" }
+    { key: "r4", label: "④ 팽창하는 우주" },
+    { key: "rQuiz", label: "수준별 문제" },
+    { key: "rLab", label: "응용 실험실" }
   ],
   items: [
     { id: "all", label: "네 사건을 꿰는 한 문장", hint: "별빛의 스펙트럼 하나에서 온도가, 온도와 밝기에서 크기와 일생이, 은하의 빛에서 그 중심의 정체가, 그리고 빛의 적색 편이에서 우주의 나이가 나왔습니다. ‘우리가 가진 것은 빛뿐인데 어떻게 이 모든 것을 알아냈는가’ 를 한 문장으로 쓰세요." },
@@ -2106,7 +2108,9 @@ window.sthShare({
     { key: "r1", label: "① 여자들의 별 목록" },
     { key: "r2", label: "② 질량이 정한 일생" },
     { key: "r3", label: "③ 은하 동물원" },
-    { key: "r4", label: "④ 팽창하는 우주" }
+    { key: "r4", label: "④ 팽창하는 우주" },
+    { key: "rQuiz", label: "수준별 문제" },
+    { key: "rLab", label: "응용 실험실" }
   ],
   line: { id: "all", label: "네 사건을 꿰는 한 문장" }
 });

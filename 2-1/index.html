@@ -24,8 +24,10 @@
     <button class="tab-btn active" data-tab="0"><span class="num">01</span> 상대연령과 퇴적구조</button>
     <button class="tab-btn" data-tab="1"><span class="num">02</span> 절대연령과 지층 대비</button>
     <button class="tab-btn" data-tab="2"><span class="num">03</span> 지질 시대와 화석</button>
-    <button class="tab-btn" data-tab="3"><span class="num">04</span> 정리하기</button>
-    <button class="tab-btn" data-tab="4"><span class="num">05</span> 우리 반</button>
+    <button class="tab-btn" data-tab="3"><span class="num">04</span> 수준별 문제</button>
+    <button class="tab-btn" data-tab="4"><span class="num">05</span> 응용 실험실</button>
+    <button class="tab-btn" data-tab="5"><span class="num">06</span> 정리하기</button>
+    <button class="tab-btn" data-tab="6"><span class="num">07</span> 우리 반</button>
   </nav>
 
   <main>
@@ -361,20 +363,40 @@
       <p class="teacher-note">교사용: 주소 끝에 <a href="?open=1">?open=1</a> 을 붙이면 모든 장면이 열립니다.</p>
     </section>
 
-    <!-- ===================================================================== 04 정리하기 -->
+    <!-- ===================================================================== 04 수준별 문제 -->
     <section class="tab-panel" data-panel="3" hidden>
       <div class="stage-head">
-        <div class="eyebrow">04 · 세 사건을 하나로</div>
+        <div class="eyebrow">04 · 기본 · 발전 · 심화</div>
+        <h2 class="display">수준별 문제</h2>
+        <p>이 단원의 학습 목표를 세 단계로 확인합니다. <b>1단계 기본</b>은 용어와 핵심 개념, <b>2단계 발전</b>은 자료 해석과 계산, <b>3단계 심화</b>는 처음 보는 상황에 적용하고 근거를 들어 설명하기입니다. 자기 수준에 맞는 단계부터 시작하세요. 두 번 틀리면 정답과 해설을 볼 수 있어요.</p>
+      </div>
+      <div id="quiz"></div>
+    </section>
+
+    <!-- ===================================================================== 05 응용 실험실 -->
+    <section class="tab-panel" data-panel="4" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">05 · 배운 것을 처음 보는 상황에</div>
+        <h2 class="display">응용 실험실</h2>
+        <p>이야기에서 찾아낸 개념을 전혀 다른 상황에 써 봅니다. 사례마다 <b>먼저 예상하고 → 직접 조작해 → 판정받고 → 까닭을 확인</b>합니다. 세 번 틀리면 풀이를 볼 수 있어요.</p>
+      </div>
+      <div id="lab"></div>
+    </section>
+
+    <!-- ===================================================================== 06 정리하기 -->
+    <section class="tab-panel" data-panel="5" hidden>
+      <div class="stage-head">
+        <div class="eyebrow">06 · 세 사건을 하나로</div>
         <h2 class="display">정리하기</h2>
         <p>세 이야기의 결과가 아래에 모입니다. 세 사건을 꿰는 한 문장을 쓰고 <b>답안 복사</b>를 눌러 제출하세요. 쓰는 동안 자동으로 저장됩니다.</p>
       </div>
       <div class="stage-card" style="padding:6px 0 4px"><div id="wk"></div></div>
     </section>
 
-    <!-- ===================================================================== 05 우리 반 -->
-    <section class="tab-panel" data-panel="4" hidden>
+    <!-- ===================================================================== 07 우리 반 -->
+    <section class="tab-panel" data-panel="6" hidden>
       <div class="stage-head">
-        <div class="eyebrow">05 · 같은 반 친구들과 나누기</div>
+        <div class="eyebrow">07 · 같은 반 친구들과 나누기</div>
         <h2 class="display">우리 반</h2>
         <p>내가 해결한 사건과 알아낸 값을 우리 반에 올리고, 친구들은 어떻게 풀었는지 살펴보세요. <b>올리기 버튼을 눌렀을 때만</b> 공유됩니다. 실명 대신 별명을 쓰세요.</p>
       </div>
@@ -387,8 +409,12 @@
 <button class="theme-toggle" id="themeToggle">라이트 모드</button>
 <script src="../assets/theme.js"></script>
 <script src="../assets/story.js"></script>
+<script src="../assets/quiz.js"></script>
+<script src="../assets/lab.js"></script>
 <script src="../assets/share-config.js"></script>
 <script src="../assets/share.js"></script>
 <script src="episodes.js"></script>
+<script src="quiz-items.js"></script>
+<script src="lab-cases.js"></script>
 </body>
 </html>
