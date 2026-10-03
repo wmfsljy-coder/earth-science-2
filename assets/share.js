@@ -86,7 +86,7 @@
       var s = unitData(opt.unit).s || {}, g = [], e = [];
       Object.keys(s).forEach(function (k) {
         var v = s[k];
-        if (/OK$/.test(k) && (v === "맞음" || v === "어긋남")) g.push(k.slice(0, -2) + "=" + (v === "맞음" ? 1 : 0));
+        if (/OK$/.test(k) && (v === "맞음" || v === "어긋남")) g.push(k.slice(0, -2) + "=" + (v === "맞음" ? 1 : 0) + (typeof s[k.slice(0, -2) + "I"] === "number" ? "~" + s[k.slice(0, -2) + "I"] : ""));
         else if (v && typeof v === "object" && v.c && v.c.length !== undefined) {
           var root = document.getElementById(k), tot = root ? root.querySelectorAll(".scene").length : v.c.length, n = 0, stuck = 0;
           for (var i = 0; i < tot; i++) { if (v.c[i]) n++; else if (!stuck) stuck = i + 1; }
@@ -96,7 +96,10 @@
       /* 수준별 문제: 한 번에 맞힌 문항 / 손댄 문항 (해설을 먼저 본 것은 한 번에 맞힌 것으로 치지 않는다) */
       var q = s.quiz || {}, qt = 0, q1 = 0;
       Object.keys(q).forEach(function (id) { var x = q[id] || {}; if (x.r === 1 || x.n || x.sh) { qt++; if (x.r === 1 && !x.n && !x.sh) q1++; } });
-      return ("g:" + g.join(",") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt).slice(0, 290);
+      /* 실험실(응용·실제 자료): 푼 사례 / 손댄 사례 / 본 힌트 단계 수 (틀릴 때마다 힌트가 한 단계씩 열린다, 사례당 최대 2) */
+      var hs = 0, ls = 0, lt = 0;
+      ["lab", "real"].forEach(function (lk) { var L = s[lk] || {}; Object.keys(L).forEach(function (c) { var x = L[c] || {}; if (x.p == null) return; lt++; if (x.ok) ls++; hs += Math.min(2, x.n || 0); }); });
+      return ("g:" + g.join(",") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt + "|h:" + ls + "/" + lt + "/" + hs).slice(0, 290);
     }
     function myLine() { return opt.line ? clean((unitData(opt.unit).w || {})[opt.line.id], 300) : ""; }
     function paintMine() {
