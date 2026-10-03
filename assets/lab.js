@@ -78,7 +78,7 @@
   window.sthLab = function (opt) {
     var mount = document.getElementById(opt.mount);
     if (!mount) return;
-    var KEY = opt.key || "lab", RES = opt.result || "rLab";
+    var KEY = opt.key || "lab", RES = opt.result || "rLab", LBL = opt.label || "응용";
     var st = window.sthState(KEY) || {};
     var cases = opt.cases || [];
     mount.classList.add("lab");
@@ -94,7 +94,7 @@
     function save() {
       window.sthState(KEY, st);
       var solved = cases.filter(function (c) { return st[c.id] && st[c.id].ok; });
-      var s = "응용 " + solved.length + "/" + cases.length + " 해결" +
+      var s = LBL + " " + solved.length + "/" + cases.length + " 해결" +
         (solved.length ? " · " + solved.map(function (c) { return c.short || c.title; }).join(", ") : "");
       window.sthState(RES, solved.length ? s.slice(0, 120) : null);
       paintTop();
@@ -102,7 +102,7 @@
     function paintTop() {
       var n = cases.filter(function (c) { return st[c.id] && st[c.id].ok; }).length;
       topTxt.innerHTML = "<b>" + n + " / " + cases.length + "</b> 해결" +
-        (n === cases.length ? " — 모두 풀었습니다. 정리하기 탭에 나만의 말로 적어 보세요." : "");
+        (n === cases.length ? " — 모두 풀었습니다. " + (opt.doneNote || "정리하기 탭에 나만의 말로 적어 보세요.") : "");
       chips.innerHTML = "";
       cases.forEach(function (c, i) {
         var s = st[c.id] || {};
