@@ -52,7 +52,7 @@ window.sthLab({
       api.seg({ label: "보기", value: "t", options: [{ v: "t", t: "수온" }, { v: "s", t: "염분" }], onPick: function (x) { what = x; draw(); } });
       api.slider({ label: "깊이", min: 10, max: 800, step: 10, value: 100, fmt: function (x) { return x + " m"; }, onInput: function (x) { z = x; api.changed(); draw(); } });
       api.info("점은 플로트가 실제로 잰 깊이, 선은 그 사이를 이은 것입니다. " + SRC
-        + "<div data-link='{\"id\":\"kma-argo\",\"title\":\"국립기상과학원 아르고 자료 (교과서 연결 자료)\",\"src\":\"국립기상과학원 · 비상교육 지구과학 5 · 25쪽\",\"url\":\"https://argo.nims.go.kr/argo3\",\"ask\":\"우리나라 둘레 바다에서 지금 움직이고 있는 아르고 플로트 하나를 골라, 가장 최근 관측의 표층 수온과 가장 깊은 곳의 수온을 적어 오세요.\"}'></div>"
+        + "<div data-link='{\"id\":\"euro-argo\",\"title\":\"유로-아르고 플로트 지도\",\"src\":\"Euro-Argo ERIC (교과서의 국립기상과학원 아르고 주소는 지금 열리지 않음)\",\"url\":\"https://fleetmonitoring.euro-argo.eu/\",\"ask\":\"지도에서 우리나라 둘레 바다(동해·남해)에 있는 아르고 플로트 하나를 눌러, 가장 최근 관측의 표층 수온과 가장 깊은 곳의 수온을 적어 오세요.\"}'></div>"
         + "<div data-map='{\"id\":\"argo-east\",\"name\":\"동해 울릉 분지 부근 (플로트 위치)\",\"lat\":" + (AR.lat || 36.15) + ",\"lng\":" + (AR.lng || 131.33) + ",\"zoom\":7,\"ask\":\"플로트가 있던 곳은 울릉도·독도와 어떤 위치에 있나요? 둘레 바다의 색(깊이)도 보세요.\"}'></div>");
       draw();
       return {
