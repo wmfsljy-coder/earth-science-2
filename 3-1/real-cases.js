@@ -56,7 +56,7 @@ window.sthLab({
       api.slider({ label: "역행 시작일", min: 0, max: 365, step: 5, value: 100, fmt: function (x) { return label(x); }, onInput: function (x) { a = x; api.changed(); draw(); } });
       api.slider({ label: "역행 끝날", min: 0, max: 365, step: 5, value: 150, fmt: function (x) { return label(x); }, onInput: function (x) { b = x; api.changed(); draw(); } });
       api.info("점이 왼쪽(동쪽)으로 가다가 멈춰 서고, 오른쪽(서쪽)으로 갔다가 다시 멈춰 서는 곳이 역행의 시작과 끝입니다. " + SRC
-        + "<div data-link='{\"id\":\"horizons\",\"title\":\"NASA JPL Horizons 웹 화면\",\"src\":\"NASA 제트추진연구소\",\"url\":\"https://ssd.jpl.nasa.gov/horizons/app.html\",\"ask\":\"Target Body 를 Mars 로 두고 다음 화성 역행이 시작되는 무렵(2026년 말 ~ 2027년 초)의 위치를 찾아 보거나, 화면에서 바꿀 수 있는 항목(관측 위치·기간·간격) 세 가지를 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"horizons\",\"title\":\"NASA JPL Horizons 웹 화면\",\"src\":\"NASA 제트추진연구소\",\"url\":\"https://ssd.jpl.nasa.gov/horizons/app.html\",\"ask\":\"Target Body 를 Mars 로 두고 다음 화성 역행(2027년 1 ~ 4월, 충은 2027년 2월 19일) 무렵의 위치를 찾아 보거나, 화면에서 바꿀 수 있는 항목(관측 위치·기간·간격) 세 가지를 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
@@ -69,7 +69,7 @@ window.sthLab({
     hints: ["2024년 12월 초에 화성이 멈춰 섭니다.", "2025년 2월 말에 다시 멈춰 섭니다."],
     solution: "약 <b>" + label(ST[0]) + " ~ " + label(ST[1]) + "</b>, <b>" + Math.round(DUR) + "일</b>.",
     why: "지구는 화성보다 안쪽에서 더 빨리 돕니다. 지구가 화성을 따라잡아 앞지르는 동안, 지구에서 화성을 바라보는 방향이 거꾸로 돌아가 화성이 별자리 사이를 서쪽으로 거슬러 가는 것처럼 보입니다(역행). 화성은 약 2년 2개월(780일)마다 지구에 따라잡혀, 그때마다 두 달 남짓 역행합니다.<br>"
-      + "프톨레마이오스는 이 고리 모양을 설명하려고 주전원을 만들었고, 코페르니쿠스는 지구가 움직인다고 보면 훨씬 간단히 설명된다는 것을 보였습니다."
+      + "프톨레마이오스는 이 고리 모양을 주전원과 이심원을 써서 설명했고, 코페르니쿠스는 지구가 움직인다고 보면 훨씬 간단히 설명된다는 것을 보였습니다."
   },
   {
     id: "r2", tag: "실제 자료 · 거리와 밝기", title: "화성이 가장 가까웠던 날은 역행의 어디쯤?", short: "가장 가까운 날",
@@ -95,7 +95,7 @@ window.sthLab({
       draw();
       return {
         judge: function () {
-          if (Math.abs(d - CL[0]) <= 10) return { ok: true, msg: label(CL[0]) + " 무렵 " + CL[4].toFixed(3) + " au 로 가장 가깝고, 가장 밝은 때(" + label(BR[0]) + ", " + BR[3].toFixed(2) + " 등급)도 이 무렵 — 역행 구간의 한가운데입니다." };
+          if (Math.abs(d - CL[0]) <= 10) return { ok: true, msg: label(CL[0]) + " 무렵 " + CL[4].toFixed(3) + " au 로 가장 가깝고, 가장 밝은 때(" + label(BR[0]) + ", " + BR[3].toFixed(2) + " 등급)도 이 무렵 — 역행 구간의 한가운데입니다(충은 1월 16일, 가장 가까운 날은 1월 12일 — 궤도가 타원이라 며칠 어긋남)." };
           return { ok: false, msg: label(d) + " 의 거리는 " + at(d)[4].toFixed(3) + " au 입니다. 더 가까운 날이 있어요." };
         }
       };

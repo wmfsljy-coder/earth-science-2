@@ -1789,7 +1789,8 @@ window.sthWork({
     { key: "r3", label: "③ 일기도 세 장" },
     { key: "r4", label: "④ 매미가 오던 밤" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "네 사건을 꿰는 한 문장", hint: "바다와 대기는 따로 도는 것이 아니라 서로 밀고 당깁니다. 네 이야기에서 ‘전향력’과 ‘밀도(또는 기압) 차이’가 어떻게 되풀이해서 나타났는지 한 문장으로 쓰세요." },
@@ -1806,7 +1807,8 @@ window.sthShare({
     { key: "r3", label: "③ 일기도 세 장" },
     { key: "r4", label: "④ 매미가 오던 밤" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 사건을 꿰는 한 문장" }
 });
