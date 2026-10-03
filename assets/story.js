@@ -227,9 +227,10 @@
     mount.classList.add("pick");
     mount.innerHTML = "<p class='q'>" + opt.q + "</p><div class='opts'></div><div class='why'></div>";
     var box = mount.querySelector(".opts"), why = mount.querySelector(".why"), solved = false;
+    var mix = window.sthShuffle ? window.sthShuffle(opt.options, opt.mount + "|" + opt.q, opt.keepOrder || window.sthHasRef(opt.why)) : null, btn = [];
     opt.options.forEach(function (t, i) {
-      var b = el("button", "opt", t);
-      b.type = "button";
+      var b = el("button", "opt", mix ? mix.text[i] : t);
+      b.type = "button"; b.setAttribute("data-i", i);
       b.addEventListener("click", function () {
         if (solved) return;
         var w = Array.isArray(opt.why) ? opt.why[i] : (i === opt.answer ? opt.why : "");
@@ -242,7 +243,8 @@
           why.innerHTML = "❌ " + (w || "다시 생각해 보세요.");
         }
       });
-      box.appendChild(b);
+      btn[i] = b;
     });
+    (mix ? mix.order : btn.map(function (x, i) { return i; })).forEach(function (o) { box.appendChild(btn[o]); });
   };
 })();

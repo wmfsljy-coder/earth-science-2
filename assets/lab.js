@@ -125,16 +125,19 @@
       var pred = el("div", "gate loose lab-pred");
       pred.innerHTML = "<h4>① 먼저 예상해 봅시다</h4><p>" + c.predict.q + "</p><div class='opts'></div>";
       var opts = pred.querySelector(".opts");
+      var mix = window.sthShuffle ? window.sthShuffle(c.predict.options, c.id + "|" + c.predict.q, c.predict.keepOrder || window.sthHasRef([c.why, c.solution, (c.hints || []).join(" ")])) : null, pbtn = [];
+      var ptext = mix ? mix.text : c.predict.options;
       c.predict.options.forEach(function (t, i) {
-        var b = el("button", "opt", t); b.type = "button";
+        var b = el("button", "opt", ptext[i]); b.type = "button"; b.setAttribute("data-i", i);
         if (s.p === i) b.classList.add("picked");
         b.addEventListener("click", function () {
           if (s.ok) return;                                   /* 해결한 뒤에는 예측을 바꾸지 않는다 */
           Array.prototype.forEach.call(opts.children, function (o) { o.classList.remove("picked"); });
           b.classList.add("picked"); s.p = i; save(); unlock();
         });
-        opts.appendChild(b);
+        pbtn[i] = b;
       });
+      (mix ? mix.order : pbtn.map(function (x, i) { return i; })).forEach(function (o) { opts.appendChild(pbtn[o]); });
       card.appendChild(pred);
 
       /* ② 조작 */
@@ -241,8 +244,8 @@
       function showWhy() {
         var a = c.predict.answer, p = s.p;
         var cmp = (a == null || p == null) ? "" :
-          (p === a ? "<p class='lab-cmp ok'>처음 예상 <b>" + c.predict.options[p] + "</b> — 맞았습니다.</p>"
-                   : "<p class='lab-cmp no'>처음 예상은 <b>" + c.predict.options[p] + "</b> 였지만, 실험 결과는 <b>" + c.predict.options[a] + "</b> 였습니다. 무엇이 생각과 달랐는지 짚어 보세요.</p>");
+          (p === a ? "<p class='lab-cmp ok'>처음 예상 <b>" + ptext[p] + "</b> — 맞았습니다.</p>"
+                   : "<p class='lab-cmp no'>처음 예상은 <b>" + ptext[p] + "</b> 였지만, 실험 결과는 <b>" + ptext[a] + "</b> 였습니다. 무엇이 생각과 달랐는지 짚어 보세요.</p>");
         why.hidden = false;
         why.innerHTML = "<h4>④ 왜 그럴까 — 설명</h4>" + cmp + "<div class='lab-why-t'>" + c.why + "</div>";
         card.classList.add("ok");

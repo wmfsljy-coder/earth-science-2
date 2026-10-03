@@ -194,8 +194,10 @@
       if (it.t === "ox" || it.t === "mc") {
         var opts = it.t === "ox" ? ["O", "X"] : it.options;
         var wrap = el("div", "qz-opts" + (it.t === "ox" ? " ox" : ""));
+        var mix = it.t === "mc" && window.sthShuffle ? window.sthShuffle(opts, it.id + "|" + it.q, it.keepOrder || window.sthHasRef([it.why, it.hint, it.q])) : null;
+        var pos = []; (mix ? mix.order : opts.map(function (x, i) { return i; })).forEach(function (o, k) { pos[o] = k; });
         var btns = opts.map(function (o, i) {
-          var b = el("button", "opt", it.t === "mc" ? "<span class='qz-k'>" + "①②③④⑤"[i] + "</span> " + o : o); b.type = "button";
+          var b = el("button", "opt", it.t === "mc" ? "<span class='qz-k'>" + "①②③④⑤"[pos[i]] + "</span> " + o : o); b.type = "button"; b.setAttribute("data-i", i);
           b.addEventListener("click", function () {
             if (card.classList.contains("ok") || card.classList.contains("seen")) return;
             var ok = it.t === "ox" ? (i === 0) === it.a : i === it.a;
@@ -206,8 +208,9 @@
               else wrong();
             }
           });
-          wrap.appendChild(b); return b;
+          return b;
         });
+        (mix ? mix.order : btns.map(function (x, i) { return i; })).forEach(function (o) { wrap.appendChild(btns[o]); });
         box.appendChild(wrap);
         lock = function () { btns.forEach(function (b, i) { b.disabled = true; if (it.t === "ox" ? (i === 0) === it.a : i === it.a) b.classList.add("right"); }); };
         auto = function (good) {
