@@ -1618,7 +1618,8 @@ window.sthWork({
     { key: "r2", label: "② 해 지고 나서 한 시간" },
     { key: "r3", label: "③ 그림자가 지나간 자리" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "세 사건을 꿰는 한 문장",
@@ -1635,7 +1636,8 @@ window.sthShare({
     { key: "r2", label: "② 해 지고 나서 한 시간" },
     { key: "r3", label: "③ 그림자가 지나간 자리" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "세 사건을 꿰는 한 문장" }
 });

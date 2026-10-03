@@ -1136,7 +1136,8 @@ window.sthWork({
     { key: "r2", label: "② 기후를 흔드는 것들" },
     { key: "r3", label: "③ 탄소를 줄이는 회의" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "세 사건을 꿰는 한 문장", hint: "대기와 해양은 서로 밀고 당기며, 그 상호 작용이 몇 해 규모(엔소)부터 수만 년 규모(밀란코비치)까지 기후를 만듭니다. 세 이야기에서 ‘에너지의 출입’과 ‘되먹임’이 어떻게 되풀이해 나타났는지 한 문장으로 쓰세요." },
@@ -1152,7 +1153,8 @@ window.sthShare({
     { key: "r2", label: "② 기후를 흔드는 것들" },
     { key: "r3", label: "③ 탄소를 줄이는 회의" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "세 사건을 꿰는 한 문장" }
 });
