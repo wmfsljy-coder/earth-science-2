@@ -1261,7 +1261,8 @@ window.sthWork({
     { key: "r2", label: "② 돌 한 덩이의 일생" },
     { key: "r3", label: "③ 지질공원 해설사" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   items: [
     { id: "all", label: "세 사건을 꿰는 한 문장", hint: "마그마는 어떻게 생기고(①), 그 돌은 어떻게 바뀌어 돌며(②), 그 기록을 우리는 어디서 읽는지(③). 세 이야기에 공통으로 흐르는 것은 ‘얼마나 뜨겁고, 얼마나 눌리고, 얼마나 빨리 식었는가’ 입니다. 한 문장으로 꿰어 쓰세요." },
@@ -1277,7 +1278,8 @@ window.sthShare({
     { key: "r2", label: "② 돌 한 덩이의 일생" },
     { key: "r3", label: "③ 지질공원 해설사" },
     { key: "rQuiz", label: "수준별 문제" },
-    { key: "rLab", label: "응용 실험실" }
+    { key: "rLab", label: "응용 실험실" },
+    { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "세 사건을 꿰는 한 문장" }
 });
