@@ -19,6 +19,8 @@
        { t: "essay", q, model: "모범 답안", rubric: ["채점 기준", ..] }
      ]});
    공통 선택 항목: fig (문제 아래 자료 HTML), hint (한 번 틀리면 보이는 도움말), why (해설)
+   이야기 탭(.episode)이 있는 소단원에는 그 소단원 문제 가운데 기본 2·발전 2개를 ‘소단원 확인 문제’로 이야기 끝에 함께 보여 준다.
+   끄려면 sthQuiz({ …, secQuiz: false }).
    ========================================================================= */
 (function () {
   "use strict";
@@ -36,7 +38,7 @@
     return String(s == null ? "" : s)
       .replace(/[₀-₉]/g, function (c) { return String(c.charCodeAt(0) - 8320); })
       .replace(/[⁰¹²³⁴-⁹]/g, function (c) { return "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c) + ""; })
-      .replace(/[\s·ㆍ\-_,.()（）'"`~]/g, "").toLowerCase();
+      .replace(/(\d)\.(?=\d)/g, "$1․").replace(/[\s·ㆍ\-_,.()（）'"`~]/g, "").toLowerCase();   /* 숫자 사이 소수점은 남김(․ 로 바꿔 둠) */
   }
   function num(s) {
     s = String(s || "").replace(/,/g, "").replace(/\s/g, "").replace(/×10\^?/, "e").replace(/x10\^?/i, "e");
@@ -57,7 +59,8 @@
     if (!mount) return;
     var KEY = opt.key || "quiz", RES = opt.result || "rQuiz";
     var items = opt.items || [];
-    var st = window.sthState(KEY) || {};
+    var MINI = !!opt.mini;                                   /* 소단원 확인 문제(이야기 탭 끝에 붙는 작은 묶음) */
+    var st = opt._st || window.sthState(KEY) || {};
     mount.classList.add("qz"); mount.innerHTML = "";
 
     /* 소단원 이름·학습 목표는 페이지에서 읽는다 */
@@ -76,6 +79,7 @@
     function byLv(l) { return items.filter(function (it) { return it.lv === l; }); }
 
     function save() {
+      if (MINI) { if (opt.onSave) opt.onSave(); else window.sthState(KEY, st); return; }
       window.sthState(KEY, st);
       var any = items.some(tried);
       var parts = [1, 2, 3].filter(function (l) { return byLv(l).length; }).map(function (l) {
@@ -90,7 +94,16 @@
     var lvRow = el("div", "qz-levels");
     var goal = el("details", "qz-goals");
     top.appendChild(lvRow); top.appendChild(goal);
-    mount.appendChild(top);
+    if (!MINI) mount.appendChild(top);
+    else {
+      var head = el("div", "qz-mini-head", "<b>📝 소단원 확인 문제</b><span>이야기에서 찾아낸 것을 바로 확인해요. 더 많은 문제는 <a href='#quiz' class='qz-go'>수준별 문제</a> 탭에 있어요.</span>");
+      head.querySelector(".qz-go").addEventListener("click", function (e) {
+        e.preventDefault();
+        var t = Array.prototype.slice.call(document.querySelectorAll(".tab-btn")).filter(function (b) { return /수준별/.test(b.textContent); })[0];
+        if (t) { t.click(); window.scrollTo(0, 0); }
+      });
+      mount.appendChild(head);
+    }
     var list = el("div", "qz-list");
     mount.appendChild(list);
 
@@ -129,7 +142,7 @@
 
     var cards = [];
     function show() {
-      cards.forEach(function (c) { c.hidden = c._item.lv !== cur; });
+      cards.forEach(function (c) { c.hidden = !MINI && c._item.lv !== cur; });
       var n = 0; cards.forEach(function (c) { if (!c.hidden) c.querySelector(".qz-no").textContent = ++n; });
       paintTop();
     }
@@ -137,7 +150,7 @@
     /* ---- 문제 카드 ---- */
     items.forEach(function (it) {
       var s = st[it.id];
-      var card = el("section", "qz-card"); card._item = it; card.id = "qz-" + it.id;
+      var card = el("section", "qz-card" + (MINI ? " qz-mini" : "")); card._item = it; if (!MINI) card.id = "qz-" + it.id;
       var sec = it.sec && SEC[it.sec] ? it.sec + " · " + SEC[it.sec] : "";
       card.appendChild(el("div", "qz-head",
         "<span class='qz-no'></span><span class='qz-type'>" + TYPE[it.t] + "</span>" +
@@ -359,5 +372,32 @@
       }
     });
     show();
+    if (!MINI && opt.secQuiz !== false) secQuiz();
+
+    /* ---- 소단원 확인 문제: 이야기 탭마다 그 소단원(sec) 문제 가운데 기본 2·발전 2개를 이야기 끝에 붙인다.
+       풀이 기록은 수준별 문제와 같은 곳에 저장되어, 어디서 풀든 달성도에 함께 셈된다. ---- */
+    function secQuiz() {
+      if (!document.getElementById("qz-mini-css")) {
+        var css = document.createElement("style"); css.id = "qz-mini-css";
+        css.textContent = ".sec-quiz{margin:24px 0 8px;padding:16px 18px 6px;border:2px dashed var(--line);border-radius:18px;background:var(--card)}" +
+          ".qz-mini-head{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin:0 2px 12px}" +
+          ".qz-mini-head b{font-family:'Jua',sans-serif;font-weight:400;font-size:18px;color:var(--ink)}" +
+          ".qz-mini-head span{font-size:12.5px;color:var(--mist)}.qz-mini-head a{color:var(--brand-700);font-weight:800}";
+        document.head.appendChild(css);
+      }
+      Array.prototype.forEach.call(document.querySelectorAll(".tab-btn"), function (b) {
+        var n = b.querySelector(".num"); if (!n) return;
+        var sec = n.textContent.trim();
+        var panel = document.querySelector('.tab-panel[data-panel="' + b.getAttribute("data-tab") + '"]');
+        if (!panel || panel.querySelector(".sec-quiz")) return;
+        var epi = panel.querySelectorAll(".episode"); if (!epi.length) return;
+        var pick = [];
+        [1, 2].forEach(function (l) { pick = pick.concat(items.filter(function (it) { return it.sec === sec && it.lv === l; }).slice(0, 2)); });
+        if (!pick.length) return;
+        var box = el("div", "sec-quiz"); box.id = "secq-" + sec;
+        var last = epi[epi.length - 1]; last.parentNode.insertBefore(box, last.nextSibling);
+        window.sthQuiz({ mount: box.id, key: KEY, mini: true, _st: st, items: pick, onSave: save });
+      });
+    }
   };
 })();
