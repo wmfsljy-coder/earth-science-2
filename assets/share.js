@@ -32,6 +32,9 @@
     var mount = document.getElementById(opt.mount);
     if (!mount) return;
     var URL_ = (window.STH_SHARE_URL || "").trim();
+    /* 복사한 사이트(다른 계정의 Pages)가 원래 학교의 시트로 올리지 않도록, 허용한 주소에서만 공유 주소를 쓴다 */
+    var HOSTS_ = window.STH_SHARE_HOSTS, FOREIGN_ = false;
+    if (URL_ && HOSTS_ && HOSTS_.length && HOSTS_.indexOf(location.hostname) < 0 && location.protocol !== "file:") { URL_ = ""; FOREIGN_ = true; }
     var ROWS = opt.rows || [], WORKS = opt.works || [];
     var withLine = null, withWorks = null;
     mount.classList.add("share");
@@ -77,6 +80,24 @@
       });
       return r;
     }
+    /* 수업 효과를 보는 기록: 첫 추리(예측 잠금)가 맞았는지, 이야기를 몇 장면까지 풀었는지.
+       g:키=1/0 (첫 추리 맞음/어긋남) | e:이야기=푼 장면/전체@처음 막힌 장면 */
+    function evidence() {
+      var s = unitData(opt.unit).s || {}, g = [], e = [];
+      Object.keys(s).forEach(function (k) {
+        var v = s[k];
+        if (/OK$/.test(k) && (v === "맞음" || v === "어긋남")) g.push(k.slice(0, -2) + "=" + (v === "맞음" ? 1 : 0));
+        else if (v && typeof v === "object" && v.c && v.c.length !== undefined) {
+          var root = document.getElementById(k), tot = root ? root.querySelectorAll(".scene").length : v.c.length, n = 0, stuck = 0;
+          for (var i = 0; i < tot; i++) { if (v.c[i]) n++; else if (!stuck) stuck = i + 1; }
+          e.push(k + "=" + n + "/" + tot + (stuck ? "@" + stuck : ""));
+        }
+      });
+      /* 수준별 문제: 한 번에 맞힌 문항 / 손댄 문항 (해설을 먼저 본 것은 한 번에 맞힌 것으로 치지 않는다) */
+      var q = s.quiz || {}, qt = 0, q1 = 0;
+      Object.keys(q).forEach(function (id) { var x = q[id] || {}; if (x.r === 1 || x.n || x.sh) { qt++; if (x.r === 1 && !x.n && !x.sh) q1++; } });
+      return ("g:" + g.join(",") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt).slice(0, 290);
+    }
     function myLine() { return opt.line ? clean((unitData(opt.unit).w || {})[opt.line.id], 300) : ""; }
     function paintMine() {
       var r = myResults(false);
@@ -113,7 +134,7 @@
 
     function need() {
       var o = me();
-      if (!URL_) { board.innerHTML = ""; board.appendChild(el("p", "sh-note", "선생님이 아직 공유 기능을 켜지 않았습니다. 지금은 내 성과만 볼 수 있습니다.")); return null; }
+      if (!URL_) { board.innerHTML = ""; board.appendChild(el("p", "sh-note", FOREIGN_ ? "이 사이트는 복사본이라 원래 학교의 공유 주소를 쓰지 않습니다. 선생님이 assets/share-config.js 에 이 학교의 주소를 넣으면 공유가 켜집니다." : "선생님이 아직 공유 기능을 켜지 않았습니다. 지금은 내 성과만 볼 수 있습니다.")); return null; }
       if (!o.cls || !o.nick) { board.innerHTML = ""; board.appendChild(el("p", "sh-note", "반 코드와 별명을 저장하면 우리 반 친구들의 성과가 보입니다.")); return null; }
       return o;
     }
@@ -194,7 +215,8 @@
         return;
       }
       postBtn.disabled = true; msg.textContent = "올리는 중…";
-      var body = JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, unit: opt.unit, unitLabel: opt.unitLabel || "", results: r, line: withLine && withLine.checked ? myLine() : "" });
+      var rr = { _ev: evidence() }; Object.keys(r).forEach(function (k) { rr[k] = r[k]; });
+      var body = JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, unit: opt.unit, unitLabel: opt.unitLabel || "", results: rr, line: withLine && withLine.checked ? myLine() : "" });
       /* 반 전체가 한꺼번에 누르면 시트에 줄이 생긴다. 뒷단이 '많습니다' 라고 하면
          조금씩 다른 시간만큼 기다렸다가 스스로 다시 보낸다(최대 세 번). */
       function send(tries) {
