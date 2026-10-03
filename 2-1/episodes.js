@@ -948,12 +948,12 @@ function dateLabel(day) {
       if (Math.abs(age - P_START) <= 10 && !got.a) { got.a = ch = true; }
       if (Math.abs(age - M_START) <= 10 && !got.b) { got.b = ch = true; }
       if (Math.abs(age - C_START) <= 8 && !got.c) { got.c = ch = true; }
-      if (day === 365 && hour >= 23.5 && !got.d) { got.d = ch = true; }
+      if (day === 365 && !got.d) { got.d = ch = true; }
       if (ch) { window.sthState("cCal", got); mission(); }
 
       $("c-cal-read").innerHTML = "지금 이 시각은 약 <b>" + fmtAge(age * 1e6) + " 전</b> — " + era.n;
       $("c-cal-info").innerHTML = "<b>" + era.n + "</b> — " + era.d +
-        (day === 365 && hour >= 23.5 ? " <br><b>지금 남은 시간은 30분도 되지 않습니다.</b> 이 마지막 30분이 사람(호모 사피엔스)이 살아온 약 30만 년입니다." : "");
+        (day === 365 ? (hour >= 23.5 ? " <br><b>지금 남은 시간은 30분도 되지 않습니다.</b> 이 마지막 30분이 사람(호모 사피엔스)이 살아온 약 30만 년입니다." : " <br>마지막 날입니다. 사람(호모 사피엔스)은 이날 <b>밤 11시 30분이 넘어서야</b> 나타납니다 — 시각 막대를 끝까지 밀어 보세요.") : "");
     }
     function mission() {
       if (got.a) done("m3-2a"); if (got.b) done("m3-2b"); if (got.c) done("m3-2c"); if (got.d) done("m3-2d");

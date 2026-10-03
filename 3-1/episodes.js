@@ -893,7 +893,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       var c = document.createElement("canvas");
       c.width = size * 2; c.height = size * 2;
       c.style.width = size + "px"; c.style.height = size + "px";
-      var g = c.getContext("2d"); g.scale(2, 2);
+      var g = c.getContext("2d"); g.scale(2, 2); c._dprSet = true;   /* 표 안 작은 그림: 2배 해상도로 직접 그림 */
       phaseDisc(g, size / 2, size / 2, size / 2 - 2, k, el);
       return c;
     }
