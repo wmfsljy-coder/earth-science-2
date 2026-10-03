@@ -155,6 +155,7 @@
         canvas: function (h) {
           var wrap = el("div", "canvas-wrap"), cv = document.createElement("canvas");
           cv.width = 900; cv.height = h || 360; wrap.appendChild(cv);
+          cv.setAttribute("aria-label", c.title + " — 조작에 따라 바뀌는 그림. 수치와 판정은 그림 아래 글로도 나옵니다.");
           stage.insertBefore(wrap, ctrls);                       /* 그림은 늘 조작 칸 위에 */
           var ctx = window.setupCanvas(cv);
           return { canvas: cv, ctx: ctx, W: cv._w, H: cv._h };
@@ -214,7 +215,7 @@
       var judgeRow = el("div", "lab-task");
       judgeRow.innerHTML = "<div class='lab-task-t'><b>③ 과제</b> " + c.task + "</div>";
       var jb = el("button", "btn primary", "판정하기"); jb.type = "button";
-      verdictTxt = el("span", "lab-verdict");
+      verdictTxt = el("span", "lab-verdict"); verdictTxt.setAttribute("aria-live", "polite");
       var jr = el("div", "btn-row"); jr.appendChild(jb); jr.appendChild(verdictTxt);
       judgeRow.appendChild(jr);
       var hintBox = el("div", "lab-hint"); hintBox.hidden = true;
