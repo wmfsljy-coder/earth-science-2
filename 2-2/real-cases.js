@@ -68,10 +68,10 @@ window.sthLab({
       return {
         judge: function () {
           var r = R[i] || ["", 0, 0, 1];
-          if (PALEO.indexOf(r[0]) < 0) return { ok: false, msg: r[0] + " 은 고생대가 아닙니다. 고생대는 캄브리아기 ~ 페름기예요." };
-          if (r[3] !== 0) return { ok: false, msg: r[0] + " 에는 기록이 " + r[3] + " 건 있습니다. 0 인 시대를 찾으세요." };
-          if (why !== "up") return { ok: false, msg: "시대는 맞았습니다. 생물이 사라졌다면 다른 나라에도 그 시대 화석이 없어야 하는데, 실루리아기·데본기 화석은 세계 곳곳에 많아요. 한반도에서만 없다면?" };
-          return { ok: true, msg: GAP.join("·") + " 기록이 0 — 오르도비스기 중기부터 석탄기 후기까지 1억 년 넘게 한반도의 지층이 거의 없습니다. 이 시간 공백을 ‘대결층’이라고 해요." };
+          if (PALEO.indexOf(r[0]) < 0) return { ok: false, msg: r[0] + "는 고생대가 아닙니다. 고생대는 캄브리아기 ~ 페름기예요." };
+          if (r[3] !== 0) return { ok: false, msg: r[0] + "에는 기록이 " + r[3] + " 건 있습니다. 0 인 시대를 찾으세요." };
+          if (why !== "up") return { ok: false, msg: "시대는 맞았습니다. " + (why === "deep" ? "깊은 바다 밑에서는 진흙이 계속 쌓여 오히려 지층이 남습니다." : why === "ice" ? "얼음에 덮였다면 빙하 퇴적물이 남았을 텐데, 그 시대 지층 자체가 없어요." : "그때 한반도의 모습을 골라 주세요.") + " 실루리아기·데본기 화석은 다른 대륙에는 흔합니다." };
+          return { ok: true, msg: GAP.join("·") + " 기록이 0 — 오르도비스기 중기부터 석탄기 전기까지 1억 년 넘게 한반도의 지층이 거의 없습니다. 이 시간 공백을 ‘대결층’이라고 해요." };
         }
       };
     },
@@ -99,7 +99,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "백악기 육지 비율", min: 0, max: 100, step: 1, value: 50, fmt: function (x) { return x + "%"; }, onInput: function (x) { g = x; api.changed(); draw(); } });
       api.info("육지 비율 = 육지 ÷ (바다 + 육지) × 100. ‘모름’은 빼고 셉니다. " + SRC
-        + "<div data-link='{\"id\":\"koreageoparks\",\"title\":\"국가지질공원\",\"src\":\"환경부 국가지질공원 사무국\",\"url\":\"https://www.koreageoparks.kr/\",\"ask\":\"국가지질공원 가운데 공룡 발자국이나 백악기 지층을 볼 수 있는 곳을 하나 골라, 그곳의 암석 이름과 그 암석이 쌓인 환경을 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"koreageoparks\",\"title\":\"국가지질공원\",\"src\":\"국가지질공원사무국\",\"url\":\"https://www.koreageoparks.kr/\",\"ask\":\"국가지질공원 가운데 공룡 발자국이나 백악기 지층을 볼 수 있는 곳을 하나 골라, 그곳의 암석 이름과 그 암석이 쌓인 환경을 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
