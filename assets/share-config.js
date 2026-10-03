@@ -1,6 +1,6 @@
 /* 우리 반 공유 뒷단(Google Apps Script 웹앱) 주소. 비워 두면 공유 없이 내 성과만 보인다.
    배포 방법은 science-teacher-hub 저장소의 share-backend/README.md 참고. */
-window.STH_SHARE_URL = "https://script.google.com/macros/s/AKfycbxIFfvQS-gIVKYCan11Bpr0I35KWyRZUD7gOvUGl2fJCC08nXpLGYQ5OKZfJcbSXMjF/exec";
+window.STH_SHARE_URL = "https://script.google.com/macros/s/AKfycbzhHTTpKcoBbjOnPQDRcx94IsiSOihR1M7LwfaSJmbqIKWJpOLoPMqtFIsVuLhRGY3E/exec";
 
 /* 반 목록 — 2학년 지구과학 선택반(A·B). 목록이 있으면 반 코드를 직접 치지 않고 고른다. 시트의 '반목록' 탭과 같아야 올라간다. */
 window.STH_CLASSES = [
