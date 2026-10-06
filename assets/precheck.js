@@ -5,8 +5,8 @@
        { id: "p1", sec: "01", a: false, s: "진술문", why: "이야기를 마친 뒤 보여 줄 해설" }, …
      ] });
 
-   1) 단원 첫 탭 맨 위에 ‘내 생각 점검’ 카드가 붙는다. 진술마다 맞다/틀리다/잘 모르겠다 + 확신도.
-      정답은 이때 알려 주지 않는다. 다른 이야기 탭부터 연 학생에게는 그 탭의 진술만 탭 맨 위에 다시 보인다.
+   1) 탭 맨 앞에 ‘00 들어가기’ 탭을 만들고 단원의 진술을 모두 싣는다. 진술마다 맞다/틀리다/잘 모르겠다 + 확신도.
+      정답은 이때 알려 주지 않는다. 이야기 탭에는 그 이야기의 진술에 아직 답하지 않았을 때만 들어가기로 가는 안내가 붙는다.
    2) 이야기(소단원)를 끝까지 풀면 그 탭의 이야기 아래에 같은 진술이 다시 나온다(사후). 답하면 정답과 해설이 열린다.
       이때부터 처음 생각은 고정된다.
    3) 정리하기 탭(#wk 가 있는 탭) 위에 ‘처음 생각 → 지금 생각’ 표가 붙는다.
@@ -44,8 +44,9 @@
       ".pc-card{margin:18px 0 22px;padding:18px 20px 12px;border:3px solid var(--brand);border-radius:22px;background:var(--card);box-shadow:var(--shadow-card)}" +
       ".pc-card.re{border-style:dashed;border-color:var(--violet);margin-top:24px}" +
       ".pc-card.sum{border-color:var(--teal)}" +
-      ".pc-head b{font-family:'Jua',sans-serif;font-weight:400;font-size:20px;color:var(--ink)}" +
+      ".pc-head>b{font-family:'Jua',sans-serif;font-weight:400;font-size:20px;color:var(--ink)}" +
       ".pc-head p{margin:4px 0 12px;font-size:13px;line-height:1.65;color:var(--mist)}" +
+      ".pc-head p b{color:var(--ink)}" +
       ".pc-item{border-top:1.5px solid var(--line);padding:12px 2px 10px}" +
       ".pc-item:first-of-type{border-top:0}" +
       ".pc-s{font-size:15px;line-height:1.6;color:var(--ink);font-weight:700}" +
@@ -60,6 +61,8 @@
       ".pc-ans .tag.ok{color:var(--green-700)}.pc-ans .tag.no{color:var(--rose-700)}.pc-ans .tag.new{color:var(--brand-700)}" +
       ".pc-lock{font-size:13px;color:var(--mist);padding:6px 2px 8px}" +
       ".pc-foot{font-size:12.5px;color:var(--mist);padding:8px 2px 4px}" +
+      ".pc-nudge{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:14px 0 18px;padding:12px 16px;border:2px dashed var(--brand);border-radius:16px;background:var(--brand-100);font-size:13.5px;line-height:1.6;color:var(--ink)}" +
+      ".pc-nudge span{flex:1 1 260px}" +
       ".pc-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:4px 0 6px}" +
       ".pc-tbl th,.pc-tbl td{border-top:1.5px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top;line-height:1.55}" +
       ".pc-tbl th{font-size:12px;color:var(--mist);border-top:0}" +
@@ -158,39 +161,70 @@
     }
     function answered(it, o) { var f = o.f[it.id]; return !!f && (f.v === -1 || !!f.c); }
 
-    /* ---------- 단원 첫 탭 맨 위: 전체 진술 ---------- */
+    /* ---------- 맨 앞 탭 ‘00 들어가기’: 단원 전체 진술 ----------
+       생각 점검을 이야기 탭과 떼어 단원의 첫 탭으로 둔다. 탭 버튼과 화면은 여기서 만들고,
+       theme.js 의 탭 전환은 처음 있던 탭만 알므로 이 탭을 여닫는 일은 여기서 맞춰 준다. */
     var cards = [];
-    var firstSec = Object.keys(SEC).sort()[0];
-    function preCard(list, whole) {
+    function preCard(list) {
       var c = el("div", "pc-card pre");
       c.appendChild(el("div", "pc-head", "<b>🧭 시작하기 전에 — 내 생각 점검</b><p>"
-        + (whole ? "이 단원에서 다룰 문장이에요. " : "이 이야기에서 다룰 문장이에요. ")
-        + "<b>정답은 아직 알려 주지 않아요.</b> 지금 생각나는 대로 골라 보세요. 틀려도 괜찮아요. 이야기를 끝내면 같은 문장을 다시 묻고, 그때 정답과 까닭을 알려 줄게요.</p>"));
-      var rows = list.map(function (it) { var r = preItem(it, whole); c.appendChild(r); return r; });
+        + "이 단원에서 다룰 문장이에요. <b>정답은 아직 알려 주지 않아요.</b> 지금 생각나는 대로 골라 보세요. 틀려도 괜찮아요. "
+        + "이야기를 하나 끝낼 때마다 그 이야기에 나온 문장을 다시 묻고, 그때 정답과 까닭을 알려 줄게요.</p>"));
+      var rows = list.map(function (it) { var r = preItem(it, true); c.appendChild(r); return r; });
       var foot = el("div", "pc-foot"); c.appendChild(foot);
       c._paint = function () {
         rows.forEach(function (r) { r._paint(); });
         var o = st(), n = list.filter(function (it) { return answered(it, o); }).length;
-        foot.textContent = n === list.length ? "✅ 모두 답했어요. 이제 이야기를 시작해 보세요." : n + " / " + list.length + " 답함";
-        if (!whole) c.hidden = list.every(function (it) { return answered(it, st()) || done(it.sec); }) && !c._keep;
+        foot.textContent = n === list.length ? "✅ 모두 답했어요. 이제 첫 이야기를 시작해 보세요." : n + " / " + list.length + " 답함";
       };
       return c;
     }
-    if (firstSec && SEC[firstSec]) {
-      var P = SEC[firstSec].panel, head = P.querySelector(".stage-head");
-      var main = preCard(items, true);
-      if (head && head.nextSibling) P.insertBefore(main, head.nextSibling); else P.insertBefore(main, P.firstChild);
-      cards.push(main);
+    var btns = Array.prototype.slice.call(document.querySelectorAll(".tab-btn"));
+    var firstBtn = btns[0], firstPanel = document.querySelector(".tab-panel");
+    var introBtn = null, introPanel = null;
+    function openIntro() {
+      btns.forEach(function (b) { b.classList.remove("active"); });
+      Array.prototype.forEach.call(document.querySelectorAll(".tab-panel"), function (p) { p.hidden = p !== introPanel; });
+      introBtn.classList.add("active");
+      window.dispatchEvent(new CustomEvent("tab-shown", { detail: "pc" }));
     }
-    /* 다른 이야기 탭: 그 탭의 진술에 아직 답하지 않았으면 탭 맨 위에 다시 */
+    if (firstBtn && firstPanel) {
+      introBtn = el("button", "tab-btn", "<span class='num'>00</span> 들어가기");
+      introBtn.type = "button"; introBtn.setAttribute("data-tab", "pc");
+      firstBtn.parentNode.insertBefore(introBtn, firstBtn);
+      introPanel = el("section", "tab-panel"); introPanel.setAttribute("data-panel", "pc"); introPanel.hidden = true;
+      introPanel.appendChild(el("div", "stage-head", "<div class='eyebrow'>00 · 들어가기</div><h2 class='display'>이야기를 시작하기 전에</h2>"
+        + "<p>이 단원에 나오는 문장 " + items.length + "개를 먼저 읽고, 지금 내 생각을 골라 두세요. 단원을 마치고 정리하기 탭에 가면 처음 생각과 끝난 뒤의 생각을 견주어 볼 수 있어요.</p>"));
+      var main = preCard(items);
+      introPanel.appendChild(main); cards.push(main);
+      var go = el("button", "btn primary", "첫 이야기 시작하기 →"); go.type = "button"; go.style.margin = "4px 0 30px";
+      go.addEventListener("click", function () { firstBtn.click(); window.scrollTo(0, 0); });
+      introPanel.appendChild(go);
+      firstPanel.parentNode.insertBefore(introPanel, firstPanel);
+      introBtn.addEventListener("click", openIntro);
+      btns.forEach(function (b) { b.addEventListener("click", function () { introBtn.classList.remove("active"); introPanel.hidden = true; }); });
+      /* 아직 답하지 않은 문장이 있고, 이야기를 하나도 끝내지 않았으면 들어가기부터 연다 */
+      var o0 = st(), fresh = !Object.keys(SEC).some(function (k) { return SEC[k].ep && done(k) && !OPEN_ALL; });
+      if (fresh && !items.every(function (it) { return answered(it, o0); })) openIntro();
+    }
+    /* 이야기 탭: 그 이야기의 문장에 아직 답하지 않았으면 들어가기로 가는 안내만 */
     Object.keys(SEC).forEach(function (sec) {
-      if (sec === firstSec || !SEC[sec].ep) return;
+      if (!SEC[sec].ep || !introBtn) return;
       var list = items.filter(function (it) { return it.sec === sec; });
       if (!list.length) return;
       var P2 = SEC[sec].panel, h2 = P2.querySelector(".stage-head");
-      var c = preCard(list, false);
-      c._keep = !list.every(function (it) { return answered(it, st()); });      // 처음 열 때 비어 있었으면 다 답해도 이번에는 남겨 둔다
+      var c = el("div", "pc-nudge");
       if (h2 && h2.nextSibling) P2.insertBefore(c, h2.nextSibling); else P2.insertBefore(c, P2.firstChild);
+      c._paint = function () {
+        var o = st(), left = list.filter(function (it) { return !answered(it, o); }).length;
+        c.hidden = !left || done(sec);
+        c.innerHTML = "";
+        if (c.hidden) return;
+        c.appendChild(el("span", null, "🧭 이 이야기에 나오는 생각 점검 문장 <b>" + left + "개</b>에 아직 답하지 않았어요. 이야기를 끝내면 처음 생각은 더 고칠 수 없어요."));
+        var b = el("button", "btn", "00 들어가기에서 답하기"); b.type = "button";
+        b.addEventListener("click", function () { openIntro(); window.scrollTo(0, 0); });
+        c.appendChild(b);
+      };
       cards.push(c);
     });
 
