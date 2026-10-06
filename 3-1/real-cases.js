@@ -1,5 +1,5 @@
 /* 지구과학 Ⅲ-1 태양계 행성의 겉보기 운동 — 실제 자료
-   r1 2024 ~ 2025년 화성은 며칠 동안 거꾸로 갔을까 — 실제 적경으로 역행 기간 재기
+   r1 2024~2025년 화성은 며칠 동안 거꾸로 갔을까 — 실제 적경으로 역행 기간 재기
    r2 화성이 가장 가까웠던 날은 역행의 어디쯤일까 — 거리와 밝기
    자료: data/mars-2024.js (NASA JPL Horizons, 지구 중심, 5일 간격) */
 (function () {
@@ -15,7 +15,7 @@ var ST = []; for (var i = 1; i < D.length - 1; i++) if ((D[i][1] - D[i - 1][1]) 
 var DUR = ST.length > 1 ? ST[1] - ST[0] : 80;
 var CL = D.reduce(function (b, r) { return r[4] < b[4] ? r : b; }, D[0] || [0, 0, 0, 0, 1, ""]);
 var BR = D.reduce(function (b, r) { return r[3] < b[3] ? r : b; }, D[0] || [0, 0, 0, 0, 1, ""]);
-var SRC = "<small>출처: NASA 제트추진연구소(JPL) Horizons 시스템 — 지구 중심에서 본 화성의 적경·적위·겉보기 등급·거리, 2024-07-01 ~ 2025-07-01(5일 간격). 사본은 data/mars-2024.js.</small>";
+var SRC = "<small>출처: NASA 제트추진연구소(JPL) Horizons 시스템 — 지구 중심에서 본 화성의 적경·적위·겉보기 등급·거리, 2024-07-01~2025-07-01(5일 간격). 사본은 data/mars-2024.js.</small>";
 
 function sky(H, ctx, W, CH, from, to, hi) {
   H.paper(ctx, W, CH);
@@ -37,9 +37,9 @@ window.sthLab({
   doneNote: "정리하기 탭에서 실제 자료로 행성의 역행을 설명해 보세요.",
   cases: [
   {
-    id: "r1", tag: "실제 자료 · 순행과 역행", title: "2024 ~ 2025년, 화성은 며칠 동안 거꾸로 갔을까", short: "역행 기간",
+    id: "r1", tag: "실제 자료 · 순행과 역행", title: "2024~2025년, 화성은 며칠 동안 거꾸로 갔을까", short: "역행 기간",
     who: "🔴", name: "아마추어 천문 동아리",
-    say: "“NASA 가 계산한 화성의 실제 위치를 5일마다 별자리 사이에 찍었어요. 화성은 대부분 서쪽에서 동쪽으로(그림에서 오른쪽에서 왼쪽으로) 가지만, 한동안 <b>거꾸로(서쪽으로)</b> 갑니다. 범위를 조절해 <b>역행이 시작되고 끝난 날</b>을 찾고, 역행이 며칠 동안이었는지 구해 주세요.”",
+    say: "“NASA가 계산한 화성의 실제 위치를 5일마다 별자리 사이에 찍었어요. 화성은 대부분 서쪽에서 동쪽으로(그림에서 오른쪽에서 왼쪽으로) 가지만, 한동안 <b>거꾸로(서쪽으로)</b> 갑니다. 범위를 조절해 <b>역행이 시작되고 끝난 날</b>을 찾고, 역행이 며칠 동안이었는지 구해 주세요.”",
     predict: {
       q: "화성이 거꾸로 가는 것처럼 보이는 까닭은?",
       options: ["㉠ 화성이 실제로 공전 방향을 바꾸기 때문에", "㉡ 더 빠르게 도는 지구가 화성을 앞지르면서, 지구에서 본 방향이 거꾸로 바뀌기 때문에", "㉢ 화성의 자전 때문에"],
@@ -56,7 +56,7 @@ window.sthLab({
       api.slider({ label: "역행 시작일", min: 0, max: 365, step: 5, value: 100, fmt: function (x) { return label(x); }, onInput: function (x) { a = x; api.changed(); draw(); } });
       api.slider({ label: "역행 끝날", min: 0, max: 365, step: 5, value: 150, fmt: function (x) { return label(x); }, onInput: function (x) { b = x; api.changed(); draw(); } });
       api.info("점이 왼쪽(동쪽)으로 가다가 멈춰 서고, 오른쪽(서쪽)으로 갔다가 다시 멈춰 서는 곳이 역행의 시작과 끝입니다. " + SRC
-        + "<div data-link='{\"id\":\"horizons\",\"title\":\"NASA JPL Horizons 웹 화면\",\"src\":\"NASA 제트추진연구소\",\"url\":\"https://ssd.jpl.nasa.gov/horizons/app.html\",\"ask\":\"Target Body 를 Mars 로 두고 다음 화성 역행(2027년 1 ~ 4월, 충은 2027년 2월 19일) 무렵의 위치를 찾아 보거나, 화면에서 바꿀 수 있는 항목(관측 위치·기간·간격) 세 가지를 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"horizons\",\"title\":\"NASA JPL Horizons 웹 화면\",\"src\":\"NASA 제트추진연구소\",\"url\":\"https://ssd.jpl.nasa.gov/horizons/app.html\",\"ask\":\"Target Body를 Mars로 두고 다음 화성 역행(2027년 1~4월, 충은 2027년 2월 19일) 무렵의 위치를 찾아 보거나, 화면에서 바꿀 수 있는 항목(관측 위치·기간·간격) 세 가지를 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
@@ -95,15 +95,15 @@ window.sthLab({
       draw();
       return {
         judge: function () {
-          if (Math.abs(d - CL[0]) <= 10) return { ok: true, msg: label(CL[0]) + " 무렵 " + CL[4].toFixed(3) + " au 로 가장 가깝고, 가장 밝은 때(" + label(BR[0]) + ", " + BR[3].toFixed(2) + " 등급)도 이 무렵 — 역행 구간의 한가운데입니다(충은 1월 16일, 가장 가까운 날은 1월 12일 — 궤도가 타원이라 며칠 어긋남)." };
-          return { ok: false, msg: label(d) + " 의 거리는 " + at(d)[4].toFixed(3) + " au 입니다. 더 가까운 날이 있어요." };
+          if (Math.abs(d - CL[0]) <= 10) return { ok: true, msg: label(CL[0]) + " 무렵 " + CL[4].toFixed(3) + " au로 가장 가깝고, 가장 밝은 때(" + label(BR[0]) + ", " + BR[3].toFixed(2) + " 등급)도 이 무렵 — 역행 구간의 한가운데입니다(충은 1월 16일, 가장 가까운 날은 1월 12일 — 궤도가 타원이라 며칠 어긋남)." };
+          return { ok: false, msg: label(d) + " 의 거리는 " + at(d)[4].toFixed(3) + " au입니다. 더 가까운 날이 있습니다." };
         }
       };
     },
     hints: ["거리가 가장 작은 숫자가 되는 날을 찾으세요.", "2025년 1월 중순입니다."],
     solution: "약 <b>" + label(CL[0]) + "</b> (" + CL[4].toFixed(3) + " au) — 역행의 한가운데.",
-    why: "지구가 화성을 앞지르는 순간, 곧 태양-지구-화성이 한 줄로 서는 <b>충</b> 무렵에 화성은 지구에 가장 가깝고 가장 밝으며, 역행의 한가운데에 있습니다. 해가 질 때 동쪽에서 떠서 밤새 보이니 관측하기에도 가장 좋은 때예요.<br>"
-      + "화성의 궤도가 찌그러진 타원이라 충 때의 거리도 해마다 다릅니다. 2003년 충에는 0.37 au 까지 가까워졌지만, 2025년 1월에는 0.64 au 였습니다."
+    why: "지구가 화성을 앞지르는 순간, 곧 태양-지구-화성이 한 줄로 서는 <b>충</b> 무렵에 화성은 지구에 가장 가깝고 가장 밝으며, 역행의 한가운데에 있습니다. 해가 질 때 동쪽에서 떠서 밤새 보이니 관측하기에도 가장 좋은 때입니다.<br>"
+      + "화성의 궤도가 찌그러진 타원이라 충 때의 거리도 해마다 다릅니다. 2003년 충에는 0.37 au까지 가까워졌지만, 2025년 1월에는 0.64 au 였습니다."
   }
   ]
 });

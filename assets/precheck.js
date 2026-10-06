@@ -63,6 +63,7 @@
       ".pc-foot{font-size:12.5px;color:var(--mist);padding:8px 2px 4px}" +
       ".pc-nudge{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:14px 0 18px;padding:12px 16px;border:2px dashed var(--brand);border-radius:16px;background:var(--brand-100);font-size:13.5px;line-height:1.6;color:var(--ink)}" +
       ".pc-nudge span{flex:1 1 260px}" +
+      ".pc-nudge[hidden]{display:none}" +
       ".pc-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:4px 0 6px}" +
       ".pc-tbl th,.pc-tbl td{border-top:1.5px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top;line-height:1.55}" +
       ".pc-tbl th{font-size:12px;color:var(--mist);border-top:0}" +

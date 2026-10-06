@@ -137,7 +137,7 @@
         html += "<li><span class='qz-std'>" + c + "</span> " + STD[c] +
           "<span class='qz-bar sm'><i style='width:" + pct + "%'></i></span><span class='qz-lv-n'>" + n + " / " + mine.length + "</span></li>";
       });
-      goal.innerHTML = html + "</ul><p class='qz-note'>1단계에서 80% 이상 풀면 다음 단계를 추천합니다. 어느 단계부터 시작해도 괜찮아요.</p>";
+      goal.innerHTML = html + "</ul><p class='qz-note'>1단계에서 80% 이상 풀면 다음 단계를 추천해요. 어느 단계부터 시작해도 괜찮아요.</p>";
     }
 
     var cards = [];
