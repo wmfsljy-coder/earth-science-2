@@ -166,6 +166,8 @@
         .catch(function (e) { p.textContent = "활동 기록은 잠시 뒤에 보입니다."; });
     }
     function paintLog(units, o) {
+      /* 학생에게는 이 단원 기록만(다른 단원 이름도 보이지 않게). 교사 기기에서는 반 전체 */
+      if (!window.STH_TEACHER) units = units.filter(function (u) { return u.unit === opt.unit; });
       logBox.innerHTML = "";
       logBox.appendChild(el("h4", null, "우리 반 활동 기록"));
       if (!units.length) {
@@ -174,7 +176,7 @@
       }
       var total = 0;
       units.forEach(function (u) { total += (u.n || 0); });
-      logBox.appendChild(el("p", "sh-note", o.cls + "반 · 단원 " + units.length + "개 · 올린 기록 " + total + "건"));
+      logBox.appendChild(el("p", "sh-note", (window.STH_TEACHER ? o.cls + "반 · 단원 " + units.length + "개 · 올린 기록 " + total + "건" : o.cls + "반 · 이 단원에 올린 기록 " + total + "건")));
       var list = el("div", "sh-log");
       units.forEach(function (u) {
         var row = el("div", "sh-log-row" + (u.unit === opt.unit ? " now" : ""));
