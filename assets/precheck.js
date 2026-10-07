@@ -64,6 +64,9 @@
       ".pc-nudge{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:14px 0 18px;padding:12px 16px;border:2px dashed var(--brand);border-radius:16px;background:var(--brand-100);font-size:13.5px;line-height:1.6;color:var(--ink)}" +
       ".pc-nudge span{flex:1 1 260px}" +
       ".pc-nudge[hidden]{display:none}" +
+      ".pc-teacher{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin:4px 0 18px;padding:14px 18px;border:2px solid var(--amber);border-radius:18px;background:var(--amber-100);font-size:13.5px;line-height:1.65;color:var(--ink)}" +
+      ".pc-teacher span{flex:1 1 300px}.pc-teacher b{display:block;font-size:12px;color:var(--amber-700)}" +
+      "@media print{.pc-teacher{display:none}}" +
       ".pc-tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin:4px 0 6px}" +
       ".pc-tbl th,.pc-tbl td{border-top:1.5px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top;line-height:1.55}" +
       ".pc-tbl th{font-size:12px;color:var(--mist);border-top:0}" +
@@ -196,6 +199,12 @@
       introPanel = el("section", "tab-panel"); introPanel.setAttribute("data-panel", "pc"); introPanel.hidden = true;
       introPanel.appendChild(el("div", "stage-head", "<div class='eyebrow'>00 · 들어가기</div><h2 class='display'>이야기를 시작하기 전에</h2>"
         + "<p>이 단원에 나오는 문장 " + items.length + "개를 먼저 읽고, 지금 내 생각을 골라 두세요. 단원을 마치고 정리하기 탭에 가면 처음 생각과 끝난 뒤의 생각을 견주어 볼 수 있어요.</p>"));
+      /* 교사 기기에서만: 수업 첫머리에 띄울 학생 입장 QR */
+      if (window.STH_TEACHER && window.sthUnitQR) {
+        var tq = el("div", "pc-teacher", "<span><b>교사용 · 학생 입장 안내</b> 수업을 시작할 때 이 단원의 QR 을 화면 가득 띄우세요. 학생이 찍으면 이 단원의 ‘00 들어가기’로 바로 들어오고, 학생 화면에는 이 단원만 보입니다.</span>");
+        var qb = el("button", "btn primary", "📱 학생 입장 QR 띄우기"); qb.type = "button"; qb.addEventListener("click", window.sthUnitQR);
+        tq.appendChild(qb); introPanel.appendChild(tq);
+      }
       var main = preCard(items);
       introPanel.appendChild(main); cards.push(main);
       var go = el("button", "btn primary", "첫 이야기 시작하기 →"); go.type = "button"; go.style.margin = "4px 0 30px";
