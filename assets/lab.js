@@ -77,11 +77,15 @@
 
   if (!document.getElementById("lab-ex-css")) { var lxc = document.createElement("style"); lxc.id = "lab-ex-css"; lxc.textContent = ".lab-ex-q{font-size:14px;margin:4px 0 8px}.lab-ex-ta{width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:14px;background:var(--panel);color:var(--ink)}.lab-ex-m{font-size:12.5px;color:var(--mist);margin-left:8px}.lab-ex-mine{margin:12px 0 0;padding:10px 14px;border-left:4px solid var(--teal,#14b8a6);background:var(--panel);border-radius:0 12px 12px 0}.lab-ex-mine p{margin:4px 0 6px;font-size:14px}.lab-ex-sub{font-size:12.5px;color:var(--mist);margin-bottom:4px}.lab-ex-c{display:block;font-size:13.5px;margin:2px 0}"; document.head.appendChild(lxc); }
   window.sthLab = function (opt) {
+    var cases = opt.cases || [];
+    /* 소단원 모드: 사례마다 sec(소단원 번호)가 있으면 그 이야기 탭 끝(교사 메모 앞)에 접힌 카드로 붙인다 */
+    var BYSEC = cases.some(function (c) { return c.sec; });
     var mount = document.getElementById(opt.mount);
-    if (!mount) return;
+    if (!mount && !BYSEC) return;
+    if (!mount) mount = document.createElement("div");
     var KEY = opt.key || "lab", RES = opt.result || "rLab", LBL = opt.label || "응용";
     var st = window.sthState(KEY) || {};
-    var cases = opt.cases || [];
+    var heads = {};
     mount.classList.add("lab");
     mount.innerHTML = "";
 
@@ -99,6 +103,7 @@
         (solved.length ? " · " + solved.map(function (c) { return c.short || c.title; }).join(", ") : "");
       window.sthState(RES, solved.length ? s.slice(0, 120) : null);
       paintTop();
+      Object.keys(heads).forEach(function (k) { heads[k](); });
     }
     function paintTop() {
       var n = cases.filter(function (c) { return st[c.id] && st[c.id].ok; }).length;
@@ -114,7 +119,7 @@
       });
     }
 
-    cases.forEach(function (c, ci) {
+    function make(c, ci, host) {
       var s = st[c.id] || (st[c.id] = {});
       var card = el("section", "lab-case"); card.id = "lab-" + c.id;
       card.appendChild(el("div", "lab-head",
@@ -229,7 +234,7 @@
       /* ④ 설명 */
       var why = el("div", "lab-why"); why.hidden = true;
       card.appendChild(why);
-      mount.appendChild(card);
+      host.appendChild(card);
 
       var made = c.build(stage, api) || {};
       card._judge = made.judge;                         /* 검수 도구(_tools/labcheck.js)가 부른다 */
@@ -302,6 +307,57 @@
       /* 저장된 상태로 되살리기 */
       if (s.p == null) body.classList.add("locked"); else unlock();
       if (s.ok) { showWhy(); paintEx(); } else showHint();
+    }
+    if (!BYSEC) { cases.forEach(function (c, ci) { make(c, ci, mount); }); paintTop(); return; }
+
+    /* ---- 소단원 카드 ---- */
+    if (!document.getElementById("real-sec-css")) { var rsc = document.createElement("style"); rsc.id = "real-sec-css"; rsc.textContent = ".real-sec{margin:14px 0 10px}.real-one{margin:10px 0;border:2px solid #0ea5e9;border-radius:16px;background:var(--card);overflow:hidden}"
+      + ".real-head{display:block;width:100%;text-align:left;font:inherit;background:linear-gradient(90deg,rgba(14,165,233,.12),transparent);border:0;padding:12px 16px;cursor:pointer;color:var(--ink)}"
+      + ".real-head b{display:block;font-size:15.5px;margin:6px 0 2px}.real-tag{display:inline-block;font-size:12px;font-weight:900;color:#fff;background:#0284c7;border-radius:999px;padding:2px 10px;margin-right:6px}"
+      + ".real-pill{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:1px 8px;margin-right:4px;border:1px solid var(--line);background:var(--panel)}"
+      + ".real-open{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#0369a1}.real-body{padding:0 12px 10px}"
+      + ".real-one .lab-case{border:0;border-radius:0;margin:0;padding:6px 4px 4px;background:transparent}.real-one .lab-case>.lab-head{display:none}"
+      + ".real-lock{border:2px dashed var(--brand);border-radius:14px;background:var(--brand-100);padding:12px 16px;margin:8px 0;font-size:13.5px;line-height:1.7}.real-lock p{margin:0 0 8px}";
+      document.head.appendChild(rsc); }
+    var SEC = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".tab-btn"), function (b) {
+      var n = b.querySelector(".num"); if (!n) return;
+      var p = document.querySelector('.tab-panel[data-panel="' + b.getAttribute("data-tab") + '"]'); if (p) SEC[n.textContent.trim()] = p;
+    });
+    function wrapOf(panel) {
+      var w = panel.querySelector(".real-sec");
+      if (!w) { w = el("div", "real-sec"); var tn = panel.querySelector(".teacher-note"); if (tn && tn.parentNode) tn.parentNode.insertBefore(w, tn); else panel.appendChild(w); }
+      return w;
+    }
+    /* 로그인해야 기록이 남는 활동이라, 탭에 있을 때처럼 로그인한 뒤에 열린다 */
+    function allowed() { var A = window.sthAccount; return !A || !A.need || A.need(); }
+    function cardBox(panel, headHtml, fill, pre) {
+      var box = el("div", "real-one"), head = el("button", "real-head"), bd = el("div", "real-body"), lk = el("div", "real-lock"), inner = el("div");
+      head.type = "button"; bd.hidden = true; lk.hidden = true; bd.appendChild(lk); bd.appendChild(inner); if (pre) inner.appendChild(pre);
+      lk.innerHTML = "<p>🔒 <b>로그인하면 열립니다.</b> 자료 풀이는 내 이름으로 기록이 남는 활동이에요. 이야기는 로그인하지 않아도 읽을 수 있습니다.</p>";
+      var lb = el("button", "btn primary", "👤 로그인"); lb.type = "button"; lk.appendChild(lb);
+      function paintHead() { head.innerHTML = headHtml() + "<span class='real-open'>" + (bd.hidden ? "▾ 열어 보기" : "▴ 접기") + "</span>"; }
+      function show() { var ok = allowed(); lk.hidden = ok; inner.hidden = !ok; if (ok) fill(inner); }
+      lb.addEventListener("click", function () { window.sthAccount.login(function () { bd.hidden = false; show(); paintHead(); }); });
+      head.addEventListener("click", function () { bd.hidden = !bd.hidden; if (!bd.hidden) show(); paintHead(); });
+      box.appendChild(head); box.appendChild(bd); wrapOf(panel).appendChild(box); paintHead();
+      return paintHead;
+    }
+    cases.forEach(function (c, ci) {
+      var panel = SEC[c.sec]; if (!panel) return;
+      var made = false, sub = String(c.tag || "").replace(/^\s*실제 자료\s*·\s*/, "");
+      heads[c.id] = cardBox(panel, function () {
+        var s = st[c.id] || {};
+        return "<span class='real-tag'>📊 실제 자료</span>" + (sub ? "<span class='real-pill'>" + sub + "</span>" : "") + (s.ok ? "<span class='real-pill'>✅ 해결</span>" : "") + "<b>" + c.title + "</b>";
+      }, function (inner) { if (!made) { made = true; make(c, ci, inner); } });
+    });
+    /* 실제 자료 탭에 함께 있던 선택 활동(우리 반 측정값·근거 카드 토론)도 같은 모양의 카드로 */
+    Array.prototype.forEach.call(document.querySelectorAll(".sec-more"), function (m) {
+      var panel = m.closest(".tab-panel"); if (!panel) return;
+      var tag = m.getAttribute("data-tag") || "🧭 선택 활동", tt = m.getAttribute("data-title") || "";
+      /* 문서에서 떼지 않고 바로 카드 안으로 옮긴다 — 측정값·토론 부품은 이 뒤에 실행되며 id 로 자리를 찾는다 */
+      cardBox(panel, function () { return "<span class='real-tag'>" + tag + "</span><span class='real-pill'>선택 활동</span><b>" + tt + "</b>"; },
+        function () {}, m);
     });
     paintTop();
   };
