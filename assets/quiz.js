@@ -96,14 +96,15 @@
     top.appendChild(lvRow); top.appendChild(goal);
     if (!MINI) mount.appendChild(top);
     else {
-      var head = el("div", "qz-mini-head", "<b>📝 소단원 확인 문제</b><span>이야기에서 찾아낸 것을 바로 확인해요. 더 많은 문제는 <a href='#quiz' class='qz-go'>수준별 문제</a> 탭에 있어요.</span>");
-      head.querySelector(".qz-go").addEventListener("click", function (e) {
+      var head = el("div", "qz-mini-head", opt.headHtml || "<b>📝 소단원 확인 문제</b><span>이야기에서 찾아낸 것을 바로 확인해요. 더 많은 문제는 <a href='#quiz' class='qz-go'>수준별 문제</a> 탭에 있어요.</span>");
+      if (head.querySelector(".qz-go")) head.querySelector(".qz-go").addEventListener("click", function (e) {
         e.preventDefault();
         var t = Array.prototype.slice.call(document.querySelectorAll(".tab-btn")).filter(function (b) { return /수준별/.test(b.textContent); })[0];
         if (t) { t.click(); window.scrollTo(0, 0); }
       });
       mount.appendChild(head);
     }
+    if (!MINI && !document.getElementById("qz-retry-css")) { var rc = document.createElement("style"); rc.id = "qz-retry-css"; rc.textContent = ".qz-retry{margin:0 0 16px;padding:12px 16px;border:2px dashed var(--line);border-radius:18px;background:var(--card)}.qz-retry-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:13px;color:var(--mist);margin-bottom:8px}.qz-retry-h b{font-family:'Jua',sans-serif;font-weight:400;font-size:17px;color:var(--ink)}.qz-retry-h span b{font-family:inherit;font-size:inherit;color:var(--brand-700)}.qz-retry .sec-quiz,.qz-retry>div>.qz{margin-top:12px}"; document.head.appendChild(rc); }
     var list = el("div", "qz-list");
     mount.appendChild(list);
 
@@ -372,7 +373,60 @@
       }
     });
     show();
+    if (!MINI) retry();
     if (!MINI && opt.secQuiz !== false) secQuiz();
+
+    /* ---- 🔁 다시 풀기(인출 연습): 처음에 틀린(또는 해설부터 본) 문항, 우리 반이 많이 틀린 문항을 며칠 뒤 다시 푼다.
+       풀이는 따로(KEY + "Retry") 적어, 첫 시도 기록(수업 효과·달성도)은 그대로 둔다. ---- */
+    function retry() {
+      var RK = KEY + "Retry", rst = window.sthState(RK) || {};
+      var wrap = el("div", "qz-retry"); mount.insertBefore(wrap, list);
+      var hdr = el("div"); wrap.appendChild(hdr);
+      var area = el("div"); area.id = (mount.id || "quiz") + "-retry-q"; wrap.appendChild(area);
+      var cls = null;
+      function firstMiss(x) { return !!x && (x.r === 1 || x.n || x.sh) && !(x.r === 1 && !x.n && !x.sh); }
+      function mine() { return items.filter(function (it) { return firstMiss(st[it.id]); }); }
+      function round(list2, label) {
+        list2.forEach(function (it) { delete rst[it.id]; });
+        window.sthState(RK, rst);
+        area.innerHTML = "";
+        window.sthQuiz({ mount: area.id, key: RK, mini: true, _st: rst, items: list2, onSave: function () { window.sthState(RK, rst); paintR(); },
+          headHtml: "<b>🔁 " + label + "</b><span>정답을 보기 전에 먼저 떠올려 보세요. 여기서 푼 것은 처음 기록을 바꾸지 않습니다.</span>" });
+        area.scrollIntoView({ block: "start", behavior: "smooth" });
+      }
+      function paintR() {
+        var m = mine(), done = Object.keys(rst).filter(function (id) { var x = rst[id]; return x && (x.r === 1 || x.n || x.sh); });
+        var ok = done.filter(function (id) { var x = rst[id]; return x.r === 1 && !x.n && !x.sh; }).length;
+        var h = "<div class='qz-retry-h'><b>🔁 다시 풀기</b><span>처음에 틀린 문항을 며칠 뒤 다시 떠올리면 훨씬 오래 남습니다." +
+          (done.length ? " 지금까지 다시 푼 " + done.length + "문항 가운데 <b>" + ok + "문항</b>을 한 번에 맞혔어요." : "") + "</span></div><div class='btn-row qz-retry-b'></div>";
+        hdr.innerHTML = h;
+        var row = hdr.querySelector(".qz-retry-b");
+        var b1 = el("button", "btn", "내가 처음 틀린 문항 (" + m.length + ")"); b1.type = "button"; b1.disabled = !m.length;
+        b1.addEventListener("click", function () { round(m, "내가 처음 틀린 문항 다시 풀기"); });
+        row.appendChild(b1);
+        if (cls && cls.length) {
+          var b2 = el("button", "btn", "우리 반이 많이 틀린 문항 (" + cls.length + ")"); b2.type = "button";
+          b2.addEventListener("click", function () { round(cls, "우리 반이 처음에 많이 틀린 문항"); });
+          row.appendChild(b2);
+        }
+        if (!m.length && !(cls && cls.length)) row.appendChild(el("span", "qz-note", "아직 처음에 틀린 문항이 없습니다. 문제를 풀고 나서 며칠 뒤에 다시 와 보세요."));
+      }
+      paintR();
+      /* 우리 반이 많이 틀린 문항 — 반 코드·별명을 저장했고 공유가 켜져 있을 때만(별명 없이 문항별 인원만 받는다) */
+      try {
+        var me = JSON.parse(localStorage.getItem("sth-me") || "{}"), url = String(window.STH_SHARE_URL || "").trim(), hosts = window.STH_SHARE_HOSTS;
+        if (url && hosts && hosts.length && hosts.indexOf(location.hostname) < 0 && location.protocol !== "file:") url = "";
+        var uid = window.sthUnitId ? window.sthUnitId() : "";
+        if (url && me.cls && uid) fetch(url + "?action=classmiss&cls=" + encodeURIComponent(me.cls) + "&unit=" + encodeURIComponent(uid))
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (!j.ok) return;
+            var by = {}; items.forEach(function (it) { by[it.id] = it; });
+            cls = (j.items || []).filter(function (x) { return by[x.id] && x.n >= 2; }).slice(0, 5).map(function (x) { return by[x.id]; });
+            paintR();
+          }).catch(function () {});
+      } catch (e) {}
+    }
 
     /* ---- 소단원 확인 문제: 이야기 탭마다 그 소단원(sec) 문제 가운데 기본 2·발전 2개를 이야기 끝에 붙인다.
        풀이 기록은 수준별 문제와 같은 곳에 저장되어, 어디서 풀든 달성도에 함께 셈된다. ---- */

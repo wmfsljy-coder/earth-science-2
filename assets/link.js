@@ -46,6 +46,9 @@
     + "[data-sp=out]::after{content:'🔗';font-size:.82em;margin-left:2px}"
     + "[data-place]:hover,[data-place]:focus-visible,[data-view]:hover,[data-view]:focus-visible{background:var(--brand-100);outline:none;border-radius:4px}"
     + ".sth-place-pop iframe.tall{height:420px}"
+    + ".sp-ask{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:2px 0 10px;padding:10px 12px;border-radius:12px;background:var(--amber-100);font-size:13.5px;color:var(--ink)}"
+    + ".sp-ask input{flex:1 1 220px;border:2px solid var(--line);border-radius:10px;padding:6px 10px;font:inherit;font-size:13.5px;background:var(--card);color:var(--ink)}"
+    + ".sp-ask.done{background:var(--card-2)}"
     + ".sth-place-pop img{display:block;max-width:min(100%,520px);margin:0 auto;border-radius:10px}"
     + ".sth-place-pop{margin:8px 0 12px;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:14px;background:var(--card);padding:10px 12px}"
     + ".sth-place-pop .sp-top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}"
@@ -228,6 +231,38 @@
     var a = el("a", "btn"); a.href = p.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = p.btn; top.appendChild(a);
     var x = el("button", "btn"); x.type = "button"; x.textContent = "닫기"; x.addEventListener("click", function () { placeToggle(n); n.focus && n.focus(); }); top.appendChild(x);
     pop.appendChild(top);
+    /* 먼저 예측하고 보기 — data-ask 가 있으면 한 줄 예측을 먼저 받는다(기록은 이 기기에만, 판정 없음) */
+    var ask = n.getAttribute("data-ask"), PK = "pv_" + (n.getAttribute("data-view") || n.getAttribute("data-place") || p.name).replace(/[^\w가-힣]/g, "").slice(0, 40);
+    var pv = (window.sthState && window.sthState(PK)) || {};
+    if (ask && !pv.p && !n._skipAsk) {
+      var q = el("div", "sp-ask"); q.appendChild(el("b", null, "🤔 먼저 예측해 보세요 "));
+      q.appendChild(document.createTextNode(ask));
+      var inp = document.createElement("input"); inp.type = "text"; inp.maxLength = 120; inp.placeholder = "내 예측 한 줄";
+      var go = el("button", "btn primary"); go.type = "button"; go.textContent = "예측하고 보기";
+      var skip = el("button", "btn"); skip.type = "button"; skip.textContent = "그냥 보기";
+      var reveal = function (save) {
+        if (save) { pv.p = inp.value.trim(); if (window.sthState) window.sthState(PK, pv); }
+        n._skipAsk = !save; pop.parentNode.removeChild(pop); n._pop = null; placeToggle(n); n._skipAsk = false;
+      };
+      go.addEventListener("click", function () { if (!inp.value.trim()) { inp.focus(); inp.placeholder = "한 줄이라도 적어 보세요"; return; } reveal(true); });
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") go.click(); });
+      skip.addEventListener("click", function () { reveal(false); });
+      q.appendChild(inp); q.appendChild(go); q.appendChild(skip);
+      pop.appendChild(q);
+      host.parentNode.insertBefore(pop, host.nextSibling);
+      n._pop = pop; n.setAttribute("aria-expanded", "true");
+      setTimeout(function () { try { inp.focus(); } catch (e) {} }, 30);
+      return;
+    }
+    if (ask && pv.p) {
+      var mine = el("div", "sp-ask done");
+      mine.appendChild(el("b", null, "🤔 내 예측 ")); mine.appendChild(document.createTextNode(pv.p));
+      var cmp = document.createElement("input"); cmp.type = "text"; cmp.maxLength = 120; cmp.placeholder = "실제로 보니 어땠나요? (예측과 같은 점·다른 점 한 줄)"; cmp.value = pv.c || "";
+      cmp.addEventListener("change", function () { pv.c = cmp.value.trim(); if (window.sthState) window.sthState(PK, pv); });
+      var again = el("button", "btn"); again.type = "button"; again.textContent = "예측 다시 하기";
+      again.addEventListener("click", function () { pv = {}; if (window.sthState) window.sthState(PK, null); pop.parentNode.removeChild(pop); n._pop = null; placeToggle(n); });
+      mine.appendChild(cmp); mine.appendChild(again); pop.appendChild(mine);
+    }
     if (p.img) {
       var im = document.createElement("img"); im.src = p.img; im.alt = p.name + " — " + p.src; im.loading = "lazy";
       pop.appendChild(im);

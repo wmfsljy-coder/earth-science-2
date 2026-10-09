@@ -101,7 +101,10 @@
       ["lab", "real"].forEach(function (lk) { var L = s[lk] || {}; Object.keys(L).forEach(function (c) { var x = L[c] || {}; if (x.p == null) return; lt++; if (x.ok) ls++; hs += Math.min(2, x.n || 0); }); });
       /* 내 생각 점검(precheck.js): p:문장=처음>나중 */
       var pc = window.sthPrecheckEv ? window.sthPrecheckEv(s) : "";
-      var base = "g:" + g.join(",") + (pc ? "|p:" + pc : "") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt + "|h:" + ls + "/" + lt + "/" + hs;
+      /* 다시 풀기(quiz.js 의 quizRetry): 다시 풀어 한 번에 맞힌 문항 / 다시 푼 문항 */
+      var rq = s.quizRetry || {}, rt = 0, r1 = 0;
+      Object.keys(rq).forEach(function (id) { var x = rq[id] || {}; if (x.r === 1 || x.n || x.sh) { rt++; if (x.r === 1 && !x.n && !x.sh) r1++; } });
+      var base = "g:" + g.join(",") + (pc ? "|p:" + pc : "") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt + "|h:" + ls + "/" + lt + "/" + hs + (rt ? "|r:" + r1 + "/" + rt : "");
       /* 처음에 틀린(또는 해설부터 본) 문항: x:a3,b2 — 선생님 화면의 ‘반 한눈에’가 많이 틀린 문항을 센다 */
       var xs = "";
       for (var mi = 0; mi < miss.length && base.length + 3 + xs.length + miss[mi].length + 1 <= 300; mi++) xs += (xs ? "," : "") + miss[mi];
