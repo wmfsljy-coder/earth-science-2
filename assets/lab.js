@@ -119,6 +119,8 @@
       });
     }
 
+    /* 로그인해야 기록이 남으므로 답하기(예상 고르기·판정)는 로그인한 뒤에. 카드를 펼쳐 보는 것은 누구나 */
+    function allowed() { var A = window.sthAccount; return !A || !A.need || A.need(); }
     function make(c, ci, host) {
       var s = st[c.id] || (st[c.id] = {});
       var card = el("section", "lab-case"); card.id = "lab-" + c.id;
@@ -138,6 +140,7 @@
         if (s.p === i) b.classList.add("picked");
         b.addEventListener("click", function () {
           if (s.ok) return;                                   /* 해결한 뒤에는 예측을 바꾸지 않는다 */
+          if (!signedIn()) return;                            /* 보기는 누구나, 답하기는 로그인한 뒤에 */
           Array.prototype.forEach.call(opts.children, function (o) { o.classList.remove("picked"); });
           b.classList.add("picked"); s.p = i; save(); unlock();
         });
@@ -145,6 +148,12 @@
       });
       (mix ? mix.order : pbtn.map(function (x, i) { return i; })).forEach(function (o) { opts.appendChild(pbtn[o]); });
       card.appendChild(pred);
+      var needBox = el("div", "real-lock"); needBox.hidden = true;
+      needBox.innerHTML = "<p>🔒 <b>답을 고르고 판정받으려면 로그인하세요.</b> 자료와 이야기는 로그인하지 않아도 볼 수 있습니다.</p>";
+      var nb = el("button", "btn primary", "👤 로그인"); nb.type = "button"; needBox.appendChild(nb);
+      nb.addEventListener("click", function () { window.sthAccount.login(function () { needBox.hidden = true; }); });
+      card.appendChild(needBox);
+      function signedIn() { if (allowed()) { needBox.hidden = true; return true; } needBox.hidden = false; needBox.scrollIntoView({ block: "nearest", behavior: "smooth" }); return false; }
 
       /* ② 조작 */
       var body = el("div", "lab-body");
@@ -291,6 +300,7 @@
 
       jb.addEventListener("click", function () {
         if (s.p == null || s.ok) return;
+        if (!signedIn()) return;
         var r = made.judge ? made.judge() : { ok: false, msg: "" };
         if (r.ok) {
           s.ok = 1; save();
@@ -329,17 +339,11 @@
       if (!w) { w = el("div", "real-sec"); var tn = panel.querySelector(".teacher-note"); if (tn && tn.parentNode) tn.parentNode.insertBefore(w, tn); else panel.appendChild(w); }
       return w;
     }
-    /* 로그인해야 기록이 남는 활동이라, 탭에 있을 때처럼 로그인한 뒤에 열린다 */
-    function allowed() { var A = window.sthAccount; return !A || !A.need || A.need(); }
     function cardBox(panel, headHtml, fill, pre) {
-      var box = el("div", "real-one"), head = el("button", "real-head"), bd = el("div", "real-body"), lk = el("div", "real-lock"), inner = el("div");
-      head.type = "button"; bd.hidden = true; lk.hidden = true; bd.appendChild(lk); bd.appendChild(inner); if (pre) inner.appendChild(pre);
-      lk.innerHTML = "<p>🔒 <b>로그인하면 열립니다.</b> 자료 풀이는 내 이름으로 기록이 남는 활동이에요. 이야기는 로그인하지 않아도 읽을 수 있습니다.</p>";
-      var lb = el("button", "btn primary", "👤 로그인"); lb.type = "button"; lk.appendChild(lb);
+      var box = el("div", "real-one"), head = el("button", "real-head"), bd = el("div", "real-body"), inner = el("div");
+      head.type = "button"; bd.hidden = true; bd.appendChild(inner); if (pre) inner.appendChild(pre);
       function paintHead() { head.innerHTML = headHtml() + "<span class='real-open'>" + (bd.hidden ? "▾ 열어 보기" : "▴ 접기") + "</span>"; }
-      function show() { var ok = allowed(); lk.hidden = ok; inner.hidden = !ok; if (ok) fill(inner); }
-      lb.addEventListener("click", function () { window.sthAccount.login(function () { bd.hidden = false; show(); paintHead(); }); });
-      head.addEventListener("click", function () { bd.hidden = !bd.hidden; if (!bd.hidden) show(); paintHead(); });
+      head.addEventListener("click", function () { bd.hidden = !bd.hidden; if (!bd.hidden) fill(inner); paintHead(); });
       box.appendChild(head); box.appendChild(bd); wrapOf(panel).appendChild(box); paintHead();
       return paintHead;
     }

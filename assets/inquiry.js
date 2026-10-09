@@ -260,8 +260,6 @@
       }
       heads[it.id] = paintHead;
       head.addEventListener("click", function () {
-        var A = window.sthAccount;
-        if (bd.hidden && A && A.need && !A.need()) { A.login(function () { bd.hidden = false; if (!bd.firstChild) paint(it, bd); paintHead(); }); return; }   /* 기록이 남는 활동이라 로그인 뒤에 연다 */
         bd.hidden = !bd.hidden; if (!bd.hidden && !bd.firstChild) paint(it, bd); paintHead();
       });
       box.appendChild(head); box.appendChild(bd); wrap.appendChild(box); paintHead();
