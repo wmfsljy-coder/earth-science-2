@@ -31,6 +31,8 @@
   window.sthShare = function (opt) {
     var mount = document.getElementById(opt.mount);
     if (!mount) return;
+    /* 익명 돌려 읽기(peer.js)가 같은 ‘한 문장’ 칸을 쓴다 */
+    window.STH_SHARE_LINE = { mount: opt.mount, id: opt.line ? opt.line.id : ((opt.works || [])[0] || {}).id, label: opt.line ? opt.line.label : ((opt.works || [])[0] || {}).label };
     var URL_ = (window.STH_SHARE_URL || "").trim();
     /* 복사한 사이트(다른 계정의 Pages)가 원래 학교의 시트로 올리지 않도록, 허용한 주소에서만 공유 주소를 쓴다 */
     var HOSTS_ = window.STH_SHARE_HOSTS, FOREIGN_ = false;
