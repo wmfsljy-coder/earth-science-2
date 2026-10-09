@@ -2094,6 +2094,7 @@ window.sthWork({
     { key: "r4", label: "④ 팽창하는 우주" },
     { key: "rQuiz", label: "수준별 문제" },
     { key: "rLab", label: "응용 실험실" },
+    { key: "rInq", label: "교과서 실험" },
     { key: "rReal", label: "실제 자료" }
   ],
   items: [
@@ -2112,6 +2113,7 @@ window.sthShare({
     { key: "r4", label: "④ 팽창하는 우주" },
     { key: "rQuiz", label: "수준별 문제" },
     { key: "rLab", label: "응용 실험실" },
+    { key: "rInq", label: "교과서 실험" },
     { key: "rReal", label: "실제 자료" }
   ],
   line: { id: "all", label: "네 사건을 꿰는 한 문장" }
