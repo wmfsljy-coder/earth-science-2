@@ -40,26 +40,33 @@
       + "table.inq-t input{width:90px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;font:inherit}.inq-chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.inq-chip{font:inherit;font-size:13px;font-weight:800;border:1px solid var(--line);border-radius:999px;padding:4px 11px;background:var(--panel);cursor:pointer;color:var(--ink)}"
       + ".inq-ck{list-style:none;padding:0;margin:0;font-size:14.5px}.inq-ck li{padding:3px 0}.inq-ck li.ok::before{content:'✅ '}.inq-ck li.no::before{content:'⚠️ '}.inq-ck small{color:var(--mist)}"
       + ".inq-safe{margin-top:8px;padding:8px 12px;border-radius:10px;background:rgba(239,68,68,.08);font-size:13px}.inq-plan{background:var(--panel);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.7;white-space:pre-wrap}"
-      + ".inq-msg{font-size:12.5px;color:var(--mist);margin-left:6px}";
+      + ".inq-msg{font-size:12.5px;color:var(--mist);margin-left:6px}"
+      + ".inq-sec{margin:22px 0 10px}.inq-one{margin:10px 0;border:2px solid #f59e0b;border-radius:16px;background:var(--card);overflow:hidden}"
+      + ".inq-head{display:block;width:100%;text-align:left;font:inherit;background:linear-gradient(90deg,rgba(245,158,11,.12),transparent);border:0;padding:12px 16px;cursor:pointer;color:var(--ink)}"
+      + ".inq-head b{display:block;font-size:15.5px;margin:6px 0 2px}.inq-tag{display:inline-block;font-size:12px;font-weight:900;color:#fff;background:#d97706;border-radius:999px;padding:2px 10px;margin-right:6px}"
+      + ".inq-sub2{display:block;font-size:13px;color:var(--mist)}.inq-open{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:#b45309}.inq-body{padding:0 12px 10px}";
     document.head.appendChild(css);
   }
 
   window.sthInquiry = function (opt) {
-    var mount = document.getElementById(opt.mount || "inq"); if (!mount) return;
+    var mount = document.getElementById(opt.mount || "inq"), BYSEC0 = (opt.items || []).some(function (it) { return it.sec; }); if (!mount && !BYSEC0) return; if (!mount) mount = document.createElement("div");
     var KEY = opt.key || "inq", RES = opt.result || "rInq", items = opt.items || [];
     var st = window.sthState(KEY) || {}, cur = null;
     function S(id) { return st[id] || (st[id] = {}); }
     function save() { window.sthState(KEY, st); var n = items.filter(function (it) { return st[it.id] && st[it.id].ok; }).length, any = items.some(function (it) { return st[it.id]; }); window.sthState(RES, any ? "교과서 실험 " + n + "/" + items.length + " 탐구 완료" : null); }
     mount.innerHTML = "";
     if (!items.length) { mount.appendChild(el("p", "inq-sub", "이 단원에는 시뮬레이션으로 해 볼 교과서 실험이 아직 없습니다.")); return; }
-    var list = el("div", "inq-list"), body = el("div"); mount.appendChild(list); mount.appendChild(body);
+    /* 소단원 모드: 실험마다 sec(소단원 번호)가 있으면 그 이야기 탭 끝에 접힌 카드로 붙인다(따로 탭을 두지 않는다) */
+    var BYSEC = items.some(function (it) { return it.sec; });
+    var list = el("div", "inq-list"), body = el("div");
+    if (!BYSEC) { mount.appendChild(list); mount.appendChild(body); }
     function paintList() {
       list.innerHTML = "";
       items.forEach(function (it) {
         var c = el("button", "inq-c" + (it === cur ? " on" : "") + (st[it.id] && st[it.id].ok ? " done" : ""));
         c.type = "button";
         c.innerHTML = "<span class='inq-pill'>📘 " + esc(it.book) + " " + esc(it.page) + "쪽</span><span class='inq-pill'>" + (it.sim.kind === "model" ? "🧮 가상 실험" : "🧪 " + esc(it.sim.name || "시뮬레이션")) + "</span>" + (st[it.id] && st[it.id].ok ? "<span class='inq-pill'>✅ 완료</span>" : "") + "<b>" + esc(it.title) + "</b>" + esc(it.purpose || "");
-        c.addEventListener("click", function () { cur = it; paintList(); paint(); body.scrollIntoView({ block: "start", behavior: "smooth" }); });
+        c.addEventListener("click", function () { cur = it; paintList(); paint(cur, body); body.scrollIntoView({ block: "start", behavior: "smooth" }); });
         list.appendChild(c);
       });
     }
@@ -155,8 +162,10 @@
       return w;
     }
 
-    function paint() {
-      var it = cur; body.innerHTML = ""; if (!it) return;
+    var heads = {};
+    function refresh(it) { if (BYSEC) { if (heads[it.id]) heads[it.id](); } else paintList(); }
+    function paint(it, body) {
+      body.innerHTML = ""; if (!it) return;
       var s = S(it.id);
       /* ① 교과서 실험 */
       var s1 = el("div", "inq-step", "<h4><span class='inq-n'>1</span>교과서 실험</h4>");
@@ -225,7 +234,7 @@
                  [nb >= 3, "내 탐구를 3번 이상 재었다", "지금 " + nb + "번"], [!!s.cr && (s.c || "").length > 4, "자료를 근거로 결론을 냈다", ""]];
         ck.innerHTML = C.map(function (c) { return "<li class='" + (c[0] ? "ok" : "no") + "'>" + c[1] + (c[2] && !c[0] ? " <small>— " + esc(c[2]) + "</small>" : "") + "</li>"; }).join("");
         var ok = C.every(function (c) { return c[0]; });
-        if (ok !== !!s.ok) { s.ok = ok ? 1 : 0; save(); paintList(); }
+        if (ok !== !!s.ok) { s.ok = ok ? 1 : 0; save(); refresh(it); }
         plan.textContent = "[교과서 실험 탐구 보고서]\n출발한 교과서 실험: " + it.book + " " + it.page + "쪽 「" + it.title + "」\n교과서 실험의 변인: 조작 " + (it.iv || "-") + " / 종속 " + (it.dv || "-") + " / 통제 " + (it.cv || []).join(", ")
           + "\n내 탐구 질문: " + (q.iv || "○○") + "이(가) 달라지면 " + (q.dv || "△△") + "은(는) 어떻게 달라질까?\n가설: " + (q.h || "") + (q.w ? " (까닭: " + q.w + ")" : "")
           + "\n실험: " + (it.sim.kind === "model" ? "가상 실험 " : (it.sim.name || "시뮬레이션") + " ") + nb + "번 측정" + (ch && ch.length ? " · 바꾼 것: " + ch.map(function (k) { return labelOf(it, k); }).join(", ") : "")
@@ -233,6 +242,25 @@
       }
       check();
     }
-    cur = items[0]; paintList(); paint();
+    if (!BYSEC) { cur = items[0]; paintList(); paint(cur, body); return; }
+    var SEC = {};
+    Array.prototype.forEach.call(document.querySelectorAll(".tab-btn"), function (b) {
+      var n = b.querySelector(".num"); if (!n) return;
+      var p = document.querySelector('.tab-panel[data-panel="' + b.getAttribute("data-tab") + '"]'); if (p) SEC[n.textContent.trim()] = p;
+    });
+    items.forEach(function (it) {
+      var panel = SEC[it.sec]; if (!panel) return;
+      var wrap = panel.querySelector(".inq-sec");
+      if (!wrap) { wrap = el("div", "inq-sec"); var tn = panel.querySelector(".teacher-note"); if (tn && tn.parentNode) tn.parentNode.insertBefore(wrap, tn); else panel.appendChild(wrap); }
+      var box = el("div", "inq-one"), head = el("button", "inq-head"), bd = el("div", "inq-body"); head.type = "button"; bd.hidden = true;
+      function paintHead() {
+        var done = st[it.id] && st[it.id].ok;
+        head.innerHTML = "<span class='inq-tag'>📘 교과서 실험</span><span class='inq-pill'>" + esc(it.book) + " " + esc(it.page) + "쪽</span><span class='inq-pill'>" + (it.sim.kind === "model" ? "🧮 가상 실험" : "🧪 " + esc(it.sim.name || "시뮬레이션")) + "</span>" + (done ? "<span class='inq-pill'>✅ 완료</span>" : "")
+          + "<b>" + esc(it.title) + "</b><span class='inq-sub2'>" + esc(it.purpose || "") + "</span><span class='inq-open'>" + (bd.hidden ? "▾ 시뮬레이션으로 해 보기" : "▴ 접기") + "</span>";
+      }
+      heads[it.id] = paintHead;
+      head.addEventListener("click", function () { bd.hidden = !bd.hidden; if (!bd.hidden && !bd.firstChild) paint(it, bd); paintHead(); });
+      box.appendChild(head); box.appendChild(bd); wrap.appendChild(box); paintHead();
+    });
   };
 })();
