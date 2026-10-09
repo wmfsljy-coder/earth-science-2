@@ -1,7 +1,8 @@
 /* 지구과학 Ⅰ-2 대기와 해양의 상호작용과 기후 변화 — 실제 자료
    r1 1950년 이후 가장 강했던 엘니뇨 겨울은? — NOAA 해양 엘니뇨 지수(ONI)
    r2 지금 열대 태평양은 엘니뇨일까 라니냐일까 — 가장 최근 값 읽기
-   자료: data/oni.js (NOAA CPC, Niño 3.4 해역 수온 편차의 3개월 평균) */
+   r3 우리 동네 여름 — 창원(155) 가장 더웠던 여름 10번 가운데 2010년 이후는 몇 번
+   자료: data/oni.js (NOAA CPC, Niño 3.4 해역 수온 편차의 3개월 평균), data/cw155.js */
 (function () {
 "use strict";
 var O = (window.REAL_ONI || { rows: [] }).rows;                    /* [묶음, 연도, 편차] */
@@ -13,6 +14,11 @@ var TOP = NDJ.reduce(function (b, r) { return r[2] > b[2] ? r : b; }, NDJ[0] || 
 var LAST = O[O.length - 1] || ["JJA", 2026, 1.8];
 function state(v) { return v >= 0.5 ? "nino" : (v <= -0.5 ? "nina" : "neutral"); }
 var SRC = "<small>출처: 미국 해양대기청(NOAA) 기후예측센터(CPC) 해양 엘니뇨 지수(ONI) — 열대 동태평양 Niño 3.4 해역(남위 5° ~ 북위 5°, 서경 120~170°) 해수면 온도 편차의 3개월 이동 평균, 1950 ~ " + LAST[1] + ". 사본은 data/oni.js.</small>";
+var ZS = ((window.REAL_CW155 || {}).season || []).filter(function (r) { return r[1] != null; });   /* [연도, 여름(6~8월) 평균, 겨울] */
+var ZTOP = ZS.slice().sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10), ZTOPY = ZTOP.map(function (r) { return r[0]; });
+var Z_N10 = ZTOPY.filter(function (y) { return y >= 2010; }).length, Z_Y0 = ZS.length ? ZS[0][0] : 1986, Z_YL = ZS.length ? ZS[ZS.length - 1][0] : 2026;
+var Z_SHARE = ZS.filter(function (r) { return r[0] >= 2010; }).length / (ZS.length || 1), Z_EXP = 10 * Z_SHARE;
+var SRC_Z = "<small>출처: 기상청 날씨누리 과거 관측 일별 자료, 창원(155) 일평균 기온으로 해마다 여름(6 ~ 8월) 평균을 냈습니다(" + Z_Y0 + " ~ " + Z_YL + "). 사본은 data/cw155.js.</small>";
 
 function chart(H, ctx, W, CH, mark) {
   H.paper(ctx, W, CH);
@@ -115,6 +121,48 @@ window.sthLab({
     solution: LAST[1] + "년 " + KS[LAST[0]] + ": <b>" + ({ nino: "엘니뇨", nina: "라니냐", neutral: "평상" })[state(LAST[2])] + "</b>, " + (LAST[2] > 0 ? "+" : "") + LAST[2].toFixed(2) + " °C.",
     why: "엘니뇨와 라니냐는 대기(무역풍)와 해양(수온)이 서로를 키우거나 약하게 하며 2~7년마다 오가는 현상이라 ‘엘니뇨-남방 진동(ENSO)’이라고 부릅니다. 그래서 과학자들은 매달 수온과 바람을 재어 몇 달 뒤를 예보합니다.<br>"
       + "엘니뇨가 발달하면 우리나라는 겨울이 따뜻하고 여름 강수가 많아지는 경향이 있지만, 늘 그렇지는 않습니다. 기후는 여러 요인이 겹쳐 정해지기 때문입니다. 값 하나가 +0.5를 넘으면 ‘엘니뇨 상태’이고, 다섯 묶음 이상 연달아 이어져야 기록에 ‘엘니뇨’로 남습니다. ※ 가장 최근 값은 나중에 조금 고쳐질 수 있습니다."
+  },
+  {
+    id: "r3", tag: "실제 자료 · 우리 동네 여름", title: "가장 더웠던 여름 10번은 언제였나", short: "더운 여름 순위",
+    who: "📍", name: "창원기상대(기상청)",
+    say: "“진해와 가까운 <b>창원기상대</b>의 " + Z_Y0 + " ~ " + Z_YL + "년 여름(6 ~ 8월) 평균 기온입니다. 빨갛게 칠한 막대가 <b>가장 더웠던 여름 10번</b>이에요. 기후가 그대로라면 더운 여름은 아무 해에나 고르게 흩어져 있어야 합니다. <b>10번 가운데 2010년 이후가 몇 번</b>인지 세어 주세요.”",
+    predict: {
+      q: "기후가 변하지 않았다면, 41번의 여름 가운데 2010 ~ 2026년(17번)은 ‘가장 더운 10번’에 몇 번쯤 들어갈까요?",
+      options: ["㉠ 거의 다(9 ~ 10번)", "㉡ 4번쯤 — 17 ÷ 41 × 10", "㉢ 0번"],
+      answer: 1
+    },
+    task: "빨간 막대 가운데 <b>2010년 이후의 막대 수</b>를 슬라이더로 맞추세요.",
+    build: function (stage, api) {
+      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, k = 0;
+      var x0 = 50, x1 = 640, y0 = 24, y1 = 240, n = ZS.length || 1, bw = (x1 - x0) / n;
+      function Y(v) { return y1 - (v - 23) / 4 * (y1 - y0); }
+      function draw() {
+        H.paper(ctx, W, cv.H); H.axes(ctx, x0, y0, x1, y1);
+        [23, 24, 25, 26, 27].forEach(function (v) { H.text(ctx, v + "°", x0 - 8, Y(v) + 4, { s: 10, a: "right", c: H.v("--mist") }); H.dash(ctx, x0, Y(v), x1, Y(v), H.v("--line"), 0.5); });
+        H.dash(ctx, x0 + (2010 - Z_Y0) * bw, y0, x0 + (2010 - Z_Y0) * bw, y1, H.v("--brand"), 1.4);
+        H.text(ctx, "2010 →", x0 + (2010 - Z_Y0) * bw + 4, y0 + 10, { s: 11, w: "800", c: H.v("--brand") });
+        ZS.forEach(function (r, i) {
+          var top = ZTOPY.indexOf(r[0]) >= 0;
+          H.box(ctx, x0 + i * bw + 1.5, Y(r[1]), bw - 3, y1 - Y(r[1]), top ? H.v("--coral-700") : H.v("--mist"), top ? 0.9 : 0.45);
+          if (r[0] % 5 === 0) H.text(ctx, r[0], x0 + i * bw + bw / 2, y1 + 15, { s: 10, a: "center", c: H.v("--mist") });
+        });
+        H.rows(ctx, 680, 34, [["가장 더운 여름", ZTOP[0] ? ZTOP[0][0] + "년 " + ZTOP[0][1].toFixed(1) + " °C" : ""], ["두 번째", ZTOP[1] ? ZTOP[1][0] + "년 " + ZTOP[1][1].toFixed(1) + " °C" : ""], ["기후가 그대로라면", "약 " + Z_EXP.toFixed(0) + "번", "--mist"], ["내 답", k + "번", null, true]], 52);
+      }
+      cv.canvas._redraw = draw;
+      api.slider({ label: "2010년 이후의 빨간 막대", min: 0, max: 10, step: 1, value: 0, fmt: function (x) { return x + "번"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
+      api.info("파란 점선 오른쪽(2010년부터)의 빨간 막대를 세세요. " + SRC_Z);
+      draw();
+      return {
+        judge: function () {
+          if (k === Z_N10) return { ok: true, msg: "가장 더운 여름 10번 가운데 " + Z_N10 + "번이 2010년 이후입니다. 기후가 그대로라면 " + Z_EXP.toFixed(1) + "번쯤이어야 합니다." };
+          return { ok: false, msg: k + "번이 아닙니다. 파란 점선 오른쪽의 빨간 막대만 다시 세어 보세요." };
+        }
+      };
+    },
+    hints: ["2010년 점선 오른쪽에 빨간 막대가 몇 개 있나요?", "1990년과 1994년의 빨간 막대는 점선 왼쪽입니다."],
+    solution: "<b>" + Z_N10 + "번</b> (" + ZTOPY.filter(function (y) { return y >= 2010; }).sort().join(", ") + "년).",
+    why: "한 해가 덥고 추운 것은 날씨의 들쭉날쭉이지만, ‘가장 더운 여름’이 최근에 몰리는 것은 우연으로 보기 어렵습니다. 기후가 그대로라면 2010년 이후 17번의 여름은 10번 가운데 4번쯤만 들어가야 하는데 " + Z_N10 + "번이 들어갔습니다. 특히 2024 · 2025 · 2026년 세 해가 모두 4위 안에 들었습니다(아무 해나 고르게 덥다면 최근 세 해가 모두 4위 안에 들 확률은 약 2,700분의 1).<br>"
+      + "지구 온난화는 평균 기온을 조금씩 올려 ‘아주 더운 여름’이 올 가능성을 높입니다. 2026년 8월 1일 창원은 40.4 °C로 1985년 관측을 시작한 뒤 가장 높은 기온을 기록했습니다. ※ 관측소 한 곳의 기록이므로 우리나라 전체와 세계의 자료도 함께 보아야 합니다."
   }
   ]
 });
