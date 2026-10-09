@@ -30,9 +30,16 @@
     + ".sth-link .sl-t{font-size:14.5px;font-weight:800;color:var(--ink)}"
     + ".sth-link .sl-src{font-size:11.5px;color:var(--mist)}"
     + ".sth-link .sl-ask{margin:8px 0 10px;font-size:13.5px;color:var(--ink)}"
-    + "[data-place]{cursor:pointer;border-bottom:1.5px dotted var(--brand);white-space:nowrap}"
+    + "[data-place],[data-view]{cursor:pointer;border-bottom:1.5px dotted var(--brand);white-space:nowrap}"
     + "[data-place]::after{content:'📍';font-size:.82em;margin-left:2px}"
-    + "[data-place]:hover,[data-place]:focus-visible{background:var(--brand-100);outline:none;border-radius:4px}"
+    + "[data-sp=sky]::after{content:'🔭';font-size:.82em;margin-left:2px}"
+    + "[data-sp=eyes]::after{content:'🪐';font-size:.82em;margin-left:2px}"
+    + "[data-sp=earth]::after{content:'🌐';font-size:.82em;margin-left:2px}"
+    + "[data-sp=sun]::after{content:'☀️';font-size:.82em;margin-left:2px}"
+    + "[data-sp=mymap]::after{content:'🗺';font-size:.82em;margin-left:2px}"
+    + "[data-place]:hover,[data-place]:focus-visible,[data-view]:hover,[data-view]:focus-visible{background:var(--brand-100);outline:none;border-radius:4px}"
+    + ".sth-place-pop iframe.tall{height:420px}"
+    + ".sth-place-pop img{display:block;max-width:min(100%,520px);margin:0 auto;border-radius:10px}"
     + ".sth-place-pop{margin:8px 0 12px;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:14px;background:var(--card);padding:10px 12px}"
     + ".sth-place-pop .sp-top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}"
     + ".sth-place-pop .sp-t{font-size:14px;font-weight:800;color:var(--ink)}"
@@ -120,25 +127,56 @@
     ta.addEventListener("blur", function () { clearTimeout(tmr); save(ta.value); });
     paint(r.ok);
   }
-  /* ---- 이야기 속 지명 📍 ---- */
-  function placeOf(n) {
-    var a = String(n.getAttribute("data-place") || "").split(",");
-    var p = { lat: +a[0], lng: +a[1], zoom: +a[2] || 12, k: a[3] || "s", name: (n.textContent || "").replace(/\s+/g, " ").trim() };
-    return isFinite(p.lat) && isFinite(p.lng) ? p : null;
-  }
-  function placeOpenUrl(p) {
-    if (/v$/.test(p.k)) return mapsUrl({ lat: p.lat, lng: p.lng, zoom: p.zoom, type: p.k.charAt(0) === "r" ? "roadmap" : "satellite" });
-    return "https://www.google.com/maps/search/?api=1&query=" + p.lat + "," + p.lng;
-  }
-  function placeEmbed(p, key) {
-    var t = p.k.charAt(0) === "r" ? "roadmap" : "satellite";
-    if (/v$/.test(p.k)) return "https://www.google.com/maps/embed/v1/view?key=" + encodeURIComponent(key) + "&center=" + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko";
-    return "https://www.google.com/maps/embed/v1/place?key=" + encodeURIComponent(key) + "&q=" + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko";
+  /* ---- 이야기 속 지명 📍 · 천체 🔭 · 지금의 지구 🌐 ----
+     <span data-place=위도,경도,줌,종류>지명</span>   종류 s 위성·핀, r 지도·핀, sv 위성(핀 없이), rv 지도(핀 없이)
+     <span data-view="종류:값">이름</span>
+       sky:대상|시야(도)|사진   알라딘 하늘 지도(CDS) — 별·성운·은하의 실제 사진(기본 DSS, 넓은 하늘은 P/Mellinger/color)
+       star:대상          스텔라리움 웹 — 오늘 밤 우리 하늘에서 그 별이 어디 있는지
+       eyes:대상          NASA Eyes on the Solar System — 행성·소행성·탐사선 3D
+       exo:행성           NASA Eyes on Exoplanets — 외계 행성계 3D
+       earth:주소#뒤      earth.nullschool.net — 지금의 바람·해류·수온(몇 시간마다 새 자료)
+       mymap:지도ID|위도,경도|줌|출처   구글 내 지도(My Maps) — 예: 판 경계·판 이름·해구 지도(키 필요 없음)
+       sun:hmi|171|c3|aurora   오늘의 태양(SDO 흑점 / 코로나) · SOHO 코로나그래프 · NOAA 오로라 예보 */
+  var VIEW = {
+    sky: function (v) { var a = v.split("|"); var u = "https://aladin.cds.unistra.fr/AladinLite/?target=" + encodeURIComponent(a[0]) + "&fov=" + (a[1] || 2) + "&survey=" + encodeURIComponent(a[2] || "P/DSS2/color");
+      return { ico: "🔭", src: "알라딘 하늘 지도 · CDS · DSS 사진", url: u, embed: u }; },
+    star: function (v) { var u = "https://stellarium-web.org/skysource/" + encodeURIComponent(v);
+      return { ico: "🔭", src: "스텔라리움 웹 · 오늘 밤 하늘", url: u, embed: u }; },
+    eyes: function (v) { var u = "https://eyes.nasa.gov/apps/solar-system/#/" + v;
+      return { ico: "🪐", src: "NASA Eyes on the Solar System", url: u, embed: u }; },
+    exo: function (v) { var u = "https://eyes.nasa.gov/apps/exo/#/planet/" + v;
+      return { ico: "🪐", src: "NASA Eyes on Exoplanets", url: u, embed: u }; },
+    earth: function (v) { var u = "https://earth.nullschool.net/#" + v;
+      return { ico: "🌐", src: "earth.nullschool.net · 지금의 지구(몇 시간마다 새 자료)", url: u, embed: u }; },
+    mymap: function (v) { var a = v.split("|"), q = "mid=" + encodeURIComponent(a[0]) + (a[1] ? "&ll=" + a[1] : "") + (a[2] ? "&z=" + a[2] : "");
+      return { ico: "🗺", src: a[3] || "구글 내 지도", url: "https://www.google.com/maps/d/viewer?" + q, embed: "https://www.google.com/maps/d/embed?" + q }; },
+    sun: function (v) {
+      if (v === "c3") { var c = "https://soho.nascom.nasa.gov/data/realtime/c3/512/latest.jpg";
+        return { ico: "☀️", src: "SOHO 코로나그래프 LASCO C3 · 가장 최근 사진(가운데 원판이 해를 가린다)", url: c, img: c }; }
+      if (v === "aurora") { var o = "https://services.swpc.noaa.gov/images/animations/ovation/north/latest.jpg";
+        return { ico: "☀️", src: "NOAA 우주기상예보센터 · 지금의 북반구 오로라 예보", url: o, img: o }; }
+      var u = "https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_" + (v === "171" ? "0171" : "HMIIF") + ".jpg";
+      return { ico: "☀️", src: "NASA SDO · 오늘의 태양" + (v === "171" ? "(코로나, 자외선 171 Å)" : "(가시광선, 흑점)"), url: u, img: u }; }
+  };
+  function viewOf(n) {
+    var name = (n.textContent || "").replace(/\s+/g, " ").trim(), v;
+    if (n.hasAttribute("data-place")) {
+      var a = String(n.getAttribute("data-place") || "").split(",");
+      var p = { lat: +a[0], lng: +a[1], zoom: +a[2] || 12, k: a[3] || "s" };
+      if (!isFinite(p.lat) || !isFinite(p.lng)) return null;
+      var t = p.k.charAt(0) === "r" ? "roadmap" : "satellite", key = String(window.STH_MAPS_KEY || "").trim(), view = /v$/.test(p.k);
+      return { ico: "📍", name: name, src: ll(p), btn: "구글 지도에서 열기 ↗",
+        url: view ? mapsUrl({ lat: p.lat, lng: p.lng, zoom: p.zoom, type: t }) : "https://www.google.com/maps/search/?api=1&query=" + p.lat + "," + p.lng,
+        embed: !key ? null : "https://www.google.com/maps/embed/v1/" + (view ? "view" : "place") + "?key=" + encodeURIComponent(key) + (view ? "&center=" : "&q=") + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko" };
+    }
+    var s = String(n.getAttribute("data-view") || ""), i = s.indexOf(":");
+    if (i < 0 || !VIEW[s.slice(0, i)]) return null;
+    v = VIEW[s.slice(0, i)](s.slice(i + 1)); v.name = name; v.btn = "새 창에서 크게 보기 ↗";
+    return v;
   }
   function placeToggle(n) {
-    var p = placeOf(n); if (!p) return;
-    var key = String(window.STH_MAPS_KEY || "").trim();
-    if (!key) { window.open(placeOpenUrl(p), "_blank", "noopener"); return; }
+    var p = viewOf(n); if (!p) return;
+    if (!p.embed && !p.img) { window.open(p.url, "_blank", "noopener"); return; }
     if (n._pop && n._pop.parentNode) { n._pop.parentNode.removeChild(n._pop); n._pop = null; n.setAttribute("aria-expanded", "false"); return; }
     /* 지도는 지명이 든 문단(블록) 바로 아래에 편다 — 굵은 글씨 같은 줄 안 요소 안에 끼우면 문장이 갈라진다 */
     var host = n.parentNode;
@@ -148,32 +186,41 @@
     if (!host || host === document.body) host = n.parentNode;
     var pop = el("div", "sth-place-pop");
     var top = el("div", "sp-top");
-    var t = el("span", "sp-t"); t.textContent = "📍 " + p.name; top.appendChild(t);
-    var s = el("span", "sl-src"); s.textContent = ll(p); top.appendChild(s);
-    var a = el("a", "btn"); a.href = placeOpenUrl(p); a.target = "_blank"; a.rel = "noopener"; a.textContent = "구글 지도에서 열기 ↗"; top.appendChild(a);
+    var t = el("span", "sp-t"); t.textContent = p.ico + " " + p.name; top.appendChild(t);
+    var s = el("span", "sl-src"); s.textContent = p.src; top.appendChild(s);
+    var a = el("a", "btn"); a.href = p.url; a.target = "_blank"; a.rel = "noopener"; a.textContent = p.btn; top.appendChild(a);
     var x = el("button", "btn"); x.type = "button"; x.textContent = "닫기"; x.addEventListener("click", function () { placeToggle(n); n.focus && n.focus(); }); top.appendChild(x);
     pop.appendChild(top);
-    var f = document.createElement("iframe");
-    f.src = placeEmbed(p, key); f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
-    f.title = p.name + " 지도"; f.setAttribute("allowfullscreen", "");
-    pop.appendChild(f);
+    if (p.img) {
+      var im = document.createElement("img"); im.src = p.img; im.alt = p.name + " — " + p.src; im.loading = "lazy";
+      pop.appendChild(im);
+    } else {
+      var f = document.createElement("iframe");
+      f.src = p.embed; f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
+      f.title = p.name + " — " + p.src; f.setAttribute("allowfullscreen", "");
+      if (p.ico !== "📍") f.className = "tall";
+      pop.appendChild(f);
+    }
     host.parentNode.insertBefore(pop, host.nextSibling);
     n._pop = pop; n.setAttribute("aria-expanded", "true");
   }
+  var SEL = "[data-place],[data-view]";
   document.addEventListener("click", function (e) {
-    var n = e.target && e.target.closest ? e.target.closest("[data-place]") : null;
+    var n = e.target && e.target.closest ? e.target.closest(SEL) : null;
     if (!n) return;
     e.preventDefault(); e.stopPropagation(); placeToggle(n);
   }, true);
   document.addEventListener("keydown", function (e) {
-    var n = e.target && e.target.getAttribute && e.target.getAttribute("data-place") != null ? e.target : null;
+    var n = e.target && e.target.matches && e.target.matches(SEL) ? e.target : null;
     if (n && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); placeToggle(n); }
   });
   function tagPlaces(root) {
-    Array.prototype.forEach.call(root.querySelectorAll("[data-place]:not([data-sp])"), function (n) {
-      n.setAttribute("data-sp", "1"); n.setAttribute("role", "button"); n.setAttribute("tabindex", "0");
+    Array.prototype.forEach.call(root.querySelectorAll("[data-place]:not([data-sp]),[data-view]:not([data-sp])"), function (n) {
+      var v = n.getAttribute("data-view") || "";
+      n.setAttribute("data-sp", /^(sky|star)/.test(v) ? "sky" : /^(eyes|exo)/.test(v) ? "eyes" : /^earth/.test(v) ? "earth" : /^sun/.test(v) ? "sun" : /^mymap/.test(v) ? "mymap" : "1");
+      n.setAttribute("role", "button"); n.setAttribute("tabindex", "0");
       n.setAttribute("aria-expanded", "false");
-      n.setAttribute("aria-label", (n.textContent || "").trim() + " — 지도 보기");
+      n.setAttribute("aria-label", (n.textContent || "").trim() + (n.hasAttribute("data-place") ? " — 지도 보기" : " — 실제 모습 보기"));
     });
   }
   window.sthLinkScan = function (root) {
