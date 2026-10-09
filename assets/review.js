@@ -53,6 +53,7 @@
         if (!(x.r === 1 || x.n || x.sh)) return;
         var first = x.r === 1 && !x.n && !x.sh;
         R.s.rv[key] = { b: first ? 1 : 0, d: today0() + (first ? 3 : 1) * DAY, n: 0, k: 0 };
+        if (!first && x.cf === 2) R.s.rv[key].o = 1;          /* 확실하다고 했는데 틀린 문항 — 먼저 낸다 */
         added++;
       });
     });
@@ -62,7 +63,7 @@
     var now = Date.now(), byKey = {}, list = [];
     B.items.forEach(function (it) { byKey[it.u + "." + it.id] = it; });
     Object.keys(R.s.rv).forEach(function (k) { var x = R.s.rv[k]; if (byKey[k] && x.d <= now) list.push({ k: k, it: byKey[k], x: x }); });
-    list.sort(function (a, b) { return a.x.d - b.x.d || a.x.b - b.x.b; });
+    list.sort(function (a, b) { return (b.x.o ? 1 : 0) - (a.x.o ? 1 : 0) || a.x.d - b.x.d || a.x.b - b.x.b; });
     return list;
   }
   /* 섞어 풀기: 단원을 번갈아 고르고, 지금 단원이 아닌 것부터 */
@@ -127,7 +128,7 @@
     box.innerHTML = "<div class='rv-h'><b>🧠 오늘의 복습</b><span>정답을 보기 전에 먼저 떠올려 보세요.</span></div>";
     var area = el("div"); area.id = "rv-q"; box.appendChild(area);
     var recorded = {};
-    window.sthQuiz({ mount: "rv-q", key: "rvTmp", mini: true, _st: st, items: items,
+    window.sthQuiz({ mount: "rv-q", key: "rvTmp", mini: true, noConf: true, _st: st, items: items,
       headHtml: "<b>📝 " + items.length + "문제</b><span>여기서 푼 것은 수준별 문제 기록을 바꾸지 않습니다.</span>",
       onSave: function () {
         var R2 = load(), changed = false;
@@ -136,7 +137,7 @@
           if (!(x.r === 1 || x.sh || x.end)) return;
           recorded[nid] = 1;
           var first = x.r === 1 && !x.n && !x.sh, e = R2.s.rv[map[nid]] || { b: 0, n: 0, k: 0 };
-          e.b = first ? Math.min(5, (e.b || 0) + 1) : 0;
+          e.b = first ? Math.min(5, (e.b || 0) + 1) : 0; if (first) delete e.o;
           e.d = today0() + GAP[e.b] * DAY; e.n = (e.n || 0) + 1; if (first) { e.k = (e.k || 0) + 1; session.ok++; }
           R2.s.rv[map[nid]] = e; changed = true; session.left--;
         });

@@ -87,13 +87,17 @@
       });
       window.sthState(RES, any ? parts.join(" · ") : null);
       paintTop();
+      exPainters.forEach(function (f) { f(); });
     }
 
     /* ---- 맨 위: 단계 고르기 + 학습 목표별 달성도 ---- */
     var top = el("div", "qz-top");
     var lvRow = el("div", "qz-levels");
     var goal = el("details", "qz-goals");
-    top.appendChild(lvRow); top.appendChild(goal);
+    var overBox = el("div", "qz-over"); overBox.hidden = true;
+    top.appendChild(lvRow); top.appendChild(overBox); top.appendChild(goal);
+    var exPainters = [];
+    var WK = !MINI && window.STH_WORKED ? window.STH_WORKED : {};
     if (!MINI) mount.appendChild(top);
     else {
       var head = el("div", "qz-mini-head", opt.headHtml || "<b>📝 소단원 확인 문제</b><span>이야기에서 찾아낸 것을 바로 확인해요. 더 많은 문제는 <a href='#quiz' class='qz-go'>수준별 문제</a> 탭에 있어요.</span>");
@@ -104,6 +108,7 @@
       });
       mount.appendChild(head);
     }
+    if (!document.getElementById("qz-cf-css")) { var cc = document.createElement("style"); cc.id = "qz-cf-css"; cc.textContent = ".qz-cf{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:6px 0 8px;font-size:12.5px;color:var(--mist)}.qz-cf-b{font:inherit;font-size:12.5px;font-weight:800;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);padding:3px 11px;cursor:pointer}.qz-cf-b.on{background:var(--brand,#0ea5e9);border-color:var(--brand,#0ea5e9);color:#fff}.qz-cf-b:disabled{cursor:default;opacity:.75}.qz-over{margin:10px 0;padding:10px 14px;border:2px solid var(--line);border-radius:14px;background:var(--card);font-size:13px;color:var(--mist);display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.qz-over>b{font-family:'Jua',sans-serif;font-weight:400;font-size:16px;color:var(--ink)}.qz-over span b{color:var(--ink)}.qz-over-w{flex-basis:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}.qz-over-b{font:inherit;font-size:12px;font-weight:800;border:1px solid var(--coral-700,#c2410c);color:var(--coral-700,#c2410c);background:var(--panel);border-radius:999px;padding:2px 10px;cursor:pointer}.qz-ex{margin:8px 0 10px;padding:10px 14px;border-left:4px solid var(--amber-700,#b45309);background:var(--panel);border-radius:0 12px 12px 0}.qz-ex-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:12.5px;color:var(--mist)}.qz-ex-h b{color:var(--ink);font-size:14px}.qz-ex-q{margin:6px 0;font-size:14px}.qz-ex-s{margin:4px 0 0 20px;padding:0;font-size:14px;line-height:1.7}.qz-ex-gap input{width:90px;padding:3px 8px;border:1px solid var(--line);border-radius:8px;font:inherit}.qz-ex-m{font-size:12px;color:var(--mist)}.qz-ex-ok{margin:6px 0 0;font-weight:800;color:var(--green-700,#15803d)}.qz-ex-open{font-size:13px}"; document.head.appendChild(cc); }
     if (!MINI && !document.getElementById("qz-retry-css")) { var rc = document.createElement("style"); rc.id = "qz-retry-css"; rc.textContent = ".qz-retry{margin:0 0 16px;padding:12px 16px;border:2px dashed var(--line);border-radius:18px;background:var(--card)}.qz-retry-h{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;font-size:13px;color:var(--mist);margin-bottom:8px}.qz-retry-h b{font-family:'Jua',sans-serif;font-weight:400;font-size:17px;color:var(--ink)}.qz-retry-h span b{font-family:inherit;font-size:inherit;color:var(--brand-700)}.qz-retry .sec-quiz,.qz-retry>div>.qz{margin-top:12px}"; document.head.appendChild(rc); }
     var list = el("div", "qz-list");
     mount.appendChild(list);
@@ -139,6 +144,29 @@
           "<span class='qz-bar sm'><i style='width:" + pct + "%'></i></span><span class='qz-lv-n'>" + n + " / " + mine.length + "</span></li>";
       });
       goal.innerHTML = html + "</ul><p class='qz-note'>1단계에서 80% 이상 풀면 다음 단계를 추천해요. 어느 단계부터 시작해도 괜찮아요.</p>";
+      paintOver();
+    }
+    /* 🎯 내 확신 점검 — 답하기 전에 고른 확신도(확실 2 · 아마 1 · 찍음 0)와 첫 시도 결과를 견준다 */
+    function firstOk(x) { return x.r === 1 && !x.n && !x.sh; }
+    function ended(x) { return !!x && (x.r === 1 || x.sh || x.end); }
+    function paintOver() {
+      if (MINI || !overBox) return;
+      var C = { 2: [0, 0], 1: [0, 0], 0: [0, 0] }, wrongSure = [];
+      items.forEach(function (it) { var x = st[it.id]; if (!x || x.cf == null || !ended(x)) return; C[x.cf][1]++; if (firstOk(x)) C[x.cf][0]++; else if (x.cf === 2) wrongSure.push(it); });
+      var tot = C[2][1] + C[1][1] + C[0][1];
+      if (!tot) { overBox.hidden = true; return; }
+      overBox.hidden = false;
+      var nm = { 2: "‘확실’이라고", 1: "‘아마’라고", 0: "‘찍음’이라고" };
+      overBox.innerHTML = "<b>🎯 내 확신 점검</b><span>" + [2, 1, 0].filter(function (k) { return C[k][1]; }).map(function (k) { return nm[k] + " 한 " + C[k][1] + "문항 가운데 <b>" + C[k][0] + "</b>문항을 한 번에 맞힘"; }).join(" · ") + "</span>";
+      if (wrongSure.length) {
+        var w = el("div", "qz-over-w", "<span>⚠️ 확실하다고 했는데 틀린 문항 — 가장 먼저 다시 볼 곳입니다(오늘의 복습에도 먼저 나옵니다):</span>");
+        wrongSure.forEach(function (it) {
+          var b = el("button", "qz-over-b", it.lv + "단계 " + (items.filter(function (x) { return x.lv === it.lv; }).indexOf(it) + 1) + "번"); b.type = "button";
+          b.addEventListener("click", function () { cur = it.lv; st._lv = it.lv; show(); var c = document.getElementById("qz-" + it.id); if (c) c.scrollIntoView({ block: "center", behavior: "smooth" }); });
+          w.appendChild(b);
+        });
+        overBox.appendChild(w);
+      } else if (tot >= 3 && C[2][1] && C[2][0] === C[2][1]) overBox.appendChild(el("p", "qz-note", "확실하다고 한 문항은 모두 맞혔어요. 내가 무엇을 아는지 잘 알고 있습니다."));
     }
 
     var cards = [];
@@ -161,6 +189,44 @@
         .replace(/\(\s{2,}\)/g, "<span class='qz-gap'>&nbsp;</span>")
         .replace(/\(\s*([가나다라마])\s*\)/g, "<span class='qz-gap'>$1</span>")));
       if (it.fig) card.appendChild(el("div", "qz-fig", it.fig));
+      var ex = WK[it.id] && it.t === "num" ? WK[it.id] : null, exBox = null;
+      if (ex) { exBox = el("div", "qz-ex"); card.appendChild(exBox); exPainters.push(paintEx); }
+      var cf = null;
+      if (!opt.noConf && it.t !== "essay") {
+        cf = el("div", "qz-cf", "<span>답하기 전에 — 얼마나 확실해요?</span>");
+        [[2, "확실"], [1, "아마"], [0, "찍음"]].forEach(function (pr) {
+          var cb = el("button", "qz-cf-b", pr[1]); cb.type = "button"; cb.setAttribute("data-v", pr[0]);
+          cb.addEventListener("click", function () { var S = state(); if (S.end || S.r === 1 || S.n || S.sh) return; S.cf = pr[0]; paintCf(); save(); });
+          cf.appendChild(cb);
+        });
+        card.appendChild(cf);
+      }
+      function paintCf() {
+        if (!cf) return;
+        var S = st[it.id] || {}, lockd = !!(S.end || S.r === 1 || S.n || S.sh);
+        Array.prototype.forEach.call(cf.querySelectorAll("button"), function (b) { b.classList.toggle("on", +b.getAttribute("data-v") === S.cf); b.disabled = lockd; });
+        cf.hidden = lockd && S.cf == null;
+      }
+      /* 풀이 예제: 계산 문항을 처음 풀 때는 쌍둥이 문제의 풀이를 다 보여 주고, 하나를 끝내면 다음엔 마지막 줄을 비우고, 그다음부터는 접어 둔다 */
+      var exOpen = false, exDone = false;
+      function paintEx() {
+        if (!ex) return;
+        var k = 0; items.forEach(function (x) { if (x !== it && x.t === "num" && WK[x.id] && ended(st[x.id])) k++; });
+        var mine = ended(st[it.id]), mode = mine ? "fold" : (k === 0 ? "full" : (k === 1 ? "fade" : "fold"));
+        if (exOpen) mode = "full";
+        var steps = ex.steps || [], head = "<div class='qz-ex-h'><b>💡 풀이 예제</b><span>숫자만 다른 쌍둥이 문제입니다. 같은 방법으로 아래 문제를 풀어 보세요.</span></div><p class='qz-ex-q'>" + ex.q + "</p>";
+        if (mode === "fold") {
+          exBox.innerHTML = "";
+          var ob = el("button", "btn qz-ex-open", "💡 풀이 예제 보기"); ob.type = "button";
+          ob.addEventListener("click", function () { exOpen = true; paintEx(); });
+          exBox.appendChild(ob); return;
+        }
+        if (mode === "full" || exDone) { exBox.innerHTML = head + "<ol class='qz-ex-s'>" + steps.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ol>"; return; }
+        exBox.innerHTML = head + "<ol class='qz-ex-s'>" + steps.slice(0, -1).map(function (x) { return "<li>" + x + "</li>"; }).join("") + "<li class='qz-ex-gap'>= <input type='text' inputmode='decimal' autocomplete='off'> " + (ex.unit || "") + " <button type='button' class='btn'>확인</button> <span class='qz-ex-m'>마지막 줄은 직접 채워 보세요.</span></li></ol>";
+        var gi = exBox.querySelector("input"), gb = exBox.querySelector(".qz-ex-gap button"), gm = exBox.querySelector(".qz-ex-m");
+        function chk() { var v = num(gi.value); if (isNaN(v)) { gm.textContent = "숫자로 적어 주세요."; return; } if (Math.abs(v - ex.a) <= Math.abs(ex.a) * 0.01 + 1e-9) { exDone = true; paintEx(); exBox.appendChild(el("p", "qz-ex-ok", "✓ 맞았습니다. 이제 아래 문제를 혼자 풀어 보세요.")); } else gm.textContent = "다시 계산해 보세요. 위 줄의 식을 그대로 이어 가면 됩니다."; }
+        gb.addEventListener("click", chk); gi.addEventListener("keydown", function (e) { if (e.key === "Enter") chk(); });
+      }
       var box = el("div", "qz-ans"); card.appendChild(box);
       var row = el("div", "qz-row"); card.appendChild(row);
       var verdict = el("span", "qz-verdict");
@@ -191,10 +257,10 @@
         fb.innerHTML = (shown || it.t === "ox" && !ok ? "<p class='qz-a'><b>정답</b> " + answerText() + "</p>" : "") + (it.why ? "<div class='qz-why'><b>해설</b> " + it.why + "</div>" : "");
         lock();
         if (checkBtn) checkBtn.disabled = true; showBtn.hidden = true;
-        save();
+        save(); paintCf();
       }
       function wrong(msg) {
-        var S = state(); S.n = (S.n || 0) + 1; save();
+        var S = state(); S.n = (S.n || 0) + 1; save(); paintCf();
         verdict.className = "qz-verdict no";
         verdict.textContent = "✗ " + (msg || "다시 생각해 보세요.");
         if (it.hint) { fb.hidden = false; fb.innerHTML = "<div class='qz-hint'><b>도움말</b> " + it.hint + "</div>"; }
@@ -371,6 +437,7 @@
           lock(); if (checkBtn) checkBtn.disabled = true;
         } else if (s.n >= 2) showBtn.hidden = false;
       }
+      paintCf(); paintEx();
     });
     show();
     if (!MINI) retry();
@@ -390,7 +457,7 @@
         list2.forEach(function (it) { delete rst[it.id]; });
         window.sthState(RK, rst);
         area.innerHTML = "";
-        window.sthQuiz({ mount: area.id, key: RK, mini: true, _st: rst, items: list2, onSave: function () { window.sthState(RK, rst); paintR(); },
+        window.sthQuiz({ mount: area.id, key: RK, mini: true, noConf: true, _st: rst, items: list2, onSave: function () { window.sthState(RK, rst); paintR(); },
           headHtml: "<b>🔁 " + label + "</b><span>정답을 보기 전에 먼저 떠올려 보세요. 여기서 푼 것은 처음 기록을 바꾸지 않습니다.</span>" });
         area.scrollIntoView({ block: "start", behavior: "smooth" });
       }

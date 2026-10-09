@@ -75,6 +75,7 @@
   var H_ = { text: text, paper: paper, arrow: arrow, clamp: clamp, v: v, FONT: FONT,
              dash: dash, line: line, axes: axes, box: box, dot: dot, rows: rows, log10: log10 };
 
+  if (!document.getElementById("lab-ex-css")) { var lxc = document.createElement("style"); lxc.id = "lab-ex-css"; lxc.textContent = ".lab-ex-q{font-size:14px;margin:4px 0 8px}.lab-ex-ta{width:100%;box-sizing:border-box;padding:8px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:14px;background:var(--panel);color:var(--ink)}.lab-ex-m{font-size:12.5px;color:var(--mist);margin-left:8px}.lab-ex-mine{margin:12px 0 0;padding:10px 14px;border-left:4px solid var(--teal,#14b8a6);background:var(--panel);border-radius:0 12px 12px 0}.lab-ex-mine p{margin:4px 0 6px;font-size:14px}.lab-ex-sub{font-size:12.5px;color:var(--mist);margin-bottom:4px}.lab-ex-c{display:block;font-size:13.5px;margin:2px 0}"; document.head.appendChild(lxc); }
   window.sthLab = function (opt) {
     var mount = document.getElementById(opt.mount);
     if (!mount) return;
@@ -255,13 +256,40 @@
         hintBox.hidden = true; solBtn.hidden = true;
       }
       function unlock() { body.classList.remove("locked"); pred.classList.add("done"); }
+      /* ✍️ 자기 설명(Chi): 맞힌 바로 뒤, 해설을 보기 전에 ‘왜 맞는지’ 한 문장. 쓰고 나면 해설과 견주어 스스로 점검한다. */
+      var EXC = ["어떤 값(숫자·단위)을 견주었는지 적었다", "그 값이 무엇을 뜻하는지 적었다", "그렇게 되는 까닭(원리)을 적었다"];
+      function askWhy(after) {
+        why.hidden = false;
+        why.innerHTML = "<h4>✍️ 먼저 설명해 보기</h4><p class='lab-ex-q'>해설을 보기 전에, <b>방금 답이 왜 맞는지</b> 한두 문장으로 써 보세요. 스스로 설명해 보면 다음에 처음 보는 문제에도 쓸 수 있게 됩니다.</p>";
+        var ta = document.createElement("textarea"); ta.className = "lab-ex-ta"; ta.rows = 3; ta.maxLength = 300; ta.placeholder = "예: ○○ 값이 △△보다 크게 나온 것은 … 때문이다.";
+        why.appendChild(ta);
+        var row = el("div", "btn-row"), ok = el("button", "btn primary", "설명 저장하고 해설 보기"), skip = el("button", "btn", "건너뛰고 해설 보기"), m = el("span", "lab-ex-m");
+        ok.type = skip.type = "button"; row.appendChild(ok); row.appendChild(skip); row.appendChild(m); why.appendChild(row);
+        ok.addEventListener("click", function () { var t = ta.value.replace(/\s+/g, " ").trim(); if (t.length < 10) { m.textContent = "10자 이상 써 주세요."; return; } s.ex = t.slice(0, 300); save(); showWhy(); after(); });
+        skip.addEventListener("click", function () { s.exs = 1; save(); showWhy(); after(); });
+        card.classList.add("ok"); jb.disabled = true; verdictTxt.className = "lab-verdict ok"; verdictTxt.textContent = "✅ 해결"; hintBox.hidden = true; solBtn.hidden = true;
+        ta.focus();
+      }
+      function paintEx() {
+        if (!s.ex) return;
+        var bx = el("div", "lab-ex-mine");
+        bx.innerHTML = "<b>✍️ 내 설명</b><p></p><div class='lab-ex-sub'>해설과 견주어, 내 설명에 들어 있는 것을 체크하세요.</div>";
+        bx.querySelector("p").textContent = s.ex;
+        var cs = s.exc || [];
+        EXC.forEach(function (t, i) {
+          var l = el("label", "lab-ex-c"); l.innerHTML = "<input type='checkbox'" + (cs.indexOf(i) >= 0 ? " checked" : "") + "> " + t;
+          l.querySelector("input").addEventListener("change", function () { var a = []; Array.prototype.forEach.call(bx.querySelectorAll("input"), function (x, k) { if (x.checked) a.push(k); }); s.exc = a; save(); });
+          bx.appendChild(l);
+        });
+        why.appendChild(bx);
+      }
 
       jb.addEventListener("click", function () {
         if (s.p == null || s.ok) return;
         var r = made.judge ? made.judge() : { ok: false, msg: "" };
         if (r.ok) {
-          s.ok = 1; save(); showWhy();
-          if (r.msg) { var m = el("p", "lab-cmp", r.msg); why.insertBefore(m, why.children[1] || null); }
+          s.ok = 1; save();
+          askWhy(function () { if (r.msg) { var m = el("p", "lab-cmp", r.msg); why.insertBefore(m, why.children[1] || null); } paintEx(); });
         } else {
           s.n = (s.n || 0) + 1; save();
           verdictTxt.className = "lab-verdict no";
@@ -273,7 +301,7 @@
 
       /* 저장된 상태로 되살리기 */
       if (s.p == null) body.classList.add("locked"); else unlock();
-      if (s.ok) showWhy(); else showHint();
+      if (s.ok) { showWhy(); paintEx(); } else showHint();
     });
     paintTop();
   };

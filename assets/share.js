@@ -96,8 +96,8 @@
         }
       });
       /* 수준별 문제: 한 번에 맞힌 문항 / 손댄 문항 (해설을 먼저 본 것은 한 번에 맞힌 것으로 치지 않는다) */
-      var q = s.quiz || {}, qt = 0, q1 = 0, miss = [];
-      Object.keys(q).forEach(function (id) { var x = q[id] || {}; if (x.r === 1 || x.n || x.sh) { qt++; if (x.r === 1 && !x.n && !x.sh) q1++; else miss.push(id); } });
+      var q = s.quiz || {}, qt = 0, q1 = 0, miss = [], over = [];
+      Object.keys(q).forEach(function (id) { var x = q[id] || {}; if (x.r === 1 || x.n || x.sh) { qt++; if (x.r === 1 && !x.n && !x.sh) q1++; else { miss.push(id); if (x.cf === 2) over.push(id); } } });
       /* 실험실(응용·실제 자료): 푼 사례 / 손댄 사례 / 본 힌트 단계 수 (틀릴 때마다 힌트가 한 단계씩 열린다, 사례당 최대 2) */
       var hs = 0, ls = 0, lt = 0;
       ["lab", "real"].forEach(function (lk) { var L = s[lk] || {}; Object.keys(L).forEach(function (c) { var x = L[c] || {}; if (x.p == null) return; lt++; if (x.ok) ls++; hs += Math.min(2, x.n || 0); }); });
@@ -110,7 +110,10 @@
       /* 처음에 틀린(또는 해설부터 본) 문항: x:a3,b2 — 선생님 화면의 ‘반 한눈에’가 많이 틀린 문항을 센다 */
       var xs = "";
       for (var mi = 0; mi < miss.length && base.length + 3 + xs.length + miss[mi].length + 1 <= 300; mi++) xs += (xs ? "," : "") + miss[mi];
-      return (base + (xs ? "|x:" + xs : "")).slice(0, 300);
+      /* 확실하다고 했는데 틀린 문항: o:a3 — 자리가 남을 때만 */
+      var os = "", used = base.length + (xs ? 3 + xs.length : 0);
+      for (var oi = 0; oi < over.length && used + 3 + os.length + over[oi].length + 1 <= 300; oi++) os += (os ? "," : "") + over[oi];
+      return (base + (xs ? "|x:" + xs : "") + (os ? "|o:" + os : "")).slice(0, 300);
     }
     function myLine() { return opt.line ? clean((unitData(opt.unit).w || {})[opt.line.id], 300) : ""; }
     function paintMine() {
