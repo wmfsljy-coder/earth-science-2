@@ -59,7 +59,10 @@
     /* 1) 내 글 */
     var mine = el("div", "pr-mine");
     mine.appendChild(el("p", null, "<b>내 글</b>"));
-    mine.appendChild(el("p", "pr-txt", mt ? esc(mt) : "<span class='pr-sub'>정리하기 탭에서 ‘" + esc(LABEL) + "’을 먼저 써 주세요.</span>"));
+    var sent = state.mine && state.mine.text ? String(state.mine.text) : "";
+    mine.appendChild(el("p", "pr-txt", mt ? esc(mt) : (sent ? esc(sent) : "<span class='pr-sub'>정리하기 탭에서 ‘" + esc(LABEL) + "’을 먼저 써 주세요.</span>")));
+    if (!mt && sent) mine.appendChild(el("p", "pr-sub", "돌려 읽기에 냈던 글입니다. 고치려면 정리하기 탭에서 다시 쓴 뒤 여기서 다시 내세요."));
+    else if (mt && sent && mt !== sent) mine.appendChild(el("p", "pr-sub", "정리하기 글이 낸 글과 다릅니다. ‘고친 글로 다시 내기’를 누르면 친구들에게 새 글이 보입니다."));
     var put = el("button", "btn primary", state.put ? "고친 글로 다시 내기" : "돌려 읽기에 내 글 내기"); put.type = "button"; put.disabled = mt.length < 10;
     var pm = el("span", "pr-msg", state.put ? "✓ 냈습니다 — 친구들이 이름 없이 읽습니다." : (mt && mt.length < 10 ? "10자 이상 써야 낼 수 있어요." : ""));
     put.addEventListener("click", function () {
