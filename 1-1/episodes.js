@@ -1420,7 +1420,7 @@ function compass(ctx, cx, cy, R, busy) {
     var PC = 954, DP = 56, RM = 45, VMAX = 50;
 
     function pres(rr) { return rr < 1 ? PC : PC + DP * Math.exp(-RM / rr); }
-    function wind(rr) { return rr <= RM ? VMAX * (rr / RM) : VMAX * Math.sqrt(RM / rr); }
+    function wind(rr) { return rr <= RM ? VMAX * (rr / RM) * (rr / RM) : VMAX * Math.sqrt(RM / rr); }   /* 눈 안쪽은 바람이 빨리 잦아든다 */
     function zone(rr) {
       if (rr < 25) return "태풍의 눈";
       if (rr < 70) return "눈벽구름";

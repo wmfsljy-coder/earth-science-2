@@ -4,13 +4,15 @@
    자료: data/pbdb-diversity.js (Paleobiology Database, CC BY 4.0) */
 (function () {
 "use strict";
-var P = (window.REAL_PBDB || { rows: [] }).rows;                    /* [세 이름, 시작, 끝, 속 수, 마지막 출현(아래 경계 넘어온), 위아래 다 넘은] */
-var KO = { Cambrian: "캄브리아기", Ordovician: "오르도비스기", Silurian: "실루리아기", Devonian: "데본기", Carboniferous: "석탄기", Permian: "페름기", Triassic: "트라이아스기", Jurassic: "쥐라기", Cretaceous: "백악기", Paleogene: "고제3기", Neogene: "신제3기" };
-var BND = [[538.8, "캄브리아기"], [485.4, "오르도비스기"], [443.8, "실루리아기"], [419.2, "데본기"], [358.9, "석탄기"], [298.9, "페름기"], [251.9, "트라이아스기"], [201.4, "쥐라기"], [145, "백악기"], [66, "고제3기"], [23.03, "신제3기"]];
+var P = (window.REAL_PBDB || { rows: [] }).rows;                    /* [절 이름, 시작, 끝, 속 수, 마지막 출현(아래 경계 넘어온), 위아래 다 넘은] */
+var KO = { Cambrian: "캄브리아기", Ordovician: "오르도비스기", Silurian: "실루리아기", Devonian: "데본기", Carboniferous: "석탄기", Permian: "페름기", Triassic: "트라이아스기", Jurassic: "쥐라기", Cretaceous: "백악기", Paleogene: "고진기", Neogene: "신진기" };
+var BND = [[538.8, "캄브리아기"], [485.4, "오르도비스기"], [443.8, "실루리아기"], [419.2, "데본기"], [358.9, "석탄기"], [298.9, "페름기"], [251.9, "트라이아스기"], [201.4, "쥐라기"], [145, "백악기"], [66, "고진기"], [23.03, "신진기"]];
 function period(ma) { for (var i = BND.length - 1; i >= 0; i--) if (ma <= BND[i][0] + 1e-6 && (i === BND.length - 1 || ma > BND[i + 1][0] - 1e-6)) return BND[i][1]; return ""; }
 function ext(r) { return r[4] + r[5] ? r[4] / (r[4] + r[5]) : 0; }
 var USE = P.filter(function (r) { return r[1] < 500 && r[4] + r[5] >= 300; });          /* 자료가 너무 적은 캄브리아기 초는 뺌 */
 var TOP = USE.reduce(function (b, r) { return ext(r) > ext(b) ? r : b; }, USE[0] || ["", 0, 0, 0, 0, 1]);
+var SK = { Changhsingian: "창싱절", Wuchiapingian: "우치아핑절", Katian: "카티절", Hirnantian: "허넌트절", Darriwilian: "다리윌절", Maastrichtian: "마스트리흐트절", Danian: "다니절", Norian: "노리절", Rhaetian: "레티절", Givetian: "지벳절", Frasnian: "프란절", Famennian: "파멘절" };
+function nm(n) { return SK[n] ? SK[n] + "(" + n + ")" : n; }
 function byName(n) { return P.filter(function (r) { return r[0] === n; })[0]; }
 var MA = byName("Maastrichtian") || ["Maastrichtian", 72.2, 66, 3360], DA = byName("Danian") || ["Danian", 66, 61.6, 2661];
 var DROP = (1 - DA[3] / MA[3]) * 100;
@@ -54,7 +56,7 @@ window.sthLab({
       function draw() {
         var r = USE[k];
         chart(H, ctx, W, cv.H, "e", r);
-        H.rows(ctx, 670, 40, [["고른 시기", r[0], "--amber-700"], ["지질 시대", period((r[1] + r[2]) / 2)], ["때", r[1].toFixed(1) + " ~ " + r[2].toFixed(1) + " 백만 년 전"], ["사라진 속의 비율", Math.round(ext(r) * 100) + " %", null, true]], 54);
+        H.rows(ctx, 670, 40, [["고른 시기", nm(r[0]), "--amber-700"], ["지질 시대", period((r[1] + r[2]) / 2)], ["때", r[1].toFixed(1) + " ~ " + r[2].toFixed(1) + " 백만 년 전"], ["사라진 속의 비율", Math.round(ext(r) * 100) + " %", null, true]], 54);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "시기", min: 0, max: USE.length - 1, step: 1, value: 0, fmt: function (x) { var r = USE[x]; return Math.round(r[1]) + " 백만 년 전"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
@@ -64,20 +66,20 @@ window.sthLab({
       return {
         judge: function () {
           var r = USE[k];
-          if (r === TOP) return { ok: true, msg: r[0] + "(" + period((r[1] + r[2]) / 2) + " 말, 약 " + Math.round(r[2]) + " 백만 년 전) — 넘어온 속의 약 " + Math.round(ext(r) * 100) + "% 가 사라졌습니다. 고생대를 끝낸 가장 큰 대멸종이에요." };
-          return { ok: false, msg: r[0] + " 은 " + Math.round(ext(r) * 100) + "% 입니다. 더 높은 막대가 있어요." };
+          if (r === TOP) return { ok: true, msg: nm(r[0]) + " (" + period((r[1] + r[2]) / 2) + " 말, 약 " + Math.round(r[2]) + " 백만 년 전) — 넘어온 속의 약 " + Math.round(ext(r) * 100) + "% 가 사라졌습니다. 고생대를 끝낸 가장 큰 대멸종이에요." };
+          return { ok: false, msg: nm(r[0]) + " 은 " + Math.round(ext(r) * 100) + "% 입니다. 더 높은 막대가 있어요." };
         }
       };
     },
     hints: ["가장 높은 빨간 막대 두 개는 오르도비스기 말과 페름기 말 근처에 있습니다.", "약 2억 5200만 년 전입니다."],
-    solution: "<b>" + TOP[0] + "</b> — " + period((TOP[1] + TOP[2]) / 2) + " 말(약 " + Math.round(TOP[2]) + " 백만 년 전), 약 " + Math.round(ext(TOP) * 100) + "%.",
+    solution: "<b>" + nm(TOP[0]) + "</b> — " + period((TOP[1] + TOP[2]) / 2) + " 말(약 " + Math.round(TOP[2]) + " 백만 년 전), 약 " + Math.round(ext(TOP) * 100) + "%.",
     why: "페름기 말 대멸종(약 2억 5200만 년 전)은 시베리아의 거대한 화산 분출로 온실 기체가 늘고 바다가 데워지며 산소가 부족해지고 산성화된 것이 원인으로 여겨집니다. 바다 생물 종의 80 ~ 90% 가 사라졌다고 추정되며(속 단위로는 이 자료처럼 절반 가까이, 약 47%), 이 사건이 고생대와 중생대의 경계가 되었어요. 오르도비스기 말, 데본기 후기, 트라이아스기 말, 백악기 말과 함께 ‘5대 대멸종’으로 꼽힙니다.<br>"
       + "지질 시대의 큰 경계는 대부분 이렇게 화석으로 남은 생물이 크게 바뀐 때에 그어졌습니다. ※ 속(genus) 은 종보다 큰 묶음이라, 종 단위의 멸종 비율은 더 높습니다."
   },
   {
     id: "r2", tag: "실제 자료 · 백악기 말 대멸종", title: "공룡이 사라진 때, 생물 속은 몇 % 줄었나", short: "백악기 말",
     who: "☄️", name: "운석 충돌 연구팀",
-    say: "“6600만 년 전, 지름 10 km 쯤 되는 소행성이 지금의 멕시코 유카탄 반도에 떨어졌어요. 같은 자료로 <b>백악기 마지막 절(마스트리흐트절)</b>와 <b>신생대 첫 절(다니절)</b>의 동물 속 수를 비교해, <b>몇 % 줄었는지</b> 구해 주세요.”",
+    say: "“6600만 년 전, 지름 10 km 쯤 되는 소행성이 지금의 멕시코 유카탄 반도에 떨어졌어요. 같은 자료로 <b>백악기 마지막 절(마스트리흐트절)</b>과 <b>신생대 첫 절(다니절)</b>의 동물 속 수를 비교해, <b>몇 % 줄었는지</b> 구해 주세요.”",
     predict: {
       q: "백악기 말 대멸종 뒤 동물의 속 수는?",
       options: ["㉠ 거의 줄지 않았다", "㉡ 크게 줄었다가, 신생대에 다시 늘어 이전보다 많아졌다", "㉢ 줄어든 뒤 다시는 늘지 않았다"],

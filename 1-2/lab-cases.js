@@ -32,7 +32,7 @@ window.sthLab({
         H.text(ctx, "남반구", 120, 90, { s: 12, w: "800", a: "center", c: H.v("--mist") });
         H.text(ctx, "북반구", 480, 90, { s: 12, w: "800", a: "center", c: H.v("--mist") });
         if (u > 0) {
-          H.text(ctx, dir === "E2W" ? "⊙ 동풍 (지면에서 나오는 쪽으로 서진)" : "⊗ 서풍 (지면으로 들어가는 쪽으로 동진)", cx, 74, { s: 11.5, w: "800", a: "center" });
+          H.text(ctx, dir === "E2W" ? "⊗ 동풍 (서쪽을 바라본 단면 — 지면 안쪽으로 서진)" : "⊙ 서풍 (서쪽을 바라본 단면 — 지면 바깥쪽으로 동진)", cx, 74, { s: 11.5, w: "800", a: "center" });
           var outward = dir === "E2W";
           var len = 40 + 90 * k;
           if (outward) { H.arrow(ctx, cx + 20, sy + 12, cx + 20 + len, sy + 12, H.v("--teal-700"), 3, 10); H.arrow(ctx, cx - 20, sy + 12, cx - 20 - len, sy + 12, H.v("--teal-700"), 3, 10);
@@ -76,7 +76,7 @@ window.sthLab({
   {
     id: "c2", tag: "기후 변화의 자연적 요인", title: "빙하기가 시작되는 조건", short: "빙하기 조건",
     who: "🧊", name: "고기후 연구실",
-    say: "“북반구 고위도(65°N)의 <b>여름 햇빛</b>이 약해 겨울눈이 여름에 다 녹지 않고 쌓이기 시작하면 빙하기가 옵니다. 기준은 여름 일사량 <b>440 W/m² 이하</b>. 지금 지구는 약 464 W/m² 예요. 지구 궤도가 어떻게 바뀌어야 빙하기가 시작될까요?”",
+    say: "“북반구 고위도(65°N)의 <b>여름 햇빛</b>이 약해 겨울눈이 여름에 다 녹지 않고 쌓이기 시작하면 빙하기가 옵니다. 기준은 여름 일사량 <b>440 W/m² 이하</b>. 지금 지구는 약 462 W/m² 예요. 지구 궤도가 어떻게 바뀌어야 빙하기가 시작될까요?”",
     predict: {
       q: "지금 지구는 1월 초에 태양과 가장 가깝습니다(근일점). 그렇다면 북반구의 여름(7월)은?",
       options: ["㉠ 태양에서 먼 때이므로 조금 덜 뜨겁다", "㉡ 태양에서 가까운 때라 더 뜨겁다", "㉢ 태양과의 거리는 계절과 전혀 상관없다"],
@@ -86,7 +86,7 @@ window.sthLab({
     build: function (stage, api) {
       var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
       var tilt = 23.4, e = 0.015, peri = "jan";
-      function ins() { return 480 * (1 + 0.04 * (tilt - 23.44)) * (peri === "jan" ? 1 - 2 * e : 1 + 2 * e); }
+      function ins() { return 477 * (1 + 0.04 * (tilt - 23.44)) * (peri === "jan" ? 1 - 2 * e : 1 + 2 * e); }
       function draw() {
         H.paper(ctx, W, cv.H);
         H.text(ctx, "지구 공전 궤도 (위에서 본 모습, 이심률 과장)", 40, 26, { s: 13.5, w: "900" });
@@ -104,8 +104,8 @@ window.sthLab({
         H.box(ctx, gx + 10, GY(I), 40, gy1 - GY(I), I <= 440 ? H.v("--brand") : H.v("--amber"), 0.8);
         H.line(ctx, [[gx - 6, GY(440)], [gx + 70, GY(440)]], H.v("--rose"), 2);
         H.text(ctx, "440 (빙하기 문턱)", gx + 76, GY(440) + 4, { s: 11, w: "800", c: H.v("--rose-700") });
-        H.dash(ctx, gx - 6, GY(464), gx + 70, GY(464), H.v("--mist"));
-        H.text(ctx, "지금 지구 464", gx + 76, GY(464) + 4, { s: 11, c: H.v("--mist") });
+        H.dash(ctx, gx - 6, GY(462), gx + 70, GY(462), H.v("--mist"));
+        H.text(ctx, "지금 지구 462", gx + 76, GY(462) + 4, { s: 11, c: H.v("--mist") });
         H.text(ctx, "65°N 여름 일사량", gx - 6, gy0 - 12, { s: 11.5, w: "800", c: H.v("--mist") });
         H.text(ctx, I.toFixed(0) + " W/m²", gx + 30, gy1 + 22, { s: 16, w: "900", a: "center", c: I <= 440 ? H.v("--brand-700") : H.v("--amber-700") });
       }
@@ -114,7 +114,7 @@ window.sthLab({
         onInput: function (x) { tilt = x; draw(); } });
       api.slider({ label: "공전 궤도 이심률", min: 0, max: 0.06, step: 0.005, value: 0.015, fmt: function (x) { return x.toFixed(3); },
         onInput: function (x) { e = x; draw(); } });
-      api.seg({ label: "근일점 (태양과 가장 가까운 때)", value: "jan", options: [{ v: "jan", t: "1월 (지금)" }, { v: "jul", t: "7월 (약 1만 1천 년 뒤)" }],
+      api.seg({ label: "근일점 (태양과 가장 가까운 때)", value: "jan", options: [{ v: "jan", t: "1월 (지금)" }, { v: "jul", t: "7월 (약 1만 3천 년 뒤)" }],
         onPick: function (x) { peri = x; draw(); } });
       api.info("기울기가 작을수록 여름이 덜 덥고, 북반구 여름이 원일점 무렵일수록, 궤도가 찌그러질수록(이심률이 클수록) 여름 햇빛이 약해집니다.");
       draw();

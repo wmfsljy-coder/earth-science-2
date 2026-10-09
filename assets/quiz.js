@@ -36,7 +36,7 @@
     return String(s == null ? "" : s)
       .replace(/[₀-₉]/g, function (c) { return String(c.charCodeAt(0) - 8320); })
       .replace(/[⁰¹²³⁴-⁹]/g, function (c) { return "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(c) + ""; })
-      .replace(/[\s·ㆍ\-_,.()（）'"`~]/g, "").toLowerCase();
+      .replace(/(\d)\.(?=\d)/g, "$1․").replace(/[\s·ㆍ\-_,.()（）'"`~]/g, "").toLowerCase();   /* 숫자 사이 소수점은 남김(․ 로 바꿔 둠) */
   }
   function num(s) {
     s = String(s || "").replace(/,/g, "").replace(/\s/g, "").replace(/×10\^?/, "e").replace(/x10\^?/i, "e");
