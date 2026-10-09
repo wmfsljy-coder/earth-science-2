@@ -37,6 +37,13 @@
     + "[data-sp=earth]::after{content:'🌐';font-size:.82em;margin-left:2px}"
     + "[data-sp=sun]::after{content:'☀️';font-size:.82em;margin-left:2px}"
     + "[data-sp=mymap]::after{content:'🗺';font-size:.82em;margin-left:2px}"
+    + "[data-sp=mol]::after{content:'🧬';font-size:.82em;margin-left:2px}"
+    + "[data-sp=sim]::after{content:'🧪';font-size:.82em;margin-left:2px}"
+    + "[data-sp=data]::after{content:'📈';font-size:.82em;margin-left:2px}"
+    + "[data-sp=elem]::after{content:'⚗️';font-size:.82em;margin-left:2px}"
+    + "[data-sp=fossil]::after{content:'🦴';font-size:.82em;margin-left:2px}"
+    + "[data-sp=doc]::after{content:'📜';font-size:.82em;margin-left:2px}"
+    + "[data-sp=out]::after{content:'🔗';font-size:.82em;margin-left:2px}"
     + "[data-place]:hover,[data-place]:focus-visible,[data-view]:hover,[data-view]:focus-visible{background:var(--brand-100);outline:none;border-radius:4px}"
     + ".sth-place-pop iframe.tall{height:420px}"
     + ".sth-place-pop img{display:block;max-width:min(100%,520px);margin:0 auto;border-radius:10px}"
@@ -136,6 +143,14 @@
        exo:행성           NASA Eyes on Exoplanets — 외계 행성계 3D
        earth:주소#뒤      earth.nullschool.net — 지금의 바람·해류·수온(몇 시간마다 새 자료)
        mymap:지도ID|위도,경도|줌|출처   구글 내 지도(My Maps) — 예: 판 경계·판 이름·해구 지도(키 필요 없음)
+       mol:PDB번호|설명    RCSB PDB 의 실제 분자 구조를 Mol* 로 3D 회전
+       phet:시뮬레이션|설명 PhET 한국어 시뮬레이션
+       owid:그래프|설명    Our World in Data 실제 자료 그래프
+       ptable:            Ptable 주기율표(원소 실물 사진)
+       commons:파일명|라이선스|출처   위키미디어 공용의 원본 자료 사진(옛 지도·원고·초판 등)
+       hubble:사진번호|설명  ESA/Hubble 사진
+       model:Sketchfab번호|소장처   박물관 3D 화석·표본
+       web:주소|출처 (쪽 안에) · out:주소|출처 (새 창만)
        sun:hmi|171|c3|aurora   오늘의 태양(SDO 흑점 / 코로나) · SOHO 코로나그래프 · NOAA 오로라 예보 */
   var VIEW = {
     sky: function (v) { var a = v.split("|"); var u = "https://aladin.cds.unistra.fr/AladinLite/?target=" + encodeURIComponent(a[0]) + "&fov=" + (a[1] || 2) + "&survey=" + encodeURIComponent(a[2] || "P/DSS2/color");
@@ -150,6 +165,28 @@
       return { ico: "🌐", src: "earth.nullschool.net · 지금의 지구(몇 시간마다 새 자료)", url: u, embed: u }; },
     mymap: function (v) { var a = v.split("|"), q = "mid=" + encodeURIComponent(a[0]) + (a[1] ? "&ll=" + a[1] : "") + (a[2] ? "&z=" + a[2] : "");
       return { ico: "🗺", src: a[3] || "구글 내 지도", url: "https://www.google.com/maps/d/viewer?" + q, embed: "https://www.google.com/maps/d/embed?" + q }; },
+    mol: function (v) { var a = v.split("|"), id = a[0];
+      return { ico: "🧬", src: "RCSB PDB " + id + " · 실제로 밝혀낸 분자 구조" + (a[1] ? " — " + a[1] : "") + " · 끌어서 돌려 보세요",
+        url: "https://www.rcsb.org/structure/" + id, embed: "https://molstar.org/viewer/?pdb=" + id + "&hide-controls=1&collapse-left-panel=1" }; },
+    phet: function (v) { var a = v.split("|"), u = "https://phet.colorado.edu/sims/html/" + a[0] + "/latest/" + a[0] + "_ko.html";
+      return { ico: "🧪", src: "PhET 시뮬레이션(콜로라도 대학교) · 한국어" + (a[1] ? " — " + a[1] : ""), url: u, embed: u }; },
+    owid: function (v) { var a = v.split("|"), u = "https://ourworldindata.org/grapher/" + a[0] + "?tab=chart";
+      return { ico: "📈", src: "Our World in Data · 실제 자료 그래프(영어)" + (a[1] ? " — " + a[1] : ""), url: u, embed: u }; },
+    ptable: function () { var u = "https://ptable.com/?lang=ko";
+      return { ico: "⚗️", src: "Ptable · 원소마다 실물 사진·성질(한국어) — 원소를 눌러 보세요", url: u, embed: u }; },
+    commons: function (v) { var a = v.split("|"), f = a[0].replace(/ /g, "_");
+      return { ico: "📜", src: "원본 자료 · 위키미디어 공용 · " + (a[1] || "") + (a[2] ? " · " + a[2] : ""),
+        url: "https://commons.wikimedia.org/wiki/File:" + encodeURIComponent(f), img: "https://commons.wikimedia.org/wiki/Special:FilePath/" + encodeURIComponent(f) + "?width=900" }; },
+    hubble: function (v) { var a = v.split("|");
+      return { ico: "🔭", src: "ESA/Hubble 사진 · CC BY 4.0" + (a[1] ? " — " + a[1] : ""),
+        url: "https://esahubble.org/images/" + a[0] + "/", img: "https://cdn.esahubble.org/archives/images/screen/" + a[0] + ".jpg" }; },
+    model: function (v) { var a = v.split("|");
+      return { ico: "🦴", src: "박물관 3D 모형 · " + (a[1] || "Sketchfab") + " · 끌어서 돌려 보세요",
+        url: "https://sketchfab.com/3d-models/" + a[0], embed: "https://sketchfab.com/models/" + a[0] + "/embed?autostart=1&ui_theme=dark" }; },
+    web: function (v) { var a = v.split("|");
+      return { ico: "📜", src: a[1] || "", url: a[0], embed: a[0] }; },
+    out: function (v) { var a = v.split("|");
+      return { ico: "🔗", src: a[1] || "", url: a[0] }; },
     sun: function (v) {
       if (v === "c3") { var c = "https://soho.nascom.nasa.gov/data/realtime/c3/512/latest.jpg";
         return { ico: "☀️", src: "SOHO 코로나그래프 LASCO C3 · 가장 최근 사진(가운데 원판이 해를 가린다)", url: c, img: c }; }
@@ -217,7 +254,8 @@
   function tagPlaces(root) {
     Array.prototype.forEach.call(root.querySelectorAll("[data-place]:not([data-sp]),[data-view]:not([data-sp])"), function (n) {
       var v = n.getAttribute("data-view") || "";
-      n.setAttribute("data-sp", /^(sky|star)/.test(v) ? "sky" : /^(eyes|exo)/.test(v) ? "eyes" : /^earth/.test(v) ? "earth" : /^sun/.test(v) ? "sun" : /^mymap/.test(v) ? "mymap" : "1");
+      n.setAttribute("data-sp", /^(sky|star|hubble)/.test(v) ? "sky" : /^(eyes|exo)/.test(v) ? "eyes" : /^earth/.test(v) ? "earth" : /^sun/.test(v) ? "sun" : /^mymap/.test(v) ? "mymap"
+        : /^mol/.test(v) ? "mol" : /^phet/.test(v) ? "sim" : /^owid/.test(v) ? "data" : /^ptable/.test(v) ? "elem" : /^model/.test(v) ? "fossil" : /^(commons|web)/.test(v) ? "doc" : /^out/.test(v) ? "out" : "1");
       n.setAttribute("role", "button"); n.setAttribute("tabindex", "0");
       n.setAttribute("aria-expanded", "false");
       n.setAttribute("aria-label", (n.textContent || "").trim() + (n.hasAttribute("data-place") ? " — 지도 보기" : " — 실제 모습 보기"));
