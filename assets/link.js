@@ -18,6 +18,8 @@
      키가 없으면 구글 지도 공식 주소를 새 창으로 연다.
    · 다녀왔는지 알고 싶으면: window.sthLinkOn("mlo", function (note) { … })  /  window.sthLinkIsDone("mlo")
    · 페이지는 학생이 바깥에서 무엇을 봤는지 알 수 없다. 판정은 늘 문항·조작값으로 하고, 한 문장은 기록용이다.
+   · 이야기 속 지명: <span data-place=위도,경도,줌,종류>지명</span>  종류 s 위성·핀, r 지도·핀, sv 위성(핀 없이), rv 지도(핀 없이)
+     지명 옆에 📍 가 붙고, 누르면 그 문단 아래에 지도가 펼쳐진다(키가 없으면 구글 지도를 새 창으로). 기록·판정은 없다.
    ========================================================================= */
 (function () {
   "use strict";
@@ -28,6 +30,14 @@
     + ".sth-link .sl-t{font-size:14.5px;font-weight:800;color:var(--ink)}"
     + ".sth-link .sl-src{font-size:11.5px;color:var(--mist)}"
     + ".sth-link .sl-ask{margin:8px 0 10px;font-size:13.5px;color:var(--ink)}"
+    + "[data-place]{cursor:pointer;border-bottom:1.5px dotted var(--brand);white-space:nowrap}"
+    + "[data-place]::after{content:'📍';font-size:.82em;margin-left:2px}"
+    + "[data-place]:hover,[data-place]:focus-visible{background:var(--brand-100);outline:none;border-radius:4px}"
+    + ".sth-place-pop{margin:8px 0 12px;border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:14px;background:var(--card);padding:10px 12px}"
+    + ".sth-place-pop .sp-top{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-bottom:8px}"
+    + ".sth-place-pop .sp-t{font-size:14px;font-weight:800;color:var(--ink)}"
+    + ".sth-place-pop .btn{padding:5px 12px;font-size:12.5px}"
+    + ".sth-place-pop iframe{display:block;width:100%;height:300px;border:0;border-radius:10px}"
     + ".sth-link .sl-ask b{color:var(--brand-700)}"
     + ".sth-link .sl-btns{display:flex;flex-wrap:wrap;gap:8px}"
     + ".sth-link .sl-btns a.btn{text-decoration:none}"
@@ -110,7 +120,64 @@
     ta.addEventListener("blur", function () { clearTimeout(tmr); save(ta.value); });
     paint(r.ok);
   }
+  /* ---- 이야기 속 지명 📍 ---- */
+  function placeOf(n) {
+    var a = String(n.getAttribute("data-place") || "").split(",");
+    var p = { lat: +a[0], lng: +a[1], zoom: +a[2] || 12, k: a[3] || "s", name: (n.textContent || "").replace(/\s+/g, " ").trim() };
+    return isFinite(p.lat) && isFinite(p.lng) ? p : null;
+  }
+  function placeOpenUrl(p) {
+    if (/v$/.test(p.k)) return mapsUrl({ lat: p.lat, lng: p.lng, zoom: p.zoom, type: p.k.charAt(0) === "r" ? "roadmap" : "satellite" });
+    return "https://www.google.com/maps/search/?api=1&query=" + p.lat + "," + p.lng;
+  }
+  function placeEmbed(p, key) {
+    var t = p.k.charAt(0) === "r" ? "roadmap" : "satellite";
+    if (/v$/.test(p.k)) return "https://www.google.com/maps/embed/v1/view?key=" + encodeURIComponent(key) + "&center=" + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko";
+    return "https://www.google.com/maps/embed/v1/place?key=" + encodeURIComponent(key) + "&q=" + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko";
+  }
+  function placeToggle(n) {
+    var p = placeOf(n); if (!p) return;
+    var key = String(window.STH_MAPS_KEY || "").trim();
+    if (!key) { window.open(placeOpenUrl(p), "_blank", "noopener"); return; }
+    if (n._pop && n._pop.parentNode) { n._pop.parentNode.removeChild(n._pop); n._pop = null; n.setAttribute("aria-expanded", "false"); return; }
+    /* 지도는 지명이 든 문단(블록) 바로 아래에 편다 — 굵은 글씨 같은 줄 안 요소 안에 끼우면 문장이 갈라진다 */
+    var host = n.parentNode;
+    while (host && host !== document.body && /^inline/.test(getComputedStyle(host).display)) host = host.parentNode;
+    /* 말풍선처럼 옆으로 늘어선 줄(flex·grid) 안이면 그 줄 전체 아래로 */
+    while (host && host.parentNode && host.parentNode !== document.body && /flex|grid/.test(getComputedStyle(host.parentNode).display)) host = host.parentNode;
+    if (!host || host === document.body) host = n.parentNode;
+    var pop = el("div", "sth-place-pop");
+    var top = el("div", "sp-top");
+    var t = el("span", "sp-t"); t.textContent = "📍 " + p.name; top.appendChild(t);
+    var s = el("span", "sl-src"); s.textContent = ll(p); top.appendChild(s);
+    var a = el("a", "btn"); a.href = placeOpenUrl(p); a.target = "_blank"; a.rel = "noopener"; a.textContent = "구글 지도에서 열기 ↗"; top.appendChild(a);
+    var x = el("button", "btn"); x.type = "button"; x.textContent = "닫기"; x.addEventListener("click", function () { placeToggle(n); n.focus && n.focus(); }); top.appendChild(x);
+    pop.appendChild(top);
+    var f = document.createElement("iframe");
+    f.src = placeEmbed(p, key); f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
+    f.title = p.name + " 지도"; f.setAttribute("allowfullscreen", "");
+    pop.appendChild(f);
+    host.parentNode.insertBefore(pop, host.nextSibling);
+    n._pop = pop; n.setAttribute("aria-expanded", "true");
+  }
+  document.addEventListener("click", function (e) {
+    var n = e.target && e.target.closest ? e.target.closest("[data-place]") : null;
+    if (!n) return;
+    e.preventDefault(); e.stopPropagation(); placeToggle(n);
+  }, true);
+  document.addEventListener("keydown", function (e) {
+    var n = e.target && e.target.getAttribute && e.target.getAttribute("data-place") != null ? e.target : null;
+    if (n && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); placeToggle(n); }
+  });
+  function tagPlaces(root) {
+    Array.prototype.forEach.call(root.querySelectorAll("[data-place]:not([data-sp])"), function (n) {
+      n.setAttribute("data-sp", "1"); n.setAttribute("role", "button"); n.setAttribute("tabindex", "0");
+      n.setAttribute("aria-expanded", "false");
+      n.setAttribute("aria-label", (n.textContent || "").trim() + " — 지도 보기");
+    });
+  }
   window.sthLinkScan = function (root) {
+    tagPlaces(root || document);
     root = root || document;
     Array.prototype.forEach.call(root.querySelectorAll("[data-link]"), function (n) { render(n, false); });
     Array.prototype.forEach.call(root.querySelectorAll("[data-map]"), function (n) { render(n, true); });
