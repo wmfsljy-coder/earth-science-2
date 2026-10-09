@@ -15,7 +15,7 @@ function v(name) { return window.cssVar(name); }
 function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
 function done(id) { var e = $(id); if (e) e.classList.add("done"); }
 function paper(ctx, W, H) { ctx.clearRect(0, 0, W, H); ctx.fillStyle = v("--card-2"); ctx.fillRect(0, 0, W, H); }
-/* 글자가 캔버스 밖으로 나가지 않도록 x 를 살짝 밀어 넣는다 */
+/* 글자가 캔버스 밖으로 나가지 않도록 x를 살짝 밀어 넣는다 */
 function text(ctx, s, x, y, o) {
   o = o || {};
   ctx.font = (o.w || "500") + " " + (o.s || 12) + "px " + FONT;
@@ -344,7 +344,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
     function mission() {
       if (G.a) done("m-a2a"); if (G.b) done("m-a2b"); if (G.c) done("m-a2c"); if (G.d) done("m-a2d");
       if (G.a && G.b && G.c && G.d) {
-        window.sthMission("m-a2", true, "<span class='m-tag'>미션 완료</span>별은 <b>왼쪽(동)에서 떠서 오른쪽(서)으로</b> 집니다. 지도는 북쪽을 위로 두어 오른쪽이 동쪽이지만, 천구에서 천체의 이동 방향을 말할 때는 <b>남쪽을 바라볼 때</b>가 기준이라 좌우가 뒤집힙니다. 이제 ‘서에서 동으로’ 와 ‘동에서 서로’ 를 제대로 읽을 수 있습니다.");
+        window.sthMission("m-a2", true, "<span class='m-tag'>미션 완료</span>별은 <b>왼쪽(동)에서 떠서 오른쪽(서)으로</b> 집니다. 지도는 북쪽을 위로 두어 오른쪽이 동쪽이지만, 천구에서 천체의 이동 방향을 말할 때는 <b>남쪽을 바라볼 때</b>가 기준이라 좌우가 뒤집힙니다. 이제 ‘서에서 동으로’와 ‘동에서 서로’를 제대로 읽을 수 있습니다.");
         ep.clear(1);
       }
     }
@@ -532,9 +532,9 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       if (mode === "역행") {
         msg = "<b>지금 역행 중입니다.</b> 배경별을 기준으로 " + planet + "이(가) <b>동에서 서로</b> 움직이고 있습니다. "
             + "그런데 아래 궤도면을 보세요 — " + planet + "의 공전 방향 화살표는 조금도 바뀌지 않았습니다. "
-            + "지금 이각은 <b>" + Math.abs(el).toFixed(0) + "°</b> 입니다."
+            + "지금 이각은 <b>" + Math.abs(el).toFixed(0) + "°</b>입니다."
             + (Math.abs(el) >= 150 ? " 태양의 <b>거의 정반대쪽(충)</b> 이군요 — 외행성이 역행하는 자리입니다."
-                                   : (Math.abs(el) <= 30 ? " 태양에 <b>아주 가까운 쪽(내합 부근)</b> 입니다 — 내행성이 역행하는 자리입니다." : ""));
+                                   : (Math.abs(el) <= 30 ? " 태양에 <b>아주 가까운 쪽(내합 부근)</b>입니다 — 내행성이 역행하는 자리입니다." : ""));
       } else if (mode === "순행") {
         msg = "<b>순행 중입니다.</b> 배경별을 기준으로 " + planet + "이(가) <b>서에서 동으로</b> 움직이고 있습니다. 행성의 겉보기 운동은 대부분의 기간 동안 순행입니다.";
       } else {
@@ -697,16 +697,16 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       if (ch) { window.sthState("aEpi", G); mission(); }
 
       $("a-epi-info").innerHTML = mDiff < 0.01
-        ? "<b>두 곡선이 완전히 겹쳤습니다.</b> 주전원 반지름을 <b>지구 궤도 반지름과 같게</b> 두면, ‘태양에서 화성으로 그은 화살표 + 지구에서 태양으로 그은 화살표’ 와 ‘지구에서 화성으로 그은 화살표’ 가 같은 것이 되어 두 모형이 가리키는 방향은 <b>수학적으로 똑같아집니다</b>. 그래서 프톨레마이오스도 역행을 설명할 수 있었습니다."
+        ? "<b>두 곡선이 완전히 겹쳤습니다.</b> 주전원 반지름을 <b>지구 궤도 반지름과 같게</b> 두면, ‘태양에서 화성으로 그은 화살표 + 지구에서 태양으로 그은 화살표’와 ‘지구에서 화성으로 그은 화살표’가 같은 것이 되어 두 모형이 가리키는 방향은 <b>수학적으로 똑같아집니다</b>. 그래서 프톨레마이오스도 역행을 설명할 수 있었습니다."
         : (mFlip === 0
           ? "<b>주전원이 너무 작습니다.</b> 화성이 작은 원을 도는 속도가 느려서, 지구에서 본 방향이 <b>한 번도 되돌아가지 않습니다</b> — 역행이 아예 나타나지 않습니다. 주전원은 역행을 만들어 내기 위한 장치였습니다."
-          : "역행은 나타나지만 두 모형이 가리키는 방향이 최대 <b>" + mDiff.toFixed(2) + "°</b> 어긋납니다. 하늘에서 " + mDiff.toFixed(2) + "° 는 보름달 지름의 " + (mDiff / 0.52).toFixed(0) + "배가 넘습니다. 반지름을 더 맞춰 보세요.");
+          : "역행은 나타나지만 두 모형이 가리키는 방향이 최대 <b>" + mDiff.toFixed(2) + "°</b> 어긋납니다. 하늘에서 " + mDiff.toFixed(2) + "°는 보름달 지름의 " + (mDiff / 0.52).toFixed(0) + "배가 넘습니다. 반지름을 더 맞춰 보세요.");
       draw();
     }
     function mission() {
       if (G.a) done("m-a4a"); if (G.b) done("m-a4b"); if (G.c) done("m-a4c");
       if (G.a && G.b && G.c) {
-        window.sthMission("m-a4", true, "<span class='m-tag'>미션 완료</span>주전원 반지름이 <b>지구 궤도 반지름과 같을 때</b> 두 모형은 차이가 0.00° 로 포개집니다. 주전원은 사실 <b>지구의 공전을 다른 이름으로 부른 것</b>이었습니다. 역행 하나만으로는 두 우주관을 가를 수 없었다는 뜻이지요.");
+        window.sthMission("m-a4", true, "<span class='m-tag'>미션 완료</span>주전원 반지름이 <b>지구 궤도 반지름과 같을 때</b> 두 모형은 차이가 0.00°로 포개집니다. 주전원은 사실 <b>지구의 공전을 다른 이름으로 부른 것</b>이었습니다. 역행 하나만으로는 두 우주관을 가를 수 없었다는 뜻입니다.");
         ep.clear(3); ep.clear(4);
       }
     }
@@ -732,7 +732,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
     items: [
       { id: "w1", label: "역행하는 동안 화성의 공전 방향", hint: "궤도면의 계수기와 하늘의 계수기가 어떻게 달랐는지를 근거로 쓰세요.",
         ph: "화성이 역행하는 동안 화성의 공전 방향은 (          )였다. 그런데 하늘에서 되돌아간 것처럼 보인 까닭은 (          ) 때문이다." },
-      { id: "w2", label: "별자리에 대해 동에서 서로 움직인 행성", hint: "장면 3 에서 화성·금성·목성의 날짜를 밀어 보고, 배경별에 대해 <b>동에서 서로</b> 이동한(역행한) 날짜를 하나 찾아 쓰세요. 그때 그 행성의 이각이 얼마였는지도 함께 적으면 좋습니다.",
+      { id: "w2", label: "별자리에 대해 동에서 서로 움직인 행성", hint: "장면 3에서 화성·금성·목성의 날짜를 밀어 보고, 배경별에 대해 <b>동에서 서로</b> 이동한(역행한) 날짜를 하나 찾아 쓰세요. 그때 그 행성의 이각이 얼마였는지도 함께 적으면 좋습니다.",
         ph: "행성 이름 / 날짜 / 그때의 이각 / 그렇게 판단한 근거" }
     ]
   });
@@ -860,13 +860,13 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
         ? "궤도 반지름이 <b>" + a.toFixed(2) + " AU</b> 인 내행성은 태양에서 최대 <b>" + e.toFixed(1) + "°</b> 까지만 떨어져 보입니다. "
           + "하늘에서 태양이 1시간에 15°씩 움직이니, 이 행성은 해가 진 뒤 <b>" + (e / 15).toFixed(1) + "시간</b> 안에 따라서 집니다. "
           + "그래서 내행성은 <b>초저녁 서쪽 하늘</b>이나 <b>새벽 동쪽 하늘</b>에서만 보입니다."
-        : "궤도 반지름이 <b>1 AU 보다 큰</b> 외행성에는 최대 이각이 없습니다. 지구가 행성과 태양 사이에 들어가면 이각이 <b>180°(충)</b> 까지 커지므로, "
+        : "궤도 반지름이 <b>1 AU보다 큰</b> 외행성에는 최대 이각이 없습니다. 지구가 행성과 태양 사이에 들어가면 이각이 <b>180°(충)</b>까지 커지므로, "
           + "해 질 때 떠서 <b>자정에 남중</b>하고 해 뜰 때 집니다. 한밤중에도 볼 수 있다는 뜻입니다.";
     }
     function mission() {
       if (G.a) done("m-b2a"); if (G.b) done("m-b2b"); if (G.c) done("m-b2c");
       if (G.a && G.b && G.c) {
-        window.sthMission("m-b2", true, "<span class='m-tag'>미션 완료</span>내행성의 최대 이각은 <b>sin⁻¹(행성 궤도 반지름 ÷ 지구 궤도 반지름)</b> 입니다 — 수성은 약 <b>23°</b>, 금성은 약 <b>46°</b>. 외행성은 지구가 안쪽에 있으므로 이각에 한계가 없습니다.");
+        window.sthMission("m-b2", true, "<span class='m-tag'>미션 완료</span>내행성의 최대 이각은 <b>sin⁻¹(행성 궤도 반지름 ÷ 지구 궤도 반지름)</b>입니다 — 수성은 약 <b>23°</b>, 금성은 약 <b>46°</b>. 외행성은 지구가 안쪽에 있으므로 이각에 한계가 없습니다.");
         ep.clear(1);
       }
     }
@@ -893,7 +893,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       var c = document.createElement("canvas");
       c.width = size * 2; c.height = size * 2;
       c.style.width = size + "px"; c.style.height = size + "px";
-      var g = c.getContext("2d"); g.scale(2, 2);
+      var g = c.getContext("2d"); g.scale(2, 2); c._dprSet = true;   /* 표 안 작은 그림: 2배 해상도로 직접 그림 */
       phaseDisc(g, size / 2, size / 2, size / 2 - 2, k, el);
       return c;
     }
@@ -925,7 +925,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       var dd = BASE + day, g = geo(planet, dd), a = ORB[planet].a;
       var S = 165 / Math.max(1.25, a * 1.1), cx = 300, cy = H / 2;
 
-      text(ctx, "이각 하나로 ‘언제 어느 쪽 하늘에서’ 가 정해진다", 60, 30, { s: 14, w: "900" });
+      text(ctx, "이각 하나로 ‘언제 어느 쪽 하늘에서’가 정해진다", 60, 30, { s: 14, w: "900" });
       ctx.strokeStyle = withA(v("--line"), 1); ctx.lineWidth = 1.5;
       ["지구", planet].forEach(function (n) {
         ctx.beginPath(); ctx.arc(cx, cy, ORB[n].a * S, 0, 6.2832); ctx.stroke();
@@ -995,11 +995,11 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
 
       $("b-obs-info").innerHTML =
         (el >= 0
-          ? "이각이 <b>동방</b> 이므로 행성이 태양보다 <b>늦게</b> 집니다. 해가 진 뒤 <b>서쪽 하늘</b>에서 찾으세요."
-          : "이각이 <b>서방</b> 이므로 행성이 태양보다 <b>먼저</b> 뜹니다. 해 뜨기 전 <b>동쪽 하늘</b>에서 찾으세요.")
+          ? "이각이 <b>동방</b>이므로 행성이 태양보다 <b>늦게</b> 집니다. 해가 진 뒤 <b>서쪽 하늘</b>에서 찾으세요."
+          : "이각이 <b>서방</b>이므로 행성이 태양보다 <b>먼저</b> 뜹니다. 해 뜨기 전 <b>동쪽 하늘</b>에서 찾으세요.")
         + (Math.abs(el) >= 150 ? " 지금은 <b>충</b> 부근입니다 — 해 질 때 떠서 자정에 남중하므로 밤새 볼 수 있습니다."
           : (Math.abs(el) <= 10 ? " 지금은 <b>합</b> 부근이라 태양과 거의 같은 방향입니다 — 햇빛에 묻혀 볼 수 없습니다." : ""))
-        + " 표의 ‘관측 가능 시각’ 은 이각에서 계산한 것이고, <b>관측되는 모양</b> 은 밝게 보이는 비율입니다.";
+        + " 표의 ‘관측 가능 시각’은 이각에서 계산한 것이고, <b>관측되는 모양</b>은 밝게 보이는 비율입니다.";
       draw();
     }
     function mission() {
@@ -1007,7 +1007,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       var rows = Math.max(extra.length, G.rows || 0);
       if (rows >= 3) done("m-b3d");
       if (G.a && G.b && G.c && rows >= 3) {
-        window.sthMission("m-b3", true, "<span class='m-tag'>미션 완료</span>금성은 최대 이각 부근에서도 초저녁이나 새벽에만 보이고, 한밤중 칸은 언제나 <b>X</b> 입니다. 반대로 외행성은 <b>충</b>(이각 180°) 부근에서 밤새 볼 수 있습니다. 개밥바라기(동방 이각)와 샛별(서방 이각)은 <b>같은 금성</b>이었습니다.");
+        window.sthMission("m-b3", true, "<span class='m-tag'>미션 완료</span>금성은 최대 이각 부근에서도 초저녁이나 새벽에만 보이고, 한밤중 칸은 언제나 <b>X</b>입니다. 반대로 외행성은 <b>충</b>(이각 180°) 부근에서 밤새 볼 수 있습니다. 개밥바라기(동방 이각)와 샛별(서방 이각)은 <b>같은 금성</b>이었습니다.");
         ep.clear(2);
       }
     }
@@ -1128,7 +1128,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
         + "%) · 시직경 <b>" + dia.toFixed(1) + "″</b>";
       $("b-phase-info").innerHTML =
         (g.k >= 0.90
-          ? "<b>거의 보름 금성입니다.</b> 그런데 시직경은 <b>" + dia.toFixed(1) + "″</b> 로 아주 작습니다 — 금성이 <b>태양 뒤편(외합)</b> 으로 돌아갔다는 뜻입니다. 주전원 모형은 금성을 늘 지구와 태양 사이에 두므로 이 모양을 <b>절대로</b> 만들 수 없습니다."
+          ? "<b>거의 보름 금성입니다.</b> 그런데 시직경은 <b>" + dia.toFixed(1) + "″</b>로 아주 작습니다 — 금성이 <b>태양 뒤편(외합)</b>으로 돌아갔다는 뜻입니다. 주전원 모형은 금성을 늘 지구와 태양 사이에 두므로 이 모양을 <b>절대로</b> 만들 수 없습니다."
           : (dia >= 55
             ? "<b>가장 크게 보이는 때입니다.</b> 시직경이 " + dia.toFixed(1) + "″ 나 되는데 밝은 비율은 " + Math.round(g.k * 100) + "% 뿐입니다. 금성이 <b>내합</b> 쪽, 곧 지구에 가장 가까운 자리에 와 있습니다. 가까울수록 가늘어진다 — 이것이 금성이 태양을 돈다는 증거입니다."
             : "날짜를 밀면서 두 원반을 견주어 보세요. 태양 중심 모형은 밝은 비율이 <b>0 %에서 100 %까지</b> 바뀌고 크기도 <b>6배</b> 넘게 달라집니다. 주전원 모형은 밝은 비율이 <b>35 %를 넘지 못하고</b> 크기도 2배 남짓밖에 변하지 않습니다."));
@@ -1136,7 +1136,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
     function mission() {
       if (G.a) done("m-b4a"); if (G.b) done("m-b4b"); if (G.c) done("m-b4c"); if (G.q) done("m-b4d");
       if (G.a && G.b && G.c && G.q) {
-        window.sthMission("m-b4", true, "<span class='m-tag'>미션 완료</span>금성은 <b>가늘수록 크게, 둥글수록 작게</b> 보입니다. 가늘 때는 지구와 태양 사이(가까움), 둥글 때는 태양 너머(멂)에 있다는 뜻이지요. 금성이 늘 지구와 태양 사이에 있어야 하는 주전원 모형으로는 <b>보름에 가까운 금성</b>을 설명할 수 없습니다.");
+        window.sthMission("m-b4", true, "<span class='m-tag'>미션 완료</span>금성은 <b>가늘수록 크게, 둥글수록 작게</b> 보입니다. 가늘 때는 지구와 태양 사이(가까움), 둥글 때는 태양 너머(멂)에 있다는 뜻입니다. 금성이 늘 지구와 태양 사이에 있어야 하는 주전원 모형으로는 <b>보름에 가까운 금성</b>을 설명할 수 없습니다.");
         ep.clear(3); ep.clear(4);
       }
     }
@@ -1325,15 +1325,15 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       $("c-badge").textContent = vd.t;
       $("c-tilt-read").innerHTML = "달의 황위: <b>" + ab.toFixed(2) + "°</b> — " + vd.t;
       $("c-tilt-info").innerHTML = inc === 0
-        ? "<b>기울기가 0° 라면</b> 달은 언제나 황도면 위에 있습니다. 교점에서 아무리 멀어도 황위가 0° 이므로, <b>삭마다 일식, 망마다 월식</b> 이 일어납니다 — 한 달에 두 번씩요. 실제로는 그렇지 않지요."
+        ? "<b>기울기가 0°라면</b> 달은 언제나 황도면 위에 있습니다. 교점에서 아무리 멀어도 황위가 0°이므로, <b>삭마다 일식, 망마다 월식</b>이 일어납니다 — 한 달에 두 번씩요. 실제로는 그렇지 않습니다."
         : (vd.ok
-          ? "<b>" + vd.t + "입니다.</b> 달이 교점에서 " + Math.abs(lam) + "° 밖에 떨어져 있지 않아 황위가 " + ab.toFixed(2) + "° 로 작습니다. 태양·달·지구가 거의 한 직선 위에 놓였습니다."
-          : "<b>" + vd.t + "</b> 달의 황위가 " + ab.toFixed(2) + "° 나 되어, 달이 태양(또는 지구 그림자)의 " + (betaOf(lam, inc) > 0 ? "위" : "아래") + "쪽을 비껴 지나갑니다. 황위를 <b>" + (phase === "new" ? SOL_LIMIT.toFixed(1) : LUN_LIMIT.toFixed(1)) + "° 아래</b>로 줄이려면 달을 교점 가까이로 옮겨야 합니다.");
+          ? "<b>" + vd.t + "입니다.</b> 달이 교점에서 " + Math.abs(lam) + "° 밖에 떨어져 있지 않아 황위가 " + ab.toFixed(2) + "°로 작습니다. 태양·달·지구가 거의 한 직선 위에 놓였습니다."
+          : "<b>" + vd.t + "</b> 달의 황위가 " + ab.toFixed(2) + "°나 되어, 달이 태양(또는 지구 그림자)의 " + (betaOf(lam, inc) > 0 ? "위" : "아래") + "쪽을 비껴 지나갑니다. 황위를 <b>" + (phase === "new" ? SOL_LIMIT.toFixed(1) : LUN_LIMIT.toFixed(1)) + "° 아래</b>로 줄이려면 달을 교점 가까이로 옮겨야 합니다.");
     }
     function mission() {
       if (G.a) done("m-c2a"); if (G.b) done("m-c2b"); if (G.c) done("m-c2c"); if (G.d) done("m-c2d");
       if (G.a && G.b && G.c && G.d) {
-        window.sthMission("m-c2", true, "<span class='m-tag'>미션 완료</span>기울기가 0° 라면 삭마다 일식, 망마다 월식입니다. 그런데 백도면이 <b>5.1°</b> 기울어져 있어서, 달이 <b>교점 가까이</b> 있을 때 삭·망이 되어야만 식이 일어납니다. 그 한계를 <b>식한</b> 이라 하고, 일식은 교점에서 약 <b>16°</b>, 월식은 약 <b>11°</b> 안쪽입니다.");
+        window.sthMission("m-c2", true, "<span class='m-tag'>미션 완료</span>기울기가 0°라면 삭마다 일식, 망마다 월식입니다. 그런데 백도면이 <b>5.1°</b> 기울어져 있어서, 달이 <b>교점 가까이</b> 있을 때 삭·망이 되어야만 식이 일어납니다. 그 한계를 <b>식한</b>이라 하고, 일식은 교점에서 약 <b>16°</b>, 월식은 약 <b>11°</b> 안쪽입니다.");
         ep.clear(1);
       }
     }
@@ -1387,7 +1387,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       ctx.strokeStyle = withA(v("--line"), 1); ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(gx0, my); ctx.lineTo(gx1, my); ctx.stroke();
       text(ctx, "본그림자 원뿔 (옆에서 본 모습)", gx0, 58, { s: 13, w: "900" });
-      var LPX = 340;                                      /* 원뿔 길이를 화면에서 340px 로 고정 */
+      var LPX = 340;                                      /* 원뿔 길이를 화면에서 340px로 고정 */
       var apex = gx0 + LPX;
       ctx.fillStyle = withA(v("--ink"), .22);
       ctx.beginPath();
@@ -1415,7 +1415,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       text(ctx, Math.abs(c.w).toFixed(0) + " km", bx + 18, by + 94, { s: 24, w: "900" });
       text(ctx, "달의 시반지름 − 태양의 시반지름", bx + 240, by + 64, { s: 11.5, w: "800", c: v("--mist") });
       text(ctx, ((c.sm - c.ss) >= 0 ? "+" : "") + (c.sm - c.ss).toFixed(4) + "°", bx + 240, by + 94, { s: 20, w: "900" });
-      text(ctx, "달 반지름 1,737 km · 태양 반지름 696,000 km · 지구 반지름 6,378 km 를 쓴 원뿔 모형입니다.",
+      text(ctx, "달 반지름 1,737 km · 태양 반지름 696,000 km · 지구 반지름 6,378 km를 쓴 원뿔 모형입니다.",
         60, 452, { s: 11.5, c: v("--mist") });
 
       var ch = false;
@@ -1428,13 +1428,13 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       $("c-shadow-read").innerHTML = "판정: <b>" + (total ? "개기 일식" : "금환 일식") + "</b> · "
         + (total ? "띠의 폭 " : "모자란 정도 ") + "<b>" + Math.abs(c.w).toFixed(0) + " km</b>";
       $("c-shadow-info").innerHTML = total
-        ? "<b>개기 일식입니다.</b> 달의 시반지름(" + c.sm.toFixed(4) + "°)이 태양의 시반지름(" + c.ss.toFixed(4) + "°)보다 커서 태양을 완전히 덮습니다. 본그림자가 지표에 닿아 폭 <b>" + c.w.toFixed(0) + " km</b> 의 띠를 그리며 지나갑니다. 그 띠 밖에서는 반그림자에 들어 <b>부분 일식</b>으로 보입니다."
+        ? "<b>개기 일식입니다.</b> 달의 시반지름(" + c.sm.toFixed(4) + "°)이 태양의 시반지름(" + c.ss.toFixed(4) + "°)보다 커서 태양을 완전히 덮습니다. 본그림자가 지표에 닿아 폭 <b>" + c.w.toFixed(0) + " km</b>의 띠를 그리며 지나갑니다. 그 띠 밖에서는 반그림자에 들어 <b>부분 일식</b>으로 보입니다."
         : "<b>금환 일식입니다.</b> 달이 멀어 시반지름(" + c.sm.toFixed(4) + "°)이 태양(" + c.ss.toFixed(4) + "°)보다 작습니다. 본그림자 원뿔의 끝이 지표에 <b>" + Math.abs(c.w).toFixed(0) + " km</b> 만큼 못 미쳐, 태양의 가장자리가 <b>반지 모양</b>으로 남습니다.";
     }
     function mission() {
       if (G.a) done("m-c3a"); if (G.b) done("m-c3b"); if (G.c) done("m-c3c"); if (G.d) done("m-c3d");
       if (G.a && G.b && G.c && G.d) {
-        window.sthMission("m-c3", true, "<span class='m-tag'>미션 완료</span>같은 삭이라도 <b>달이 가까우면 개기, 멀면 금환</b> 입니다. 달의 시반지름(0.245°~0.279°)과 태양의 시반지름(0.262°~0.271°)이 <b>거의 같은 크기</b>로 겹쳐 있기 때문에, 거리가 조금만 달라져도 결과가 뒤집힙니다. 개기 일식의 띠는 가장 넓어도 200 km 남짓입니다.");
+        window.sthMission("m-c3", true, "<span class='m-tag'>미션 완료</span>같은 삭이라도 <b>달이 가까우면 개기, 멀면 금환</b>입니다. 달의 시반지름(0.245°~0.279°)과 태양의 시반지름(0.262°~0.271°)이 <b>거의 같은 크기</b>로 겹쳐 있기 때문에, 거리가 조금만 달라져도 결과가 뒤집힙니다. 개기 일식의 띠는 가장 넓어도 200 km 남짓입니다.");
         ep.clear(2);
       }
     }
@@ -1491,7 +1491,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       }
       var phaseAng = kind === "new" ? 0 : 180;
       wheel(160, 130, 58, phaseAng, "달의 위상", kind === "new" ? "삭 (태양과 같은 방향)" : "망 (태양 반대쪽)", "--brand");
-      wheel(400, 130, 58, s.nu, "교점에서 잰 각", s.nu.toFixed(0) + "° — 0° 와 180° 가 교점", "--violet");
+      wheel(400, 130, 58, s.nu, "교점에서 잰 각", s.nu.toFixed(0) + "° — 0°와 180°가 교점", "--violet");
 
       /* 오른쪽 판정 */
       var bx = 560, by = 62, bw = 300;
@@ -1552,14 +1552,14 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       $("c-when-read").innerHTML = dayStr(s.t) + " · 달의 황위 <b>" + s.ab.toFixed(2) + "°</b> — " + s.label;
       $("c-when-info").innerHTML = s.ok
         ? "<b>식이 일어납니다.</b> " + dayStr(s.t) + " 의 " + (kind === "new" ? "삭" : "망") + " 에 달이 교점에서 가까워(황위 " + s.ab.toFixed(2) + "°) 태양·지구·달이 거의 한 직선 위에 놓입니다. 아래 띠에서 색이 들어온 자리들이 <b>약 " + SEASON + "일마다</b> 되풀이되는 것을 확인해 보세요."
-        : "<b>식이 일어나지 않습니다.</b> " + (kind === "new" ? "삭" : "망") + " 이기는 하지만 달의 황위가 " + s.ab.toFixed(2) + "° 나 되어 " + (kind === "new" ? "달이 태양을 비껴갑니다" : "달이 지구 그림자를 비껴갑니다") + ". 달을 <b>몇 달 더</b> 넘겨 교점 가까이로 가야 합니다.";
+        : "<b>식이 일어나지 않습니다.</b> " + (kind === "new" ? "삭" : "망") + " 이기는 하지만 달의 황위가 " + s.ab.toFixed(2) + "°나 되어 " + (kind === "new" ? "달이 태양을 비껴갑니다" : "달이 지구 그림자를 비껴갑니다") + ". 달을 <b>몇 달 더</b> 넘겨 교점 가까이로 가야 합니다.";
     }
     function mission() {
       if (G.a) done("m-c4a"); if (G.b) done("m-c4b"); if (G.c) done("m-c4c");
       if (G.seasons.length >= 3) done("m-c4d");
       if (G.q) done("m-c4e");
       if (G.a && G.b && G.c && G.seasons.length >= 3 && G.q) {
-        window.sthMission("m-c4", true, "<span class='m-tag'>미션 완료</span>삭망월(29.53일)과 교점월(27.21일)이 어긋나 있어서, 달이 <b>교점 가까이에서 삭·망이 되는 기간</b> 이 약 173일마다 돌아옵니다. 그래서 식은 흩어져 있지 않고 <b>몰려서</b> 일어납니다. 이 모형이 짚어 낸 날짜에 실제로 2024-04-08, 2024-10-02, 2025-03-14, 2025-09-07 의 식이 있었습니다.");
+        window.sthMission("m-c4", true, "<span class='m-tag'>미션 완료</span>삭망월(29.53일)과 교점월(27.21일)이 어긋나 있어서, 달이 <b>교점 가까이에서 삭·망이 되는 기간</b>이 약 173일마다 돌아옵니다. 그래서 식은 흩어져 있지 않고 <b>몰려서</b> 일어납니다. 이 모형이 짚어 낸 날짜에 실제로 2024-04-08, 2024-10-02, 2025-03-14, 2025-09-07의 식이 있었습니다.");
         ep.clear(3); ep.clear(4);
       }
     }
@@ -1595,7 +1595,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
   function vsC() {
     var p = window.sthState("c-p") || "";
     $("c-vs").innerHTML = "<b>나의 첫 예상</b> " + (p || "기록 없음") + "<br>" +
-      (p.indexOf("㉡") === 0 ? "정확했습니다. 기울기를 0° 로 두어 보면 삭마다 일식이 일어납니다 — 5.1° 가 그것을 막고 있었습니다."
+      (p.indexOf("㉡") === 0 ? "정확했습니다. 기울기를 0°로 두어 보면 삭마다 일식이 일어납니다 — 5.1°가 그것을 막고 있었습니다."
         : "㉡ 이 정답이었습니다. 달의 크기 문제도, 지구 그림자 문제도 아닙니다. 삭일 때 달은 지구 그림자와 반대쪽(태양 쪽)에 있습니다.");
   }
   vsC();
@@ -1603,7 +1603,7 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
   window.sthWork({
     mount: "wkC", unitLabel: "[지구과학 Ⅲ-1] 이야기 ③ 그림자가 지나간 자리",
     items: [
-      { id: "c1", label: "삭마다 일식이 아닌 까닭", hint: "‘식한’ 이라는 말을 넣어, 달의 황위로 설명하세요.",
+      { id: "c1", label: "삭마다 일식이 아닌 까닭", hint: "‘식한’이라는 말을 넣어, 달의 황위로 설명하세요.",
         ph: "달의 공전 궤도면은 황도면에 약 (      )° 기울어져 있어서, 삭이 되어도 (          )." },
       { id: "c2", label: "동아리 2학년에게 보내는 답장", hint: "같은 일식인데 어떤 날은 개기, 어떤 날은 금환이 되는 까닭을 <b>거리</b>와 <b>시반지름</b>으로 설명하세요." }
     ]

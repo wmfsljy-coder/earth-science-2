@@ -44,7 +44,7 @@ function anim(canvas, step) {
 function sigmaT(T, S) {
   return 28.14 - 0.0735 * T - 0.00469 * T * T + (0.802 - 0.002 * T) * (S - 35);
 }
-/* σt 가 주어졌을 때 그 염분에서의 수온 (등밀도선 그리기용) */
+/* σt가 주어졌을 때 그 염분에서의 수온 (등밀도선 그리기용) */
 function tempForSigma(sig, S) {
   var a = 0.00469, b = 0.0735 + 0.002 * (S - 35), c = -(28.14 + 0.802 * (S - 35) - sig);
   var d = b * b - 4 * a * c;
@@ -195,11 +195,11 @@ function compass(ctx, cx, cy, R, busy) {
       if (lat === "high" && depth >= 300 && !got.c) { got.c = ch = true; }
       if (ch) { window.sthState("aProf", got); mission(); }
 
-      $("a-prof-info").innerHTML = "지금 관측점은 <b>" + layer + "</b> 입니다. " +
+      $("a-prof-info").innerHTML = "지금 관측점은 <b>" + layer + "</b>입니다. " +
         (layer === "혼합층" ? "바람이 위아래를 휘저어 수온이 거의 일정한 층입니다." :
           (layer === "수온약층" ? "깊이가 늘어날수록 수온이 <b>급격히</b> 낮아집니다. 아래쪽 물이 훨씬 무거워 위아래가 잘 섞이지 않는, 일종의 <b>뚜껑</b>입니다." :
             (layer === "심해층" ? "햇빛이 닿지 않아 수온이 낮고 거의 일정합니다." :
-              "고위도 바다는 표층부터 차가워서 <b>수온약층이 뚜렷하지 않습니다.</b> 위아래가 잘 섞일 수 있다는 뜻이지요.")));
+              "고위도 바다는 표층부터 차가워서 <b>수온약층이 뚜렷하지 않습니다.</b> 위아래가 잘 섞일 수 있다는 뜻입니다.")));
     }
     function mission() {
       if (got.a) done("m1-2a"); if (got.b) done("m1-2b"); if (got.c) done("m1-2c");
@@ -285,13 +285,13 @@ function compass(ctx, cx, cy, R, busy) {
       text(ctx, "굵은 주황 선이 내가 고른 등밀도선입니다. 정점이 그 선 위에 오도록 맞추세요.", 60, H - 16, { s: 11, c: v("--mist") });
 
       if (ok && !got[s]) { got[s] = true; window.sthState("aTS", got); mission(); }
-      $("a-ts-info").innerHTML = "수온과 염분이 <b>둘 다</b> 밀도를 정합니다. 그래서 수온이 다른 두 물이 <b>같은 밀도</b>일 수도 있어요. 수온 염분도에서 같은 자리에 모이는 물 덩어리를 <b>수괴</b>라고 하고, 수괴는 자기가 만들어진 바다의 흔적을 오래 간직합니다." +
-        (ok ? " — <b>" + Q.n + " 의 σt 는 " + real.toFixed(2) + "</b> 입니다." : "");
+      $("a-ts-info").innerHTML = "수온과 염분이 <b>둘 다</b> 밀도를 정합니다. 그래서 수온이 다른 두 물이 <b>같은 밀도</b>일 수도 있습니다. 수온 염분도에서 같은 자리에 모이는 물 덩어리를 <b>수괴</b>라고 하고, 수괴는 자기가 만들어진 바다의 흔적을 오래 간직합니다." +
+        (ok ? " — <b>" + Q.n + " 의 σt는 " + real.toFixed(2) + "</b>입니다." : "");
     }
     function mission() {
       ["m1-3a", "m1-3b", "m1-3c", "m1-3d"].forEach(function (id, k) { if (got[k]) done(id); });
       if (got[0] && got[1] && got[2] && got[3]) {
-        window.sthMission("m1-3", true, "<span class='m-tag'>미션 완료</span>정점 ㄱ 25.38 · ㄴ 25.03 · ㄷ 27.34. 수온이 가장 낮은 <b>정점 ㄷ(동해 고유수)</b> 가 가장 무겁습니다. 정점 ㄱ과 ㄴ은 수온이 9 ℃나 차이 나는데도 밀도는 비슷합니다. <b>염분이 그 차이를 메운 것</b>입니다.");
+        window.sthMission("m1-3", true, "<span class='m-tag'>미션 완료</span>정점 ㄱ 25.38 · ㄴ 25.03 · ㄷ 27.34. 수온이 가장 낮은 <b>정점 ㄷ(동해 고유수)</b>가 가장 무겁습니다. 정점 ㄱ과 ㄴ은 수온이 9 ℃나 차이 나는데도 밀도는 비슷합니다. <b>염분이 그 차이를 메운 것</b>입니다.");
         ep.clear(2);
       }
     }
@@ -311,11 +311,11 @@ function compass(ctx, cx, cy, R, busy) {
       ],
       items: [
         { t: "쿠로시오 해류에서 갈라져 대한해협으로 들어온 물", a: "k", why: "저위도에서 올라온 물이라 따뜻하고 짭니다." },
-        { t: "셋 가운데 수온이 가장 높다", a: "k", why: "16 ℃ 로 가장 따뜻합니다.", hint: "표에서 수온을 견주어 보세요." },
+        { t: "셋 가운데 수온이 가장 높다", a: "k", why: "16 ℃로 가장 따뜻합니다.", hint: "표에서 수온을 견주어 보세요." },
         { t: "큰 강물이 많이 흘러들어 염분이 가장 낮다", a: "n", why: "황해는 수심이 얕고 담수 유입이 많아 염분이 낮습니다." },
         { t: "여름에 바닥에 갇혀 남아 있는 찬물", a: "n", why: "겨울에 차가워진 물이 여름에도 바닥에 남아 있는 것입니다.", hint: "얕은 바다의 바닥을 생각해 보세요." },
         { t: "수온이 1 ℃ 안팎으로 거의 일정한 깊은 물", a: "t", why: "동해 깊은 곳은 수온이 거의 변하지 않습니다." },
-        { t: "셋 가운데 밀도가 가장 크다", a: "t", why: "σt 27.34 로 가장 무겁습니다." }
+        { t: "셋 가운데 밀도가 가장 크다", a: "t", why: "σt 27.34로 가장 무겁습니다." }
       ],
       onDone: function () { got[3] = true; window.sthState("aTS", got); mission(); }
     });
@@ -471,7 +471,7 @@ function compass(ctx, cx, cy, R, busy) {
       if (ch) { window.sthState("aEk", GOT5); mission5(); }
 
       $("a-ekman-info").innerHTML = "표층 물은 바람의 오른쪽(북반구)으로 조금 휘고, 그 아래 물은 더 휩니다. 이 나선을 <b>모두 더한 값</b>이 순 수송이고, 그 방향이 바람의 <b>직각</b>이 됩니다. " +
-        (hemi === "N" && ek >= 80 && ek <= 100 ? "<b>지금이 남풍입니다.</b> 물은 정동쪽으로 실려 갑니다 — 부표가 간 방향이지요." : "바람 방향을 돌려 가며 순 수송이 어떻게 따라 도는지 보세요.");
+        (hemi === "N" && ek >= 80 && ek <= 100 ? "<b>지금이 남풍입니다.</b> 물은 정동쪽으로 실려 갑니다 — 부표가 간 방향입니다." : "바람 방향을 돌려 가며 순 수송이 어떻게 따라 도는지 보세요.");
     }
     canvas._redraw = draw;
     $("a-wd").addEventListener("input", function (e) {
@@ -525,7 +525,7 @@ function compass(ctx, cx, cy, R, busy) {
       text(ctx, vv.toFixed(2) + " m/s", 660, 142, { s: 26, w: "900", c: vv >= 1 ? v("--teal-700") : v("--ink") });
       text(ctx, vv >= 1 ? "✅ 서안 경계류 수준입니다" : "아직 느립니다", 660, 172, { s: 12.5, w: "800", c: vv >= 1 ? v("--teal-700") : v("--rose-700") });
       text(ctx, "위도 35°, g = 9.8 m/s²", 660, 200, { s: 11, c: v("--mist") });
-      text(ctx, "경사가 커질수록 지형류가 빨라집니다. 실제 걸프 해류·쿠로시오는 1~2 m/s 로 흐릅니다.", 60, H - 18, { s: 11, c: v("--mist") });
+      text(ctx, "경사가 커질수록 지형류가 빨라집니다. 실제 걸프 해류·쿠로시오는 1~2 m/s로 흐릅니다.", 60, H - 18, { s: 11, c: v("--mist") });
 
       if (vv >= 1.0 && !GOT5.c) { GOT5.c = true; window.sthState("aEk", GOT5); mission5(); }
       $("a-geo-info").innerHTML = "에크만 수송이 순환 한가운데로 물을 밀어 넣으면 그 자리 해수면이 몇십 cm 볼록해집니다. 물은 흘러내리려 하지만(<b>압력 경도력</b>) 움직이는 순간 <b>전향력</b>에 휘어, 결국 경사면을 따라 내려가지 못하고 <b>등수압선과 나란히</b> 돕니다.";
@@ -535,7 +535,7 @@ function compass(ctx, cx, cy, R, busy) {
     draw(); mission5();
   })();
 
-  function finish() { window.sthState("r1", "해결 · 에크만 수송은 바람의 직각(북반구 오른쪽 90°), 정점 ㄷ 동해 고유수가 σt 27.34 로 가장 무겁다"); }
+  function finish() { window.sthState("r1", "해결 · 에크만 수송은 바람의 직각(북반구 오른쪽 90°), 정점 ㄷ 동해 고유수가 σt 27.34로 가장 무겁다"); }
   function vsA() {
     var p = window.sthState("current") || "";
     $("a-vs").innerHTML = "<b>나의 첫 추리</b> " + (p || "기록 없음") + "<br>" +
@@ -630,7 +630,7 @@ function compass(ctx, cx, cy, R, busy) {
       ctx.beginPath(); ctx.arc(cx0 + 110, YZ(z), 14, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = v(sig >= LIMIT ? "--violet" : "--coral"); ctx.fillStyle = v(sig >= LIMIT ? "--violet" : "--coral"); ctx.lineWidth = 3;
       if (z > 20) window.drawArrow(ctx, cx0 + 110, cy0 + 10, cx0 + 110, YZ(z) - 20, 10);
-      text(ctx, z >= 3900 ? "바닥까지 가라앉음" : (z < 60 ? "표층에 그대로 떠 있음" : "약 " + z + " m 에서 멈춤"),
+      text(ctx, z >= 3900 ? "바닥까지 가라앉음" : (z < 60 ? "표층에 그대로 떠 있음" : "약 " + z + " m에서 멈춤"),
         cx0 + 140, YZ(z) + 5, { s: 13.5, w: "900", c: sig >= LIMIT ? v("--violet-700") : v("--rose-700") });
 
       text(ctx, "가라앉는 깊이는 <주변 물과 밀도가 같아지는 곳>입니다", 470, H - 18, { s: 11, c: v("--mist") });
@@ -712,7 +712,7 @@ function compass(ctx, cx, cy, R, busy) {
         360, 336, { s: 17, w: "900", c: v("--brand-700") });
       text(ctx, vv >= 100 ? "표층 해류 수준" : (vv <= 0.3 ? "심층 순환 수준" : ""), 680, 336, { s: 14, w: "900", c: v("--mist") });
       text(ctx, "걸리는 시간 = 길이 ÷ 유속.  40,000 km = 4,000,000,000 cm", 110, 368, { s: 12, c: v("--mist") });
-      text(ctx, "표층 해류(걸프 해류)는 1초에 수 m, 심층류는 1초에 1 cm도 못 가는 곳이 많습니다.", 110, H - 18, { s: 11, c: v("--mist") });
+      text(ctx, "표층 해류(걸프 해류)는 1초에 1~2 m, 심층류는 1초에 1 cm도 못 가는 곳이 많습니다.", 110, H - 18, { s: 11, c: v("--mist") });
 
       var ch = false;
       if (vv >= 150 && !got.a) { got.a = ch = true; }
@@ -749,7 +749,7 @@ function compass(ctx, cx, cy, R, busy) {
     var got = window.sthState("bKor") || { a: false, b: false, c: false };
     function frontLat() { return 37.0 + 0.03 * warm; }
 
-    /* 위도 33°~43° 를 세로로 편 모식 지도 */
+    /* 위도 33°~43°를 세로로 편 모식 지도 */
     function YL(lat) { return 430 - (lat - 32) / 11 * 360; }
 
     var CUR = [
@@ -1020,7 +1020,7 @@ function compass(ctx, cx, cy, R, busy) {
 
       /* 오른쪽 판 */
       var px = 570;
-      text(ctx, "등압선 간격 (4 hPa 마다)", px, 86, { s: 12, w: "800", c: v("--mist") });
+      text(ctx, "등압선 간격 (4 hPa마다)", px, 86, { s: 12, w: "800", c: v("--mist") });
       text(ctx, gap.toLocaleString() + " km", px, 120, { s: 22, w: "900" });
       text(ctx, "지균풍 속도", px, 166, { s: 12, w: "800", c: v("--mist") });
       text(ctx, vv.toFixed(1) + " m/s", px, 202, { s: 30, w: "900", c: vv >= 20 ? v("--rose-700") : (vv <= 5 ? v("--teal-700") : v("--brand-700")) });
@@ -1031,7 +1031,7 @@ function compass(ctx, cx, cy, R, busy) {
       text(ctx, "기압 경도력이 커져 바람이 셉니다", px, 350, { s: 11.5, c: v("--mist") });
       text(ctx, sys === "low" ? "저기압 : 바람이 모여들어 상승 기류 → 구름·비" : "고기압 : 바람이 퍼져 나가 하강 기류 → 맑음",
         60, 400, { s: 13.5, w: "900", c: v(sys === "low" ? "--brand-700" : "--coral-700") });
-      text(ctx, "등압선이 촘촘한 곳이 곧 바람이 센 곳입니다. 일기도에서 가장 먼저 보는 것이지요.", 60, 430, { s: 11, c: v("--mist") });
+      text(ctx, "등압선이 촘촘한 곳이 곧 바람이 센 곳입니다. 일기도에서 가장 먼저 보는 것입니다.", 60, 430, { s: 11, c: v("--mist") });
 
       var ch = false;
       if (vv >= 20 && !got.a) { got.a = ch = true; }
@@ -1046,7 +1046,7 @@ function compass(ctx, cx, cy, R, busy) {
     function mission() {
       if (got.a) done("m3-2a"); if (got.b) done("m3-2b"); if (got.c) done("m3-2c");
       if (got.a && got.b && got.c) {
-        window.sthMission("m3-2", true, "<span class='m-tag'>미션 완료</span>등압선 간격 200 km 면 약 20 m/s, 800 km 면 약 5 m/s. <b>간격이 4배가 되면 바람은 4분의 1</b>이 됩니다.");
+        window.sthMission("m3-2", true, "<span class='m-tag'>미션 완료</span>등압선 간격 200 km면 약 20 m/s, 800 km면 약 5 m/s. <b>간격이 4배가 되면 바람은 4분의 1</b>이 됩니다.");
         ep.clear(1);
       }
     }
@@ -1066,7 +1066,7 @@ function compass(ctx, cx, cy, R, busy) {
       answer: 0,
       why: [
         "맞습니다. 기압 경도력이 중심을 향하고 전향력이 오른쪽으로 휘게 해, 북반구 저기압에서는 시계 반대 방향으로 감아 들어갑니다.",
-        "회전 방향이 반대입니다. 그것은 북반구 고기압의 모습이에요.",
+        "회전 방향이 반대입니다. 그것은 북반구 고기압의 모습입니다.",
         "저기압은 불어나가는 것이 아니라 <b>모여드는</b> 기압계입니다.",
         "마찰이 없는 상공이라면 거의 나란히 돌지만, 지상에서는 마찰 때문에 등압선을 가로질러 안쪽으로 들어갑니다."
       ],
@@ -1258,12 +1258,12 @@ function compass(ctx, cx, cy, R, busy) {
 
       if (ok && !got.a) { got.a = true; window.sthState("cMap", got); mission(); }
       $("c-map-info").innerHTML = "일기도 한 장은 사진이지만, <b>여러 장을 나란히 놓으면 영화</b>가 됩니다. 기압계가 하루에 얼마나 움직였는지 재면 다음 장면을 그릴 수 있습니다." +
-        (ok ? " — 하루 <b>960 km</b>, 시속 <b>40 km</b> 입니다." : "");
+        (ok ? " — 하루 <b>960 km</b>, 시속 <b>40 km</b>입니다." : "");
     }
     function mission() {
       if (got.a) done("m3-4a"); if (got.b) done("m3-4b");
       if (got.a && got.b) {
-        window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>시속 40 km 로 동진하면 모레 저기압 중심은 관측 지점 <b>동쪽 480 km</b>. 한랭 전선이 지난 뒤라 <b>북서풍이 불고 기온이 떨어지며 하늘이 갭니다.</b>");
+        window.sthMission("m3-4", true, "<span class='m-tag'>미션 완료</span>시속 40 km로 동진하면 모레 저기압 중심은 관측 지점 <b>동쪽 480 km</b>. 한랭 전선이 지난 뒤라 <b>북서풍이 불고 기온이 떨어지며 하늘이 갭니다.</b>");
         ep.clear(3); ep.clear(4);
       }
     }
@@ -1271,7 +1271,7 @@ function compass(ctx, cx, cy, R, busy) {
     $("c-spd").addEventListener("input", function (e) { spd = +e.target.value; $("c-spd-val").textContent = spd + " km/h"; draw(); });
     window.sthPick({
       mount: "c-q2",
-      q: "저기압 중심이 모레 관측 지점의 동쪽 480 km 에 있다면, 모레 낮 관측 지점의 날씨로 가장 알맞은 것은?",
+      q: "저기압 중심이 모레 관측 지점의 동쪽 480 km에 있다면, 모레 낮 관측 지점의 날씨로 가장 알맞은 것은?",
       options: [
         "한랭 전선이 지난 뒤라 북서풍이 불고 기온이 떨어지며 하늘이 갠다",
         "온난 전선 앞이라 남동풍이 불고 약한 비가 오래 내린다",
@@ -1282,7 +1282,7 @@ function compass(ctx, cx, cy, R, busy) {
       why: [
         "맞습니다. 저기압 중심과 두 전선이 모두 동쪽으로 빠져나갔으니, 뒤따라온 찬 공기가 들어와 북서풍이 불고 기온이 떨어지며 하늘이 갭니다. 체육대회는 운동장에서 해도 되겠습니다.",
         "온난 전선 앞이라면 저기압 중심이 아직 <b>서쪽</b>에 있어야 합니다.",
-        "중심이 480 km 나 동쪽으로 지나갔습니다. 바로 위가 아닙니다.",
+        "중심이 480 km나 동쪽으로 지나갔습니다. 바로 위가 아닙니다.",
         "저기압이 막 지나간 직후라 고기압 한가운데라고 보기는 어렵고, 바람도 남서풍이 아니라 북서풍입니다."
       ],
       onDone: function () { got.b = true; window.sthState("cMap", got); mission(); }
@@ -1290,11 +1290,11 @@ function compass(ctx, cx, cy, R, busy) {
     draw(); mission();
   })();
 
-  function finish() { window.sthState("r3", "해결 · 기압계는 시속 40 km 로 동진, 모레는 한랭 전선 뒤 — 북서풍에 기온 하강, 맑음"); }
+  function finish() { window.sthState("r3", "해결 · 기압계는 시속 40 km로 동진, 모레는 한랭 전선 뒤 — 북서풍에 기온 하강, 맑음"); }
   function vsC() {
     var p = window.sthState("c-p") || "";
     $("c-vs").innerHTML = "<b>나의 첫 추리</b> " + (p || "기록 없음") + "<br>" +
-      (p.indexOf("㉡") === 0 ? "정확했습니다. 편서풍대라 기압계가 서에서 동으로 갑니다. 일기도 세 장이 그것을 그대로 보여 주었지요."
+      (p.indexOf("㉡") === 0 ? "정확했습니다. 편서풍대라 기압계가 서에서 동으로 갑니다. 일기도 세 장이 그것을 그대로 보여 주었습니다."
         : "일기도 세 장을 견주어 보니 ㉡ 이었습니다. 중위도 편서풍이 기압계를 동쪽으로 실어 나릅니다.");
   }
   vsC();
@@ -1490,7 +1490,7 @@ function compass(ctx, cx, cy, R, busy) {
         (zone(r) === "눈벽구름" ? "가장 강한 상승 기류 — 최대 풍속과 폭우" :
           (zone(r) === "나선 강우대" ? "돌풍성 비바람이 띠를 이루며 지나간다" : "구름이 많고 바람이 조금 강한 정도")),
         70, 386, { s: 13, w: "800", c: v("--mist") });
-      text(ctx, "상륙할 때 매미의 중심 기압은 954 hPa 이었습니다. 그날 제주에서는 최대 순간 풍속 60.0 m/s 가 기록되었습니다.", 70, H - 18, { s: 11, c: v("--mist") });
+      text(ctx, "상륙할 때 매미의 중심 기압은 954 hPa 이었습니다. 그날 제주에서는 최대 순간 풍속 60.0 m/s가 기록되었습니다.", 70, H - 18, { s: 11, c: v("--mist") });
 
       var ch = false;
       if (Math.abs(r - RM) <= 10 && !got.a) { got.a = ch = true; }
@@ -1583,7 +1583,7 @@ function compass(ctx, cx, cy, R, busy) {
     function mission() {
       if (got.a) done("m4-4a"); if (got.b) done("m4-4b"); if (got.c) done("m4-4c");
       if (got.a && got.b && got.c) {
-        window.sthMission("m4-4", true, "<span class='m-tag'>미션 완료</span>이동 속도 15 m/s 면 오른쪽은 55 m/s, 왼쪽은 25 m/s. 같은 태풍인데 <b>두 배 넘게</b> 차이가 납니다.");
+        window.sthMission("m4-4", true, "<span class='m-tag'>미션 완료</span>이동 속도 15 m/s면 오른쪽은 55 m/s, 왼쪽은 25 m/s. 같은 태풍인데 <b>두 배 넘게</b> 차이가 납니다.");
         ep.clear(3);
       }
     }

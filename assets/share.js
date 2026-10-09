@@ -99,7 +99,9 @@
       /* 실험실(응용·실제 자료): 푼 사례 / 손댄 사례 / 본 힌트 단계 수 (틀릴 때마다 힌트가 한 단계씩 열린다, 사례당 최대 2) */
       var hs = 0, ls = 0, lt = 0;
       ["lab", "real"].forEach(function (lk) { var L = s[lk] || {}; Object.keys(L).forEach(function (c) { var x = L[c] || {}; if (x.p == null) return; lt++; if (x.ok) ls++; hs += Math.min(2, x.n || 0); }); });
-      return ("g:" + g.join(",") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt + "|h:" + ls + "/" + lt + "/" + hs).slice(0, 290);
+      /* 내 생각 점검(precheck.js): p:문장=처음>나중 */
+      var pc = window.sthPrecheckEv ? window.sthPrecheckEv(s) : "";
+      return ("g:" + g.join(",") + (pc ? "|p:" + pc : "") + "|e:" + e.join(",") + "|q:" + q1 + "/" + qt + "|h:" + ls + "/" + lt + "/" + hs).slice(0, 300);
     }
     function myLine() { return opt.line ? clean((unitData(opt.unit).w || {})[opt.line.id], 300) : ""; }
     function paintMine() {
@@ -164,6 +166,8 @@
         .catch(function (e) { p.textContent = "활동 기록은 잠시 뒤에 보입니다."; });
     }
     function paintLog(units, o) {
+      /* 학생에게는 이 단원 기록만(다른 단원 이름도 보이지 않게). 교사 기기에서는 반 전체 */
+      if (!window.STH_TEACHER) units = units.filter(function (u) { return u.unit === opt.unit; });
       logBox.innerHTML = "";
       logBox.appendChild(el("h4", null, "우리 반 활동 기록"));
       if (!units.length) {
@@ -172,7 +176,7 @@
       }
       var total = 0;
       units.forEach(function (u) { total += (u.n || 0); });
-      logBox.appendChild(el("p", "sh-note", o.cls + "반 · 단원 " + units.length + "개 · 올린 기록 " + total + "건"));
+      logBox.appendChild(el("p", "sh-note", (window.STH_TEACHER ? o.cls + "반 · 단원 " + units.length + "개 · 올린 기록 " + total + "건" : o.cls + "반 · 이 단원에 올린 기록 " + total + "건")));
       var list = el("div", "sh-log");
       units.forEach(function (u) {
         var row = el("div", "sh-log-row" + (u.unit === opt.unit ? " now" : ""));
