@@ -103,6 +103,31 @@
   window.sthLinkOn = function (id, fn) { (HOOK[id] = HOOK[id] || []).push(fn); var r = rec(id); if (r && r.ok) { try { fn(r.note); } catch (e) {} } };
   function fire(id, note) { (HOOK[id] || []).forEach(function (fn) { try { fn(note); } catch (e) {} }); }
 
+  /* ---- 🧭 판 경계 지도: data-plate 가 붙은 곳(판구조론 소단원)의 지도는 판 경계 지도(구글 내 지도)로 먼저 연다.
+     '판 경계 지우기' 한 번이면 쪽 안의 모든 지도가 판 경계 없는 지도로 바뀐다(다시 누르면 되돌림, 이 기기에 기억). ---- */
+  var PLATE_MID = "15PN10J5cnnwi0bF_vb08MdVo26GHfA0", plateOn = true, plateFrames = [];
+  try { plateOn = localStorage.getItem("sth-plate-off") !== "1"; } catch (e) {}
+  function plateMode(n) { return !!(n && n.closest && n.closest("[data-plate]")); }
+  function plateUrl(lat, lng, z) { return "https://www.google.com/maps/d/embed?mid=" + PLATE_MID + "&ll=" + lat + "," + lng + "&z=" + Math.min(+z || 5, 18); }
+  /* 판 경계 없는 지도: 키가 있으면 공식 끼움 지도, 없으면 키 없는 옛 끼움 주소 */
+  function bareUrl(lat, lng, z, sat) {
+    var key = String(window.STH_MAPS_KEY || "").trim();
+    return key ? "https://www.google.com/maps/embed/v1/view?key=" + encodeURIComponent(key) + "&center=" + lat + "," + lng + "&zoom=" + (+z || 5) + "&maptype=" + (sat === false ? "roadmap" : "satellite") + "&language=ko"
+               : "https://maps.google.com/maps?ll=" + lat + "," + lng + "&z=" + (+z || 5) + "&t=" + (sat === false ? "m" : "k") + "&hl=ko&output=embed";
+  }
+  function plateSet(x) { var u = plateOn ? x.on : x.off; if (x.f.getAttribute("src") !== u) x.f.setAttribute("src", u); x.b.textContent = plateOn ? "🧭 판 경계 지우기" : "🧭 판 경계 보기"; x.b.setAttribute("aria-pressed", plateOn ? "false" : "true"); }
+  /* 닫힌 지도는 빼고, 쪽에 열려 있는 판 경계 지도 전부를 한꺼번에 */
+  function plateApply() {
+    plateFrames = plateFrames.filter(function (x) { return x.f.isConnected; });
+    plateFrames.forEach(plateSet);
+  }
+  /* 지도 틀 f 에 판 경계 단추를 단다. 단추는 bar 안에 넣는다 */
+  function plateHook(f, on, off, bar) {
+    var b = el("button", "btn"); b.type = "button";
+    b.addEventListener("click", function () { plateOn = !plateOn; try { localStorage.setItem("sth-plate-off", plateOn ? "0" : "1"); } catch (e) {} plateApply(); });
+    bar.appendChild(b); var x = { f: f, on: on, off: off, b: b }; plateFrames.push(x); plateSet(x);
+  }
+
   function mapsUrl(p) {
     return "https://www.google.com/maps/@?api=1&map_action=map&center=" + p.lat + "," + p.lng + "&zoom=" + (p.zoom || 12) + "&basemap=" + (p.type === "roadmap" ? "roadmap" : "satellite");
   }
@@ -134,15 +159,20 @@
     a.textContent = isMap ? "구글 지도에서 열기 ↗" : "새 창에서 열기 ↗";
     a.setAttribute("aria-label", (isMap ? p.name + " 위성 사진을 " : (p.title || "") + " 자료를 ") + "새 창에서 엽니다");
     a.addEventListener("click", markOpen);
-    if (isMap && key) {
-      var show = el("button", "btn"); show.type = "button"; show.textContent = "여기서 위성 사진 보기";
+    var plate = isMap && plateMode(node);
+    if (isMap && (key || plate)) {
+      var L0 = plate ? "여기서 지도 보기" : "여기서 위성 사진 보기";
+      var show = el("button", "btn"); show.type = "button"; show.textContent = L0;
+      var pb = null;
       show.addEventListener("click", function () {
         var f = node.querySelector("iframe");
-        if (f) { f.parentNode.removeChild(f); show.textContent = "여기서 위성 사진 보기"; return; }
+        if (f) { f.parentNode.removeChild(f); if (pb) { pb.parentNode.removeChild(pb); pb = null; } show.textContent = L0; return; }
         f = document.createElement("iframe");
-        f.src = embedUrl(p, key); f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
-        f.title = p.name + " 위성 사진"; f.setAttribute("allowfullscreen", "");
-        node.insertBefore(f, note); show.textContent = "위성 사진 닫기"; markOpen();
+        f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
+        f.title = p.name + (plate ? " 지도" : " 위성 사진"); f.setAttribute("allowfullscreen", "");
+        node.insertBefore(f, note); show.textContent = plate ? "지도 닫기" : "위성 사진 닫기"; markOpen();
+        if (plate) { pb = el("span"); btns.appendChild(pb); plateHook(f, plateUrl(p.lat, p.lng, p.zoom || 12), bareUrl(p.lat, p.lng, p.zoom || 12, p.type !== "roadmap"), pb); }
+        else f.src = embedUrl(p, key);
       });
       btns.appendChild(show);
     }
@@ -235,13 +265,18 @@
       var p = { lat: +a[0], lng: +a[1], zoom: +a[2] || 12, k: a[3] || "s" };
       if (!isFinite(p.lat) || !isFinite(p.lng)) return null;
       var t = p.k.charAt(0) === "r" ? "roadmap" : "satellite", key = String(window.STH_MAPS_KEY || "").trim(), view = /v$/.test(p.k);
-      return { ico: "📍", name: name, src: ll(p), btn: "구글 지도에서 열기 ↗",
+      var r = { ico: "📍", name: name, src: ll(p), btn: "구글 지도에서 열기 ↗",
         url: view ? mapsUrl({ lat: p.lat, lng: p.lng, zoom: p.zoom, type: t }) : "https://www.google.com/maps/search/?api=1&query=" + p.lat + "," + p.lng,
         embed: !key ? null : "https://www.google.com/maps/embed/v1/" + (view ? "view" : "place") + "?key=" + encodeURIComponent(key) + (view ? "&center=" : "&q=") + p.lat + "," + p.lng + "&zoom=" + p.zoom + "&maptype=" + t + "&language=ko" };
+      if (plateMode(n)) { r.plate = { on: plateUrl(p.lat, p.lng, p.zoom), off: r.embed || bareUrl(p.lat, p.lng, p.zoom, t === "satellite") }; r.src += " · 판 경계: Bird(2003) PB2002"; }
+      return r;
     }
     var s = String(n.getAttribute("data-view") || ""), i = s.indexOf(":");
     if (i < 0 || !VIEW[s.slice(0, i)]) return null;
     v = VIEW[s.slice(0, i)](s.slice(i + 1)); v.name = name; v.btn = "새 창에서 크게 보기 ↗";
+    /* 판 경계 지도(구글 내 지도)는 '지우기'를 누르면 같은 자리의 위성 사진으로 */
+    var m = /^mymap:([^|]*)\|(-?[\d.]+),(-?[\d.]+)\|?([\d.]*)/.exec(s);
+    if (m && m[1] === PLATE_MID) v.plate = { on: v.embed, off: bareUrl(m[2], m[3], m[4] || 3, true) };
     return v;
   }
   /* ---- 📇 인물·📐 법칙 카드: data-view="who:위키백과 제목" / "law:제목". 자료는 ../assets/people-data.js(미리 받아 검토한 것) ---- */
@@ -408,7 +443,7 @@
       return;
     }
     var p = viewOf(n); if (!p) return;
-    if (!p.embed && !p.img) { window.open(p.url, "_blank", "noopener"); return; }
+    if (!p.embed && !p.img && !p.plate) { window.open(p.url, "_blank", "noopener"); return; }
     if (n._pop && n._pop.parentNode) { n._pop.parentNode.removeChild(n._pop); n._pop = null; n.setAttribute("aria-expanded", "false"); return; }
     /* 지도는 지명이 든 문단(블록) 바로 아래에 편다 — 굵은 글씨 같은 줄 안 요소 안에 끼우면 문장이 갈라진다 */
     var host = n.parentNode;
@@ -460,9 +495,10 @@
       pop.appendChild(im);
     } else {
       var f = document.createElement("iframe");
-      f.src = p.embed; f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
+      f.loading = "lazy"; f.referrerPolicy = "no-referrer-when-downgrade";
       f.title = p.name + " — " + p.src; f.setAttribute("allowfullscreen", "");
-      if (p.ico !== "📍") f.className = "tall";
+      if (p.ico !== "📍" || p.plate) f.className = "tall";
+      if (p.plate) plateHook(f, p.plate.on, p.plate.off, top); else f.src = p.embed;
       pop.appendChild(f);
     }
     host.parentNode.insertBefore(pop, host.nextSibling);
