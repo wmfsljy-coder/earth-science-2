@@ -61,7 +61,7 @@ window.sthLab({
       cv.canvas._redraw = draw;
       api.slider({ label: "시기", min: 0, max: USE.length - 1, step: 1, value: 0, fmt: function (x) { var r = USE[x]; return Math.round(r[1]) + " 백만 년 전"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
       api.info("자료가 너무 적은 시기(앞 절에서 넘어온 속이 300개 아래)와 캄브리아기 초는 슬라이더에서 뺐습니다. " + SRC
-        + "<div data-link='{\"id\":\"pbdb\",\"title\":\"고생물학 데이터베이스 탐색기\",\"src\":\"Paleobiology Database\",\"url\":\"https://paleobiodb.org/navigator/\",\"ask\":\"지도에서 우리나라(한반도) 둘레를 확대해, 어느 지질 시대의 화석 기록이 많이 찍혀 있는지 한 가지 적어 오세요.\"}'></div>");
+        + "<div data-link='{\"id\":\"pbdb\",\"title\":\"고생물학 데이터베이스 탐색기\",\"src\":\"Paleobiology Database\",\"url\":\"https://paleobiodb.org/navigator/\",\"ask\":\"처음 뜨는 데 30초쯤 걸립니다. ‘Go to application’을 누른 뒤 지도에서 우리나라(한반도) 둘레를 확대해, 어느 지질 시대의 화석 기록이 많이 찍혀 있는지 한 가지 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
