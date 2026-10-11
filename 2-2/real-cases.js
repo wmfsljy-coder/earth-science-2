@@ -63,7 +63,7 @@ window.sthLab({
       api.slider({ label: "시대", min: 0, max: Math.max(0, R.length - 1), step: 1, value: 0, fmt: function (x) { return R[x] ? R[x][0] : ""; }, onInput: function (x) { i = x; api.changed(); draw(); } });
       api.seg({ label: "그때 한반도는", value: "none", options: [{ v: "up", t: "땅 위로 올라와 퇴적이 멈추고 깎였다" }, { v: "deep", t: "아주 깊은 바다 밑이었다" }, { v: "ice", t: "두꺼운 얼음에 덮여 있었다" }], onPick: function (x) { why = x; api.changed(); } });
       api.info("캄브리아기·오르도비스기의 바다 지층을 조선 누층군, 석탄기 후기 ~ 트라이아스기의 지층을 평안 누층군이라고 해요. " + SRC
-        + "<div data-map='{\"id\":\"gumunso\",\"name\":\"태백 구문소 (강원 태백, 국가지질공원)\",\"lat\":37.0893,\"lng\":129.0537,\"zoom\":15,\"ask\":\"강물이 석회암 절벽을 뚫고 지나가는 구문소를 위성 사진으로 찾아보세요. 이 석회암은 어느 시대, 어떤 환경(바다·육지)에서 쌓였을지 위 자료를 근거로 적어 오세요.\"}'></div>");
+        + "<div data-map='{\"id\":\"gumunso\",\"name\":\"태백 구문소 (강원 태백, 국가지질공원)\",\"lat\":37.0912,\"lng\":129.0405,\"zoom\":16,\"ask\":\"강물이 석회암 절벽을 뚫고 지나가는 구문소를 위성 사진으로 찾아보세요. 이 석회암은 어느 시대, 어떤 환경(바다·육지)에서 쌓였을지 위 자료를 근거로 적어 오세요.\"}'></div>");
       draw();
       return {
         judge: function () {
