@@ -129,8 +129,16 @@
       opt.cards.forEach(function (c) { var R = S.c[c.id] || {}; if (R.use === "mine" || R.use === "other") L.push((R.use === "mine" ? "· 내 근거 — " : "· 상대 근거 — ") + c.title + (R.note ? ": " + R.note : "")); });
       L.push("근거의 한계: " + (S.limit || ""), "예상 반론과 답: " + (S.rebut || ""));
       var txt = L.join("\n");
-      try { navigator.clipboard.writeText(txt); msg.textContent = "복사했습니다. 정리하기나 모둠 게시판에 붙여 넣으세요."; }
-      catch (e) { window.prompt("복사하세요", txt); }
+      /* 복사가 막힌 브라우저(앱 안 브라우저 등)에서는 거짓으로 '복사했습니다'라 하지 않고 직접 복사할 창을 띄운다 */
+      function ok() { msg.textContent = "복사했습니다. 정리하기나 모둠 게시판에 붙여 넣으세요."; }
+      function fallback() {
+        var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select();
+        var done = false; try { done = document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+        if (done) ok(); else window.prompt("복사하세요", txt);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fallback); else fallback();
     });
     row.appendChild(cp); row.appendChild(msg); box.appendChild(row);
     if (opt.note) { var nt = el("p", "db-note"); nt.innerHTML = opt.note; box.appendChild(nt); }

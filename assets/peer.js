@@ -127,4 +127,5 @@
   var loaded = false;
   window.addEventListener("tab-shown", function () { if (!box.closest("[hidden]")) { refresh(S, false); loaded = true; } });
   if (!box.closest("[hidden]")) refresh(S, false);
+  window.addEventListener("sth-login", function () { S = {}; refresh(S, false); });   /* 막 로그인했으면 바로 쓸 수 있게 */
 })();

@@ -222,7 +222,19 @@
       var ck = el("ul", "inq-ck"); s6.appendChild(ck);
       var plan = el("div", "inq-plan"); s6.appendChild(plan);
       var cp = el("button", "btn", "보고서 복사"); cp.type = "button"; var cm = el("span", "inq-msg"); var r7 = el("div", "inq-row"); r7.appendChild(cp); r7.appendChild(cm); s6.appendChild(r7);
-      cp.addEventListener("click", function () { try { navigator.clipboard.writeText(plan.textContent); cm.textContent = "복사했습니다."; } catch (e) { cm.textContent = "복사가 막혀 있습니다."; } });
+      cp.addEventListener("click", function () {
+        /* 복사가 막힌 브라우저에서는 '복사했습니다'라 하지 않는다 */
+        var txt = plan.textContent;
+        function ok() { cm.textContent = "복사했습니다."; }
+        function fallback() {
+          var ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0";
+          document.body.appendChild(ta); ta.select();
+          var done = false; try { done = document.execCommand("copy"); } catch (e) {}
+          document.body.removeChild(ta);
+          cm.textContent = done ? "복사했습니다." : "복사가 막혀 있습니다. 위 글을 직접 선택해 복사해 주세요.";
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fallback); else fallback();
+      });
       body.appendChild(s6);
       function filled(R) { if (!R) return 0; return R.filter(function (r) { return Array.isArray(r) ? num(r[0]) != null && num(r[1]) != null : true; }).length; }
       function check() {

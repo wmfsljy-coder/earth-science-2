@@ -109,5 +109,6 @@
   var last = 0;
   function maybe() { var vis = [A, B].some(function (x) { return x && !x.closest("[hidden]"); }); if (vis && Date.now() - last > 20000) { last = Date.now(); load(); } }
   window.addEventListener("tab-shown", maybe);
+  window.addEventListener("sth-login", function () { last = Date.now(); load(); });   /* 막 로그인했으면 바로 쓸 수 있게 */
   maybe();
 })();
