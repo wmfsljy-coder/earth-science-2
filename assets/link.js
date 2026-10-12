@@ -56,6 +56,11 @@
     + ".try-n input{border:2px solid var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:13.5px;background:var(--card-2);color:var(--ink)}"
     + ".try-s{font-size:11px;color:var(--mist);margin:6px 0 0}"
     + ".try-box.mini{border-style:solid;border-width:1px;padding:8px 12px;margin:8px 0 12px;background:var(--card-2)}.try-box.mini .try-s{display:none}.try-box.mini.ext .try-s{display:block}"
+    + ".scale-box{margin:8px 0 14px;padding:10px 14px;border:1px solid var(--line);border-left:5px solid #f59e0b;border-radius:12px;background:var(--card-2)}"
+    + ".scale-h{font-size:13.5px;color:var(--ink)}.scale-h b{font-weight:900}"
+    + ".scale-t{font-size:14px;line-height:1.75;color:var(--ink);margin:4px 0 0}.scale-q{font-size:13.5px;font-weight:800;color:var(--ink);margin:6px 0 0}"
+    + ".scale-c{font-size:11.5px;color:var(--mist);margin:6px 0 0}"
+    + ".scale-box.myth{border-left-color:#ef4444}.scale-box.ask{border-left-color:#3b82f6}"
     + ".try-crop{position:relative;overflow:hidden;margin:10px auto 0;max-width:100%;border-radius:10px;background:#fff}.try-crop iframe{position:absolute;left:0;top:0;border:0;margin:0;border-radius:0;transform-origin:0 0;background:#fff}"
     + "[data-sp=who]::after{content:'📇';font-size:.82em;margin-left:2px}[data-sp=law]::after{content:'📐';font-size:.82em;margin-left:2px}"
     + ".pc{display:grid;grid-template-columns:96px 1fr;gap:12px;margin:4px 0}.pc.law{grid-template-columns:1fr}"
@@ -360,6 +365,35 @@
   /* 받침 따라 '로/으로' (ㄹ 받침은 '로') */
   function ro(w) { var c = String(w).charCodeAt(String(w).length - 1) - 0xAC00; return c >= 0 && c < 11172 && c % 28 && c % 28 !== 8 ? "으로" : "로"; }
   function normT(s) { return String(s || "").replace(/\s+/g, " ").trim(); }
+  /* ---- 📏 일상 크기로 바꾸면 · 💡 흔한 오해 · ❓ 궁금했다면: 단원 scale-items.js 가 window.sthScale([{ kind, near, title, text, q, calc }]) 를 부른다.
+     kind 없음 = 지구·우주의 큰 수(억 년·km/s·광년…)를 몸·교실·동네 크기로, "myth" = 상식과 다른 점, "ask" = 학생이 흔히 묻는 것.
+     near 글귀가 든 문단 바로 아래에 작은 상자로 둔다. ---- */
+  window.sthScale = function (list) {
+    function place() {
+      (list || []).forEach(function (it) {
+        if (it._done) return;
+        var best = null;
+        Array.prototype.forEach.call(document.querySelectorAll(".tab-panel p, .tab-panel li, .tab-panel .say, .tab-panel .case-file, .tab-panel div"), function (e) {
+          if (e.closest(".try-box, .scale-box, .sth-place-pop, button, .tab-btn")) return;
+          if (normT(e.textContent).indexOf(it.near) < 0) return;
+          if (!best || best.contains(e)) best = e;
+        });
+        if (!best) return;
+        it._done = 1;
+        var h = best;
+        while (h && h !== document.body && /^inline/.test(getComputedStyle(h).display)) h = h.parentNode;
+        while (h && h.parentNode && h.parentNode !== document.body && /flex|grid/.test(getComputedStyle(h.parentNode).display)) h = h.parentNode;
+        var K = it.kind === "myth" ? ["myth", "💡 흔한 오해 — "] : it.kind === "ask" ? ["ask", "❓ 이런 게 궁금했다면 — "] : ["", "📏 일상 크기로 바꾸면 — "];
+        var box = el("div", "scale-box" + (K[0] ? " " + K[0] : ""));
+        box.appendChild(el("div", "scale-h", K[1] + "<b>" + it.title + "</b>"));
+        box.appendChild(el("p", "scale-t", it.text));
+        if (it.q) box.appendChild(el("p", "scale-q", "🤔 " + it.q));
+        if (it.calc) box.appendChild(el("p", "scale-c", "어림 계산: " + it.calc));
+        h.parentNode.insertBefore(box, h.nextSibling);
+      });
+    }
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", place); else place();
+  };
   window.sthTry = function (list) {
     function place() {
       (list || []).forEach(function (it, idx) {
