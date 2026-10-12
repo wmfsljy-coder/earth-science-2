@@ -108,7 +108,7 @@
   var PLATE_MID = "15PN10J5cnnwi0bF_vb08MdVo26GHfA0", plateOn = true, plateFrames = [];
   try { plateOn = localStorage.getItem("sth-plate-off") !== "1"; } catch (e) {}
   function plateMode(n) { return !!(n && n.closest && n.closest("[data-plate]")); }
-  function plateUrl(lat, lng, z) { return "https://www.google.com/maps/d/embed?mid=" + PLATE_MID + "&ll=" + lat + "," + lng + "&z=" + Math.min(+z || 5, 18); }
+  function plateUrl(lat, lng, z) { return "https://www.google.com/maps/d/embed?mid=" + PLATE_MID + "&ll=" + lat + "," + lng + "&z=" + Math.min(+z || 5, 5); }   /* 판 경계가 보이는 넓이까지만 — 가까이 보기는 '판 경계 지우기'(원래 줌) */
   /* 판 경계 없는 지도: 키가 있으면 공식 끼움 지도, 없으면 키 없는 옛 끼움 주소 */
   function bareUrl(lat, lng, z, sat) {
     var key = String(window.STH_MAPS_KEY || "").trim();
