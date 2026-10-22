@@ -389,7 +389,9 @@
         box.appendChild(el("p", "scale-t", it.text));
         if (it.q) box.appendChild(el("p", "scale-q", "🤔 " + it.q));
         if (it.calc) box.appendChild(el("p", "scale-c", "어림 계산: " + it.calc));
-        h.parentNode.insertBefore(box, h.nextSibling);
+        var at = h.nextSibling;  /* 같은 문단에 상자가 이미 있으면 그 뒤로 — 목록 순서대로 보이게 */
+        while (at && ((at.nodeType === 3 && !/S/.test(at.textContent)) || (at.nodeType === 1 && /(^| )scale-box( |$)/.test(at.className)))) at = at.nextSibling;
+        h.parentNode.insertBefore(box, at);
       });
     }
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", place); else place();
