@@ -367,3 +367,10 @@
 /* 모든 그림 틀을 무대 색으로 */
 .episode .canvas-wrap, .lab .canvas-wrap { background: var(--stage-bg); border-bottom-color: #1b2150; }
 
+
+/* 대표 그림 카드(AI 그림 + 설명) — <figure class="hero-art"><img …><figcaption><b>제목</b> 설명</figcaption></figure> */
+.hero-art { margin: 16px 0 0; border-radius: 22px; overflow: hidden; background: linear-gradient(#f6f8fb, #dfe6ee); border: 3px solid var(--line); box-shadow: var(--shadow-card); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; }
+.hero-art img { width: 100%; display: block; }
+.hero-art figcaption { padding: 18px 22px; font-size: 14px; line-height: 1.75; color: #12203a; }
+.hero-art figcaption b { display: block; font-size: 17px; margin-bottom: 6px; }
+@media (max-width: 760px) { .hero-art { grid-template-columns: 1fr; } }

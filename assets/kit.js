@@ -10,6 +10,7 @@
      var g = K.chart(ctx, { x, y, w, h, x0, x1, y0, y1, xl: "시간(s)", yl: "속도(m/s)", xt: 5, yt: 4 });
      g.X(값) g.Y(값) 로 좌표 바꾸기, K.plot(ctx, g, [[x,y],…], K.C.blue)
      K.animate(canvas, function (dt) { … })   // setTimeout 으로 약 30번/초. 캔버스가 보일 때만 부른다.
+     K.iso({ … })  K.studio()  K.bigText()      // 아이소메트릭 블록 모형(땅·바다·대기 단면) — 아래 머리말 참고
 
    색은 story.css 의 --stage-* 토큰에서 읽는다(무대는 라이트·다크 모드 모두 같은 어두운 색).
    그림 안의 모든 글자는 pill 이나 t 로 쓰고, 화면(0~900, 0~height) 밖으로 나가지 않게 한다.
@@ -233,6 +234,187 @@
       }
       setTimeout(tick, iv);
     }
+  };
+  /* =========================================================================
+     아이소메트릭 블록 모형(K.iso) — 땅·바다·대기를 블록처럼 잘라 옆면으로 속을 보여 준다.
+     본보기: earth-science-2/2-1 '빠진 시간 — 부정합', earth-system-2/2-1 '바다가 갈라지는 날',
+             integrated-science-2/2-1 '이상 신호 — 엘니뇨'.
+
+       var I = K.iso({ ox: 260, oy: 290, s: 0.75, L: 380, D: 220 });
+         월드 좌표: x 0~L (화면 오른쪽 아래로), y 0~D (화면 왼쪽 아래로), z 위로(그림 단위).
+         보이는 면: 앞면 front(y = D, 가로 u = x), 오른쪽 면 right(x = L, 가로 u = y), 윗면.
+       I.P(x, y, z)                         → 화면 점 {x, y}
+       I.face(ctx, "front"|"right", fn)     → 그 면의 좌표(u 가로, z 위)로 바꿔 fn() 을 그린다. 무늬·지층을 평면처럼 그리면 된다.
+       I.profile(ctx, side, zOf, z0)        → 면 위에 아래 z0 부터 위 zOf(u) 까지 닫힌 경로(채우기·자르기용, face 안에서 쓴다)
+       I.shade(ctx, side, zOf)              → 면 음영(오른쪽 면은 어둡게). zOf(u) 는 그 면의 윗선
+       I.top(ctx, zOf, fill)                → 윗면을 x 방향 띠로 그린다(높이가 x 에 따라 달라도 된다). fill 은 색이나 function(i, u) → 색
+       I.plane(ctx, z, fill, stroke, x0, x1, y0, y1) → 수평면 한 장(수면·구름층)
+       I.water(ctx, level, zOf, o)          → 반투명 물(앞면·오른쪽 면·수면). zOf 는 바닥 높이 함수(u, side)
+       I.box(ctx, x0, y0, z0, x1, y1, z1, cTop, cFront, cRight) → 작은 상자(건물·장치)
+       I.tree(ctx, x, y, z, sc)  I.house(ctx, x, y, z, w, d, h, roof)  I.person(ctx, x, y, z, color, sc)
+       I.label(ctx, x, y, z, 글, dx, dy, 색, box)  → 점과 지시선이 달린 이름표
+       I.field(ctx, zOf(x,y), colOf(x,y,z,밝기), nx, ny, after) → 높낮이 있는 지형(섬·산·해저). K.tint("#hex", 밝기) 로 색 음영
+       I.edges(ctx, zTopFront, zTopRight)   → 블록 모서리 밝은 선
+       K.studio(ctx, x, y, w, h, floor)     → 밝은 스튜디오 바탕과 바닥 그림자 {x, y, rx, ry}
+       K.bigText(ctx, 글, x, y, size, fill) → 썸네일처럼 굵은 테두리 글자
+     ========================================================================= */
+  K.tint = function (hex, f) {
+    var n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+    function c(v) { return Math.max(0, Math.min(255, Math.round(v * f))); }
+    return "rgb(" + c(r) + "," + c(g) + "," + c(b) + ")";
+  };
+  K.studio = function (ctx, x, y, w, h, floor) {
+    var bg = ctx.createLinearGradient(0, y, 0, y + h); bg.addColorStop(0, "#f3f6fa"); bg.addColorStop(1, "#d6dee8");
+    ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.fill();
+    if (floor) {
+      var fl = ctx.createRadialGradient(floor.x, floor.y, 10, floor.x, floor.y, floor.rx * 1.1);
+      fl.addColorStop(0, "rgba(20,30,50,.30)"); fl.addColorStop(.55, "rgba(20,30,50,.08)"); fl.addColorStop(1, "rgba(20,30,50,0)");
+      ctx.save(); ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.clip();
+      ctx.fillStyle = fl; ctx.beginPath(); ctx.ellipse(floor.x, floor.y, floor.rx, floor.ry, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+    }
+  };
+  K.bigText = function (ctx, s, x, y, size, fill, a) {
+    ctx.font = "900 " + size + "px " + FONT; ctx.textAlign = a || "left"; ctx.lineJoin = "round"; ctx.textBaseline = "alphabetic";
+    ctx.strokeStyle = "#111622"; ctx.lineWidth = size * .22; ctx.strokeText(s, x, y);
+    ctx.fillStyle = fill || "#ffffff"; ctx.fillText(s, x, y); ctx.lineJoin = "miter";
+  };
+  K.iso = function (o) {
+    var ox = o.ox, oy = o.oy, s = o.s || 0.75, L = o.L, D = o.D, C = 0.866;
+    var I = { L: L, D: D, s: s };
+    I.P = function (x, y, z) { return { x: ox + (x - y) * C * s, y: oy + (x + y) * 0.5 * s - z * s }; };
+    I.face = function (ctx, side, fn) {
+      ctx.save();
+      if (side === "front") ctx.transform(C * s, 0.5 * s, 0, -s, ox - C * s * D, oy + 0.5 * s * D);
+      else ctx.transform(-C * s, 0.5 * s, 0, -s, ox + C * s * L, oy + 0.5 * s * L);
+      fn(side === "front" ? L : D);
+      ctx.restore();
+    };
+    I.profile = function (ctx, side, zOf, z0) {
+      var Lw = side === "front" ? L : D, u, st = Math.max(2, Lw / 90);
+      ctx.beginPath(); ctx.moveTo(0, z0 || 0);
+      for (u = 0; u <= Lw + 0.01; u += st) ctx.lineTo(Math.min(u, Lw), zOf(Math.min(u, Lw)));
+      ctx.lineTo(Lw, z0 || 0); ctx.closePath();
+    };
+    I.shade = function (ctx, side, zOf) {
+      I.face(ctx, side, function (Lw) {
+        I.profile(ctx, side, zOf, 0); ctx.clip();
+        var sh = ctx.createLinearGradient(0, 0, 0, 300);
+        if (side === "right") { sh.addColorStop(0, "rgba(10,20,50,.34)"); sh.addColorStop(1, "rgba(10,20,50,.18)"); }
+        else { sh.addColorStop(0, "rgba(0,0,0,.12)"); sh.addColorStop(1, "rgba(255,255,255,.06)"); }
+        ctx.fillStyle = sh; ctx.fillRect(0, 0, Lw, 600);
+      });
+    };
+    I.quad = function (ctx, a, b, c, d, fill, stroke) {
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath();
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+    };
+    I.top = function (ctx, zOf, fill, n) {
+      var N = n || 30, i;
+      for (i = 0; i < N; i++) {
+        var u0 = L * i / N, u1 = L * (i + 1) / N, z0 = zOf(u0), z1 = zOf(u1);
+        var col = typeof fill === "function" ? fill(i, (u0 + u1) / 2) : fill;
+        I.quad(ctx, I.P(u0, 0, z0), I.P(u1, 0, z1), I.P(u1, D, z1), I.P(u0, D, z0), col);
+        ctx.strokeStyle = col; ctx.lineWidth = .8; ctx.stroke();
+      }
+    };
+    I.plane = function (ctx, z, fill, stroke, x0, x1, y0, y1) {
+      x0 = x0 || 0; x1 = x1 == null ? L : x1; y0 = y0 || 0; y1 = y1 == null ? D : y1;
+      I.quad(ctx, I.P(x0, y0, z), I.P(x1, y0, z), I.P(x1, y1, z), I.P(x0, y1, z), fill, stroke);
+    };
+    /* 물: zOf(u, side) = 그 면의 바닥 높이. 수면이 바닥보다 낮은 곳은 칠하지 않는다 */
+    I.water = function (ctx, level, zOf, opt) {
+      opt = opt || {};
+      ["front", "right"].forEach(function (side) {
+        I.face(ctx, side, function (Lw) {
+          var u, st = Math.max(2, Lw / 90);
+          ctx.beginPath();
+          for (u = 0; u <= Lw + .01; u += st) ctx.lineTo(Math.min(u, Lw), zOf(Math.min(u, Lw), side));
+          for (u = Lw; u >= -.01; u -= st) ctx.lineTo(Math.max(u, 0), Math.max(zOf(Math.max(u, 0), side), level));
+          ctx.closePath();
+          var g = ctx.createLinearGradient(0, level, 0, 0);
+          g.addColorStop(0, opt.top || "rgba(70,160,230,.55)"); g.addColorStop(1, opt.deep || "rgba(15,60,130,.75)");
+          ctx.fillStyle = g; ctx.fill();
+          ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(0, level); ctx.lineTo(Lw, level); ctx.stroke();
+        });
+      });
+      if (opt.surface !== false) {
+        var a = I.P(0, 0, level), c = I.P(L, D, level);
+        var sg = ctx.createLinearGradient(a.x, a.y, c.x, c.y); sg.addColorStop(0, "rgba(140,210,255,.62)"); sg.addColorStop(1, "rgba(40,130,210,.62)");
+        if (opt.clipSurface) { ctx.save(); opt.clipSurface(ctx); }
+        I.plane(ctx, level, sg, "rgba(255,255,255,.7)");
+        ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 1;
+        var ph = opt.phase || 0;
+        for (var i = 0; i < 9; i++) {
+          var gx = ((i * 0.37 + ph * .05) % 1) * L, gy = ((i * 0.61) % 1) * D;
+          var s1 = I.P(gx - 16, gy, level), s2 = I.P(gx + 10, gy, level);
+          ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.quadraticCurveTo((s1.x + s2.x) / 2, s1.y - 3, s2.x, s2.y); ctx.stroke();
+        }
+        if (opt.clipSurface) ctx.restore();
+      }
+    };
+    I.box = function (ctx, x0, y0, z0, x1, y1, z1, cTop, cFront, cRight) {
+      I.quad(ctx, I.P(x0, y1, z0), I.P(x1, y1, z0), I.P(x1, y1, z1), I.P(x0, y1, z1), cFront || "#c9ced6");
+      I.quad(ctx, I.P(x1, y0, z0), I.P(x1, y1, z0), I.P(x1, y1, z1), I.P(x1, y0, z1), cRight || "#9aa3b0");
+      I.quad(ctx, I.P(x0, y0, z1), I.P(x1, y0, z1), I.P(x1, y1, z1), I.P(x0, y1, z1), cTop || "#e8ecf2");
+    };
+    I.house = function (ctx, x, y, z, w, d, h, roof) {
+      I.box(ctx, x, y, z, x + w, y + d, z + h, "#f1ede6", "#e2dbd0", "#c6bcae");
+      var r = roof || "#c0553f", a = I.P(x, y + d / 2, z + h + h * .6), b = I.P(x + w, y + d / 2, z + h + h * .6);
+      I.quad(ctx, I.P(x, y + d, z + h), I.P(x + w, y + d, z + h), b, a, r);
+      I.quad(ctx, I.P(x + w, y, z + h), I.P(x + w, y + d, z + h), b, b, "rgba(0,0,0,.25)");
+      ctx.beginPath(); var p1 = I.P(x + w, y, z + h), p2 = I.P(x + w, y + d, z + h); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.lineTo(b.x, b.y); ctx.closePath();
+      ctx.fillStyle = "#b4483a"; ctx.fill();
+    };
+    I.tree = function (ctx, x, y, z, sc) {
+      var p = I.P(x, y, z); sc = sc || 1;
+      ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.beginPath(); ctx.ellipse(p.x + 4 * sc, p.y + 1, 7 * sc, 2.5 * sc, 0, 0, 6.283); ctx.fill();
+      ctx.fillStyle = "#6b4a2e"; ctx.fillRect(p.x - 1.5 * sc, p.y - 8 * sc, 3 * sc, 8 * sc);
+      [[30, 9], [22, 16]].forEach(function (q) {
+        var g = ctx.createLinearGradient(p.x - 8 * sc, 0, p.x + 8 * sc, 0); g.addColorStop(0, "#4b8f3e"); g.addColorStop(1, "#24521f");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(p.x, p.y - q[0] * sc); ctx.lineTo(p.x + 8 * sc, p.y - q[1] * sc); ctx.lineTo(p.x - 8 * sc, p.y - q[1] * sc); ctx.closePath(); ctx.fill();
+      });
+    };
+    I.person = function (ctx, x, y, z, color, sc) {
+      var p = I.P(x, y, z); sc = sc || 1;
+      ctx.fillStyle = "rgba(0,0,0,.2)"; ctx.beginPath(); ctx.ellipse(p.x + 2, p.y, 4 * sc, 1.6 * sc, 0, 0, 6.283); ctx.fill();
+      ctx.fillStyle = color || "#ff6b81"; ctx.beginPath(); ctx.roundRect(p.x - 2.4 * sc, p.y - 10 * sc, 4.8 * sc, 8 * sc, 2 * sc); ctx.fill();
+      ctx.fillStyle = "#2b2b33"; ctx.fillRect(p.x - 2 * sc, p.y - 2.5 * sc, 1.6 * sc, 2.5 * sc); ctx.fillRect(p.x + .4 * sc, p.y - 2.5 * sc, 1.6 * sc, 2.5 * sc);
+      ctx.fillStyle = "#f1c7a5"; ctx.beginPath(); ctx.arc(p.x, p.y - 12.4 * sc, 2.4 * sc, 0, 6.283); ctx.fill();
+    };
+    I.label = function (ctx, x, y, z, txt, dx, dy, col, box) {
+      var p = I.P(x, y, z), q = { x: p.x + dx, y: p.y + dy };
+      ctx.strokeStyle = "rgba(20,25,40,.75)"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+      ctx.fillStyle = "#111622"; ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, 6.283); ctx.fill();
+      return K.pill(ctx, txt, q.x + (dx < 0 ? -4 : 4), q.y + 4, { s: 12, a: dx < 0 ? "right" : "left", c: col || "#e8ecff", box: box });
+    };
+    /* 지형(높이 지도): zOf(x, y) 높이, colOf(x, y, z, light) 색. 먼 칸부터 그려 앞이 뒤를 가린다.
+       after(ctx, x0, y0, x1, y1, zMax) 는 칸마다 바로 뒤에 불린다(물 한 칸 덮기 등). */
+    I.field = function (ctx, zOf, colOf, nx, ny, after) {
+      var dx = L / nx, dy = D / ny, s0, i, j, Z = [];
+      for (i = 0; i <= nx; i++) { Z[i] = []; for (j = 0; j <= ny; j++) Z[i][j] = zOf(i * dx, j * dy); }
+      for (s0 = 0; s0 <= nx + ny - 2; s0++) {
+        for (i = Math.max(0, s0 - ny + 1); i <= Math.min(nx - 1, s0); i++) {
+          j = s0 - i;
+          var x0 = i * dx, x1 = x0 + dx, y0 = j * dy, y1 = y0 + dy;
+          var z00 = Z[i][j], z10 = Z[i + 1][j], z11 = Z[i + 1][j + 1], z01 = Z[i][j + 1];
+          var gx = ((z10 + z11) - (z00 + z01)) / (2 * dx), gy = ((z01 + z11) - (z00 + z10)) / (2 * dy);
+          var light = Math.max(.55, Math.min(1.25, 1 - gx * .9 + gy * .5));
+          var zc = (z00 + z10 + z11 + z01) / 4;
+          var col = colOf((x0 + x1) / 2, (y0 + y1) / 2, zc, light);
+          I.quad(ctx, I.P(x0, y0, z00), I.P(x1, y0, z10), I.P(x1, y1, z11), I.P(x0, y1, z01), col);
+          ctx.strokeStyle = col; ctx.lineWidth = .7; ctx.stroke();
+          if (after) after(ctx, x0, y0, x1, y1, Math.max(z00, z10, z11, z01), Math.min(z00, z10, z11, z01));
+        }
+      }
+    };
+    /* 색에 밝기 곱하기: K.tint("#c8a46a", 1.1) */
+    I.edges = function (ctx, zf, zr) {
+      var a = I.P(L, D, 0), b = I.P(L, D, zf), c = I.P(0, D, 0), d = I.P(L, 0, 0);
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    };
+    return I;
   };
   function fmt(v) {
     var a = Math.abs(v);
