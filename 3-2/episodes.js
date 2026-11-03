@@ -13,6 +13,33 @@ function v(name) { return window.cssVar(name); }
 function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
 function done(id) { var e = $(id); if (e) e.classList.add("done"); }
 function paper(ctx, W, H) { ctx.clearRect(0, 0, W, H); ctx.fillStyle = v("--panel"); ctx.fillRect(0, 0, W, H); }
+var K = window.sthKit, KC = K.C, REDUCE = K.REDUCE;
+/* 캔버스마다 무대 종류와 계산판(유리판) 자리 */
+var STG = {
+  "a-c-spec": { k: "lab" }, "a-c-sb": { k: "space", p: [386, 50, 500, 356] }, "a-c-hr": { k: "space", p: [686, 52, 206, 368] },
+  "b-c-jeans": { k: "space", p: [416, 46, 476, 386] }, "b-c-life": { k: "lab", p: [506, 46, 386, 354] }, "b-c-path": { k: "space", p: [654, 54, 238, 352] },
+  "c-c-fork": { k: "space", p: [456, 42, 436, 410] }, "c-c-agn": { k: "space", p: [436, 46, 456, 368] }, "c-c-var": { k: "lab", p: [466, 46, 426, 328] },
+  "d-c-z": { k: "lab", p: [24, 300, 852, 126] }, "d-c-hub": { k: "lab", p: [618, 52, 274, 354] }, "d-c-grid": { k: "space", p: [634, 54, 258, 306] },
+  "d-c-bb": { k: "night", p: [618, 52, 274, 290] }, "d-c-cmb": { k: "lab", p: [618, 52, 274, 270] }, "d-c-fut": { k: "lab" }
+};
+function stage(ctx, W, H) {
+  var o = STG[ctx.canvas.id] || { k: "space" };
+  ctx.clearRect(0, 0, W, H);
+  K.stage(ctx, 0, 0, W, H, o.k, { seed: (ctx.canvas.id.length * 7 + W) % 97 });
+  if (o.p) { ctx.save(); ctx.fillStyle = "rgba(255,255,255,.05)"; ctx.strokeStyle = "rgba(200,210,255,.2)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(o.p[0], o.p[1], o.p[2], o.p[3], 14); ctx.fill(); ctx.stroke(); ctx.restore(); }
+}
+function lbl(ctx, s, x, y, o) { o = o || {}; return K.pill(ctx, s, x, y, { s: Math.min(o.s || 12, 13), a: o.a, c: o.c || KC.ink, box: o.box }); }
+/* 빛나는 별: 가장자리가 어두운 공 + 빛무리 */
+function starBall(ctx, x, y, r, T, halo) {
+  var col = starColor(T);
+  var hg = ctx.createRadialGradient(x, y, r * .8, x, y, r * (halo || 2.2));
+  hg.addColorStop(0, col.replace("rgb(", "rgba(").replace(")", ",.45)")); hg.addColorStop(1, col.replace("rgb(", "rgba(").replace(")", ",0)"));
+  ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(x, y, r * (halo || 2.2), 0, 6.2832); ctx.fill();
+  var g = ctx.createRadialGradient(x - r * .25, y - r * .25, r * .05, x, y, r);
+  g.addColorStop(0, "#ffffff"); g.addColorStop(.45, col); g.addColorStop(1, col.replace("rgb(", "rgba(").replace(")", ",.75)"));
+  ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+}
+function glowLine(ctx, col) { ctx.shadowColor = col; ctx.shadowBlur = 8; }
 function text(ctx, s, x, y, o) {
   o = o || {};
   ctx.font = (o.w || "500") + " " + (o.s || 12) + "px " + FONT;
@@ -30,12 +57,17 @@ function segWire(id, onPick) {
   });
 }
 function axes(ctx, x0, y0, x1, y1) {
-  ctx.strokeStyle = v("--line"); ctx.lineWidth = 1.5;
+  ctx.fillStyle = "rgba(255,255,255,.035)"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+  ctx.strokeStyle = KC.grid; ctx.lineWidth = 1;
+  for (var gi = 1; gi < 4; gi++) { var gy = y0 + (y1 - y0) * gi / 4; ctx.beginPath(); ctx.moveTo(x0, gy); ctx.lineTo(x1, gy); ctx.stroke(); }
+  ctx.strokeStyle = KC.line; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
 }
 function band(ctx, x, y, w, h, color, alpha) {
   ctx.save(); ctx.globalAlpha = alpha === undefined ? 0.75 : alpha;
-  ctx.fillStyle = v(color); ctx.fillRect(x, y, w, h); ctx.restore();
+  ctx.fillStyle = color === "--card-2" ? "rgba(255,255,255,.045)" : v(color);
+  if (alpha >= .8 && color !== "--card-2") { ctx.shadowColor = v(color); ctx.shadowBlur = 10; }
+  ctx.beginPath(); ctx.roundRect(x, y, Math.max(0, w), h, Math.min(h / 2, 7)); ctx.fill(); ctx.restore();
 }
 function dash(ctx, x0, y0, x1, y1, color) {
   ctx.save(); ctx.strokeStyle = v(color || "--line"); ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
@@ -229,17 +261,13 @@ function msLogL(T) {
     function lineW(l) { return l.k === "tio" ? 17 : 5; }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var cls = spType(T), lmax = WIEN / T;
-      text(ctx, "표면 온도 하나를 움직이면 스펙트럼이 어떻게 달라지나", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "표면 온도 하나를 움직이면 스펙트럼이 어떻게 달라지나", 16, 28, { s: 13, c: KC.blue });
 
       /* 별 */
-      ctx.save();
-      ctx.shadowColor = starColor(T); ctx.shadowBlur = 26;
-      ctx.fillStyle = starColor(T);
-      ctx.beginPath(); ctx.arc(88, 110, 46, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
-      text(ctx, "지금 이 별", 88, 178, { s: 11.5, a: "center", c: v("--mist") });
+      starBall(ctx, 88, 110, 40, T, 1.7);
+      lbl(ctx, "지금 이 별", 88, 180, { s: 11.5, a: "center", c: KC.ink });
       text(ctx, cls + "형", 88, 226, { s: 30, a: "center", w: "900", c: v("--ink") });
       text(ctx, SPCOL[cls], 88, 252, { s: 13, a: "center", w: "800", c: v("--mist") });
       text(ctx, comma(T) + " K", 88, 276, { s: 13, a: "center", w: "800", c: v("--teal-700") });
@@ -270,11 +298,11 @@ function msLogL(T) {
           ctx.strokeRect(cx - w / 2 - 2, SY0 - 2, w + 4, SY1 - SY0 + 4);
         }
       });
-      ctx.strokeStyle = v("--line"); ctx.lineWidth = 1.5; ctx.strokeRect(SX0, SY0, SX1 - SX0, SY1 - SY0);
+      ctx.strokeStyle = KC.line; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.roundRect(SX0 - .5, SY0 - .5, SX1 - SX0 + 1, SY1 - SY0 + 1, 4); ctx.stroke();
       /* 최대 세기 파장 표시 */
       if (lmax >= NM0 && lmax <= NM1) {
         dash(ctx, XW(lmax), SY0 - 12, XW(lmax), SY1, "--ink");
-        text(ctx, "최대 세기 " + Math.round(lmax) + " nm", clamp(XW(lmax), SX0 + 60, SX1 - 60), SY0 - 18, { s: 11, a: "center", w: "800", c: v("--ink") });
+        lbl(ctx, "최대 세기 " + Math.round(lmax) + " nm", clamp(XW(lmax), SX0 + 60, SX1 - 60), SY0 - 16, { s: 11, a: "center", c: KC.yellow });
       } else {
         text(ctx, "최대 세기 파장 " + Math.round(lmax) + " nm (" + (lmax < NM0 ? "자외선 쪽" : "적외선 쪽") + " — 띠 밖)",
           SX1, SY0 - 18, { s: 11, a: "right", w: "800", c: v("--mist") });
@@ -305,20 +333,21 @@ function msLogL(T) {
       text(ctx, "흡수선의 세기", GX0 + 96, GY0 - 10, { s: 11, c: v("--mist") });
       var KEYS = [["heII", 40000], ["heI", 19000], ["H", 9500], ["metal", 4800], ["tio", 2900]];
       KEYS.forEach(function (kk) {
-        ctx.strokeStyle = v(KCOL[kk[0]]); ctx.lineWidth = kk[0] === "H" ? 3.4 : 2.2;
+        ctx.strokeStyle = v(KCOL[kk[0]]); ctx.lineWidth = kk[0] === "H" ? 3.4 : 2.2; glowLine(ctx, ctx.strokeStyle);
         ctx.beginPath();
         for (var i = 0; i <= 160; i++) {
           var lt = LT0 - i / 160 * (LT0 - LT1), tt = Math.pow(10, lt);
           var px = XT(tt), py = YS(strength(tt, kk[0]));
           if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
         }
-        ctx.stroke();
+        ctx.stroke(); ctx.shadowBlur = 0;
         var lx = clamp(XT(kk[1]), GX0 + 40, GX1 - 46);
-        text(ctx, KSHORT[kk[0]], lx, YS(1) - 8, { s: 11, a: "center", w: "900", c: v(KCOL[kk[0]] + "-700") });
+        lbl(ctx, KSHORT[kk[0]], lx, YS(1) - 8, { s: 11, a: "center", c: v(KCOL[kk[0]] + "-700") });
       });
       /* 지금 온도 */
-      ctx.strokeStyle = v("--ink"); ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(XT(T), GY0 - 4); ctx.lineTo(XT(T), GY1 + 26); ctx.stroke();
+      ctx.save(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 2; ctx.shadowColor = "#ffffff"; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.moveTo(XT(T), GY0 - 4); ctx.lineTo(XT(T), GY1 + 26); ctx.stroke(); ctx.restore();
+      K.glow(ctx, XT(T), YS(strength(T, "H")), 4, starColor(T), 3);
 
       /* 분광형 띠 */
       var BND = [[40000, 30000, "O"], [30000, 10000, "B"], [10000, 7500, "A"], [7500, 6000, "F"], [6000, 5000, "G"], [5000, 3500, "K"], [3500, 2500, "M"]];
@@ -381,17 +410,15 @@ function msLogL(T) {
     function RR(R) { return 8 + 46 * clamp((Math.log(R) / Math.LN10 + 2.5) / 5.5, 0, 1); }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var R = Math.pow(10, lr), tp = Math.pow(T / TSUN, 4), sp = R * R, L = tp * sp, lmax = WIEN / T;
-      text(ctx, "광도 = (반지름)² × (표면 온도)⁴ — 흑체 복사 법칙 두 개를 한꺼번에", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "광도 = (반지름)² × (표면 온도)⁴ — 흑체 복사 법칙 두 개를 한꺼번에", 16, 28, { s: 13, c: KC.blue });
 
       /* 크기 비교 */
-      ctx.save(); ctx.fillStyle = starColor(TSUN);
-      ctx.beginPath(); ctx.arc(120, 195, RR(1), 0, Math.PI * 2); ctx.fill(); ctx.restore();
-      ctx.save(); ctx.shadowColor = starColor(T); ctx.shadowBlur = 20; ctx.fillStyle = starColor(T);
-      ctx.beginPath(); ctx.arc(268, 195, RR(R), 0, Math.PI * 2); ctx.fill(); ctx.restore();
-      text(ctx, "태양", 120, 278, { s: 12.5, a: "center", w: "800", c: v("--mist") });
-      text(ctx, "이 별", 268, 278, { s: 12.5, a: "center", w: "900", c: v("--teal-700") });
+      starBall(ctx, 120, 195, RR(1), TSUN, 1.5);
+      starBall(ctx, 268, 195, RR(R), T, 1.6);
+      lbl(ctx, "태양", 120, 280, { s: 12.5, a: "center", c: KC.yellow });
+      lbl(ctx, "이 별", 268, 280, { s: 12.5, a: "center", c: KC.green });
       text(ctx, "반지름 " + num(R) + " 배", 268, 298, { s: 12, a: "center", c: v("--mist") });
       text(ctx, "크기는 로그로 줄여 그렸습니다", 200, 328, { s: 10.5, a: "center", c: v("--mist") });
       text(ctx, "이 별의 색 — " + SPCOL[spType(T)] + " (" + spType(T) + "형)", 200, 356, { s: 12, a: "center", w: "800", c: v("--mist") });
@@ -490,8 +517,8 @@ function msLogL(T) {
     ];
 
     function draw() {
-      paper(ctx, W, H);
-      text(ctx, "H-R도 — 표면 온도와 광도를 한 장에 찍으면", 30, 30, { s: 14, w: "900" });
+      stage(ctx, W, H);
+      K.pill(ctx, "H-R도 — 표면 온도와 광도를 한 장에 찍으면", 16, 28, { s: 13, c: KC.blue });
       axes(ctx, X0, Y0, X1, Y1);
 
       /* 등반지름선 */
@@ -507,7 +534,7 @@ function msLogL(T) {
       });
 
       /* 주계열 띠 */
-      ctx.save(); ctx.strokeStyle = v("--teal"); ctx.globalAlpha = 0.3; ctx.lineWidth = 26; ctx.lineJoin = "round";
+      ctx.save(); ctx.strokeStyle = v("--teal"); ctx.globalAlpha = 0.22; ctx.lineWidth = 26; ctx.lineJoin = "round"; ctx.shadowColor = v("--teal"); ctx.shadowBlur = 18;
       ctx.beginPath();
       for (var i = 0; i <= 60; i++) {
         var lt = LT0 - i / 60 * (LT0 - LT1), tt = Math.pow(10, lt);
@@ -515,24 +542,22 @@ function msLogL(T) {
         if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
       ctx.stroke(); ctx.restore();
-      text(ctx, "주계열", XT(9000) + 16, YL(msLogL(9000)) + 26, { s: 12.5, w: "900", c: v("--teal-700") });
-      text(ctx, "초거성", XT(7000), YL(5.1), { s: 12.5, w: "900", c: v("--coral-700") });
-      text(ctx, "거성", XT(5200), YL(3.2), { s: 12.5, w: "900", c: v("--coral-700") });
-      text(ctx, "백색왜성", XT(13000), YL(-2.6), { s: 12.5, w: "900", c: v("--brand-700") });
+      lbl(ctx, "주계열", XT(9000) + 16, YL(msLogL(9000)) + 26, { s: 12.5, c: KC.green });
+      lbl(ctx, "초거성", XT(7000), YL(5.1), { s: 12.5, c: KC.orange });
+      lbl(ctx, "거성", XT(5200), YL(3.2), { s: 12.5, c: KC.orange });
+      lbl(ctx, "백색왜성", XT(13000), YL(-2.6), { s: 12.5, c: KC.blue });
 
       /* 실제 별 */
       STARS.forEach(function (s) {
         var px = XT(s.T), py = YL(s.L);
-        ctx.save(); ctx.fillStyle = starColor(s.T); ctx.strokeStyle = v("--ink"); ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.arc(px, py, 5.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+        K.glow(ctx, px, py, 4, starColor(s.T), 3.2);
         text(ctx, s.n, clamp(px + 9, X0 + 4, X1 - 96), clamp(py + 4, Y0 + 10, Y1 - 4), { s: 10, c: v("--mist") });
       });
 
       /* 지금 이 점 */
       var cx = XT(T), cy = YL(lL);
-      ctx.save(); ctx.shadowColor = starColor(T); ctx.shadowBlur = 16; ctx.fillStyle = starColor(T);
-      ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = v("--ink"); ctx.lineWidth = 2.4; ctx.stroke(); ctx.restore();
+      starBall(ctx, cx, cy, 9, T, 2.4);
+      ctx.strokeStyle = "rgba(255,255,255,.9)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, 13, 0, Math.PI * 2); ctx.stroke();
 
       /* 축 */
       [[40000, "40,000"], [10000, "10,000"], [5000, "5,000"], [2500, "2,500"]].forEach(function (m) {
@@ -657,16 +682,15 @@ function msLogL(T) {
     var got = window.sthState("bJeans") || { a: false, b: false, c: false, d: false };
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var n = Math.pow(10, ln), MJ = jeans(T, n), collapse = MJ < CLOUD;
-      text(ctx, "중력과 압력의 겨루기 — 이 성운은 별을 낳을 수 있는가", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "중력과 압력의 겨루기 — 이 성운은 별을 낳을 수 있는가", 16, 28, { s: 13, c: KC.blue });
 
       /* 성운 그림 */
       var cx = 205, cy = 225, R = 118;
-      ctx.save();
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
-      ctx.fillStyle = v(collapse ? "--violet" : "--amber"); ctx.globalAlpha = 0.12; ctx.fill();
-      ctx.restore();
+      var neb = ctx.createRadialGradient(cx, cy, 6, cx, cy, R * 1.15);
+      neb.addColorStop(0, collapse ? "rgba(182,156,255,.38)" : "rgba(255,179,92,.30)"); neb.addColorStop(.6, collapse ? "rgba(120,90,220,.16)" : "rgba(200,120,60,.12)"); neb.addColorStop(1, "rgba(80,60,160,0)");
+      ctx.fillStyle = neb; ctx.beginPath(); ctx.arc(cx, cy, R * 1.15, 0, Math.PI * 2); ctx.fill();
       ctx.save(); ctx.strokeStyle = v("--line"); ctx.lineWidth = 1.5; ctx.setLineDash([5, 5]);
       ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
 
@@ -678,20 +702,22 @@ function msLogL(T) {
         var jitter = (rr() - 0.5) * clamp(T / 40, 0.5, 8);
         var px = cx + Math.cos(ang) * rad * spread + jitter;
         var py = cy + Math.sin(ang) * rad * spread + jitter;
-        ctx.save(); ctx.globalAlpha = 0.75;
-        ctx.fillStyle = v(T > 80 ? "--amber" : "--brand");
-        ctx.beginPath(); ctx.arc(px, py, 2.4, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.fillStyle = T > 80 ? "rgba(255,179,92,.18)" : "rgba(127,211,255,.18)";
+        ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 0.95; ctx.fillStyle = T > 80 ? "#ffd59a" : "#bfe6ff";
+        ctx.beginPath(); ctx.arc(px, py, 1.9, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
       ctx.save();
       ctx.strokeStyle = v(collapse ? "--violet" : "--amber"); ctx.fillStyle = v(collapse ? "--violet" : "--amber"); ctx.lineWidth = 3;
       for (var k = 0; k < 6; k++) {
         var a2 = k / 6 * Math.PI * 2;
         var r1 = collapse ? R + 24 : R - 18, r2 = collapse ? R - 14 : R + 28;
-        window.drawArrow(ctx, cx + Math.cos(a2) * r1, cy + Math.sin(a2) * r1, cx + Math.cos(a2) * r2, cy + Math.sin(a2) * r2, 8);
+        K.arrow(ctx, { x: cx + Math.cos(a2) * r1, y: cy + Math.sin(a2) * r1 }, { x: cx + Math.cos(a2) * r2, y: cy + Math.sin(a2) * r2 }, collapse ? KC.violet : KC.orange, 3, 10);
       }
       ctx.restore();
-      text(ctx, collapse ? "중력이 이긴다 — 수축!" : "압력이 이긴다 — 퍼져 버린다", cx, cy + R + 48,
-        { s: 15, a: "center", w: "900", c: collapse ? v("--violet-700") : v("--amber-700") });
+      K.pill(ctx, collapse ? "중력이 이긴다 — 수축!" : "압력이 이긴다 — 퍼져 버린다", cx, cy + R + 48,
+        { s: 15, a: "center", c: collapse ? KC.violet : KC.orange });
+      if (collapse) K.glow(ctx, cx, cy, 5 + 3 * ((tick % 30) / 30), "rgba(255,240,200,.95)", 3.5);
       text(ctx, "온도 " + T + " K · 수밀도 10" + sup(ln.toFixed(1)) + " 개/cm³", cx, cy + R + 72, { s: 11.5, a: "center", c: v("--mist") });
 
       /* 계산판 */
@@ -762,18 +788,18 @@ function msLogL(T) {
     function YLu(l) { return Y1 - (l + 3.5) / 10 * (Y1 - Y0); }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var L = msLum(M), t = msLife(M);
-      text(ctx, "질량이 광도를 정하고, 광도가 수명을 정한다", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "질량이 광도를 정하고, 광도가 수명을 정한다", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
-      ctx.strokeStyle = v("--teal"); ctx.lineWidth = 3; ctx.beginPath();
+      ctx.save(); ctx.strokeStyle = v("--teal"); ctx.lineWidth = 3; glowLine(ctx, v("--teal")); ctx.beginPath();
       for (var i = 0; i <= 120; i++) {
         var lm = -1 + i / 120 * 2.7, mm = Math.pow(10, lm);
         var px = XM(mm), py = YLu(clamp(Math.log(msLum(mm)) / Math.LN10, -3.5, 6.5));
         if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
       }
-      ctx.stroke();
+      ctx.stroke(); ctx.restore();
       [[0.1, "0.1"], [1, "1"], [10, "10"], [40, "40"]].forEach(function (m) {
         text(ctx, m[1], clamp(XM(m[0]), X0, X1), Y1 + 18, { s: 10.5, a: "center", c: v("--mist") });
       });
@@ -783,10 +809,8 @@ function msLogL(T) {
       });
       text(ctx, "광도", X0 - 8, Y0 - 12, { s: 11, a: "right", c: v("--mist") });
       var cpx = XM(M), cpy = YLu(clamp(Math.log(L) / Math.LN10, -3.5, 6.5));
-      ctx.save(); ctx.fillStyle = v("--coral");
-      ctx.beginPath(); ctx.arc(cpx, cpy, 8, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = v("--ink"); ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
-      text(ctx, "광도 = 질량³·⁵", X0 + 10, Y0 + 20, { s: 12, w: "800", c: v("--teal-700") });
+      starBall(ctx, cpx, cpy, 7, M >= 16 ? 30000 : (M >= 2.1 ? 12000 : (M >= 1.05 ? 6500 : (M >= 0.8 ? 5300 : 3500))), 2.6);
+      lbl(ctx, "광도 = 질량³·⁵", X0 + 12, Y0 + 22, { s: 12, c: KC.green });
       text(ctx, "태양", clamp(XM(1) - 4, X0, X1 - 30), YLu(0) + 20, { s: 10.5, a: "center", c: v("--mist") });
 
       /* 판정판 */
@@ -885,9 +909,9 @@ function msLogL(T) {
     }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var P = path(M), seg = Math.min(Math.floor(prog), P.length - 1), f = clamp(prog - seg, 0, 1);
-      text(ctx, "H-R도 위에 그린 진화 경로 — 갈림길을 정하는 것은 질량뿐", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "H-R도 위에 그린 진화 경로 — 갈림길을 정하는 것은 질량뿐", 16, 28, { s: 13, c: KC.blue });
       axes(ctx, X0, Y0, X1, Y1);
 
       /* 주계열 띠 */
@@ -902,7 +926,7 @@ function msLogL(T) {
       text(ctx, "주계열", XT(12000) + 14, YL(msLogL(12000)) + 24, { s: 11.5, w: "900", c: v("--teal-700") });
 
       /* 경로 */
-      ctx.save(); ctx.strokeStyle = v("--coral"); ctx.lineWidth = 3; ctx.setLineDash([6, 5]);
+      ctx.save(); ctx.strokeStyle = v("--coral"); ctx.lineWidth = 3; ctx.setLineDash([6, 5]); glowLine(ctx, v("--coral"));
       ctx.beginPath();
       P.forEach(function (p, i) {
         var px2 = XT(p.T), py2 = YL(p.L);
@@ -914,8 +938,9 @@ function msLogL(T) {
       P.forEach(function (p, i) {
         var px2 = XT(p.T), py2 = YL(p.L), on = i <= seg;
         ctx.save();
-        ctx.fillStyle = v(on ? "--coral" : "--mist"); ctx.globalAlpha = on ? 0.95 : 0.4;
-        ctx.beginPath(); ctx.arc(px2, py2, 7, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        if (on) { ctx.restore(); K.glow(ctx, px2, py2, 5, starColor(p.T), 3); ctx.save(); }
+        else { ctx.fillStyle = v("--mist"); ctx.globalAlpha = 0.4; ctx.beginPath(); ctx.arc(px2, py2, 6, 0, Math.PI * 2); ctx.fill(); }
+        ctx.restore();
         var DY = [-14, 18, 32, -28, 24];                       /* 단계마다 위아래로 엇갈려 글자가 겹치지 않게 */
         /* 라벨이 서로 겹치면 자리가 빌 때까지 아래로 밀어 놓는다 */
         var left = (i === 0), lab = (i + 1) + ". " + p.n;
@@ -940,9 +965,7 @@ function msLogL(T) {
       /* 움직이는 별 */
       var a = P[seg], b = P[Math.min(seg + 1, P.length - 1)];
       var nx = XT(a.T) + (XT(b.T) - XT(a.T)) * f, ny = YL(a.L) + (YL(b.L) - YL(a.L)) * f;
-      ctx.save(); ctx.shadowColor = starColor(a.T); ctx.shadowBlur = 18; ctx.fillStyle = starColor(a.T);
-      ctx.beginPath(); ctx.arc(nx, ny, 9, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = v("--ink"); ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+      starBall(ctx, nx, ny, 9, a.T, 2.6);
 
       [[40000, "40,000"], [10000, "10,000"], [5000, "5,000"], [2500, "2,500"]].forEach(function (m) {
         text(ctx, m[1], clamp(XT(m[0]), X0 + 22, X1 - 22), Y1 + 20, { s: 10.5, a: "center", c: v("--mist") });
@@ -967,8 +990,8 @@ function msLogL(T) {
       text(ctx, (G4.c ? "✅" : "▫") + " 블랙홀 (25배 이상)", px3, 352, { s: 11.5, c: G4.c ? v("--teal-700") : v("--mist") });
       text(ctx, "질량을 바꾸면 경로가 통째로 달라집니다.", px3, 392, { s: 11, c: v("--mist") });
 
-      text(ctx, "화살표를 따라가면 별은 오른쪽 위(부푼 시기)를 거쳐 왼쪽 아래(작고 식은 시기)로 갑니다.", 30, 470, { s: 11.5, c: v("--mist") });
-      text(ctx, "무거운 별은 죽으면서 만든 무거운 원소를 우주로 돌려보냅니다 — 다음 세대 별과 행성의 재료입니다.", 30, 480, { s: 11.5, c: v("--mist") });
+      text(ctx, "화살표를 따라가면 별은 오른쪽 위(부푼 시기)를 거쳐 왼쪽 아래(작고 식은 시기)로 갑니다.", 30, 468, { s: 11.5, c: v("--mist") });
+      text(ctx, "무거운 별은 죽으면서 만든 무거운 원소를 우주로 돌려보냅니다 — 다음 세대 별과 행성의 재료입니다.", 30, 490, { s: 11.5, c: v("--mist") });
 
       var ch = false;
       if (M < 8 && !G4.a) { G4.a = ch = true; }
@@ -1070,16 +1093,17 @@ function msLogL(T) {
       var al = (alpha === undefined ? 1 : alpha);
       var pitch = 5 + (45 - bul) * 0.65;
       ctx.save();
-      ctx.fillStyle = v("--brand"); ctx.globalAlpha = al * 0.18;
-      ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
       ctx.globalAlpha = al;
+      var disk = ctx.createRadialGradient(cx, cy, R * .05, cx, cy, R);
+      disk.addColorStop(0, "rgba(255,236,190,.55)"); disk.addColorStop(.35, "rgba(150,170,255,.22)"); disk.addColorStop(1, "rgba(90,110,220,0)");
+      ctx.fillStyle = disk; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
       var bR = R * clamp(bul / 100 * 1.6, 0.08, 0.7);
       var bStart = barred ? bR * 1.8 : bR;
       if (barred) {
         ctx.save(); ctx.fillStyle = v("--amber"); ctx.globalAlpha = al * 0.85;
         ctx.beginPath(); ctx.ellipse(cx, cy, bR * 1.8, bR * 0.42, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
-      ctx.strokeStyle = v("--teal"); ctx.lineWidth = Math.max(2, R / 34);
+      ctx.strokeStyle = "rgba(170,210,255,.9)"; ctx.lineWidth = Math.max(2, R / 34); ctx.shadowColor = "#9fc4ff"; ctx.shadowBlur = R > 60 ? 10 : 4;
       var bb = Math.tan(pitch * Math.PI / 180);
       for (var s = 0; s < 2; s++) {
         ctx.beginPath();
@@ -1093,29 +1117,34 @@ function msLogL(T) {
         }
         ctx.stroke();
       }
-      ctx.fillStyle = v("--amber");
+      ctx.shadowBlur = 0;
+      var bg2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, bR); bg2.addColorStop(0, "#fff6e0"); bg2.addColorStop(.5, "#ffd28a"); bg2.addColorStop(1, "rgba(255,190,110,.2)");
+      ctx.fillStyle = bg2;
       ctx.beginPath(); ctx.arc(cx, cy, bR, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
     function drawEll(cx, cy, a, e, alpha) {
       var b = a * (1 - e / 10);
-      ctx.save(); ctx.globalAlpha = (alpha === undefined ? 1 : alpha) * 0.85;
-      ctx.fillStyle = v("--coral");
-      ctx.beginPath(); ctx.ellipse(cx, cy, a, Math.max(b, 3), 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.globalAlpha = (alpha === undefined ? 1 : alpha);
+      ctx.translate(cx, cy); ctx.scale(1, Math.max(b, 3) / a);
+      var eg = ctx.createRadialGradient(0, 0, 0, 0, 0, a);
+      eg.addColorStop(0, "rgba(255,244,220,1)"); eg.addColorStop(.3, "rgba(255,200,140,.75)"); eg.addColorStop(.75, "rgba(230,140,90,.25)"); eg.addColorStop(1, "rgba(200,110,70,0)");
+      ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(0, 0, a, 0, Math.PI * 2); ctx.fill(); ctx.restore();
     }
     function drawIrr(cx, cy, R, alpha) {
       var rr = rnd32(11);
-      ctx.save(); ctx.globalAlpha = (alpha === undefined ? 1 : alpha) * 0.8; ctx.fillStyle = v("--violet");
+      ctx.save(); ctx.globalAlpha = (alpha === undefined ? 1 : alpha);
       for (var i = 0; i < 16; i++) {
-        var a = rr() * Math.PI * 2, d = Math.sqrt(rr()) * R * 0.9;
-        ctx.beginPath(); ctx.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.7, R * (0.12 + rr() * 0.2), 0, Math.PI * 2); ctx.fill();
+        var a = rr() * Math.PI * 2, d = Math.sqrt(rr()) * R * 0.9, ix = cx + Math.cos(a) * d, iy = cy + Math.sin(a) * d * 0.7, ir = R * (0.12 + rr() * 0.2);
+        var ig = ctx.createRadialGradient(ix, iy, 0, ix, iy, ir); ig.addColorStop(0, i % 3 ? "rgba(190,215,255,.85)" : "rgba(255,170,200,.85)"); ig.addColorStop(1, "rgba(150,170,255,0)");
+        ctx.fillStyle = ig; ctx.beginPath(); ctx.arc(ix, iy, ir, 0, Math.PI * 2); ctx.fill();
       }
       ctx.restore();
     }
 
     function draw() {
-      paper(ctx, W, H);
-      text(ctx, "허블의 소리굽쇠 — 모양만으로 은하를 가른다", 30, 30, { s: 14, w: "900" });
+      stage(ctx, W, H);
+      K.pill(ctx, "허블의 소리굽쇠 — 모양만으로 은하를 가른다", 16, 28, { s: 13, c: KC.blue });
 
       /* 미리보기 */
       var cx = 225, cy = 225;
@@ -1132,7 +1161,8 @@ function msLogL(T) {
       } else {
         drawSpiral(cx, cy, 148, bulge, type === "barred");
       }
-      text(ctx, label(), cx, 412, { s: 30, a: "center", w: "900", c: v("--teal-700") });
+      ctx.save(); ctx.shadowColor = KC.green; ctx.shadowBlur = 14;
+      text(ctx, label(), cx, 412, { s: 30, a: "center", w: "900", c: KC.green }); ctx.restore();
 
       /* 소리굽쇠 도표 */
       var FX = 470;
@@ -1274,15 +1304,17 @@ function msLogL(T) {
     };
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var M = Math.pow(10, lbh), mdot = Math.pow(10, lacc);
       var L = mdot * L_PER_MDOT, Ledd = LEDD_PER_M * M, ratio = L / Ledd;
       var d = DATA[kind];
-      text(ctx, "은하 하나보다 밝은 중심핵 — 그 에너지는 어디서 오는가", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "은하 하나보다 밝은 중심핵 — 그 에너지는 어디서 오는가", 16, 28, { s: 13, c: KC.blue });
 
       var cx = 225, cy = 235;
       if (d.host === "spiral") {
-        ctx.save(); ctx.strokeStyle = v("--teal"); ctx.globalAlpha = 0.5; ctx.lineWidth = 3;
+        var hd = ctx.createRadialGradient(cx, cy, 4, cx, cy, 140); hd.addColorStop(0, "rgba(160,180,255,.25)"); hd.addColorStop(1, "rgba(120,140,240,0)");
+        ctx.fillStyle = hd; ctx.beginPath(); ctx.ellipse(cx, cy, 150, 92, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.save(); ctx.strokeStyle = "rgba(170,210,255,.75)"; ctx.globalAlpha = 0.6; ctx.lineWidth = 3; ctx.shadowColor = "#9fc4ff"; ctx.shadowBlur = 8;
         for (var s = 0; s < 2; s++) {
           ctx.beginPath();
           for (var a = 0; a < 4.4; a += 0.08) {
@@ -1294,18 +1326,19 @@ function msLogL(T) {
         }
         ctx.restore();
       } else if (d.host === "ell") {
-        ctx.save(); ctx.fillStyle = v("--coral"); ctx.globalAlpha = 0.3;
-        ctx.beginPath(); ctx.ellipse(cx, cy, 150, 96, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.translate(cx, cy); ctx.scale(1, 96 / 150);
+        var eg2 = ctx.createRadialGradient(0, 0, 0, 0, 0, 150); eg2.addColorStop(0, "rgba(255,210,160,.55)"); eg2.addColorStop(1, "rgba(220,130,90,0)");
+        ctx.fillStyle = eg2; ctx.beginPath(); ctx.arc(0, 0, 150, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       } else {
         text(ctx, "(너무 멀어 은하는 보이지 않고", cx, cy - 152, { s: 11, a: "center", c: v("--mist") });
         text(ctx, "중심핵만 점으로 보입니다)", cx, cy - 134, { s: 11, a: "center", c: v("--mist") });
       }
       if (d.jet) {
-        ctx.save(); ctx.strokeStyle = v("--brand"); ctx.fillStyle = v("--brand"); ctx.lineWidth = 4;
-        window.drawArrow(ctx, cx, cy - 14, cx, cy - 158, 10);
-        window.drawArrow(ctx, cx, cy + 14, cx, cy + 158, 10);
+        ctx.save(); ctx.shadowColor = KC.blue; ctx.shadowBlur = 14;
+        K.arrow(ctx, { x: cx, y: cy - 14 }, { x: cx, y: cy - 158 }, KC.blue, 5, 13);
+        K.arrow(ctx, { x: cx, y: cy + 14 }, { x: cx, y: cy + 158 }, KC.blue, 5, 13);
         ctx.restore();
-        text(ctx, "제트", cx + 52, cy - 108, { s: 11.5, w: "900", c: v("--brand-700") });
+        lbl(ctx, "제트", cx + 24, cy - 108, { s: 11.5, c: KC.blue });
       }
       var glow = clamp(14 + 3.2 * (Math.log(Math.max(L, 1e8)) / Math.LN10 - 8), 12, 44);
       ctx.save();
@@ -1318,8 +1351,8 @@ function msLogL(T) {
       ctx.beginPath(); ctx.ellipse(cx, cy, glow, glow * 0.34, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       ctx.save(); ctx.fillStyle = "rgb(12,12,20)";
       ctx.beginPath(); ctx.arc(cx, cy, clamp(lbh - 2, 4, 12), 0, Math.PI * 2); ctx.fill(); ctx.restore();
-      text(ctx, "거대 질량 블랙홀 + 강착 원반", cx, cy + 66, { s: 11.5, a: "center", w: "800", c: v("--mist") });
-      text(ctx, d.n, 30, 62, { s: 15, w: "900", c: v("--coral-700") });
+      lbl(ctx, "거대 질량 블랙홀 + 강착 원반", cx, cy + 70, { s: 11.5, a: "center", c: KC.ink });
+      K.pill(ctx, d.n, 16, 64, { s: 14, c: KC.orange });
 
       var px = 450;
       text(ctx, "빨려 들어간 물질의 약 10 %가 빛으로 바뀐다", px, 70, { s: 12, w: "800", c: v("--mist") });
@@ -1379,20 +1412,20 @@ function msLogL(T) {
     var AU = 1.496e8, CKM = 2.998e5, LD = CKM * 86400, LY = LD * 365.25;
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var t = Math.pow(10, lt), size = LD * t;
-      text(ctx, "며칠 만에 깜박이는 것은 며칠보다 클 수 없다", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "며칠 만에 깜박이는 것은 며칠보다 클 수 없다", 16, 28, { s: 13, c: KC.blue });
 
       var X0 = 60, X1 = 430, Y0 = 72, Y1 = 208;
       axes(ctx, X0, Y0, X1, Y1);
-      ctx.strokeStyle = v("--coral"); ctx.lineWidth = 2.6; ctx.beginPath();
+      ctx.save(); ctx.strokeStyle = v("--coral"); ctx.lineWidth = 2.6; glowLine(ctx, v("--coral")); ctx.beginPath();
       for (var i = 0; i <= 240; i++) {
         var u = i / 240;
         var y = (Y0 + Y1) / 2 - Math.sin(u * Math.PI * 5 + tick * 0.12) * (Y1 - Y0) * 0.33;
         var x = X0 + u * (X1 - X0);
         if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
-      ctx.stroke();
+      ctx.stroke(); ctx.restore();
       text(ctx, "밝기", X0 - 8, Y0 - 10, { s: 11, a: "right", c: v("--mist") });
       text(ctx, "시간 →  (한 번 밝아졌다 어두워지는 데 " + (t < 1 ? (t * 24).toFixed(1) + " 시간" : num(t) + " 일") + ")",
         X0, Y1 + 22, { s: 11.5, c: v("--mist") });
@@ -1407,9 +1440,8 @@ function msLogL(T) {
         ctx.beginPath(); ctx.moveTo(x2, BY); ctx.lineTo(x2, BY + 6); ctx.stroke();
         text(ctx, m[1], clamp(x2, BX0 + 18, BX1 - 18), BY + 22, { s: 10.5, a: "center", c: v("--mist") });
       });
-      ctx.save(); ctx.fillStyle = v("--teal");
-      ctx.beginPath(); ctx.arc(BX(size), BY, 8, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-      text(ctx, "이 중심부", clamp(BX(size), BX0 + 26, BX1 - 26), BY - 14, { s: 11.5, a: "center", w: "900", c: v("--teal-700") });
+      K.glow(ctx, BX(size), BY, 6, "rgba(63,211,163,.95)", 3.2);
+      lbl(ctx, "이 중심부", clamp(BX(size), BX0 + 26, BX1 - 26), BY - 16, { s: 11.5, a: "center", c: KC.green });
       text(ctx, "가로 자는 로그 눈금입니다", BX0, BY + 46, { s: 10.5, c: v("--mist") });
 
       var px = 480;
@@ -1512,22 +1544,20 @@ function msLogL(T) {
       }
       ctx.save(); ctx.globalAlpha = 0.9; ctx.fillStyle = "rgb(10,10,16)";
       ctx.fillRect(XW(markNm) - 3.5, y0, 7, y1 - y0); ctx.restore();
-      ctx.strokeStyle = v(col); ctx.lineWidth = 2; ctx.strokeRect(SX0, y0, SX1 - SX0, y1 - y0);
-      text(ctx, lab, 30, (y0 + y1) / 2 + 4, { s: 12, w: "900", c: v(col) });
+      ctx.strokeStyle = v(col); ctx.lineWidth = 2; ctx.beginPath(); ctx.roundRect(SX0, y0, SX1 - SX0, y1 - y0, 4); ctx.stroke();
+      lbl(ctx, lab, 24, (y0 + y1) / 2 + 5, { s: 12, c: v(col) });
     }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var dl = lam - LAM0, z = dl / LAM0, vel = z * C_KMS, dist = vel / 70;
-      text(ctx, "선이 얼마나 밀렸는가 — 적색 편이로 속도를 잰다", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "선이 얼마나 밀렸는가 — 적색 편이로 속도를 잰다", 16, 28, { s: 13, c: KC.blue });
 
       strip(66, 118, LAM0, "--mist", "실험실");
       strip(166, 218, lam, "--rose", "이 은하");
-      ctx.save(); ctx.strokeStyle = v("--rose"); ctx.fillStyle = v("--rose"); ctx.lineWidth = 2.5;
-      window.drawArrow(ctx, XW(LAM0), 142, XW(lam), 142, 9);
-      ctx.restore();
-      text(ctx, "Δλ = " + dl.toFixed(1) + " nm", clamp((XW(LAM0) + XW(lam)) / 2, SX0 + 40, SX1 - 40), 136,
-        { s: 11.5, a: "center", w: "900", c: v("--rose-700") });
+      if (XW(lam) - XW(LAM0) > 4) { ctx.save(); ctx.shadowColor = KC.red; ctx.shadowBlur = 8; K.arrow(ctx, { x: XW(LAM0), y: 142 }, { x: XW(lam), y: 142 }, KC.red, 2.8, 11); ctx.restore(); }
+      lbl(ctx, "Δλ = " + dl.toFixed(1) + " nm", clamp((XW(LAM0) + XW(lam)) / 2, SX0 + 40, SX1 - 40), 134,
+        { s: 11.5, a: "center", c: KC.red });
       text(ctx, "656.3", XW(LAM0), 60, { s: 10.5, a: "center", c: v("--mist") });
       text(ctx, lam.toFixed(1), clamp(XW(lam), SX0 + 16, SX1 - 16), 236, { s: 10.5, a: "center", c: v("--rose-700") });
       [650, 700, 750, 800].forEach(function (nm) {
@@ -1603,10 +1633,10 @@ function msLogL(T) {
     function YV(vv) { return Y1 - clamp(vv, 0, VMAX) / VMAX * (Y1 - Y0); }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var age = TH / H0, err = 0;
       CL.forEach(function (c) { err += Math.abs(c.v - H0 * c.d); });
-      text(ctx, "멀리 있는 은하일수록 빠르게 멀어진다 — 기울기를 맞춰 보세요", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "멀리 있는 은하일수록 빠르게 멀어진다 — 기울기를 맞춰 보세요", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
       [0, 100, 200, 300].forEach(function (d) {
@@ -1619,18 +1649,17 @@ function msLogL(T) {
       text(ctx, "↑ 후퇴 속도 (km/s)", 30, Y0 - 12, { s: 11, c: v("--mist") });
 
       /* 내 직선 */
-      ctx.strokeStyle = v("--teal"); ctx.lineWidth = 3;
+      ctx.save(); ctx.strokeStyle = v("--teal"); ctx.lineWidth = 3; glowLine(ctx, v("--teal"));
       ctx.beginPath(); ctx.moveTo(XD(0), YV(0));
-      ctx.lineTo(XD(clamp(VMAX / H0, 0, DMAX)), YV(Math.min(VMAX, H0 * DMAX))); ctx.stroke();
-      text(ctx, "v = H₀ × d", XD(12), YV(H0 * 12) - 30, { s: 12, w: "900", c: v("--teal-700") });
+      ctx.lineTo(XD(clamp(VMAX / H0, 0, DMAX)), YV(Math.min(VMAX, H0 * DMAX))); ctx.stroke(); ctx.restore();
+      lbl(ctx, "v = H₀ × d", XD(150) + 12, YV(Math.min(H0 * 150, 19000)) + 24, { s: 12, c: KC.green });
 
       /* 자료 */
       CL.forEach(function (c) {
         var px = XD(c.d), py = YV(c.v), ly = YV(H0 * c.d);
         ctx.save(); ctx.strokeStyle = v("--rose"); ctx.lineWidth = 1.6; ctx.setLineDash([3, 3]);
         ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, ly); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
-        ctx.save(); ctx.fillStyle = v("--coral"); ctx.strokeStyle = v("--ink"); ctx.lineWidth = 1.2;
-        ctx.beginPath(); ctx.arc(px, py, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.restore();
+        K.glow(ctx, px, py, 5, "rgba(255,160,110,.95)", 3);
         text(ctx, c.n, clamp(px + 9, X0, X1 - 104), clamp(py - 8, Y0 + 10, Y1 - 4), { s: 10, c: v("--mist") });
       });
 
@@ -1678,12 +1707,12 @@ function msLogL(T) {
     for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) GAL.push({ x: OX + c * SPX, y: OY + r * SPY, i: GAL.length });
 
     function draw() {
-      paper(ctx, W, H);
-      text(ctx, "기준을 바꿔 보자 — 어느 은하에 서도 같은 법칙이 나온다", 30, 30, { s: 14, w: "900" });
+      stage(ctx, W, H);
+      K.pill(ctx, "기준을 바꿔 보자 — 어느 은하에 서도 같은 법칙이 나온다", 16, 28, { s: 13, c: KC.blue });
       var R = GAL[ref];
 
       /* 격자 */
-      ctx.save(); ctx.strokeStyle = v("--line"); ctx.lineWidth = 1.2;
+      ctx.save(); ctx.strokeStyle = "rgba(127,211,255,.22)"; ctx.lineWidth = 1.2;
       for (var c2 = 0; c2 < COLS; c2++) {
         ctx.beginPath(); ctx.moveTo(OX + c2 * SPX, OY - 46); ctx.lineTo(OX + c2 * SPX, OY + (ROWS - 1) * SPY + 46); ctx.stroke();
       }
@@ -1698,17 +1727,15 @@ function msLogL(T) {
         var dx = g.x - R.x, dy = g.y - R.y, d = Math.hypot(dx, dy);
         if (d > 0.5) {
           var ux = dx / d, uy = dy / d, len = 12 + (d / maxd) * 52;
-          ctx.save(); ctx.strokeStyle = v("--rose"); ctx.fillStyle = v("--rose"); ctx.lineWidth = 2.2;
-          window.drawArrow(ctx, g.x + ux * 12, g.y + uy * 12, g.x + ux * len, g.y + uy * len, 7);
-          ctx.restore();
+          K.arrow(ctx, { x: g.x + ux * 14, y: g.y + uy * 14 }, { x: g.x + ux * (len + 2), y: g.y + uy * (len + 2) }, KC.red, 2.2, 9);
         }
-        ctx.save();
-        ctx.fillStyle = v(g.i === ref ? "--teal" : "--violet"); ctx.globalAlpha = 0.9;
-        ctx.beginPath(); ctx.ellipse(g.x, g.y, 11, 7, g.i * 0.7, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        ctx.save(); ctx.translate(g.x, g.y); ctx.rotate(g.i * 0.7); ctx.scale(1, 7 / 11);
+        var gg2 = ctx.createRadialGradient(0, 0, 0, 0, 0, 13); gg2.addColorStop(0, "#ffffff"); gg2.addColorStop(.3, g.i === ref ? "rgba(63,211,163,.95)" : "rgba(182,156,255,.9)"); gg2.addColorStop(1, "rgba(120,100,220,0)");
+        ctx.fillStyle = gg2; ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         if (g.i === ref) {
           ctx.save(); ctx.strokeStyle = v("--teal"); ctx.lineWidth = 2.4;
           ctx.beginPath(); ctx.arc(g.x, g.y, 19, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-          text(ctx, "여기서 본다", g.x, g.y - 26, { s: 11, a: "center", w: "900", c: v("--teal-700") });
+          lbl(ctx, "여기서 본다", g.x, g.y - 26, { s: 11, a: "center", c: KC.green });
         }
       });
       text(ctx, "은하를 눌러 기준을 바꿔 보세요 · 기준으로 삼아 본 은하 " + G3.refs.length + " / 3",
@@ -1726,11 +1753,10 @@ function msLogL(T) {
         var d = Math.hypot(g.x - R.x, g.y - R.y);
         if (d < 0.5) return;
         var u = d / maxd;
-        ctx.save(); ctx.fillStyle = v("--coral");
-        ctx.beginPath(); ctx.arc(GX0 + u * (GX1 - GX0), GY1 - u * (GY1 - GY0), 4, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        K.glow(ctx, GX0 + u * (GX1 - GX0), GY1 - u * (GY1 - GY0), 3.4, "rgba(255,160,110,.95)", 3);
       });
-      text(ctx, "기준을 어디로 옮겨도", GX0, 330, { s: 11, c: v("--mist") });
-      text(ctx, "같은 직선이 나옵니다.", GX0, 350, { s: 11, c: v("--mist") });
+      text(ctx, "기준을 어디로 옮겨도", GX0, 344, { s: 11, c: v("--mist") });
+      text(ctx, "같은 직선이 나옵니다.", GX0, 362, { s: 11, c: v("--mist") });
 
       $("d-grid-info").innerHTML = "지금 <b>" + (ref + 1) + "번 은하</b>에 서서 보고 있습니다. 나머지 은하가 모두 멀어지고, <b>멀리 있는 은하일수록 빠르게</b> 멀어집니다. 다른 은하를 눌러 기준을 옮겨도 그림은 똑같습니다 — 그래서 <b>중심이 따로 없습니다.</b>";
     }
@@ -1792,9 +1818,9 @@ function msLogL(T) {
       return out;
     }
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var S = STAGE[st], list = parts(st);
-      text(ctx, "우주가 식어 가며 무엇이 언제 만들어졌나", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "우주가 식어 가며 무엇이 언제 만들어졌나", 16, 28, { s: 13, c: KC.blue });
 
       var BX0 = 50, BX1 = 600, BY0 = 62, BY1 = 342;
       band(ctx, BX0, BY0, BX1 - BX0, BY1 - BY0, "--card-2", 1);
@@ -1802,7 +1828,7 @@ function msLogL(T) {
       var rr = rnd32(st * 131 + 7);
       list.forEach(function (p) {
         var x = BX0 + 14 + rr() * (BX1 - BX0 - 28), y = BY0 + 14 + rr() * (BY1 - BY0 - 28);
-        ctx.save(); ctx.globalAlpha = 0.9; ctx.fillStyle = v(COL[p.t]);
+        ctx.save(); ctx.globalAlpha = 0.95; ctx.fillStyle = v(COL[p.t]); ctx.shadowColor = v(COL[p.t]); ctx.shadowBlur = 8;
         if (p.t === "star") {
           ctx.beginPath();
           for (var s2 = 0; s2 < 10; s2++) {
@@ -1848,7 +1874,8 @@ function msLogL(T) {
 
       /* 시간 띠 */
       var TX0 = 50, TX1 = 600, TY = 384;
-      ctx.strokeStyle = v("--line"); ctx.lineWidth = 2;
+      var tg = ctx.createLinearGradient(TX0, 0, TX1, 0); tg.addColorStop(0, "#fff2c0"); tg.addColorStop(.3, "#ff9a4a"); tg.addColorStop(1, "#3a3f7a");
+      ctx.strokeStyle = tg; ctx.lineWidth = 4;
       ctx.beginPath(); ctx.moveTo(TX0, TY); ctx.lineTo(TX1, TY); ctx.stroke();
       STAGE.forEach(function (s3, i) {
         var x = TX0 + i / (STAGE.length - 1) * (TX1 - TX0);
@@ -1884,9 +1911,9 @@ function msLogL(T) {
     function XL(nm) { return X0 + clamp((Math.log(nm) / Math.LN10 - LO) / (HI - LO), 0, 1) * (X1 - X0); }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var f = Math.pow(10, le), T = 2.725 * f, lmax = WIEN / T;
-      text(ctx, "그때 떠난 빛이 지금은 어떤 빛으로 보이는가", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "그때 떠난 빛이 지금은 어떤 빛으로 보이는가", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
       /* 파장 영역 띠 */
@@ -1905,7 +1932,7 @@ function msLogL(T) {
       /* 지금의 곡선 (2.725 K) */
       function curve(TT, col, wide, alpha) {
         var pk = planck(WIEN / TT, TT);
-        ctx.save(); ctx.strokeStyle = v(col); ctx.lineWidth = wide; ctx.globalAlpha = alpha;
+        ctx.save(); ctx.strokeStyle = v(col); ctx.lineWidth = wide; ctx.globalAlpha = alpha; glowLine(ctx, v(col));
         ctx.beginPath();
         for (var i = 0; i <= 200; i++) {
           var lg = LO + i / 200 * (HI - LO), nm = Math.pow(10, lg);
@@ -1970,27 +1997,27 @@ function msLogL(T) {
     }
 
     function draw() {
-      paper(ctx, W, H);
+      stage(ctx, W, H);
       var OL = de / 100, Om = 1 - OL, q0 = Om / 2 - OL;
       var f = ageF(OL), age = f * TH / 70, a0 = aOf(f, OL);
-      text(ctx, "대폭발이 풀지 못한 것 — 급팽창과 가속 팽창", 30, 30, { s: 14, w: "900" });
+      K.pill(ctx, "대폭발이 풀지 못한 것 — 급팽창과 가속 팽창", 16, 28, { s: 13, c: KC.blue });
 
       /* 왼쪽 : 급팽창 도식 */
       var AX0 = 56, AX1 = 400, AY0 = 74, AY1 = 300;
       axes(ctx, AX0, AY0, AX1, AY1);
       text(ctx, "우주의 크기 (로그)", AX0 - 4, AY0 - 14, { s: 10.5, c: v("--mist") });
       text(ctx, "시간 (로그) →", AX1, AY1 + 38, { s: 10.5, a: "right", c: v("--mist") });
-      ctx.strokeStyle = v("--brand"); ctx.lineWidth = 3;
+      ctx.save(); ctx.strokeStyle = v("--brand"); ctx.lineWidth = 3; glowLine(ctx, v("--brand"));
       ctx.beginPath();
       var pts = [[0, 0.02], [0.10, 0.07], [0.14, 0.52], [0.18, 0.56], [0.55, 0.74], [1, 0.95]];
       pts.forEach(function (p, i) {
         var x = AX0 + p[0] * (AX1 - AX0), y = AY1 - p[1] * (AY1 - AY0);
         if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       });
-      ctx.stroke();
+      ctx.stroke(); ctx.restore();
       var ix = AX0 + 0.12 * (AX1 - AX0);
       dash(ctx, ix, AY0, ix, AY1, "--rose");
-      text(ctx, "급팽창", ix + 8, AY0 + 16, { s: 12, w: "900", c: v("--rose-700") });
+      lbl(ctx, "급팽창", ix + 10, AY0 + 18, { s: 12, c: KC.red });
       text(ctx, "10⁻³⁶ 초 무렵", ix + 8, AY0 + 34, { s: 10.5, c: v("--mist") });
       text(ctx, "그 뒤로는 천천히", AX0 + 140, AY1 - 40, { s: 10.5, c: v("--mist") });
       text(ctx, "급팽창 전에는 지금 하늘의 양쪽 끝도 한 덩어리로 붙어 있었습니다 →", AX0, AY1 + 62, { s: 10.5, c: v("--mist") });
@@ -2011,13 +2038,14 @@ function msLogL(T) {
         if (i === 0) ctx.moveTo(px2, py2); else ctx.lineTo(px2, py2);
       }
       ctx.stroke(); ctx.setLineDash([]); ctx.restore();
-      ctx.strokeStyle = v("--coral"); ctx.lineWidth = 3; ctx.beginPath();
+      ctx.save(); ctx.strokeStyle = v("--coral"); ctx.lineWidth = 3; glowLine(ctx, v("--coral")); ctx.beginPath();
       for (var j = 0; j <= 120; j++) {
         var x2 = 0.0001 + j / 120 * XMAX;
         var px3 = PX(x2), py3 = PY(aOf(x2, OL));
         if (j === 0) ctx.moveTo(px3, py3); else ctx.lineTo(px3, py3);
       }
-      ctx.stroke();
+      ctx.stroke(); ctx.restore();
+      K.glow(ctx, PX(f), PY(aOf(f, OL)), 4.5, "rgba(255,255,255,.95)", 3);
       dash(ctx, PX(f), BY0, PX(f), BY1, "--ink");
       text(ctx, "지금", clamp(PX(f), BX0 + 16, BX1 - 16), BY0 - 6, { s: 10.5, a: "center", w: "800", c: v("--ink") });
       text(ctx, "점선 : 암흑 에너지가 없을 때 (감속)", BX0 + 10, BY0 + 20, { s: 10.5, c: v("--mist") });

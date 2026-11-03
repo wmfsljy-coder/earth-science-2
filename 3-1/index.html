@@ -54,7 +54,7 @@
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“하늘의 동서를 정하는 방법은 하나뿐입니다. <b>별이 실제로 어느 쪽에서 떠서 어느 쪽으로 지는지</b> 보는 것이죠. 지구가 서에서 동으로 자전하니까 천체는 <b>동쪽에서 떠서 서쪽으로</b> 집니다. 이건 바뀌지 않아요.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“아래 화면은 남쪽을 바라본 하늘입니다. <b>천구 적도 위의 별</b> 하나를 놓았어요. 관측 시각과 그 별이 남중하는 시각을 움직이면, 별의 고도와 방위를 계산해 줍니다. 별을 지평선까지 데려가 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-sky" width="900" height="430"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-sky" width="900" height="430"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">지금 시각<span class="val" id="a-time-val">21시 00분</span></div>
@@ -90,7 +90,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 1학년</span>“그럼 제 일지는 거꾸로 적힌 거네요. 화성은 동쪽이 아니라 <b>서쪽</b>으로 간 겁니다. 그런데 화성이 왜 갑자기 뒤로 가죠? 브레이크를 밟기라도 하나요?”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“아래 화면은 위가 <b>천구</b>(배경별과 황도), 아래가 <b>공전 궤도면</b>입니다. 날짜를 밀면 지구에서 행성으로 그은 <b>시선</b>이 천구에 자취를 남깁니다. 파란 자취는 순행(서→동), 붉은 자취는 역행(동→서), 노란 동그라미는 방향이 바뀌는 순간인 <b>유</b>입니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap">
+            <div class="canvas-wrap stage">
               <div class="badge-row"><span class="badge" id="a-date">—</span><span class="badge" id="a-state">—</span></div>
               <canvas id="a-c-retro" width="900" height="640"></canvas>
             </div>
@@ -143,7 +143,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 1학년</span>“지구가 앞지르기 때문이라는 건 알겠어요. 그런데 옛날 사람들은 지구가 가만히 있다고 믿었잖아요. 그럼 역행을 어떻게 설명했어요? 설명을 못 했으니까 틀린 거죠?”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“그게 이 이야기의 반전입니다. <b>설명했습니다.</b> 그것도 아주 잘요. <span data-view="who:클라우디오스 프톨레마이오스">프톨레마이오스</span>는 행성의 궤도 위에 작은 원 하나를 더 얹었어요. 그 작은 원이 <b>주전원</b>입니다. 왼쪽은 태양 중심 모형, 오른쪽은 주전원 모형입니다. 주전원 반지름을 바꿔 가며 두 모형이 가리키는 방향을 맞춰 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-epi" width="900" height="580"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-epi" width="900" height="580"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">2024-08-01 로부터<span class="val" id="a-epiday-val">0일</span></div>
@@ -207,7 +207,7 @@
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“<b>이각</b>은 지구에서 볼 때 행성이 태양에서 떨어져 보이는 각거리입니다. 내행성은 이각이 아무리 커져도 한계가 있어요. 지구에서 그은 시선이 행성의 궤도에 <b>접할 때</b>가 그 한계입니다.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“궤도를 원으로 어림하면 계산이 아주 단순해집니다. 행성의 궤도 반지름을 움직여 보세요. 접선이 만드는 각이 곧 <b>최대 이각</b>입니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-elong" width="900" height="440"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-elong" width="900" height="440"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">행성의 궤도 반지름<span class="val" id="b-a-val">0.55 AU</span></div>
@@ -228,7 +228,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">금성 모둠</span>“46°면 태양이 진 뒤 <b>세 시간</b>쯤 뒤에는 금성도 진다는 뜻이네요. 그런데 그날그날 몇 시까지 보이는지는 어떻게 알아요?”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“이각만 알면 다 나옵니다. 이각이 <b>동쪽(동방)</b>이면 행성이 태양보다 늦게 지니까 <b>초저녁 서쪽 하늘</b>, <b>서쪽(서방)</b>이면 태양보다 먼저 뜨니까 <b>새벽 동쪽 하늘</b>입니다. 오른쪽 막대가 시각별로 지평선 위에 얼마나 여유가 있는지 보여 줍니다. 마음에 드는 날짜는 표에 쌓아 두세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap">
+            <div class="canvas-wrap stage">
               <div class="badge-row"><span class="badge" id="b-badge">—</span></div>
               <canvas id="b-c-obs" width="900" height="470"></canvas>
             </div>
@@ -281,7 +281,7 @@
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“1610년, <span data-view="who:갈릴레오 갈릴레이">갈릴레이</span>가 망원경을 금성에 돌렸습니다. 그가 본 것은 <b>달처럼 차고 기우는 금성</b>이었어요. 그것도 모양이 바뀔 때 <b>크기까지</b> 함께 바뀌었습니다. 이게 왜 결정적이었을까요?”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“<span data-view="who:클라우디오스 프톨레마이오스">프톨레마이오스</span> 체계에서 금성은 <b>늘 지구와 태양 사이</b>에 있어야 했습니다. 그러면 금성의 밝은 면은 언제나 태양 쪽, 곧 우리 반대쪽을 향하죠. 두 모형이 예측하는 모양을 나란히 놓고 날짜를 밀어 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-phase" width="900" height="480"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-phase" width="900" height="480"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">날짜<span class="val" id="b-pday-val">2024-10-15</span></div>
@@ -339,7 +339,7 @@
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달의 공전 궤도면(<b>백도면</b>)은 황도면에 약 <b>5.1°</b> 기울어져 있습니다. 두 면이 만나는 선을 <b>교점선</b>이라 하고, 달이 그 선을 지나는 자리를 <b>교점</b>이라 합니다. 달이 교점에서 멀리 떨어진 채로 삭이 되면, 달은 태양의 <b>위나 아래</b>를 지나가 버립니다.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달이 교점에서 얼마나 떨어져 있는지를 움직여 보세요. 그 각도에서 달의 <b>황위</b>가 계산됩니다. 그리고 기울기를 0°로 두면 어떤 일이 벌어지는지도 꼭 확인하세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap">
+            <div class="canvas-wrap stage">
               <div class="badge-row"><span class="badge" id="c-badge">—</span></div>
               <canvas id="c-c-tilt" width="900" height="500"></canvas>
             </div>
@@ -378,7 +378,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 2학년</span>“교점 가까이에서 삭이 되면 일식이라는 건 알겠어요. 그런데 4월 8일은 해가 완전히 가려졌고 10월 2일은 반지가 남았어요. 같은 달, 같은 해인데요.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“달도 지구도 <b>원이 아니라 타원</b> 궤도를 돕니다. 달이 가까우면 크게 보이고 멀면 작게 보이죠. 태양도 마찬가지고요. <b>달이 태양보다 크게 보이면 개기, 작게 보이면 금환</b>입니다. 두 거리를 움직여 직접 만들어 보세요. 본그림자가 지표에 만드는 띠의 폭까지 계산해 줍니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-shadow" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-shadow" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">지구에서 달까지<span class="val" id="c-dm-val">380,700 km</span></div>
@@ -404,7 +404,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">동아리 2학년</span>“그럼 <b>언제</b> 일식인지도 미리 알 수 있는 거 아니에요? 삭이 오는 주기랑 달이 교점을 지나는 주기만 알면요.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">지도 교사</span>“바로 그겁니다. 삭에서 삭까지는 <b>29.53일</b>(삭망월), 교점에서 같은 교점까지는 <b>27.21일</b>(교점월). 두 주기가 어긋나 있어서, 식이 일어날 수 있는 기간(<b>식의 계절</b>)이 약 <b>173일</b>마다 돌아옵니다. 2024년 4월 8일 개기일식을 0번으로 두고, 삭과 망을 하나씩 넘겨 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap">
+            <div class="canvas-wrap stage">
               <div class="badge-row"><span class="badge" id="c-when-badge">—</span></div>
               <canvas id="c-c-when" width="900" height="480"></canvas>
             </div>
@@ -516,6 +516,7 @@
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>

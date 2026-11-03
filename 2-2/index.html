@@ -52,7 +52,7 @@
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“땅속 암석은 원래 <b>거의 녹지 않은 채</b> 있습니다. 깊이 들어갈수록 뜨거워지긴 하지만, 동시에 <b>압력도 높아져서 녹는점이 함께 올라가거든요.</b> 그래서 평소에는 아슬아슬하게 고체입니다.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“마그마가 생기려면 이 균형을 깨야 합니다. 방법은 셋뿐이에요. <b>열을 더 주거나</b>, <b>압력을 낮추거나</b>, <b>물을 넣거나.</b> 아래 화면에서 직접 깨 보세요. 가로축이 온도, 세로축이 깊이입니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-melt" width="900" height="500"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-melt" width="900" height="500"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">맨틀 물질이 있는 깊이<span class="val" id="a-depth-val">100 km</span></div>
@@ -79,7 +79,7 @@
           <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“이제 아까 그 돌 두 덩이를 설명해 주세요. 분석표를 보니 둘 다 SiO₂가 <b>72 %</b>인데, 하나는 알갱이가 쌀알만 하고 하나는 매끈합니다.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“<b>SiO₂ 함량은 이름의 절반</b>만 정합니다. 나머지 절반은 <b>어디서 식었느냐</b>가 정해요. 깊은 곳에서 천천히 식으면 결정이 크게 자라 <b>조립질</b>이 되고, 지표 가까이에서 빨리 식으면 결정이 자랄 틈이 없어 <b>세립질</b>이 됩니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-rock" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-rock" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">마그마의 SiO₂ 함량<span class="val" id="a-sio2-val">52 %</span></div>
@@ -100,7 +100,7 @@
           <div class="story"><div class="who">✍️</div><div class="say"><span class="name">구성 작가</span>“마지막 장면이 화산 분출입니다. 자료 화면을 두 개 받았는데요, 하나는 시뻘건 용암이 강처럼 흐르는 장면이고 하나는 잿빛 기둥이 하늘로 솟구치는 장면입니다. 어느 쪽을 써야 하죠?”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자문 지질학자</span>“그건 마그마가 정합니다. <b>점성</b>이 열쇠예요. 끈적할수록 가스가 못 빠져나가 안에서 압력이 쌓이고, 결국 터집니다. 아래에서 직접 만들어 보시죠.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-erupt" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-erupt" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">SiO₂ 함량<span class="val" id="a-si2-val">60 %</span></div>
@@ -115,6 +115,7 @@
                 <input type="range" id="a-h2o" min="0" max="6" step="0.5" value="2">
               </div>
               <div class="readout"><span class="dot" style="background:var(--rose)"></span><span class="txt" id="a-erupt-read">분출 양식: —</span></div>
+              <button type="button" class="btn sm" id="a-erupt-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="a-erupt-info"></div>
           </div>
@@ -164,7 +165,7 @@
         <section class="scene" data-title="녹지 않고 바뀐다">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“변성 작용의 핵심은 이거야. <b>녹지 않는다.</b> 고체인 채로 원자가 자리를 옮겨 광물이 새로 자라고, 눌리는 방향에 <b>수직으로</b> 납작한 광물들이 줄을 서. 그 줄이 바로 <b>엽리</b>야. 한번 만들어 보자.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-meta" width="900" height="490"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-meta" width="900" height="490"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">변성되기 전의 암석(원암)</div>
@@ -194,7 +195,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">나</span>“마그마 옆이면 얼마나 멀리까지 변하나요? 1 km? 10 km?”</div></div>
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“그게 재미있어. <b>관입한 마그마 덩어리가 클수록</b> 변성대가 넓어져. 직접 재 보렴.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-aur" width="900" height="450"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-aur" width="900" height="450"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">관입한 마그마 덩어리의 반지름<span class="val" id="b-size-val">300 m</span></div>
@@ -216,7 +217,7 @@
         <section class="scene" data-title="순환을 직접 돌려 보기">
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지구과학 선생님</span>“마지막 물음이 남았지. ‘앞으로 무엇이 될까.’ 답은 <b>무엇이든 될 수 있다</b> 야. 암석은 한 번 만들어지면 끝이 아니라, 지구 시스템 안에서 <b>돌고 돈단다.</b> 직접 돌려 보렴.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-cycle" width="900" height="490"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-cycle" width="900" height="490"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">이 돌에게 일어날 일을 고르세요</div>
@@ -286,7 +287,7 @@
         <section class="scene" data-title="얼마나 빨리 식었나">
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“결정 크기를 정하는 건 ‘지표냐 지하냐’가 아니라 <b>얼마나 빨리 식었느냐</b> 하나뿐입니다. 그리고 식는 속도는 <b>마그마 덩어리가 얼마나 두꺼운가</b>에 가장 크게 좌우됩니다. 계산해 보시죠.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-grain" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-grain" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">마그마가 채운 공간의 두께<span class="val" id="c-thick-val">600 m</span></div>
@@ -314,7 +315,7 @@
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">지원자(나)</span>“용암이 식으면서 <b>부피가 줄어들기</b> 때문입니다. 줄어든 만큼 잡아당겨져서 갈라지는데, 가장 적은 힘으로 갈라지는 모양이 <b>육각형</b>이라… 그럼 기둥 굵기는 무엇이 정하나요?”</div></div>
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“역시 <b>식는 속도</b>입니다. 천천히 식을수록 기둥이 굵어집니다. 실제 지질공원 세 곳을 놓고 맞춰 보시죠.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-col" width="900" height="450"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-col" width="900" height="450"></canvas></div>
             <div class="controls">
               <div class="ctrl-group" style="flex:1 1 100%">
                 <div class="ctrl-label">설명할 곳</div>
@@ -338,7 +339,7 @@
         <section class="scene" data-title="지도 위의 지질공원">
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“마지막 문제입니다. 지도에서 지질공원을 하나씩 눌러 보시고, 한반도의 돌이 <b>언제 무엇으로</b> 만들어졌는지 큰 흐름을 말해 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-map" width="900" height="600"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-map" width="900" height="600"></canvas></div>
             <div class="info-card" id="c-map-info">지도의 표식을 눌러 보세요. 여섯 곳을 모두 확인해야 합니다.</div>
           </div>
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">심사 위원</span>“이제 시료를 만들어진 방식대로 나눠 보세요.”</div></div>
@@ -418,6 +419,7 @@
 <script src="../assets/share.js"></script>
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>

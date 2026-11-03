@@ -6,6 +6,7 @@
 <title>지구의 역사 — 관측 스테이션</title>
 <link rel="stylesheet" href="../assets/theme.css">
 <link rel="stylesheet" href="../assets/story.css">
+<style>/* 무대 읽음판(어두운 바탕) 위의 옛 한 줄 읽음판 글자 */ .readout .txt{color:var(--stage-ink)} .readout .txt b{color:var(--stage-yellow)}</style>
 <style>
   .data-mini-table { width: 100%; border-collapse: collapse; font-size: 12px; margin: 4px 0 0; }
   .data-mini-table th, .data-mini-table td { border: 1px solid var(--line); padding: 6px 8px; text-align: center; }
@@ -56,7 +57,7 @@
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“순서를 읽는 출발점은 <b><span data-view="law:중첩의 법칙">지층 누중의 법칙</span></b>입니다. 아래가 먼저, 위가 나중. 그런데 이 법칙에는 ‘<b>지층이 역전되지 않았다면</b>’이라는 단서가 붙어요. 그러니 먼저 <b>어느 쪽이 위였는지</b>부터 증명해야 합니다.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“그 증거가 <b>퇴적구조</b>입니다. 퇴적구조는 퇴적물이 쌓이던 순간의 환경이 굳어 버린 흔적이에요. 먼저 퇴적구조 하나가 어떻게 만들어지는지, <b>입자가 가라앉는 속도</b>부터 계산해 봅시다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-fall" width="900" height="420"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-fall" width="900" height="420"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">입자 지름<span class="val" id="a-grain-val">0.500 mm</span></div>
@@ -67,12 +68,13 @@
                 <input type="range" id="a-depth" min="5" max="200" step="5" value="50">
               </div>
               <div class="readout"><span class="dot" style="background:var(--teal)"></span><span class="txt" id="a-fall-read">가라앉는 데 걸리는 시간: —</span></div>
+              <button type="button" class="btn sm" id="a-fall-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="a-fall-info"></div>
           </div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“이제 진짜 자를 씁시다. 아래 화면의 지층에는 퇴적구조가 하나씩 들어 있습니다. <b>지층 뒤집기</b>를 켜면 지각 변동으로 역전된 상태가 됩니다. 구조만 보고 <b>어느 쪽이 위(젊은 쪽)</b>인지 판정해 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-updown" width="900" height="400"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-updown" width="900" height="400"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">퇴적구조</div>
@@ -107,7 +109,7 @@
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“아닙니다. 저건 <b>없어진 시간</b>이에요. 땅이 솟아올라 물 밖으로 나오면 쌓이는 대신 <b>깎입니다.</b> 그러다 다시 가라앉아 그 위에 새로 쌓이면, 두 지층 사이에는 몇천만 년이 통째로 비어 있게 되지요. 이것이 <b><span data-view="law:부정합">부정합</span></b>입니다.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“직접 만들어 봅시다. 지층을 얼마나 <b>기울였는지</b>, 물 밖에서 얼마나 <b>오래 깎였는지</b>에 따라 부정합의 종류가 달라집니다. 침식 속도는 1년에 0.01 mm로 두겠습니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-unc" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-unc" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">지각 변동으로 기울어진 각도<span class="val" id="a-tilt-val">0°</span></div>
@@ -127,7 +129,7 @@
         <section class="scene" data-title="절벽의 순서를 복원한다">
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">지질 조사관</span>“이제 도구가 다 모였습니다. 절벽 단면의 각 부분을 눌러 증거를 확인하세요. <b>자른 쪽이 나중</b>이라는 것, 그리고 <b>남의 조각을 품고 있는 쪽이 나중</b>이라는 것만 기억하면 됩니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-sec" width="900" height="520"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-sec" width="900" height="520"></canvas></div>
             <div class="info-card" id="a-sec-info">절벽 단면에서 알아보고 싶은 부분을 눌러 보세요.</div>
           </div>
           <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">공사 감독</span>“그런데 아까부터 마음에 걸리는 게 있는데요. 셰일층에서 나온 건 <b>고사리 화석</b>뿐이잖습니까. 화석으로 순서를 따지는 건 ‘<b>동물</b>군천이의 법칙’이라던데, 식물만 나오면 그 법칙은 못 쓰는 거 아닙니까?”</div></div>
@@ -177,7 +179,7 @@
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“원리는 놀랄 만큼 단순합니다. 방사성 원소(<b>모원소</b>)는 저절로 다른 원소(<b>자원소</b>)로 바뀌는데, 그 양이 <b>절반으로 줄어드는 데 걸리는 시간</b>이 늘 일정해요. 그것이 <b>반감기</b>입니다. 온도를 올리든 압력을 주든 바뀌지 않습니다.”</div></div>
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“그러니 우리가 잴 것은 딱 하나, <b>모원소가 얼마나 남았는가</b>입니다. 남은 비율을 움직여 보면서, 그것이 반감기 몇 번에 해당하는지 확인하세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-half" width="900" height="450"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-half" width="900" height="450"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">남아 있는 모원소<span class="val" id="b-left-val">80.00 %</span></div>
@@ -202,7 +204,7 @@
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">연대 측정실장</span>“시계는 세 개가 있습니다. 반감기가 <b>5,730년</b>인 ¹⁴C, <b>12억 5천만 년</b>인 ⁴⁰K, <b>44억 7천만 년</b>인 ²³⁸U. 재려는 나이가 반감기에 견주어 <b>너무 길면</b> 모원소가 남지 않아 못 재고, <b>너무 짧으면</b> 자원소가 거의 생기지 않아 못 잽니다.”</div></div>
           <div class="story"><div class="who">🧑‍🎓</div><div class="say"><span class="name">실습 연구원</span>“그러니까 초시계로 한 해를 재려 해도 안 되고, 달력으로 100 m 달리기를 재려 해도 안 된다는 말씀이군요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-pick" width="900" height="440"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-pick" width="900" height="440"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">시료 고르기</div>
@@ -231,7 +233,7 @@
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지층 대비 담당</span>“절대연령은 아무 층에서나 잴 수 있는 게 아닙니다. 화산재가 굳은 <b>응회암</b>처럼 <b>짧은 시간에 넓은 지역에 한꺼번에 쌓인 층</b>이라야 값이 제대로 나와요. 그런 층은 멀리 떨어진 두 지역을 잇는 기준, 곧 <b>건층(열쇠층)</b>이 됩니다.”</div></div>
           <div class="story"><div class="who">🧑‍🏫</div><div class="say"><span class="name">지층 대비 담당</span>“가 지역과 나 지역, 두 곳 모두에서 같은 응회암 두 장이 나왔습니다. 아래 응회암은 <b>7,400만 년 전</b>, 위 응회암은 <b>6,900만 년 전</b>. 두 층 사이는 <b>500만 년</b>이라는 뜻이지요. 그런데 그 사이에 쌓인 지층의 두께는 두 지역이 딴판입니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-corr" width="900" height="500"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-corr" width="900" height="500"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">조사할 지역</div>
@@ -292,7 +294,7 @@
         <section class="scene" data-title="46억 년을 1년으로 줄이면">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“46억 년은 숫자로는 아무도 못 느낍니다. 그러니 <b>1월 1일 0시에 지구가 태어나고 12월 31일 밤 24시가 지금</b> 인 달력으로 줄여 봅시다. 날짜를 옮기면 그때가 몇 년 전인지 계산해 줍니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-cal" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-cal" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">달력의 날짜<span class="val" id="c-day-val">1월 1일</span></div>
@@ -313,7 +315,7 @@
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“지질 시대를 <b>대(代)와 기(紀)</b>로 가르는 기준은 암석의 색깔이 아니라 <b>생물계의 큰 변화</b>입니다. 특히 <b>대멸종</b>이 시대의 경계가 되지요. 시간 슬라이더를 움직여 다섯 번의 대멸종을 모두 찾아보세요.”</div></div>
           <div class="story"><div class="who">👩‍🎨</div><div class="say"><span class="name">전시 기획자</span>“다섯 번 중에 가장 컸던 건 역시 공룡이 사라진 그 사건이겠죠?”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-ext" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-ext" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">지금 보고 있는 때<span class="val" id="c-t-val">541백만 년 전</span></div>
@@ -330,7 +332,7 @@
         <section class="scene" data-title="좋은 표준 화석의 조건">
           <div class="story"><div class="who">🧑‍🔬</div><div class="say"><span class="name">학예사</span>“마지막입니다. 시대를 가르는 데 쓰는 화석을 <b>표준 화석</b>이라고 합니다. 그런데 아무 화석이나 되는 게 아니에요. <b>얼마나 짧게 살았는지</b>와 <b>얼마나 넓게 퍼졌는지</b>, 두 가지가 동시에 맞아야 합니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-index" width="900" height="420"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-index" width="900" height="420"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">이 생물이 살았던 기간<span class="val" id="c-span-val">5,000만 년</span></div>
@@ -422,6 +424,7 @@
 <script src="life-items.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>

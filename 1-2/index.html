@@ -55,7 +55,7 @@
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">해양 관측사</span>“따뜻한 바다가 곧 풍요로운 바다는 아닙니다. 페루 앞바다가 부자인 까닭은 오히려 <b>차가운 물</b> 덕분이에요. 깊은 바다의 찬물에는 플랑크톤이 자라는 데 쓰이는 <b>영양염</b>이 잔뜩 녹아 있거든요. 그 찬물을 끌어올리는 것이 바람입니다.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">해양 관측사</span>“여기는 <b>남반구</b>이고, 해안은 화면의 <b>오른쪽</b>, 바다는 왼쪽입니다. 바람이 표층 해수를 직각으로 밀어내는 <b><span data-view="law:에크만 수송">에크만 수송</span></b>을 떠올리면서, 바람의 방향과 세기를 바꿔 보세요. 표층 수온이 어떻게 달라지는지 지켜보시고요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-up" width="900" height="440"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-up" width="900" height="440"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">바람이 불어가는 방향<span class="val" id="a-wd-val">동 (90°)</span></div>
@@ -65,6 +65,7 @@
                 <div class="ctrl-label">바람의 세기<span class="val" id="a-ws-val">7.0 m/s</span></div>
                 <input type="range" id="a-ws" min="0" max="12" step="0.5" value="7">
               </div>
+              <button type="button" class="btn sm" id="a-up-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="a-up-info"></div>
           </div>
@@ -75,13 +76,15 @@
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“이제 페루 앞바다만 보지 말고 <b>열대 태평양 전체</b>를 봅시다. 적도에서는 <b><span data-view="earth:current/wind/surface/level/orthographic=-150.00,0.00,500" data-ask="적도 태평양에서 바람은 어느 쪽에서 어느 쪽으로 불까?">무역풍</span></b>이 동에서 서로 붑니다. 이 바람이 따뜻한 표층수를 서쪽으로 몰아 쌓고, 동쪽에서는 그 자리를 채우려 찬물이 올라오지요. 그래서 서태평양은 덥고 습하고, 동태평양은 서늘하고 건조합니다.”</div></div>
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“대기는 이 수온 차이를 따라 <b><span data-view="law:워커 순환">워커 순환</span></b>이라는 고리를 만듭니다. 그러면 이렇게 물어봅시다 — <b>무역풍이 약해지면</b> 어떻게 될까요? 슬라이더를 평년(1.00배)에서 좌우로 밀어 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-enso" width="900" height="500"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-enso" width="900" height="500"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">무역풍의 세기 (평년 = 1.00배)<span class="val" id="a-trade-val">1.00배</span></div>
                 <input type="range" id="a-trade" min="0.3" max="1.7" step="0.05" value="1">
               </div>
+              <button type="button" class="btn sm" id="a-enso-play">⏸ 움직임 멈추기</button>
             </div>
+            <div class="sim-side" style="padding-top:6px"><div class="readout full" id="a-enso-read"></div></div>
             <div class="info-card" id="a-enso-info"></div>
           </div>
           <div class="mission" id="m1-3"><span class="m-tag">미션</span>동태평양 수온 편차가 <b>+0.5 ℃ 이상</b>이면 엘니뇨, <b>−0.5 ℃ 이하</b>면 라니냐로 봅니다.<ul><li id="m1-3a">무역풍을 약화시켜 <b>엘니뇨</b>를 만들기</li><li id="m1-3b">무역풍을 강화시켜 <b>라니냐</b>를 만들기</li><li id="m1-3c">엘니뇨를 더 키워 <b>페루 어획 지수를 50 % 아래</b>로 떨어뜨리기</li></ul></div>
@@ -91,7 +94,7 @@
           <div class="story"><div class="who">🧑‍💼</div><div class="say"><span class="name">국제 곡물 조사관</span>“이상합니다. 페루 어부가 그물이 비었다고 하던 바로 그해에, <b>오스트레일리아 북부와 인도네시아는 극심한 가뭄</b>이었습니다. 지구 반대편인데 왜 같은 해에 같이 흔들립니까?”</div></div>
           <div class="story"><div class="who">👨‍🏫</div><div class="say"><span class="name">기후 연구관</span>“열대 태평양의 수온이 바뀌면 <b>상승 기류가 서는 자리</b>가 통째로 옮겨 가기 때문입니다. 비구름이 서는 자리가 옮겨지면, 원래 비를 받던 곳은 가뭄이 들지요. 이것을 <b>원격 상관(원격 영향)</b>이라고 합니다. 수온 편차를 직접 넣어 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="a-c-tele" width="900" height="440"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="a-c-tele" width="900" height="440"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">관측된 동태평양 수온 편차<span class="val" id="a-anom-val">+0.0 ℃</span></div>
@@ -142,7 +145,7 @@
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“먼저 <b>지구 바깥의 요인</b>부터 정리합시다. 지구의 운동은 고정되어 있지 않습니다. 자전축의 <b>기울기</b>가 변하고, 자전축이 팽이처럼 도는 <b>세차 운동</b>을 하고, 공전 궤도의 <b>이심률</b>도 변합니다. 이 셋이 겹쳐 빙하기와 간빙기를 만든다는 생각이 <b><span data-view="law:밀란코비치 주기">밀란코비치 주기</span></b>예요.”</div></div>
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“핵심은 <b>북반구 고위도의 여름 일사량</b>입니다. 여름이 시원해서 지난겨울에 쌓인 눈이 다 녹지 못하면, 해마다 눈이 조금씩 남아 빙상이 자랍니다. 세 슬라이더를 움직여 북위 65° 여름 일사량을 바꿔 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-milan" width="900" height="460"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-milan" width="900" height="460"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">자전축 기울기<span class="val" id="b-tilt-val">23.4°</span></div>
@@ -156,6 +159,7 @@
                 <div class="ctrl-label">세차 운동 — 근일점에서 북반구의 계절<span class="val" id="b-prec-val">겨울</span></div>
                 <input type="range" id="b-prec" min="0" max="350" step="10" value="0">
               </div>
+              <button type="button" class="btn sm" id="b-milan-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="b-milan-info"></div>
           </div>
@@ -166,7 +170,7 @@
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자료실장</span>“이제 지구 바깥이 아닌 요인들을 한 화면에서 견줘 봅시다. 화산 분출은 <b>자연적 요인 가운데 지구 내적 요인</b>입니다. 화산이 뿜어낸 <b>황산염 에어로졸</b>은 성층권에서 햇빛을 되쏘아 지구를 식힙니다. 그런데 사람이 태운 화석 연료가 덜 탄 채 나오는 <b>검댕</b>(<b>인위적 요인</b>)은 빛을 <b>흡수</b>해서 주변 공기를 데웁니다. 같은 ‘에어로졸’인데 부호가 반대예요.”</div></div>
           <div class="story"><div class="who">👩‍🔬</div><div class="say"><span class="name">자료실장</span>“기후를 밀고 당기는 힘의 크기는 <b><span data-view="law:복사강제력">복사 강제력</span></b>(W/m²)으로 잽니다. 양수면 데우는 쪽, 음수면 식히는 쪽이에요. 종류와 양을 바꿔 가며 부호가 뒤집히는지 직접 확인해 보세요. 비교하려고 지구 바깥의 자연적 요인인 <b>태양 활동</b>도 함께 넣어 두었습니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-force" width="900" height="420"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-force" width="900" height="420"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">에어로졸의 종류<span class="val" id="b-atype-val">황산염(반사형)</span></div>
@@ -189,7 +193,7 @@
         <section class="scene" data-title="최근 100년만은 그려지지 않는다">
           <div class="story"><div class="who">👨‍🔬</div><div class="say"><span class="name">고기후 연구원</span>“자, 마지막입니다. 1900년부터 지금까지의 <b>관측 기온</b>이 검은 곡선입니다. 요인을 하나씩 켜서 모형 곡선을 그려 보고, 관측과 얼마나 맞는지 <b>맞춤도</b>를 보세요. 먼저 <b>자연 요인만</b> 켜 봅시다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="b-c-attr" width="900" height="470"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="b-c-attr" width="900" height="470"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">모형에 넣을 요인</div>
@@ -245,7 +249,7 @@
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“먼저 <b>온실 효과가 무엇인지</b>부터 못을 박읍시다. 지구는 태양 복사를 받은 만큼 <b>지구 복사(적외선)</b>로 내보내며 균형을 잡습니다. 이것이 <b><span data-view="law:복사 평형">복사 평형</span></b>이에요. 그런데 대기가 그 적외선을 얼마쯤 <b>가로채서 다시 지표로 돌려보내면</b> 지표는 더 뜨거워야 균형이 맞습니다.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“대기를 한 장의 담요라고 보고, 그 담요가 적외선을 붙잡는 비율을 <b>흡수율</b>이라고 합시다. 지금 지구는 약 0.78입니다. 흡수율과 <b>반사율(알베도)</b>을 바꿔 가며 지표 온도를 직접 구해 보세요.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-green" width="900" height="450"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-green" width="900" height="450"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">대기의 적외선 흡수율<span class="val" id="c-eps-val">0.78</span></div>
@@ -255,6 +259,7 @@
                 <div class="ctrl-label">지구의 반사율(알베도)<span class="val" id="c-alb-val">0.30</span></div>
                 <input type="range" id="c-alb" min="0.1" max="0.5" step="0.01" value="0.3">
               </div>
+              <button type="button" class="btn sm" id="c-green-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="c-green-info"></div>
           </div>
@@ -265,7 +270,7 @@
           <div class="story"><div class="who">🧑‍⚖️</div><div class="say"><span class="name">협상 대표</span>“원리는 알겠습니다. 이제 <b>숫자</b>를 주십시오. 해마다 몇 퍼센트입니까?”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“다행히 계산이 간단합니다. 기온 상승은 <b>해마다 얼마나 배출했는가</b>보다 <b>지금까지 모두 합쳐 얼마나 배출했는가</b>에 거의 비례합니다. 누적 배출 1조 t마다 약 0.45 ℃. 그러니 감축률을 넣고 2100년까지 더하기만 하면 됩니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-path" width="900" height="460"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-path" width="900" height="460"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">해마다 줄일 비율<span class="val" id="c-rate-val">1.00 %/년</span></div>
@@ -286,7 +291,7 @@
           <div class="story"><div class="who">🧑‍🔧</div><div class="say"><span class="name">연안 도시 시장</span>“줄이는 이야기는 알겠습니다. 그런데 <b>이미 오른 것</b>은 어떻게 합니까? 우리 도시는 해발 1 m 남짓한 매립지 위에 있습니다. 방조제를 얼마나 높여야 합니까? 예산은 한정되어 있습니다.”</div></div>
           <div class="story"><div class="who">👩‍🏫</div><div class="say"><span class="name">과학 자문관</span>“바닷물은 데워지면 <b>부피가 늘고</b>, 육지의 빙하가 녹아 물이 더해집니다. 그래서 기온이 오르면 해수면도 오르지요. 2100년 기온 상승을 넣어 해수면 상승을 구하고, <b>폭풍 해일까지 견딜 만큼만</b> 방조제를 세워 보세요. 너무 낮으면 잠기고, 너무 높으면 예산이 낭비됩니다.”</div></div>
           <div class="stage-card">
-            <div class="canvas-wrap"><canvas id="c-c-sea" width="900" height="450"></canvas></div>
+            <div class="canvas-wrap stage"><canvas id="c-c-sea" width="900" height="450"></canvas></div>
             <div class="controls">
               <div class="ctrl-group">
                 <div class="ctrl-label">2100년 기온 상승<span class="val" id="c-dt-val">2.5 ℃</span></div>
@@ -296,6 +301,7 @@
                 <div class="ctrl-label">새로 쌓을 방조제 높이<span class="val" id="c-wall-val">0 cm</span></div>
                 <input type="range" id="c-wall" min="0" max="160" step="5" value="0">
               </div>
+              <button type="button" class="btn sm" id="c-sea-play">⏸ 움직임 멈추기</button>
             </div>
             <div class="info-card" id="c-sea-info"></div>
           </div>
@@ -373,6 +379,7 @@
 <script src="../assets/account.js"></script>
 <script src="episodes.js"></script>
 <script src="worked.js"></script>
+<script src="handoff.js"></script>
 <script src="quiz-items.js"></script>
 <script src="../assets/review.js"></script>
 <script src="../assets/peer.js"></script>
