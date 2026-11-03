@@ -351,99 +351,271 @@ function dateLabel(day) {
     say(); draw(); mission2();
   })();
 
-  /* ---- 장면3 부정합 ---- */
+  /* ---- 장면3 부정합 — 아이소메트릭 단면 모형 ---- */
   (function () {
     var canvas = $("a-c-unc"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h;
     var tilt = 0, eT = 0;
     var got = window.sthState("aUnc") || { a: false, b: false, c: false };
     var RATE = 0.1;                                   /* 1만 년에 0.1 m (= 1년에 0.01 mm) */
-    var TOTAL = 200, PXM = 0.9;
-
-    function kind(E) {
-      if (E <= 0) return "none";
-      if (E >= TOTAL) return "non";
-      return tilt > 0 ? "ang" : "par";
-    }
+    var TOTAL = 200;
+    function kind(E) { if (E <= 0) return "none"; if (E >= TOTAL) return "non"; return tilt > 0 ? "ang" : "par"; }
     var LABEL = { none: "부정합이 아닙니다", par: "평행 부정합", ang: "경사 부정합", non: "난정합" };
 
-    var ROCK = [["#c9a66b", "#a8844c"], ["#6d6a72", "#4f4c55"], ["#cfc6b0", "#a99f86"], ["#9a6b4a", "#744d33"], ["#b89a6a", "#8f7448"]];
-    function layer(x, y, w, h, c, seed) {
-      var g = ctx.createLinearGradient(0, y, 0, y + h); g.addColorStop(0, c[0]); g.addColorStop(1, c[1]);
-      ctx.fillStyle = g; ctx.fillRect(x, y, w, h);
-      var R = K.rng(seed);
-      for (var i = 0; i < w * h / 140; i++) { ctx.fillStyle = R() > .5 ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.12)"; ctx.fillRect(x + R() * w, y + R() * h, 1.6, 1.6); }
-      ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(x, y + h - 1.5, w, 1.5);
+    /* 모형 치수(그림 단위): 블록 가로 L, 깊이 D, 화면 배율 S */
+    var L = 380, D = 220, S = 0.75, C = 0.866, OX = 258, OY = 290;
+    var G = 42, PXM = 0.75, LAY = 40 * PXM, CG = 7, NA = 18, NB = 18;
+    var XC = L / 2, ZC = G + TOTAL * PXM / 2;
+    function P(x, y, z) { return { x: OX + (x - y) * C * S, y: OY + (x + y) * 0.5 * S - z * S }; }
+    var ROCK = [["#d8b77c", "#b8955a", "sand"], ["#6c6f7a", "#4d505a", "shale"], ["#e2dccb", "#bdb49a", "lime"], ["#a8714f", "#80533a", "silt"], ["#c9a46c", "#a07c48", "sand2"]];
+
+    function finalView() {
+      var E = eT * RATE;
+      return { dep: 5, th: tilt, cut: Math.max(0, TOTAL - E) * PXM, eroded: E > 0, newDep: 1, water: null, rain: 0, cap: null };
     }
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var E = eT * RATE, left = Math.max(0, TOTAL - E), k = kind(E);
-      var LW = 640;
-      K.stage(ctx, 0, 0, LW, H, "earth", { seed: 321 });
-      K.pill(ctx, "융기 · 침식 · 침강이 만드는 부정합", 16, 28, { s: 13, c: KC.blue });
+    function f(b, u, th) { var a = th * Math.PI / 180; return ZC + (b - ZC) / Math.cos(a) + (u - XC) * Math.tan(a); }
+    function stackTop(u, v) { return v.dep >= 5 ? f(G + 5 * LAY, u, v.th) : G + v.dep * LAY; }
+    function cutAt(s, v) { return v.cut === null ? 1e9 : G + v.cut + (v.eroded ? 3 * Math.sin(s / 24) : 0); }
+    function lowerTop(u, s, v) { return Math.min(stackTop(u, v), cutAt(s, v)); }
+    function newTop(v) { return G + (v.cut || 0) + (CG + NA + NB) * v.newDep; }
 
-      var X0 = 70, X1 = 600, BASE = 400;
-      /* 기반암 화강암: 분홍 바탕에 검은·흰 결정 */
-      var gg = ctx.createLinearGradient(0, BASE, 0, BASE + 50); gg.addColorStop(0, "#d9a1a0"); gg.addColorStop(1, "#a86f70");
-      ctx.fillStyle = gg; ctx.fillRect(X0, BASE, X1 - X0, 50);
-      var R = K.rng(9);
-      for (var gi = 0; gi < 260; gi++) { ctx.fillStyle = R() > .6 ? "rgba(30,25,30,.7)" : "rgba(255,255,255,.55)"; ctx.fillRect(X0 + R() * (X1 - X0), BASE + R() * 50, 2 + R() * 2, 2 + R() * 2); }
-      K.pill(ctx, "화강암 기반암", (X0 + X1) / 2, BASE + 32, { s: 12, a: "center", c: "#ffd0d0" });
-
-      /* 남아 있는 아래 지층 */
-      var hpx = left * PXM, cutY = BASE - hpx;
-      if (hpx > 1) {
+    /* 면 좌표(u 가로, z 위) → 화면. front = 앞면(y=D), right = 오른쪽 면(x=L) */
+    function faceT(side) {
+      if (side === "front") ctx.transform(C * S, 0.5 * S, 0, -S, OX - C * S * D, OY + 0.5 * S * D);
+      else ctx.transform(-C * S, 0.5 * S, 0, -S, OX + C * S * L, OY + 0.5 * S * L);
+    }
+    function texture(kn, x0, z0, w, h, seed, slope) {
+      var R = K.rng(seed), i;
+      if (kn === "shale") {
+        ctx.strokeStyle = "rgba(20,22,30,.35)"; ctx.lineWidth = .8;
+        for (i = 3; i < h; i += 4) { ctx.beginPath(); ctx.moveTo(x0, z0 + i); ctx.lineTo(x0 + w, z0 + i + w * slope); ctx.stroke(); }
+      } else if (kn === "lime") {
+        ctx.strokeStyle = "rgba(90,80,60,.35)"; ctx.lineWidth = .9;
+        for (i = 0; i < w; i += 26 + R() * 14) { ctx.beginPath(); ctx.moveTo(x0 + i, z0 + i * slope); ctx.lineTo(x0 + i + 3, z0 + h + i * slope); ctx.stroke(); }
+        for (i = 0; i < w * h / 60; i++) { ctx.fillStyle = "rgba(255,255,255,.25)"; var p1 = R() * w; ctx.fillRect(x0 + p1, z0 + R() * h + p1 * slope, 1.2, 1.2); }
+      } else {
+        for (i = 0; i < w * h / (kn === "silt" ? 40 : 55); i++) { var px = R() * w; ctx.fillStyle = R() > .5 ? "rgba(255,255,255,.22)" : "rgba(60,40,20,.28)"; ctx.fillRect(x0 + px, z0 + R() * h + px * slope, 1.4, 1.4); }
+        if (kn === "sand2") { ctx.strokeStyle = "rgba(90,60,25,.35)"; ctx.lineWidth = .8; for (i = 0; i < w; i += 34) { ctx.beginPath(); ctx.moveTo(x0 + i, z0 + 3 + i * slope); ctx.quadraticCurveTo(x0 + i + 14, z0 + h * .5 + i * slope, x0 + i + 30, z0 + h - 2 + i * slope); ctx.stroke(); } }
+      }
+    }
+    function drawFace(side, v) {
+      var Lw = side === "front" ? L : D, u, i;
+      function su(uu) { return side === "front" ? uu : L + uu * .7; }
+      function bandU(uu) { return side === "front" ? uu : L; }
+      var slope = side === "front" ? Math.tan(v.th * Math.PI / 180) : 0;
+      ctx.save(); faceT(side);
+      ctx.beginPath(); ctx.rect(0, 0, Lw, 400); ctx.clip();
+      /* 화강암 기반암 */
+      ctx.save();
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Lw, 0);
+      for (u = Lw; u >= 0; u -= 6) ctx.lineTo(u, Math.min(G, cutAt(su(u), v)));
+      ctx.closePath(); ctx.clip();
+      var gg = ctx.createLinearGradient(0, 0, 0, G); gg.addColorStop(0, "#a86c6e"); gg.addColorStop(1, "#d9a2a1");
+      ctx.fillStyle = gg; ctx.fillRect(0, 0, Lw, G);
+      var R = K.rng(side === "front" ? 9 : 19);
+      for (var gi = 0; gi < Lw * G / 14; gi++) { var r = R(); ctx.fillStyle = r > .62 ? "rgba(30,25,30,.75)" : (r > .3 ? "rgba(255,255,255,.6)" : "rgba(200,120,110,.6)"); ctx.fillRect(R() * Lw, R() * G, 1.6 + R() * 2.2, 1.6 + R() * 2.2); }
+      ctx.restore();
+      /* 아래 지층 */
+      if (v.dep > 0) {
         ctx.save();
-        ctx.beginPath(); ctx.rect(X0, cutY, X1 - X0, hpx); ctx.clip();
-        var cx = (X0 + X1) / 2, cy = BASE - TOTAL * PXM / 2, ang = -tilt * Math.PI / 180;
-        ctx.translate(cx, cy); ctx.rotate(ang); ctx.translate(-cx, -cy);
-        /* 기울어도 빈틈이 없도록 위아래로 몇 장 더 이어 그린다 */
-        for (var i = -3; i < 9; i++) layer(cx - 420, BASE - (i + 1) * 40 * PXM, 840, 40 * PXM, ROCK[(i % 5 + 5) % 5], 30 + i);
+        ctx.beginPath(); ctx.moveTo(0, G);
+        for (u = 0; u <= Lw; u += 6) ctx.lineTo(u, Math.max(G, lowerTop(bandU(u), su(u), v)));
+        ctx.lineTo(Lw, G); ctx.closePath(); ctx.clip();
+        for (i = -3; i < 9; i++) {
+          if (v.th === 0 && (i < 0 || i >= 5)) continue;
+          var b0 = G + i * LAY, b1 = b0 + LAY, rk = ROCK[(i % 5 + 5) % 5];
+          var z00 = f(b0, bandU(0), v.th), z01 = f(b0, bandU(Lw), v.th), z10 = f(b1, bandU(0), v.th), z11 = f(b1, bandU(Lw), v.th);
+          ctx.beginPath(); ctx.moveTo(0, z00); ctx.lineTo(Lw, z01); ctx.lineTo(Lw, z11); ctx.lineTo(0, z10); ctx.closePath();
+          var lg = ctx.createLinearGradient(0, z10, 0, z00); lg.addColorStop(0, rk[0]); lg.addColorStop(1, rk[1]);
+          ctx.fillStyle = lg; ctx.fill();
+          ctx.save(); ctx.clip(); texture(rk[2], 0, z00, Lw, LAY + 2, 40 + i + (side === "front" ? 0 : 50), slope); ctx.restore();
+          ctx.strokeStyle = "rgba(40,30,20,.35)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, z00); ctx.lineTo(Lw, z01); ctx.stroke();
+        }
         ctx.restore();
       }
-      /* 새로 쌓인 지층 두 장 */
-      layer(X0, cutY - 54, X1 - X0, 27, ["#e3cfa4", "#c7ae7e"], 41);
-      layer(X0, cutY - 27, X1 - X0, 27, ["#a7a2a8", "#85808a"], 42);
-      /* 침식면: 빛나는 울퉁불퉁한 선 */
-      ctx.save(); ctx.strokeStyle = KC.orange; ctx.lineWidth = 3; ctx.shadowColor = KC.orange; ctx.shadowBlur = 10;
-      ctx.beginPath();
-      for (var x = X0; x <= X1; x += 8) ctx.lineTo(x, cutY + Math.sin(x / 26) * 4);
-      ctx.stroke(); ctx.restore();
-      K.pill(ctx, "다시 가라앉은 뒤 새로 쌓인 지층", X0 + 8, cutY - 62, { s: 11.5, c: "#f0e2c0" });
-      K.pill(ctx, "↑ 부정합면", X1 - 8, cutY + 24, { s: 12, a: "right", c: KC.orange });
-      K.t(ctx, "깎여 나간 두께 " + E.toFixed(0) + " m", X0, 466, { s: 12, w: "700", c: KC.mute });
-      K.t(ctx, "남은 아래 지층 " + left.toFixed(0) + " m / 200 m", X0 + 220, 466, { s: 12, w: "700", c: KC.mute });
+      /* 부정합면 + 기저 역암 + 새 지층 */
+      if (v.eroded && v.cut !== null) {
+        if (v.newDep > 0) {
+          var layers = [[CG, ["#b59a78", "#8c7457"], "congl"], [NA, ["#ead7a8", "#cdb37e"], "sand"], [NB, ["#a9a4ab", "#86818b"], "shale"]], acc = 0;
+          for (var k2 = 0; k2 < 3; k2++) {
+            var th2 = layers[k2][0] * Math.min(1, Math.max(0, v.newDep * 3 - k2));
+            if (th2 <= 0) break;
+            ctx.beginPath();
+            for (u = 0; u <= Lw; u += 6) ctx.lineTo(u, Math.max(cutAt(su(u), v), G + v.cut + acc));
+            for (u = Lw; u >= 0; u -= 6) ctx.lineTo(u, Math.max(cutAt(su(u), v), G + v.cut + acc + th2));
+            ctx.closePath();
+            var ng = ctx.createLinearGradient(0, G + v.cut + acc + th2, 0, G + v.cut + acc); ng.addColorStop(0, layers[k2][1][0]); ng.addColorStop(1, layers[k2][1][1]);
+            ctx.fillStyle = ng; ctx.fill();
+            if (layers[k2][2] === "congl") {
+              var Rp = K.rng(side === "front" ? 61 : 71);
+              for (var pi = 0; pi < Lw / 7; pi++) { var pu = Rp() * Lw; K.planet(ctx, pu, cutAt(su(pu), v) + 2 + Rp() * 4, 1.6 + Rp() * 2.2, ["#e6dccb", "#9aa0a8", "#c98f6a"][pi % 3], "#4a4038"); }
+            } else { ctx.save(); ctx.clip(); texture(layers[k2][2], 0, G + v.cut + acc, Lw, th2, 80 + k2, 0); ctx.restore(); }
+            acc += th2;
+          }
+        }
+        ctx.save(); ctx.strokeStyle = "#ff9a3c"; ctx.lineWidth = 2.4; ctx.shadowColor = "#ff8a20"; ctx.shadowBlur = 8;
+        ctx.beginPath(); var pen = false; for (u = 0; u <= Lw; u += 4) { var cz = cutAt(su(u), v); if (cz <= stackTop(bandU(u), v) + .5) { if (pen) ctx.lineTo(u, cz); else { ctx.moveTo(u, cz); pen = true; } } else pen = false; } ctx.stroke(); ctx.restore();
+      }
+      /* 물(재생 중) */
+      if (v.water !== null) {
+        var tz = function (uu) { return Math.max(G, (v.eroded && v.newDep > 0) ? newTop(v) : lowerTop(bandU(uu), su(uu), v)); };
+        ctx.beginPath();
+        for (u = 0; u <= Lw; u += 6) ctx.lineTo(u, tz(u));
+        for (u = Lw; u >= 0; u -= 6) ctx.lineTo(u, Math.max(tz(u), v.water));
+        ctx.closePath();
+        ctx.fillStyle = "rgba(60,150,225,.38)"; ctx.fill();
+      }
+      ctx.restore();
+      /* 면 음영 — 블록 면 모양 안에만 */
+      ctx.save(); faceT(side);
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Lw, 0);
+      for (u = Lw; u >= 0; u -= 6) ctx.lineTo(u, Math.max(G, (v.eroded && v.newDep > 0) ? newTop(v) : lowerTop(bandU(u), su(u), v), v.water || 0));
+      ctx.closePath(); ctx.clip();
+      var sh = ctx.createLinearGradient(0, 0, 0, 260);
+      if (side === "right") { sh.addColorStop(0, "rgba(10,20,50,.34)"); sh.addColorStop(1, "rgba(10,20,50,.18)"); }
+      else { sh.addColorStop(0, "rgba(0,0,0,.12)"); sh.addColorStop(1, "rgba(255,255,255,.06)"); }
+      ctx.fillStyle = sh; ctx.fillRect(0, 0, Lw, 400);
+      ctx.restore();
+    }
+    function drawTop(v) {
+      var N = 24, i, u0, u1, z0, z1, a, b, c, d;
+      var flat = v.eroded && v.newDep > 0 && v.cut !== null;
+      for (i = 0; i < N; i++) {
+        u0 = L * i / N; u1 = L * (i + 1) / N;
+        z0 = flat ? newTop(v) : Math.max(G, lowerTop(u0, u0, v)); z1 = flat ? newTop(v) : Math.max(G, lowerTop(u1, u1, v));
+        a = P(u0, 0, z0); b = P(u1, 0, z1); c = P(u1, D, z1); d = P(u0, D, z0);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y); ctx.lineTo(d.x, d.y); ctx.closePath();
+        var col = (flat && v.newDep >= 1 && v.water === null) ? (i % 2 ? "#6fa64a" : "#73ab4d") : (flat ? "#b9b4bb" : "#cdb07a");
+        ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = col; ctx.lineWidth = .8; ctx.stroke();
+      }
+      if (flat && v.newDep >= 1 && v.water === null) {
+        var R = K.rng(5), zt = newTop(v);
+        for (i = 0; i < 260; i++) { var q = P(R() * L, R() * D, zt); ctx.fillStyle = R() > .5 ? "rgba(40,90,30,.35)" : "rgba(180,230,140,.35)"; ctx.fillRect(q.x, q.y, 2, 1.2); }
+        var r1 = P(0, D * .62, zt), r2 = P(L, D * .48, zt), r3 = P(L, D * .56, zt), r4 = P(0, D * .70, zt);
+        ctx.fillStyle = "#8d8f94"; ctx.beginPath(); ctx.moveTo(r1.x, r1.y); ctx.lineTo(r2.x, r2.y); ctx.lineTo(r3.x, r3.y); ctx.lineTo(r4.x, r4.y); ctx.closePath(); ctx.fill();
+        [[50, 30], [220, 40], [345, 60], [110, 170], [290, 185], [170, 200], [60, 120]].forEach(function (t, k) { tree(P(t[0], t[1], zt), 0.85 + (k % 3) * 0.15); });
+      }
+      var landMax = 0; for (i = 0; i <= N; i++) { var uu = L * i / N; landMax = Math.max(landMax, flat ? newTop(v) : Math.max(G, lowerTop(uu, uu, v))); }
+      if (v.water !== null && v.water >= landMax - 1) {
+        var w1 = P(0, 0, v.water), w2 = P(L, 0, v.water), w3 = P(L, D, v.water), w4 = P(0, D, v.water);
+        ctx.beginPath(); ctx.moveTo(w1.x, w1.y); ctx.lineTo(w2.x, w2.y); ctx.lineTo(w3.x, w3.y); ctx.lineTo(w4.x, w4.y); ctx.closePath();
+        var wg = ctx.createLinearGradient(w1.x, w1.y, w3.x, w3.y); wg.addColorStop(0, "rgba(120,200,255,.55)"); wg.addColorStop(1, "rgba(40,130,210,.55)");
+        ctx.fillStyle = wg; ctx.fill(); ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.2; ctx.stroke();
+        ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.lineWidth = 1;
+        for (i = 1; i < 6; i++) { var s1 = P(L * i / 6 - 20, D * .3, v.water), s2 = P(L * i / 6 + 10, D * .3, v.water); ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.quadraticCurveTo((s1.x + s2.x) / 2, s1.y - 3, s2.x, s2.y); ctx.stroke(); }
+      }
+    }
+    function tree(p, sc) {
+      ctx.fillStyle = "rgba(0,0,0,.18)"; ctx.beginPath(); ctx.ellipse(p.x + 4 * sc, p.y + 1, 7 * sc, 2.5 * sc, 0, 0, 6.283); ctx.fill();
+      ctx.fillStyle = "#6b4a2e"; ctx.fillRect(p.x - 1.5 * sc, p.y - 8 * sc, 3 * sc, 8 * sc);
+      [[30, 9], [22, 16]].forEach(function (q) {
+        var g = ctx.createLinearGradient(p.x - 8 * sc, 0, p.x + 8 * sc, 0); g.addColorStop(0, "#4b8f3e"); g.addColorStop(1, "#24521f");
+        ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(p.x, p.y - q[0] * sc); ctx.lineTo(p.x + 8 * sc, p.y - q[1] * sc); ctx.lineTo(p.x - 8 * sc, p.y - q[1] * sc); ctx.closePath(); ctx.fill();
+      });
+    }
+    function edges(v) {
+      var zt = (v.eroded && v.newDep > 0) ? newTop(v) : Math.max(G, lowerTop(L, L, v));
+      var a = P(L, D, 0), b = P(L, D, zt), c = P(0, D, 0), d = P(L, 0, 0);
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(a.x, a.y); ctx.lineTo(d.x, d.y); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+    function age(m) { return m <= 0 ? "0년" : (m >= 10000 ? (m / 10000).toFixed(m % 10000 ? 1 : 0) + "억 년" : m.toLocaleString() + "만 년"); }
+    function bigText(s, x, y, size, fill) {
+      ctx.font = "900 " + size + "px " + FONT; ctx.textAlign = "left"; ctx.lineJoin = "round";
+      ctx.strokeStyle = "#111622"; ctx.lineWidth = size * .22; ctx.strokeText(s, x, y);
+      ctx.fillStyle = fill || "#ffffff"; ctx.fillText(s, x, y);
+    }
+    function render(v) {
+      ctx.clearRect(0, 0, W, H);
+      var LW = 628;
+      var bg = ctx.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, "#f3f6fa"); bg.addColorStop(1, "#d6dee8");
+      ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.fill();
+      var fl = ctx.createRadialGradient(OX + 60, OY + 230, 20, OX + 60, OY + 230, 330); fl.addColorStop(0, "rgba(20,30,50,.30)"); fl.addColorStop(.55, "rgba(20,30,50,.08)"); fl.addColorStop(1, "rgba(20,30,50,0)");
+      ctx.fillStyle = fl; ctx.beginPath(); ctx.ellipse(OX + 60, OY + 232, 290, 66, 0, 0, 6.283); ctx.fill();
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
+      drawFace("front", v); drawFace("right", v); drawTop(v); edges(v);
+      if (v.rain > 0) {
+        var Rr = K.rng(Math.floor(v.rain * 40) + 3), i;
+        ctx.strokeStyle = "rgba(90,140,200,.55)"; ctx.lineWidth = 1.2;
+        for (i = 0; i < 70; i++) { var q = P(Rr() * L, Rr() * D, 230 + Rr() * 60); ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(q.x - 3, q.y + 11); ctx.stroke(); }
+        for (i = 0; i < 26; i++) { var q2 = P(L + 6 + Rr() * 30, Rr() * D, G + v.cut + 10 - Rr() * 80); ctx.fillStyle = "rgba(140,105,70,.8)"; ctx.fillRect(q2.x, q2.y, 2.4, 2.4); }
+        var pl = P(L, D * .2, G + v.cut + 40);
+        K.pill(ctx, "비·강물에 깎여 바다로 실려 감", pl.x + 10, pl.y, { s: 11.5, c: "#ffd9a8", box: [0, LW] });
+      }
+      ctx.restore();
+      var E = eT * RATE, k = kind(E);
+      if (!v.cap) {
+        var lab = function (s, x, y, z, col, dx, dy) {
+          var p = P(x, y, z), q = { x: p.x + dx, y: p.y + dy };
+          ctx.strokeStyle = "rgba(20,25,40,.75)"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          ctx.fillStyle = "#111622"; ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, 6.283); ctx.fill();
+          K.pill(ctx, s, q.x + (dx < 0 ? -4 : 4), q.y + 4, { s: 12, a: dx < 0 ? "right" : "left", c: col, box: [0, LW] });
+        };
+        if (k !== "none") {
+          lab("새로 쌓인 지층", 30, D, newTop(v) - 14, "#f4e6c4", -40, -30);
+          lab("부정합면 · 기저 역암", 80, D, G + v.cut + 2, "#ffb36b", -44, 22);
+        }
+        if (v.cut > 8 || k === "none") lab(tilt > 0 ? "기울어진 아래 지층" : "아래 지층", L, D * .5, G + Math.max(10, Math.min(v.cut, 150)) * .5, "#e8ecff", 46, -4);
+        lab("화강암 기반암", L, D * .8, G * .5, "#ffd0d0", 40, 18);
+      }
+      if (v.cap) { bigText(v.cap[0], 18, 50, 26, "#ffffff"); if (v.cap[1]) bigText(v.cap[1], 18, 84, 19, "#ffd35a"); }
+      else if (k !== "none") { bigText("빠진 시간 " + age(eT), 18, 50, 28, "#ffd35a"); bigText(LABEL[k], 18, 86, 20, "#ffffff"); }
+      else { bigText("끊김 없이 쌓인 지층", 18, 50, 26, "#ffffff"); bigText("깎인 기간을 늘려 보세요", 18, 84, 18, "#ffd35a"); }
+      K.warn(ctx, LW - 14, 30, "⚠ 두께·기울기는 보기 쉽게 과장", "right");
 
-      /* ── 오른쪽 판정판 ── */
-      var RX = LW + 8, px = RX + 18;
-      K.stage(ctx, RX, 0, W - RX, H, "lab", { seed: 323 });
-      K.pill(ctx, "판정", px - 2, 28, { s: 13, c: KC.blue });
-      K.t(ctx, LABEL[k], px, 82, { s: 21, w: "900", c: k === "none" ? KC.mute : KC.green });
-      K.t(ctx, "기울어진 각도 " + tilt + "°", px, 124, { s: 13, w: "700", c: KC.ink });
-      K.t(ctx, "깎인 기간 " + (eT / 100).toFixed(0) + "백만 년", px, 150, { s: 13, w: "700", c: KC.ink });
-      K.t(ctx, "사라진 시간 " + fmtAge(eT * 10000), px, 176, { s: 13, w: "800", c: KC.orange });
-      K.pill(ctx, k === "non" ? "침식이 기반암까지 닿았습니다" : (k === "ang" ? "아래는 기울고 위는 수평" : (k === "par" ? "위아래 지층이 나란합니다" : "깎인 적이 없습니다")), px, 210, { s: 11.5, c: KC.ink, box: [RX, W] });
-      /* 사라진 시간 막대 */
-      var bx = px, bw = W - 20 - px, by = 244;
-      ctx.fillStyle = "rgba(255,255,255,.07)"; ctx.beginPath(); ctx.roundRect(bx, by, bw, 12, 6); ctx.fill();
-      ctx.save(); ctx.shadowColor = KC.orange; ctx.shadowBlur = 8; ctx.fillStyle = KC.orange; ctx.beginPath(); ctx.roundRect(bx, by, Math.max(4, bw * eT / 4000), 12, 6); ctx.fill(); ctx.restore();
-      K.t(ctx, "0", bx, by + 28, { s: 10, c: KC.dim }); K.t(ctx, "4억 년", bx + bw, by + 28, { s: 10, a: "right", c: KC.dim });
-      K.t(ctx, "침식 속도 : 1년에 0.01 mm", px, 312, { s: 11, c: KC.mute });
-      K.t(ctx, "( 1만 년에 0.1 m )", px, 332, { s: 11, c: KC.mute });
-      K.t(ctx, "평행 · 경사 · 난정합", px, 380, { s: 11, c: KC.dim });
-      K.t(ctx, "모두 쌓이지 않은 시간의 기록", px, 398, { s: 11, c: KC.dim });
+      /* 오른쪽 판정 카드 */
+      var RX = LW + 10, px = RX + 18;
+      var card = ctx.createLinearGradient(RX, 0, W, H); card.addColorStop(0, "#ffffff"); card.addColorStop(1, "#eef2f8");
+      ctx.save(); ctx.shadowColor = "rgba(20,30,60,.18)"; ctx.shadowBlur = 14; ctx.fillStyle = card; ctx.beginPath(); ctx.roundRect(RX, 0, W - RX, H, 14); ctx.fill(); ctx.restore();
+      K.t(ctx, "판정", px, 30, { s: 12.5, w: "800", c: "#5c7086" });
+      K.t(ctx, LABEL[k], px, 66, { s: 22, w: "900", c: k === "none" ? "#8a96a8" : "#0f9f76" });
+      var row = function (kk, vv, y, col) { K.t(ctx, kk, px, y, { s: 12, w: "700", c: "#5c7086" }); K.t(ctx, vv, W - 18, y, { s: 14, w: "900", a: "right", c: col || "#12203a" }); };
+      row("기울어진 각도", tilt + "°", 108);
+      row("깎인 기간", age(eT), 136);
+      row("깎여 나간 두께", Math.min(E, TOTAL).toFixed(0) + " m", 164, "#c2410c");
+      row("남은 아래 지층", Math.max(0, TOTAL - E).toFixed(0) + " / 200 m", 192);
+      var bx = px, bw = W - 18 - px, by = 220;
+      ctx.fillStyle = "#e3e9f1"; ctx.beginPath(); ctx.roundRect(bx, by, bw, 12, 6); ctx.fill();
+      ctx.fillStyle = "#f59e0b"; ctx.beginPath(); ctx.roundRect(bx, by, Math.max(4, bw * eT / 4000), 12, 6); ctx.fill();
+      K.t(ctx, "사라진 시간 " + age(eT), px, by + 34, { s: 13, w: "900", c: "#b45309" });
+      K.t(ctx, "0", bx, by + 52, { s: 10, c: "#8a96a8" }); K.t(ctx, "4억 년", bx + bw, by + 52, { s: 10, a: "right", c: "#8a96a8" });
+      var tip = k === "non" ? "침식이 기반암까지 닿았습니다" : (k === "ang" ? "아래는 기울고 위는 수평" : (k === "par" ? "위아래 지층이 나란합니다" : "깎인 적이 없습니다"));
+      ctx.fillStyle = k === "none" ? "#eef1f5" : "#e7f7f0"; ctx.beginPath(); ctx.roundRect(px - 4, 296, W - px - 14, 34, 10); ctx.fill();
+      K.t(ctx, tip, px + 6, 318, { s: 12, w: "800", c: k === "none" ? "#5c7086" : "#0f766e" });
+      K.t(ctx, "침식 속도 : 1년에 0.01 mm", px, 368, { s: 11, c: "#5c7086" });
+      K.t(ctx, "( 1만 년에 0.1 m )", px, 386, { s: 11, c: "#5c7086" });
+      K.t(ctx, "▶ 과정 다시 보기로", px, 428, { s: 11.5, w: "800", c: "#1179a6" });
+      K.t(ctx, "만들어지는 순서를 보세요", px, 446, { s: 11.5, w: "800", c: "#1179a6" });
+    }
 
-      var ch = false;
+    /* 과정 다시 보기 — 퇴적 → (기울기) → 융기 → 침식 → 침강 → 새 퇴적 → 다시 융기 */
+    var anim = null;
+    function timeline() {
+      var E = eT * RATE, cutF = Math.max(0, TOTAL - E) * PXM, topMax = Math.max(5 * LAY, f(G + 5 * LAY, L, tilt) - G);
+      var hi = G + topMax + 34;
+      return [
+        { d: 2600, v: function (t) { return { dep: 5 * t, th: 0, cut: null, eroded: false, newDep: 0, water: G + 5 * LAY + 34, rain: 0, cap: ["① 바다 밑에서 차곡차곡 쌓인다", "아래가 먼저, 위가 나중"] }; } },
+        { d: tilt > 0 ? 1500 : 800, v: function (t) { return { dep: 5, th: tilt * t, cut: null, eroded: false, newDep: 0, water: hi, rain: 0, cap: tilt > 0 ? ["② 지각 변동", "지층이 " + tilt + "° 기울어진다"] : ["② 기울지 않은 채", "그대로 들어 올려진다"] }; } },
+        { d: 1100, v: function (t) { return { dep: 5, th: tilt, cut: null, eroded: false, newDep: 0, water: hi - (hi - G * .4) * t, rain: 0, cap: ["③ 융기", "물 밖으로 솟아오른다"] }; } },
+        { d: E > 0 ? 2600 : 700, v: function (t) { return { dep: 5, th: tilt, cut: E > 0 ? topMax - (topMax - cutF) * t : null, eroded: E > 0, newDep: 0, water: null, rain: E > 0 ? t : 0, cap: E > 0 ? ["④ 침식", age(eT) + " 동안 " + Math.min(E, TOTAL).toFixed(0) + " m가 깎인다"] : ["④ 깎이지 않음", "깎인 기간이 0입니다"] }; } },
+        { d: 1100, v: function (t) { return { dep: 5, th: tilt, cut: E > 0 ? cutF : null, eroded: E > 0, newDep: 0, water: G * .4 + (G + cutF + 70 - G * .4) * t, rain: 0, cap: ["⑤ 침강", "다시 바다 밑으로 가라앉는다"] }; } },
+        { d: 1800, v: function (t) { return { dep: 5, th: tilt, cut: E > 0 ? cutF : null, eroded: E > 0, newDep: E > 0 ? t : 0, water: G + cutF + 70, rain: 0, cap: ["⑥ 그 위에 새 지층", "자갈(기저 역암)부터 쌓인다"] }; } },
+        { d: 1100, v: function (t) { var w = G + cutF + 70; return { dep: 5, th: tilt, cut: E > 0 ? cutF : null, eroded: E > 0, newDep: E > 0 ? 1 : 0, water: w - (w - G * .4) * t, rain: 0, cap: ["⑦ 다시 융기", "오늘 우리가 보는 절벽"] }; } }
+      ];
+    }
+    function draw() { if (!anim) render(finalView()); }
+    function judge() {
+      var E = eT * RATE, left = Math.max(0, TOTAL - E), k = kind(E), ch = false;
       if (k === "par" && !got.a) { got.a = ch = true; }
       if (k === "ang" && !got.b) { got.b = ch = true; }
       if (k === "non" && !got.c) { got.c = ch = true; }
       if (ch) { window.sthState("aUnc", got); mission(); }
-
-      $("a-unc-read").innerHTML = "깎여 나간 두께: <b>" + E.toFixed(0) + " m</b> (남은 지층 " + left.toFixed(0) + " m)";
+      $("a-unc-read").innerHTML = "깎여 나간 두께: <b>" + Math.min(E, TOTAL).toFixed(0) + " m</b> (남은 지층 " + left.toFixed(0) + " m)";
       $("a-unc-info").innerHTML =
         k === "none" ? "아직 깎인 적이 없습니다. 퇴적이 끊기지 않고 이어지면 부정합이 생기지 않습니다. <b>깎인 기간</b>을 늘려 보세요."
-        : (k === "par" ? "<b>평행 부정합</b>입니다. 지층이 기울지 않은 채로 융기·침식된 뒤 다시 가라앉아 쌓였습니다. 위아래 지층이 나란해서 눈으로는 알아보기 어렵지만, 그 사이에 <b>" + fmtAge(eT * 10000) + "</b>이 통째로 비어 있습니다."
+        : (k === "par" ? "<b>평행 부정합</b>입니다. 지층이 기울지 않은 채로 융기·침식된 뒤 다시 가라앉아 쌓였습니다. 위아래 지층이 나란해서 눈으로는 알아보기 어렵지만, 그 사이에 <b>" + age(eT) + "</b>이 통째로 비어 있습니다."
           : (k === "ang" ? "<b>경사 부정합</b>입니다. 아래 지층은 기울어져 있고 위 지층은 수평이므로, 그 사이에 <b>지각 변동 → 융기 → 침식 → 침강</b>이 있었다는 뜻입니다. 가장 알아보기 쉬운 부정합입니다."
             : "<b>난정합</b>입니다. 침식이 퇴적층 200 m를 모두 깎아 내고 <b>화강암 기반암</b>까지 닿았습니다. 땅속 깊은 곳에서 굳은 심성암이 지표에 드러났다는 것은, 그 위를 덮고 있던 암석이 엄청나게 깎여 나갔다는 뜻입니다."));
+      draw();
     }
     function mission() {
       if (got.a) done("m1-3a"); if (got.b) done("m1-3b"); if (got.c) done("m1-3c");
@@ -452,10 +624,23 @@ function dateLabel(day) {
         ep.clear(2);
       }
     }
+    var playBtn = $("a-unc-play");
+    function stop() { anim = null; playBtn.textContent = "▶ 과정 다시 보기"; render(finalView()); }
+    playBtn.addEventListener("click", function () {
+      if (anim) { stop(); return; }
+      anim = { st: 0, t: 0, tl: timeline() }; playBtn.textContent = "⏹ 멈추고 결과 보기";
+    });
+    K.animate(canvas, function (dt) {
+      if (!anim) return;
+      var s = anim.tl[anim.st]; anim.t += dt;
+      var u = Math.min(1, anim.t / s.d), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      render(s.v(e));
+      if (u >= 1) { anim.st++; anim.t = 0; if (anim.st >= anim.tl.length) stop(); }
+    });
     canvas._redraw = draw;
-    $("a-tilt").addEventListener("input", function (e) { tilt = +e.target.value; $("a-tilt-val").textContent = tilt + "°"; draw(); });
-    $("a-erode").addEventListener("input", function (e) { eT = +e.target.value; $("a-erode-val").textContent = eT + "만 년"; draw(); });
-    draw(); mission();
+    $("a-tilt").addEventListener("input", function (e) { tilt = +e.target.value; $("a-tilt-val").textContent = tilt + "°"; if (anim) stop(); judge(); });
+    $("a-erode").addEventListener("input", function (e) { eT = +e.target.value; $("a-erode-val").textContent = eT + "만 년"; if (anim) stop(); judge(); });
+    judge(); mission();
   })();
 
   /* ---- 장면4 단면 복원 ---- */
