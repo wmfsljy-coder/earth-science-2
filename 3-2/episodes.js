@@ -1488,7 +1488,12 @@ function msLogL(T) {
       draw();
     });
     draw(); mission();
-    anim(canvas, function () { tick++; draw(); });
+    /* 깜박임: 멈출 수 있게, 움직임 줄이기면 멈춘 채로 시작 */
+    var blink = !REDUCE, blinkBtn = $("c-var-play");
+    function paintBlink() { blinkBtn.textContent = blink ? "⏸ 깜박임 멈추기" : "▶ 깜박임 보기"; }
+    blinkBtn.addEventListener("click", function () { blink = !blink; paintBlink(); });
+    paintBlink();
+    anim(canvas, function () { if (blink) { tick++; draw(); } });
   })();
 
   function finish() { window.sthState("r3", "해결 · 3C 273은 태양계보다 작은 활동 은하핵, 허블 분류는 모양일 뿐 진화 순서가 아니다"); }
