@@ -1221,7 +1221,7 @@ function fmtMm(d) {
     draw(); mission();
   })();
 
-  /* ---- 장면3 : 주상절리 ---- */
+  /* ---- 장면3 : 주상절리 (아이소메트릭 블록 모형 — 바닷가·강가·산꼭대기 절벽을 블록으로 잘라 본다) ---- */
   (function () {
     var canvas = $("c-c-col"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h;
     var flow = 20, place = 0;
@@ -1238,91 +1238,222 @@ function fmtMm(d) {
     function years() { return (flow / 2) * (flow / 2) / 31.5; }
     function colW() { return 0.6 * Math.pow(years(), 0.25); }
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var t = years(), D = colW();
-      var LW = 534;
-      K.stage(ctx, 0, 0, LW, 360, "night", { seed: 91, title: "주상절리 — 식으면서 오그라들어 갈라진다", titleColor: KC.orange });
-      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, 360, 14); ctx.clip();
-      /* 곳마다 다른 배경: 바다 · 강 · 산꼭대기 */
-      if (place === 2) {
-        var mg = ctx.createLinearGradient(0, 200, 0, 360); mg.addColorStop(0, "#1f3a2a"); mg.addColorStop(1, "#0d1a12");
-        ctx.fillStyle = mg; ctx.beginPath(); ctx.moveTo(0, 360); ctx.lineTo(0, 250); ctx.quadraticCurveTo(140, 300, 260, 330); ctx.quadraticCurveTo(400, 300, LW, 240); ctx.lineTo(LW, 360); ctx.closePath(); ctx.fill();
-      } else {
-        var sea = ctx.createLinearGradient(0, 300, 0, 360); sea.addColorStop(0, place === 0 ? "#1d5a8a" : "#2a6a6a"); sea.addColorStop(1, "#06243a");
-        ctx.fillStyle = sea; ctx.fillRect(0, 300, LW, 60);
-        ctx.strokeStyle = "rgba(200,235,255,.35)"; ctx.lineWidth = 1.2;
-        for (var wv = 0; wv < 4; wv++) { ctx.beginPath(); for (var wx = 0; wx <= LW; wx += 12) ctx.lineTo(wx, 310 + wv * 12 + Math.sin(wx / 30 + wv) * 2); ctx.stroke(); }
-      }
-      var X0 = 46, X1 = 500, TOP = 92, BOT = 300;
-      var pw = clamp(D * 62, 16, 150);
-      var n = Math.max(3, Math.floor((X1 - X0) / pw));
-      var w = (X1 - X0) / n;
-      for (var i = 0; i < n; i++) {
-        var x = X0 + i * w, R = rnd(i * 31 + 7), dy = (R() - .5) * 10, bot = BOT + (R() - .5) * 14;
-        /* 기둥 앞면: 현무암 질감, 가운데가 밝고 가장자리가 어두운 원기둥 그늘 */
-        var cg = ctx.createLinearGradient(x, 0, x + w, 0);
-        cg.addColorStop(0, "#1e2228"); cg.addColorStop(.35, "#4f5662"); cg.addColorStop(.6, "#3d434d"); cg.addColorStop(1, "#16191e");
-        ctx.fillStyle = cg; ctx.fillRect(x + 1, TOP + dy + 8, w - 2, bot - TOP - dy - 8);
-        ctx.strokeStyle = "rgba(0,0,0,.6)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, TOP + dy + 8); ctx.lineTo(x, bot); ctx.stroke();
-        /* 가로로 갈라진 금 */
-        ctx.strokeStyle = "rgba(0,0,0,.35)"; ctx.lineWidth = 1;
-        for (var cr = 0; cr < 3; cr++) { var cy2 = TOP + 50 + R() * (bot - TOP - 70); ctx.beginPath(); ctx.moveTo(x + 2, cy2); ctx.lineTo(x + w - 2, cy2 + (R() - .5) * 4); ctx.stroke(); }
-        /* 육각 기둥의 윗면 */
-        var cx = x + w / 2, cy = TOP + dy + 8, rr = w * 0.5;
-        var tg = ctx.createLinearGradient(cx - rr, cy - rr * .4, cx + rr, cy + rr * .4); tg.addColorStop(0, "#8d96a6"); tg.addColorStop(1, "#4a5160");
-        ctx.fillStyle = tg; ctx.strokeStyle = "rgba(220,230,255,.55)"; ctx.lineWidth = 1.2;
-        ctx.beginPath();
-        for (var a = 0; a < 6; a++) {
-          var ang = a * Math.PI / 3;
-          var px2 = cx + Math.cos(ang) * rr, py2 = cy + Math.sin(ang) * rr * 0.36;
-          if (a === 0) ctx.moveTo(px2, py2); else ctx.lineTo(px2, py2);
+    /* ── 블록 모형: x 는 절벽을 따라(왼쪽 위 → 오른쪽 아래), y 는 깊이 방향.
+          땅(용암층)은 y 0~DL, 그 앞(y DL~D)은 바다·강·숲 비탈. 기둥 굵기는 지름 1 m ≈ 42 그림 단위(과장) ── */
+    var DH = 410;                                         /* 모형 칸 높이(아래는 읽음판) */
+    var I = K.iso({ ox: 470, oy: 155, s: 0.66, L: 460, D: 260 });
+    var DL = 150, I2 = K.iso({ ox: 470, oy: 155, s: 0.66, L: 460, D: DL });
+    var L = I.L, D = I.D, Z_FL = 22, Z_BASE = 42, ZW = 36;
+    var cool = 1, playing = false, ph = 0;
+    var SHORT = ["제주 중문·대포", "한탄강", "무등산 서석대·입석대"];
+    var PAL = [
+      { a: "#5d6470", b: "#454b56", c: "#1c2026", topA: "#80899a", topB: "#3f4652", rock: "현무암", water: [38, 112, 186] },
+      { a: "#5a6068", b: "#43484f", c: "#1b1e23", topA: "#7a8290", topB: "#3d434d", rock: "현무암", water: [52, 128, 120] },
+      { a: "#a39785", b: "#857a69", c: "#4a4239", topA: "#bdb19e", topB: "#7c705f", rock: "응회암", water: null }
+    ];
+    function zTopOf() { return Z_BASE + 50 + (flow - 5) / 115 * 100; }   /* 층 두께 5~120 m → 그림 높이 50~150 */
+
+    /* 한 면 위에 기둥을 세운다(면 좌표: u 가로, z 위). u0~u1 구간, z0~z1 높이 */
+    function columns(u0, u1, z0, z1, cw, pal, seed, k) {
+      var n = Math.max(1, Math.round((u1 - u0) / cw)), w = (u1 - u0) / n, R = rnd(seed), i, c;
+      for (i = 0; i < n; i++) {
+        var x = u0 + i * w;
+        var g = ctx.createLinearGradient(x, 0, x + w, 0);
+        g.addColorStop(0, pal.c); g.addColorStop(.3, pal.a); g.addColorStop(.62, pal.b); g.addColorStop(1, pal.c);
+        ctx.fillStyle = g; ctx.fillRect(x, z0, w + .5, z1 - z0);
+        ctx.strokeStyle = "rgba(0,0,0,.6)"; ctx.lineWidth = 2.2;
+        ctx.beginPath(); ctx.moveTo(x, z0); ctx.lineTo(x, z1); ctx.stroke();
+        ctx.strokeStyle = "rgba(0,0,0,.28)"; ctx.lineWidth = 1.4;
+        var nc = Math.max(1, Math.round((z1 - z0) / 34));
+        for (c = 0; c < nc; c++) {
+          var cz = z0 + 8 + R() * (z1 - z0 - 16);
+          ctx.beginPath(); ctx.moveTo(x + 2, cz); ctx.lineTo(x + w - 2, cz + (R() - .5) * 5); ctx.stroke();
         }
-        ctx.closePath(); ctx.fill(); ctx.stroke();
       }
+      /* 아직 식지 않은 가운데(위·아래 냉각면에서 안쪽으로 굳어 들어간다) */
+      if (k < 1) {
+        var h = z1 - z0, a = z0 + h / 2 * k, b = z1 - h / 2 * k;
+        var hg = ctx.createLinearGradient(0, a, 0, b);
+        hg.addColorStop(0, "rgba(255,150,40,.55)"); hg.addColorStop(.2, "rgba(255,110,30,.95)"); hg.addColorStop(.5, "rgba(255,200,90,1)");
+        hg.addColorStop(.8, "rgba(255,110,30,.95)"); hg.addColorStop(1, "rgba(255,150,40,.55)");
+        ctx.fillStyle = hg; ctx.fillRect(u0, a, u1 - u0, b - a);
+      }
+    }
+    function oldRock(u0, u1, z0, z1, seed) {
+      var g = ctx.createLinearGradient(0, z0, 0, z1); g.addColorStop(0, "#5a4a3a"); g.addColorStop(1, "#8a7358");
+      ctx.fillStyle = g; ctx.fillRect(u0, z0, u1 - u0, z1 - z0);
+      var R = rnd(seed); ctx.strokeStyle = "rgba(40,28,18,.35)"; ctx.lineWidth = 1;
+      for (var y2 = z0 + 6; y2 < z1; y2 += 7) { ctx.beginPath(); ctx.moveTo(u0, y2); ctx.lineTo(u1, y2 + (R() - .5) * 3); ctx.stroke(); }
+      for (var i = 0; i < (u1 - u0) * (z1 - z0) / 60; i++) { ctx.fillStyle = R() > .5 ? "rgba(255,240,220,.18)" : "rgba(30,20,10,.25)"; ctx.fillRect(u0 + R() * (u1 - u0), z0 + R() * (z1 - z0), 1.6, 1.6); }
+    }
+    function ground(u0, u1, z0, z1, wet) {
+      var g = ctx.createLinearGradient(0, z0, 0, z1);
+      if (wet) { g.addColorStop(0, "#2a2c30"); g.addColorStop(1, "#56504a"); } else { g.addColorStop(0, "#5c4a33"); g.addColorStop(1, "#7a6444"); }
+      ctx.fillStyle = g; ctx.fillRect(u0, z0, u1 - u0, z1 - z0);
+    }
+    function waterFace(u0, u1, rgb) {
+      var g = ctx.createLinearGradient(0, ZW, 0, Z_FL);
+      g.addColorStop(0, "rgba(" + rgb.join(",") + ",.62)"); g.addColorStop(1, "rgba(" + Math.round(rgb[0] * .4) + "," + Math.round(rgb[1] * .45) + "," + Math.round(rgb[2] * .55) + ",.85)");
+      ctx.fillStyle = g; ctx.fillRect(u0, Z_FL, u1 - u0, ZW - Z_FL);
+      ctx.strokeStyle = "rgba(255,255,255,.8)"; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(u0, ZW); ctx.lineTo(u1, ZW); ctx.stroke();
+    }
+    /* 윗면의 육각 기둥 머리 */
+    function hexTops(zT, cw, pal, k) {
+      var c0 = I2.P(0, 0, zT), c1 = I2.P(L, 0, zT), c2 = I2.P(L, DL, zT), c3 = I2.P(0, DL, zT);
+      ctx.save(); ctx.beginPath(); ctx.moveTo(c0.x, c0.y); ctx.lineTo(c1.x, c1.y); ctx.lineTo(c2.x, c2.y); ctx.lineTo(c3.x, c3.y); ctx.closePath(); ctx.clip();
+      ctx.fillStyle = pal.topB; ctx.fill();
+      var r = cw * 0.55, dx = 1.5 * r, dy = Math.sqrt(3) * r, R = rnd(77), i, j, a;
+      for (i = 0; i * dx <= L + r; i++) {
+        for (j = -1; j * dy <= DL + r; j++) {
+          var cx = i * dx, cy = j * dy + (i % 2 ? dy / 2 : 0);
+          ctx.beginPath();
+          for (a = 0; a < 6; a++) { var p = I2.P(cx + r * Math.cos(a * Math.PI / 3), cy + r * Math.sin(a * Math.PI / 3), zT); if (a) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }
+          ctx.closePath();
+          ctx.fillStyle = K.tint(pal.topA, .78 + R() * .3); ctx.fill();
+          ctx.strokeStyle = "rgba(10,12,16," + (.25 + .55 * k).toFixed(2) + ")"; ctx.lineWidth = 1.3; ctx.stroke();
+        }
+      }
+      if (k < .45) { ctx.fillStyle = "rgba(255,120,40," + ((.45 - k) * 1.6).toFixed(2) + ")"; ctx.fillRect(0, 0, W, DH); }
       ctx.restore();
-      /* 냉각면과 열이 빠지는 방향 */
-      ctx.save(); ctx.strokeStyle = "rgba(255,179,92,.6)"; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(X0 - 10, TOP - 4); ctx.lineTo(X1 + 10, TOP - 4); ctx.stroke(); ctx.restore();
-      [X0 + 18, X0 + 300, X0 + 420].forEach(function (ax) { K.arrow(ctx, { x: ax, y: TOP - 4 }, { x: ax, y: TOP - 36 }, KC.orange, 3, 10); });
-      K.pill(ctx, "열이 빠져나가는 방향(냉각면)", X0 + 44, TOP - 20, { s: 11.5, c: KC.orange });
-      K.pill(ctx, "기둥은 냉각면에 수직으로 자랍니다", 14, 348, { s: 11.5, c: KC.ink });
-      K.bracket(ctx, X0 + w, X0 + 2 * w, BOT + 10 > 330 ? 330 : BOT + 10, KC.yellow, "", false);
-      K.pill(ctx, "지름 약 " + D.toFixed(2) + " m · 기둥 " + n + " 개", LW - 12, 348, { s: 12, a: "right", c: KC.yellow, box: [0, LW] });
+    }
+    function grassTop(zT) {
+      var R = rnd(15);
+      I2.plane(ctx, zT, "#6f9a4a", null);
+      for (var i = 0; i < 4; i++) {                       /* 용암대지 위 논밭 */
+        var x0 = 30 + i * 105, y0 = 18 + (i % 2) * 34;
+        I2.plane(ctx, zT, ["#86a957", "#a7b766", "#7da352", "#b9ad62"][i], "rgba(60,80,30,.5)", x0, x0 + 80, y0, y0 + 60);
+      }
+      [[30, 130], [150, 120], [260, 135], [400, 110], [440, 30], [430, 140], [200, 12]].forEach(function (t, k) { I2.tree(ctx, t[0], t[1], zT, .9 + (k % 3) * .12); });
+      return R;
+    }
+    function quadW(x0, x1, y0, y1, z, fill, stroke) { I.quad(ctx, I.P(x0, y0, z), I.P(x1, y0, z), I.P(x1, y1, z), I.P(x0, y1, z), fill, stroke); }
 
-      /* 오른쪽 읽음판 */
-      var RX = LW + 8, RW = W - RX, px = RX + 20;
-      K.stage(ctx, RX, 0, RW, 360, "night", { seed: 5 });
-      K.pill(ctx, PLACE[place].n, px - 6, 36, { s: 14, c: KC.blue, box: [RX, W] });
-      K.t(ctx, "용암(화산암)층 두께", px, 80, { s: 11.5, w: "800", c: KC.mute });
-      K.t(ctx, flow + " m", px, 106, { s: 20, w: "900", c: KC.ink });
-      K.t(ctx, "다 식는 데 걸린 시간", px, 144, { s: 11.5, w: "800", c: KC.mute });
-      K.t(ctx, fmtYears(t), px, 170, { s: 18, w: "900", c: KC.ink });
-      K.t(ctx, "기둥의 지름", px, 208, { s: 11.5, w: "800", c: KC.mute });
-      ctx.save(); ctx.shadowColor = D >= 1 ? KC.green : KC.yellow; ctx.shadowBlur = 12;
-      K.t(ctx, D.toFixed(2) + " m", px, 240, { s: 26, w: "900", c: D >= 1 ? KC.green : KC.yellow }); ctx.restore();
-      gauge(ctx, px, 254, RW - 40, 10, D / 2, D >= 1 ? KC.green : KC.yellow);
+    function render() {
+      var t = years(), Dm = colW(), pal = PAL[place], zT = zTopOf(), k = cool;
+      var cw = clamp(Dm * 42, 14, 140);
+      var wet = !!pal.water, soil = place === 1 ? 6 : 0;
+      ctx.clearRect(0, 0, W, H);
+      /* ── 위: 블록 모형 ── */
+      K.studio(ctx, 0, 0, W, DH, { x: I.P(L, D, 0).x - 60, y: I.P(L, D, 0).y - 30, rx: 330, ry: 52 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      /* 오른쪽 면(x = L): 땅 u 0~DL, 앞 띠 u DL~D */
+      I.face(ctx, "right", function () {
+        oldRock(0, DL, 0, Z_BASE, 3);
+        columns(0, DL, Z_BASE, zT - soil, cw, pal, 11, k);
+        if (soil) { ctx.fillStyle = "#6b4f32"; ctx.fillRect(0, zT - soil, DL, soil); }
+        ground(DL, D, 0, Z_FL, wet);
+        if (wet) waterFace(DL, D, pal.water);
+      });
+      I.shade(ctx, "right", function (u) { return u <= DL ? zT : (wet ? ZW : Z_FL); });
+      /* 절벽 앞면(y = DL) */
+      I2.face(ctx, "front", function (Lw) {
+        oldRock(0, Lw, 0, Z_BASE, 5);
+        columns(0, Lw, Z_BASE, zT - soil, cw, pal, 21, k);
+        if (soil) { ctx.fillStyle = "#6b4f32"; ctx.fillRect(0, zT - soil, Lw, soil); }
+      });
+      I2.shade(ctx, "front", function () { return zT; });
+      /* 윗면 */
+      if (place === 1) grassTop(zT); else hexTops(zT, cw, pal, k);
+      /* 절벽 앞 띠: 바다 · 강 · 숲 비탈 */
+      if (wet) {
+        quadW(0, L, DL, D, Z_FL, place === 0 ? "#2b2d31" : "#6c6656", null);
+        var R = rnd(40 + place);
+        for (var b = 0; b < 9; b++) {                     /* 떨어져 나온 기둥 조각 */
+          var bx = 30 + R() * (L - 80), by = DL + 6 + R() * 50, bs = clamp(cw * .55, 8, 28);
+          I.box(ctx, bx, by, Z_FL, bx + bs, by + bs * .8, Z_FL + bs * .5, K.tint(pal.topA, .9), K.tint(pal.a, .9), K.tint(pal.c, 1.2));
+        }
+      } else {
+        quadW(0, L, DL, D, Z_FL, "#5f6b3c", null);
+        var R2 = rnd(44);
+        for (var b2 = 0; b2 < 14; b2++) {                 /* 너덜: 무너져 내린 기둥 토막 */
+          var tx = 20 + R2() * (L - 60), ty = DL + 4 + R2() * 60, ts = clamp(cw * .6, 9, 36);
+          I.box(ctx, tx, ty, Z_FL, tx + ts, ty + ts * .8, Z_FL + ts * .55, K.tint(pal.topA, .95), K.tint(pal.a, .95), K.tint(pal.c, 1.3));
+        }
+        [[40, 220], [130, 245], [230, 225], [330, 248], [420, 222], [440, 250], [90, 185]].forEach(function (q, i) { I.tree(ctx, q[0], q[1], Z_FL, 1 + (i % 3) * .15); });
+      }
+      /* 앞면(y = D) */
+      I.face(ctx, "front", function (Lw) { ground(0, Lw, 0, Z_FL, wet); if (wet) waterFace(0, Lw, pal.water); });
+      if (wet) {                                          /* 수면과 잔물결 */
+        var rgb = pal.water;
+        quadW(0, L, DL, D, ZW, "rgba(" + rgb.join(",") + ",.55)", "rgba(255,255,255,.6)");
+        ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.1;
+        for (var wv = 0; wv < 10; wv++) {
+          var gx = ((wv * .37 + ph * .06) % 1) * (L - 40) + 20, gy = DL + 14 + ((wv * .61) % 1) * (D - DL - 24);
+          var s1 = I.P(gx - 14, gy, ZW), s2 = I.P(gx + 10, gy, ZW);
+          ctx.beginPath(); ctx.moveTo(s1.x, s1.y); ctx.quadraticCurveTo((s1.x + s2.x) / 2, s1.y - 3, s2.x, s2.y); ctx.stroke();
+        }
+        /* 절벽 밑에 부딪는 흰 물결 */
+        var f0 = I2.P(0, DL, ZW), f1 = I2.P(L, DL, ZW);
+        ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 2.4; ctx.setLineDash([10, 7]); ctx.lineDashOffset = -ph * 12;
+        ctx.beginPath(); ctx.moveTo(f0.x, f0.y + 1); ctx.lineTo(f1.x, f1.y + 1); ctx.stroke(); ctx.setLineDash([]);
+      }
+      /* 모서리 밝은 선 */
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.2;
+      var e1 = I.P(L, DL, zT), e2 = I.P(L, DL, wet ? ZW : Z_FL), e3 = I.P(0, DL, zT), e4 = I.P(L, 0, zT);
+      ctx.beginPath(); ctx.moveTo(e3.x, e3.y); ctx.lineTo(e1.x, e1.y); ctx.lineTo(e4.x, e4.y); ctx.moveTo(e1.x, e1.y); ctx.lineTo(e2.x, e2.y); ctx.stroke();
+      var e5 = I.P(0, D, 0), e6 = I.P(L, D, 0), e7 = I.P(L, 0, 0);
+      ctx.beginPath(); ctx.moveTo(e5.x, e5.y); ctx.lineTo(e6.x, e6.y); ctx.lineTo(e7.x, e7.y); ctx.stroke();
+      ctx.restore();
+
+      /* 열이 빠져나가는 방향(냉각면 = 윗면) */
+      [[80, 50], [240, 90], [380, 40]].forEach(function (q) {
+        var p = I2.P(q[0], q[1], zT); K.arrow(ctx, { x: p.x, y: p.y - 4 }, { x: p.x, y: p.y - 40 }, k < 1 ? "#ff7a2f" : "#f08a24", 3, 10);
+      });
+      var box = [0, W];
+      var ap = I2.P(380, 40, zT);
+      K.pill(ctx, "열이 빠져나가는 방향(냉각면)", ap.x + 12, ap.y - 30, { s: 11.5, c: KC.orange, box: box });
+      /* 이름표 */
+      I2.label(ctx, 70, DL, (Z_BASE + zT) / 2 + 6, pal.rock + " 기둥(주상절리)", -110, -30, "#ffffff", box);
+      I2.label(ctx, 40, DL, Z_BASE * .62, "더 오래된 암석", -80, 22, "#f1dcc0", box);
+      var fp = I2.P(L - cw * 1.5, DL, zT);
+      I2.label(ctx, L - cw * 1.5, DL, zT, "기둥 지름 약 " + Dm.toFixed(2) + " m", 752 - fp.x, 34, "#ffd35a", box);
+      if (wet) I.label(ctx, 200, D - 30, ZW, place === 0 ? "바다(파도가 깎아 드러낸 절벽)" : "한탄강(강물이 깎아 드러낸 절벽)", -150, 34, "#bfe6ff", box);
+      else I.label(ctx, 160, D - 40, Z_FL + 8, "무너져 내린 기둥 토막(너덜)", -130, 30, "#e3f2c4", box);
+      K.pill(ctx, "기둥은 냉각면에 수직으로 자랍니다", W - 14, DH - 16, { s: 11.5, a: "right", c: KC.ink, box: box });
+      /* 큰 글자 */
+      if (k < 1) { K.bigText(ctx, "용암이 식으며 갈라진다", 22, 52, 28, "#ffffff"); K.bigText(ctx, "위·아래 냉각면부터 안쪽으로 굳는다", 22, 86, 17, "#ffd35a"); }
+      else if (Dm >= 1) { K.bigText(ctx, "천천히 식어 굵은 기둥", 22, 52, 28, "#ffffff"); K.bigText(ctx, "두께 " + flow + " m → 지름 약 " + Dm.toFixed(2) + " m", 22, 86, 18, "#7dffa8"); }
+      else if (Dm <= 0.6) { K.bigText(ctx, "빨리 식어 가는 기둥", 22, 52, 28, "#ffffff"); K.bigText(ctx, "두께 " + flow + " m → 지름 약 " + Dm.toFixed(2) + " m", 22, 86, 18, "#ffd35a"); }
+      else { K.bigText(ctx, "식으며 갈라진 돌기둥", 22, 52, 28, "#ffffff"); K.bigText(ctx, "두께 " + flow + " m → 지름 약 " + Dm.toFixed(2) + " m", 22, 86, 18, "#ffd35a"); }
+      K.warn(ctx, W - 14, 30, "⚠ 높이·굵기는 보기 쉽게 과장", "right");
+      K.pill(ctx, "📍 " + SHORT[place], W - 14, 62, { s: 12.5, a: "right", c: KC.blue, box: box });
+
+      /* ── 아래: 읽음판 ── */
+      var y0 = DH + 8;
+      K.stage(ctx, 0, y0, W, H - y0, "night", { seed: 8 });
+      K.t(ctx, "용암(화산암)층 두께", 22, y0 + 28, { s: 11.5, w: "800", c: KC.mute });
+      K.t(ctx, flow + " m", 22, y0 + 58, { s: 20, w: "900", c: KC.ink });
+      K.t(ctx, "다 식는 데 걸린 시간", 220, y0 + 28, { s: 11.5, w: "800", c: KC.mute });
+      K.t(ctx, fmtYears(t), 220, y0 + 58, { s: 18, w: "900", c: KC.ink });
+      K.t(ctx, "기둥의 지름", 430, y0 + 28, { s: 11.5, w: "800", c: KC.mute });
+      ctx.save(); ctx.shadowColor = Dm >= 1 ? KC.green : KC.yellow; ctx.shadowBlur = 12;
+      K.t(ctx, Dm.toFixed(2) + " m", 430, y0 + 60, { s: 26, w: "900", c: Dm >= 1 ? KC.green : KC.yellow }); ctx.restore();
+      gauge(ctx, 430, y0 + 72, 220, 10, Dm / 2, Dm >= 1 ? KC.green : KC.yellow);
       var seenN = got.seen.filter(function (x) { return x; }).length;
-      K.t(ctx, "읽어 본 곳", px, 300, { s: 11.5, w: "800", c: KC.mute });
-      for (var s = 0; s < 3; s++) { if (got.seen[s]) K.glow(ctx, px + 90 + s * 22, 296, 4, "rgba(63,211,163,.95)", 3); else { ctx.strokeStyle = KC.dim; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(px + 90 + s * 22, 296, 5, 0, 6.2832); ctx.stroke(); } }
-      K.t(ctx, seenN + " / 3", px + 162, 300, { s: 12.5, w: "900", c: seenN >= 3 ? KC.green : KC.mute });
+      K.t(ctx, "읽어 본 곳", 700, y0 + 28, { s: 11.5, w: "800", c: KC.mute });
+      for (var s = 0; s < 3; s++) {
+        if (got.seen[s]) K.glow(ctx, 708 + s * 24, y0 + 52, 4, "rgba(63,211,163,.95)", 3);
+        else { ctx.strokeStyle = KC.dim; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(708 + s * 24, y0 + 52, 5, 0, 6.2832); ctx.stroke(); }
+      }
+      K.t(ctx, seenN + " / 3", 790, y0 + 57, { s: 12.5, w: "900", c: seenN >= 3 ? KC.green : KC.mute });
+      K.t(ctx, "용암은 식으면서 부피가 줄어듭니다. 줄어든 만큼 사방으로 잡아당겨지다가 견디지 못하고 갈라지는데,", 22, y0 + 116, { s: 12, c: KC.ink, w: "600" });
+      K.t(ctx, "가장 적은 힘으로 면을 나누는 모양이 육각형이라 기둥의 단면이 육각형에 가까워집니다.", 22, y0 + 138, { s: 12, c: KC.mute, w: "600" });
+      K.t(ctx, "천천히 식을수록 갈라진 틈의 간격이 넓어져 기둥이 굵어집니다.", 22, y0 + 160, { s: 12, c: KC.mute, w: "600" });
+    }
 
-      /* 아래 설명 */
-      K.stage(ctx, 0, 368, W, H - 368, "night", { seed: 8 });
-      K.t(ctx, "용암은 식으면서 부피가 줄어듭니다. 줄어든 만큼 사방으로 잡아당겨지다가 견디지 못하고 갈라지는데,", 18, 394, { s: 12, c: KC.ink, w: "600" });
-      K.t(ctx, "가장 적은 힘으로 면을 나누는 모양이 육각형이라 기둥의 단면이 육각형에 가까워집니다.", 18, 416, { s: 12, c: KC.mute, w: "600" });
-      K.t(ctx, "천천히 식을수록 갈라진 틈의 간격이 넓어져 기둥이 굵어집니다.", 18, 438, { s: 12, c: KC.mute, w: "600" });
-
+    function draw() {
+      var t = years(), D2 = colW();
+      render();
       var ch = false;
-      if (D >= 1 && !got.thick) { got.thick = ch = true; }
-      if (D <= 0.6 && !got.thin) { got.thin = ch = true; }
+      if (D2 >= 1 && !got.thick) { got.thick = ch = true; }
+      if (D2 <= 0.6 && !got.thin) { got.thin = ch = true; }
       if (!got.seen[place]) { got.seen[place] = true; ch = true; }
-      if (ch) { window.sthState("cCol", got); mission(); }
+      if (ch) { window.sthState("cCol", got); mission(); render(); }
 
-      $("c-col-read").innerHTML = "기둥의 굵기: <b>" + D.toFixed(2) + " m</b>";
+      $("c-col-read").innerHTML = "기둥의 굵기: <b>" + D2.toFixed(2) + " m</b>";
       $("c-col-info").innerHTML = "<b>" + PLACE[place].n + "</b> — " + PLACE[place].d +
-        "<br><br>두께 <b>" + flow + " m</b> 인 용암층은 다 식는 데 <b>" + fmtYears(t) + "</b>이 걸리고, 이때 생기는 기둥의 지름은 약 <b>" + D.toFixed(2) + " m</b>입니다. " +
-        (D >= 1 ? "두껍게 쌓인 용암은 천천히 식어 <b>굵은 기둥</b>을 만듭니다." : "얇게 흐른 용암은 빨리 식어 <b>가는 기둥</b>이 촘촘히 생깁니다.");
+        "<br><br>두께 <b>" + flow + " m</b> 인 용암층은 다 식는 데 <b>" + fmtYears(t) + "</b>이 걸리고, 이때 생기는 기둥의 지름은 약 <b>" + D2.toFixed(2) + " m</b>입니다. " +
+        (D2 >= 1 ? "두껍게 쌓인 용암은 천천히 식어 <b>굵은 기둥</b>을 만듭니다." : "얇게 흐른 용암은 빨리 식어 <b>가는 기둥</b>이 촘촘히 생깁니다.");
     }
     function mission() {
       if (got.thick) done("m3-3a"); if (got.thin) done("m3-3b");
@@ -1335,6 +1466,19 @@ function fmtMm(d) {
     canvas._redraw = draw;
     segWire("c-place", function (b) { place = +b.getAttribute("data-k"); draw(); });
     $("c-flow").addEventListener("input", function (e) { flow = +e.target.value; $("c-flow-val").textContent = flow + " m"; draw(); });
+    /* ▶ 식는 과정 보기: 그림만 다시 그린다(미션 판정과 무관) */
+    var playBtn = $("c-col-play");
+    if (playBtn) playBtn.addEventListener("click", function () {
+      if (playing) { playing = false; playBtn.textContent = "▶ 이어서 보기"; return; }
+      if (cool >= 1) cool = 0;
+      playing = true; playBtn.textContent = "⏸ 멈추기";
+    });
+    K.animate(canvas, function (dt) {
+      if (!playing) return;
+      cool = Math.min(1, cool + dt / 1000 / 4.5); ph += dt / 1000;
+      if (cool >= 1) { playing = false; if (playBtn) playBtn.textContent = "▶ 식는 과정 다시 보기"; }
+      render();
+    }, 24);
     draw(); mission();
   })();
 

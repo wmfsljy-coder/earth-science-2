@@ -1828,7 +1828,7 @@ function compass(ctx, cx, cy, R, busy) {
     anim(canvas, function (dt) { if (playL.on) { tl += dt / 70; draw(); } });
   })();
 
-  /* ---- 장면3 태풍 단면 ---- */
+  /* ---- 장면3 태풍 단면 (아이소메트릭 블록 모형 — 태풍을 반으로 잘라 속을 본다 + 거리별 풍속·기압) ---- */
   (function () {
     var canvas = $("d-c-cross"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h;
     var r = 100, t = 0;
@@ -1844,80 +1844,215 @@ function compass(ctx, cx, cy, R, busy) {
       return "태풍 바깥 영역";
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      var p = pres(r), vv = wind(r);
-      /* ── 왼쪽: 위성에서 본 태풍 ── */
-      var LW = 440;
-      K.stage(ctx, 0, 0, LW, 326, "space", { seed: 141 });
-      K.pill(ctx, "2003년 태풍 매미 · 위에서 본 구름", 16, 28, { s: 13, c: KC.blue });
-      var cx = 220, cy = 182, SC = 0.36;     /* km → px */
-      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, 326, 14); ctx.clip();
-      for (var k = 0; k < 5; k++) {
-        ctx.beginPath();
-        for (var s2 = 0; s2 <= 40; s2++) {
-          var fr = s2 / 40, rr = 45 + fr * 340, ang = -t * 0.03 + k * (Math.PI * 2 / 5) + fr * 3.2;
-          var x = cx + Math.cos(ang) * rr * SC, y = cy + Math.sin(ang) * rr * SC;
-          if (s2 === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    /* ── 블록 모형: 태풍 중심이 앞면(y = D) 가운데에 오도록 잘라 낸 바다 + 대기 ──
+       x 0~L (화면 오른쪽 아래로), y 0~D (왼쪽 아래로). 가로 1 km = KS 그림 단위, 높이 1 km = ZK 그림 단위(과장). */
+    var DH = 450;
+    var I = K.iso({ ox: 364, oy: 95, s: 0.8, L: 560, D: 220 });
+    var L = I.L, D = I.D, XC = L / 2, KS = 280 / 400, ZW = 22, ZK = 9, ZB = ZW + ZK;   /* ZB: 구름 밑면(약 1 km) */
+    function sm(a) { a = clamp(a, 0, 1); return a * a * (3 - 2 * a); }
+    var ph = 0;                                               /* 구름띠가 도는 각(위에서 볼 때 반시계) */
+    /* 구름 꼭대기 높이(해수면 위, km): 거리 rk(km)와 방위 th(위에서 볼 때 반시계로 잰 각) */
+    function topKm(rk, th) {
+      var core;
+      if (rk < 30) core = 15 * sm((rk - 17) / 13);            /* 눈: 맑고, 위로 갈수록 넓어지는 벽 */
+      else if (rk < 70) core = 15 - (rk - 30) * 0.02;
+      else core = 14.2 - (rk - 70) * 0.035;
+      core *= 1 - sm((rk - 120) / 55);                        /* 중심의 짙은 구름은 120 km 쯤부터 끊긴다 */
+      var band = 0;
+      if (rk > 90 && rk < 380) {
+        var s = 0.5 + 0.5 * Math.cos(2 * (th - ph) + (rk - 120) / 38);   /* 바깥으로 갈수록 시계 방향으로 감기는 띠 */
+        band = (8.5 - (rk - 120) * 0.016) * sm((s - 0.32) / 0.6) * sm((rk - 90) / 40) * (1 - sm((rk - 320) / 55));
+      }
+      return Math.max(core, band, 0);
+    }
+    function polar(x, y) { var dx = (x - XC) / KS, dy = (D - y) / KS; return { rk: Math.sqrt(dx * dx + dy * dy), th: Math.atan2(dy, dx) }; }
+    function zOf(x, y) { var p = polar(x, y); return ZW + topKm(p.rk, p.th) * ZK; }
+    function frontZ(u) { return zOf(u, D); }
+    function colOf(x, y, z, light) {
+      var m = (z - ZW) / ZK;
+      if (m < 0.25) return K.tint("#2f7fbf", light);                /* 바다 */
+      if (m < 4) return K.tint("#cdd6e2", light);                   /* 낮은 구름 */
+      if (m < 10) return K.tint("#e6ecf4", light);
+      return K.tint("#f5f8fc", light);                              /* 높은 구름 꼭대기 */
+    }
+    /* 솜뭉치 그림(미리 한 번 그려 둔다): 0 그림자 · 1 낮은 회색 · 2 중간 · 3 꼭대기 흰색 */
+    var PUFF = ["rgba(10,30,60,", "rgba(176,188,204,", "rgba(222,229,238,", "rgba(250,252,255,"].map(function (c, i) {
+      var cv = document.createElement("canvas"); cv.width = cv.height = 48; var x = cv.getContext("2d"), g = x.createRadialGradient(20, 20, 2, 24, 24, 24);
+      g.addColorStop(0, c + (i ? "1)" : ".9)")); g.addColorStop(.55, c + (i ? ".95)" : ".5)"));
+      if (i) g.addColorStop(.8, "rgba(186,197,214,.5)");
+      g.addColorStop(1, c + "0)");
+      x.fillStyle = g; x.fillRect(0, 0, 48, 48); return cv;
+    });
+    function U(rk, side) { return XC + side * rk * KS; }
+    /* 공기 덩어리의 길: 바다 위로 빨려 들어와(수렴) → 눈벽에서 솟고 → 꼭대기에서 퍼져 나간다(발산) */
+    function pathPt(f) {
+      if (f < 0.5) { var a = f / 0.5; return { rk: 330 - a * 290, z: ZW + 0.4 * ZK }; }
+      if (f < 0.72) { var b = (f - 0.5) / 0.22; return { rk: 40 + b * 18, z: ZW + (0.4 + b * 13.8) * ZK }; }
+      var c = (f - 0.72) / 0.28; return { rk: 58 + c * 280, z: ZW + (14.2 - c * 2.4) * ZK };
+    }
+
+    /* 바탕(스튜디오·바다·구름)은 구름띠가 조금 돌았을 때만 다시 그려 둔다 — 솜뭉치가 많아 매번 그리면 무겁다 */
+    var base = null, basePh = -9;
+    function paintBase() {
+      var dpr = window.devicePixelRatio || 1;
+      if (!base) { base = document.createElement("canvas"); base.width = Math.round(W * dpr); base.height = Math.round(DH * dpr); }
+      var ctx = base.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, DH);
+      K.studio(ctx, 0, 0, W, DH, { x: I.P(L, D, 0).x - 110, y: I.P(L, D, 0).y - 30, rx: 290, ry: 56 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      /* 바다(앞면·오른쪽 면) */
+      I.water(ctx, ZW, function () { return 0; }, { surface: false, top: "rgba(60,150,220,.85)", deep: "rgba(12,50,110,.95)" });
+      I.face(ctx, "front", function (Lw) {   /* 따뜻한 표층이 연료 */
+        var g = ctx.createLinearGradient(0, ZW, 0, ZW - 9); g.addColorStop(0, "rgba(255,170,90,.55)"); g.addColorStop(1, "rgba(255,170,90,0)");
+        ctx.fillStyle = g; ctx.fillRect(0, ZW - 9, Lw, 9);
+      });
+      I.edges(ctx, ZW, ZW);
+      /* 바다 윗면 */
+      var sa = I.P(0, 0, ZW), sc = I.P(L, D, ZW), sg = ctx.createLinearGradient(sa.x, sa.y, sc.x, sc.y);
+      sg.addColorStop(0, "#5aa9e6"); sg.addColorStop(1, "#1f69ad"); I.plane(ctx, ZW, sg, "rgba(255,255,255,.6)");
+      /* 구름: 칸마다 솜뭉치를 밑면에서 꼭대기까지 쌓는다(뒤에서 앞으로) */
+      var nx = 56, ny = 22, dx = L / nx, dy = D / ny, s0, ii, jj;
+      for (s0 = 0; s0 <= nx + ny - 2; s0++) {
+        for (ii = Math.max(0, s0 - ny + 1); ii <= Math.min(nx - 1, s0); ii++) {
+          jj = s0 - ii;
+          var cx2 = (ii + 0.5) * dx, cy2 = (jj + 0.5) * dy, pp = polar(cx2, cy2), tk = topKm(pp.rk, pp.th);
+          if (tk < 0.8) continue;
+          var hs = Math.abs(Math.sin(ii * 12.9898 + jj * 78.233) * 43758.5453) % 1, hs2 = Math.abs(Math.sin(ii * 39.3468 + jj * 11.135) * 24634.6345) % 1;
+          cx2 += (hs - 0.5) * dx * 0.7; cy2 += (hs2 - 0.5) * dy * 0.7;
+          var zt = ZW + tk * ZK, zb = tk > 3 ? ZB : ZW + tk * ZK * 0.4, sh = I.P(cx2, cy2, ZW);
+          ctx.globalAlpha = 0.22; ctx.drawImage(PUFF[0], sh.x - 11, sh.y - 6, 22, 12); ctx.globalAlpha = 1;
+          for (var zz = zb; zz < zt + 0.1; zz += 15) {
+            var z2 = Math.min(zz, zt), q2 = I.P(cx2, cy2, z2), lvl = clamp(Math.round((z2 - ZW) / ZK / 4), 1, 3), rr3 = (z2 === zt ? 11 : 9.5) * (0.8 + 0.4 * hs);
+            ctx.drawImage(PUFF[lvl], q2.x - rr3, q2.y - rr3, rr3 * 2, rr3 * 2);
+            if (z2 === zt) break;
+            if (zz + 15 > zt) zz = zt - 15;
+          }
         }
-        ctx.strokeStyle = "rgba(235,242,255,.32)"; ctx.lineWidth = 14; ctx.lineCap = "round"; ctx.stroke();
-        ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = 4; ctx.stroke();
       }
       ctx.restore();
-      /* 눈벽(가장 센 바람) */
-      var eg = ctx.createRadialGradient(cx, cy, 25 * SC, cx, cy, RM * SC + 10);
-      eg.addColorStop(0, "rgba(255,255,255,.95)"); eg.addColorStop(.6, "rgba(240,245,255,.85)"); eg.addColorStop(1, "rgba(240,245,255,0)");
-      ctx.fillStyle = eg; ctx.beginPath(); ctx.arc(cx, cy, RM * SC + 10, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#0a0f2c"; ctx.beginPath(); ctx.arc(cx, cy, 25 * SC * .7, 0, Math.PI * 2); ctx.fill();
-      K.pill(ctx, "눈", cx - 30, cy - 18, { s: 11, a: "right", c: KC.ink });
-      K.pill(ctx, "눈벽구름", cx + RM * SC + 14, cy - 18, { s: 11, c: KC.red });
-      /* 지금 보는 거리 */
-      ctx.save(); ctx.strokeStyle = KC.yellow; ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.shadowColor = KC.yellow; ctx.shadowBlur = 6;
-      ctx.beginPath(); ctx.arc(cx, cy, Math.max(r * SC, 3), 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
-      K.glow(ctx, cx + Math.max(r * SC, 3), cy, 3.4, "rgba(255,211,107,.95)", 3);
-      K.pill(ctx, "지금 보는 거리 " + r + " km", 16, 312, { s: 11.5, c: KC.yellow });
-      K.warn(ctx, LW - 14, 312, "⚠ 구름띠 모양은 모식적", "right");
+      basePh = ph;
+    }
 
-      /* ── 오른쪽: 거리에 따른 풍속·기압 ── */
-      var RX = LW + 8;
-      K.stage(ctx, RX, 0, W - RX, 326, "lab", { seed: 143 });
-      K.pill(ctx, "중심에서 멀어지며 재 보기", RX + 16, 28, { s: 13, c: KC.blue });
-      var x0 = RX + 50, x1 = W - 22, y0 = 60, y1 = 270;
-      function X(rr) { return x0 + rr / 400 * (x1 - x0); }
-      function YV(ww) { return y1 - ww / 55 * (y1 - y0); }
-      function YP(pp) { return y1 - (pp - 950) / 62 * (y1 - y0); }
-      /* 구역 띠 */
-      [[0, 25, "rgba(255,255,255,.05)"], [25, 70, "rgba(255,107,129,.14)"], [70, 250, "rgba(127,211,255,.07)"]].forEach(function (z) { ctx.fillStyle = z[2]; ctx.fillRect(X(z[0]), y0, X(z[1]) - X(z[0]), y1 - y0); });
-      axes(ctx, x0, y0, x1, y1);
-      for (var q = 0; q <= 400; q += 100) K.t(ctx, q + "", X(q), y1 + 18, { s: 10.5, a: "center", c: KC.mute, w: "600" });
-      K.t(ctx, "중심에서의 거리(km) →", x1, y1 + 36, { s: 11, a: "right", c: KC.mute });
+    function drawModel() {
+      if (!base || Math.abs(ph - basePh) > 0.03) paintBase();
+      ctx.drawImage(base, 0, 0, W, DH);
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+      /* 앞면 단면: 구름 아래 비의 장막 + 잘린 구름 + 빗줄기 */
+      I.face(ctx, "front", function (Lw) {
+        var u, st = 3;
+        ctx.beginPath(); ctx.moveTo(0, ZW);
+        for (u = 0; u <= Lw; u += st) ctx.lineTo(u, frontZ(u) > ZB + 2.5 * ZK ? ZB : ZW);
+        ctx.lineTo(Lw, ZW); ctx.closePath();
+        ctx.fillStyle = "rgba(120,140,170,.5)"; ctx.fill();
+        ctx.beginPath(); ctx.moveTo(0, ZB);
+        for (u = 0; u <= Lw; u += st) ctx.lineTo(u, Math.max(frontZ(u), ZB));
+        ctx.lineTo(Lw, ZB); ctx.closePath();
+        var g = ctx.createLinearGradient(0, ZB, 0, ZW + 15 * ZK);
+        g.addColorStop(0, "#8d9ab0"); g.addColorStop(.4, "#d3dbe6"); g.addColorStop(1, "#fbfcfe");
+        ctx.fillStyle = g; ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,.95)"; ctx.lineWidth = 2; ctx.stroke();
+        ctx.save(); ctx.clip();
+        var R = K.rng(23);
+        for (var i = 0; i < 220; i++) { ctx.fillStyle = "rgba(255,255,255," + (0.1 + R() * 0.25).toFixed(2) + ")"; ctx.beginPath(); ctx.arc(R() * Lw, ZB + R() * 14 * ZK, 3 + R() * 7, 0, 6.2832); ctx.fill(); }
+        ctx.restore();
+        /* 눈: 구름 없이 갠 하늘(하강 기류) */
+        var eg = ctx.createLinearGradient(0, ZW, 0, ZW + 15 * ZK); eg.addColorStop(0, "rgba(120,200,255,.55)"); eg.addColorStop(1, "rgba(200,235,255,.25)");
+        ctx.fillStyle = eg; ctx.fillRect(XC - 17 * KS, ZW, 34 * KS, 15 * ZK);
+        ctx.strokeStyle = "rgba(190,215,255,.55)"; ctx.lineWidth = 1;
+        for (u = 4; u < Lw; u += 7) {
+          if (frontZ(u) < ZB + 2.5 * ZK) continue;
+          var o = ((u * 13 + t * 9) % 12);
+          ctx.beginPath(); ctx.moveTo(u, ZB - o * 0.3); ctx.lineTo(u - 1.5, ZW + 1); ctx.stroke();
+        }
+      });
+      I.shade(ctx, "right", function () { return ZW; });
+      /* 공기의 흐름(앞면 위, 양쪽 대칭) */
+      var N = 9, k, side;
+      for (side = -1; side <= 1; side += 2) {
+        for (k = 0; k < N; k++) {
+          var f = ((k / N) + t * 0.004) % 1, p = pathPt(f), q = I.P(U(p.rk, side), D, p.z);
+          var col = f < 0.5 ? "rgba(255,200,120,.95)" : (f < 0.72 ? "rgba(255,255,255,.98)" : "rgba(140,200,255,.95)");
+          K.glow(ctx, q.x, q.y, 2.6, col, 2.6);
+        }
+        K.arrow(ctx, I.P(U(300, side), D, ZW + 0.5 * ZK), I.P(U(150, side), D, ZW + 0.5 * ZK), "#ffb35c", 2.6, 10);
+        K.arrow(ctx, I.P(U(46, side), D, ZW + 3 * ZK), I.P(U(52, side), D, ZW + 11 * ZK), "#ffffff", 2.6, 10);
+        K.arrow(ctx, I.P(U(90, side), D, ZW + 13.6 * ZK), I.P(U(250, side), D, ZW + 12.4 * ZK), "#5fb8ff", 2.6, 10);
+      }
+      /* 눈: 천천히 내려오는 공기 */
+      for (k = 0; k < 3; k++) {
+        var fz = ((k / 3) + t * 0.003) % 1, e = I.P(XC + (k - 1) * 6 * KS, D, ZW + (13 - fz * 11) * ZK);
+        K.glow(ctx, e.x, e.y, 2.4, "rgba(170,230,255,.95)", 2.6);
+      }
+      K.arrow(ctx, I.P(XC, D, ZW + 12 * ZK), I.P(XC, D, ZW + 5 * ZK), "#9fe3ff", 2.4, 9);
+      /* 지금 보는 거리(노란 선) */
+      var mx = XC + r * KS, a1 = I.P(mx, D, 0), a2 = I.P(mx, D, ZW + 16 * ZK), sea = I.P(mx, D, ZW);
+      K.line(ctx, a1, a2, "#ffd35a", 2.4, [6, 4]);
+      K.glow(ctx, sea.x, sea.y, 4.5, "rgba(255,211,107,.98)", 3.4);
+      ctx.restore();
+
+      /* 이름표 */
+      var box = [0, W];
+      I.label(ctx, XC, D, ZW + 6 * ZK, "태풍의 눈 · 하강 기류, 하늘이 갬", -150, 80, "#bfe6ff", box);
+      I.label(ctx, U(40, 1), D, ZW + 12 * ZK, "눈벽구름 · 가장 강한 상승 기류", 70, -120, "#ffb3c0", box);
+      /* 나선 강우대: 지금 띠가 지나는 자리(230 km)를 찾아 가리킨다 */
+      for (k = -2; k <= 3; k++) {
+        var th = ph - (230 - 120) / 76 + k * Math.PI, sx = XC + 230 * KS * Math.cos(th), sy = D - 230 * KS * Math.sin(th);
+        if (Math.sin(th) > 0.15 && sx > 10 && sx < L - 10 && sy > 8 && sy < D - 8) { I.label(ctx, sx, sy, zOf(sx, sy), "나선 강우대", -60, -36, "#e8ecff", box); break; }
+      }
+      I.label(ctx, U(250, -1), D, ZW * 0.5, "따뜻한 바다 · 수증기가 연료", -40, 40, "#ffd9a8", box);
+      var sp = I.P(U(300, -1), D, ZW + 0.5 * ZK); K.pill(ctx, "수렴 · 빨려 드는 바람", sp.x - 6, sp.y - 12, { s: 11, a: "right", c: "#ffc98a", box: box });
+      var op = I.P(U(260, -1), D, ZW + 12.4 * ZK); K.pill(ctx, "발산 · 꼭대기에서 퍼져 나감", op.x - 8, op.y - 6, { s: 11, a: "right", c: "#9fd3ff", box: box });
+      var tp = I.P(XC + r * KS, D, ZW + 16 * ZK);
+      K.pill(ctx, "지금 보는 거리 " + r + " km", tp.x, tp.y - 6, { s: 12, a: "center", c: "#ffd35a", box: box });
+
+      /* 큰 제목 */
+      var z0 = zone(r), vv = wind(r);
+      var HL = { "태풍의 눈": ["태풍의 눈 — 갑자기 잠잠하다", "#bfe6ff"], "눈벽구름": ["눈벽구름 — 가장 사나운 바람", "#ff8fa3"],
+        "나선 강우대": ["나선 강우대 — 띠 모양 비바람", "#ffd35a"], "태풍 바깥 영역": ["태풍 바깥 — 바람이 잦아든다", "#ffffff"] }[z0];
+      K.bigText(ctx, HL[0], 22, 50, 26, HL[1]);
+      K.bigText(ctx, r + " km · 풍속 " + vv.toFixed(1) + " m/s · " + pres(r).toFixed(0) + " hPa", 22, 82, 17, "#ffffff");
+      K.warn(ctx, W - 14, 28, "⚠ 높이는 약 13배 과장 · 구름띠는 모식적", "right");
+      K.t(ctx, "상륙할 때 매미의 중심 기압은 954 hPa 이었습니다. 그날 제주에서는 최대 순간 풍속 60.0 m/s가 기록되었습니다.", 22, DH - 14, { s: 11, c: "#4a5872" });
+    }
+
+    function drawChart() {
+      var y0 = DH + 8, h = H - y0, p = pres(r), vv = wind(r);
+      K.stage(ctx, 0, y0, W, h, "lab", { seed: 143 });
+      var RW = 230;
+      var g = K.chart(ctx, { x: 4, y: y0 + 22, w: W - RW - 8, h: h - 24, pt: 10, pb: 30, x0: 0, x1: 400, y0: 0, y1: 55, xt: 4, yt: 5, xl: "중심에서의 거리(km) →", xf: function (q) { return q + ""; } });
+      K.pill(ctx, "중심에서 멀어지며 재 보기", 14, y0 + 22, { s: 12, c: KC.blue });
+      function YP(pp) { return g.B - (pp - 950) / 62 * (g.B - g.T); }
+      [[0, 25, "rgba(255,255,255,.05)"], [25, 70, "rgba(255,107,129,.14)"], [70, 250, "rgba(127,211,255,.07)"]].forEach(function (z) { ctx.fillStyle = z[2]; ctx.fillRect(g.X(z[0]), g.T, g.X(z[1]) - g.X(z[0]), g.B - g.T); });
       function curve(fn, Y, col) {
         ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = 2.8; ctx.shadowColor = col; ctx.shadowBlur = 8; ctx.beginPath();
-        for (var k2 = 0; k2 <= 200; k2++) { var rr2 = k2 * 2, x2 = X(rr2), y2 = Y(fn(rr2)); if (k2 === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2); }
+        for (var k2 = 0; k2 <= 200; k2++) { var rr2 = k2 * 2, x2 = g.X(rr2), y2 = Y(fn(rr2)); if (k2 === 0) ctx.moveTo(x2, y2); else ctx.lineTo(x2, y2); }
         ctx.stroke(); ctx.restore();
       }
-      curve(wind, YV, KC.red);
+      curve(wind, g.Y, KC.red);
       curve(pres, YP, KC.violet);
-      K.pill(ctx, "풍속", X(64), YV(50) - 4, { s: 11.5, c: KC.red });
-      K.pill(ctx, "기압", X(300), YP(pres(300)) - 12, { s: 11.5, c: KC.violet });
-      ctx.save(); ctx.strokeStyle = KC.yellow; ctx.lineWidth = 2; ctx.shadowColor = KC.yellow; ctx.shadowBlur = 6;
-      ctx.beginPath(); ctx.moveTo(X(r), y0); ctx.lineTo(X(r), y1); ctx.stroke(); ctx.restore();
-      K.glow(ctx, X(r), YV(vv), 5, "rgba(255,107,129,.95)", 3.4);
-      K.glow(ctx, X(r), YP(p), 5, "rgba(182,156,255,.95)", 3.4);
+      K.pill(ctx, "풍속(m/s)", g.X(78), g.Y(50) + 4, { s: 11, c: KC.red });
+      K.pill(ctx, "기압", g.X(330), YP(pres(330)) - 10, { s: 11, c: KC.violet });
+      K.line(ctx, { x: g.X(r), y: g.T }, { x: g.X(r), y: g.B }, KC.yellow, 2);
+      K.glow(ctx, g.X(r), g.Y(vv), 5, "rgba(255,107,129,.95)", 3.4);
+      K.glow(ctx, g.X(r), YP(p), 5, "rgba(182,156,255,.95)", 3.4);
+      /* 오른쪽 읽음판 */
+      var rx = W - RW + 6, z0 = zone(r);
+      K.t(ctx, "거리 " + r + " km", rx, y0 + 30, { s: 13, w: "800", c: KC.yellow });
+      K.t(ctx, z0, rx, y0 + 60, { s: 17, w: "900", c: KC.orange });
+      K.t(ctx, "풍속 " + vv.toFixed(1) + " m/s", rx, y0 + 90, { s: 15, w: "800", c: KC.red });
+      K.t(ctx, "기압 " + p.toFixed(1) + " hPa", rx, y0 + 116, { s: 15, w: "800", c: KC.violet });
+      var DS = { "태풍의 눈": ["하강 기류 — 바람이 약하고", "하늘이 갠다"], "눈벽구름": ["가장 강한 상승 기류 —", "최대 풍속과 폭우"],
+        "나선 강우대": ["돌풍성 비바람이 띠를 이루며", "지나간다"], "태풍 바깥 영역": ["구름이 많고 바람이", "조금 강한 정도"] }[z0];
+      K.t(ctx, DS[0], rx, y0 + 148, { s: 12, w: "700", c: KC.ink });
+      K.t(ctx, DS[1], rx, y0 + 168, { s: 12, w: "700", c: KC.ink });
+    }
 
-      /* ── 아래: 읽음 띠 ── */
-      K.stage(ctx, 0, 334, W, H - 334, "night", { seed: 145 });
-      K.pill(ctx, "거리 " + r + " km", 20, 366, { s: 15, c: KC.yellow });
-      K.pill(ctx, zone(r), 180, 366, { s: 15, c: KC.orange });
-      K.pill(ctx, "풍속 " + vv.toFixed(1) + " m/s", 470, 366, { s: 15, c: KC.red });
-      K.pill(ctx, "기압 " + p.toFixed(1) + " hPa", 680, 366, { s: 15, c: KC.violet });
-      K.t(ctx, zone(r) === "태풍의 눈" ? "하강 기류 — 바람이 약하고 하늘이 갠다" :
-        (zone(r) === "눈벽구름" ? "가장 강한 상승 기류 — 최대 풍속과 폭우" :
-          (zone(r) === "나선 강우대" ? "돌풍성 비바람이 띠를 이루며 지나간다" : "구름이 많고 바람이 조금 강한 정도")),
-        24, 402, { s: 13, w: "800", c: KC.ink });
-      K.t(ctx, "상륙할 때 매미의 중심 기압은 954 hPa 이었습니다. 그날 제주에서는 최대 순간 풍속 60.0 m/s가 기록되었습니다.", 24, H - 18, { s: 11, c: KC.mute });
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawModel();
+      drawChart();
 
-      var ch = false;
+      var ch = false, vv = wind(r);
       if (Math.abs(r - RM) <= 10 && !got.a) { got.a = ch = true; }
       if (r <= 20 && !got.b) { got.b = ch = true; }
       if (vv <= VMAX / 2 && r > RM && !got.c) { got.c = ch = true; }
@@ -1936,7 +2071,8 @@ function compass(ctx, cx, cy, R, busy) {
     $("d-r").addEventListener("input", function (e) { r = +e.target.value; $("d-r-val").textContent = r + " km"; draw(); });
     draw(); mission();
     var playC = playBtn("d-cross-play");
-    anim(canvas, function (dt) { if (playC.on) { t += dt / 70; draw(); } });
+    var acc = 0;
+    anim(canvas, function (dt) { if (!playC.on) return; t += dt / 70; ph += dt / 1000 * 0.12; acc += dt; if (acc >= 45) { acc = 0; draw(); } });
   })();
 
   /* ---- 장면4 위험 반원 ---- */
