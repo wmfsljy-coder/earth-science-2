@@ -208,7 +208,7 @@
       var main = preCard(items);
       introPanel.appendChild(main); cards.push(main);
       var go = el("button", "btn primary", "첫 이야기 시작하기 →"); go.type = "button"; go.style.margin = "4px 0 30px";
-      go.addEventListener("click", function () { firstBtn.click(); window.scrollTo(0, 0); });
+      go.addEventListener("click", function () { (document.querySelector(".tab-btn[data-sec]:not([hidden])") || firstBtn).click(); window.scrollTo(0, 0); });
       introPanel.appendChild(go);
       firstPanel.parentNode.insertBefore(introPanel, firstPanel);
       introBtn.addEventListener("click", openIntro);

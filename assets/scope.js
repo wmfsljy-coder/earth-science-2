@@ -91,8 +91,18 @@
     Array.prototype.forEach.call(document.querySelectorAll(".tab-btn[data-sec]"), function (b) {
       if (ON.indexOf(b.getAttribute("data-sec")) < 0) { b.hidden = true; b.classList.add("scope-off"); }
     });
-    var act = document.querySelector(".tab-btn.active");
-    if (act && act.hidden) { var first = document.querySelector(".tab-btn:not([hidden])"); if (first) first.click(); }
+    /* ?sec= 로 들어오면(소단원 QR) 그 범위의 첫 소단원을 바로 연다 — 00 들어가기는 메뉴에 남고, 이야기 머리의 안내로도 갈 수 있다 */
+    var act = document.querySelector(".tab-btn.active"), asked = ASKED && SKIPPED.length ? document.querySelector('.tab-btn[data-sec="' + ON[0] + '"]') : null;
+    if (asked) asked.click();
+    else if (act && act.hidden) { var first = document.querySelector(".tab-btn:not([hidden])"); if (first) first.click(); }
+    /* 교사 기기: 이야기 탭 머리마다 그 소단원 QR */
+    if (window.STH_TEACHER && window.sthSecQR) ON.forEach(function (s) {
+      var p = document.querySelector('.tab-panel[data-sec="' + s + '"]'), h = p && p.querySelector(".stage-head");
+      if (!h || h.querySelector(".qr-btn")) return;
+      var q = document.createElement("button"); q.type = "button"; q.className = "qr-btn"; q.textContent = "📱 이 소단원 QR";
+      q.addEventListener("click", function () { window.sthSecQR(s, s + " " + SECS[s]); });
+      h.appendChild(q);
+    });
     var brand = document.querySelector("#rail .brand") || document.querySelector(".rail .brand");
     if (!brand || !ALL.length) return;
     if (SKIPPED.length) {
@@ -107,7 +117,7 @@
       box.className = "scope-box";
       box.innerHTML = "<summary>교사용 · 수업 범위 고르기</summary>" +
         ALL.map(function (s) { return "<label><input type='checkbox' value='" + s + "'" + (ON.indexOf(s) >= 0 ? " checked" : "") + "> " + s + " " + SECS[s] + "</label>"; }).join("") +
-        "<button type='button' class='btn sm'>학생 주소 복사</button><div class='scope-url'></div>";
+        "<button type='button' class='btn sm'>학생 주소 복사</button> <button type='button' class='btn sm scope-qr'>📱 QR 띄우기</button><div class='scope-url'></div>";
       brand.appendChild(box);
       var url = box.querySelector(".scope-url");
       var make = function () {
@@ -116,6 +126,7 @@
         url.textContent = u; return u;
       };
       box.addEventListener("change", make); make();
+      box.querySelector(".scope-qr").addEventListener("click", function () { if (window.sthQR) window.sthQR(make(), "이번 수업 범위", [].map.call(box.querySelectorAll("input:checked"), function (i) { return i.value + " " + SECS[i.value]; }).join(" · ")); });
       box.querySelector("button").addEventListener("click", function () {
         var u = make(), b = this;
         if (navigator.clipboard) navigator.clipboard.writeText(u);
