@@ -1894,7 +1894,7 @@ function compass(ctx, cx, cy, R, busy) {
     /* 바탕(스튜디오·바다·구름)은 구름띠가 조금 돌았을 때만 다시 그려 둔다 — 솜뭉치가 많아 매번 그리면 무겁다 */
     var base = null, basePh = -9;
     function paintBase() {
-      var dpr = window.devicePixelRatio || 1;
+      var dpr = 2;   /* 캔버스 버퍼(setupCanvas)와 같게 */
       if (!base) { base = document.createElement("canvas"); base.width = Math.round(W * dpr); base.height = Math.round(DH * dpr); }
       var ctx = base.getContext("2d");
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, DH);
