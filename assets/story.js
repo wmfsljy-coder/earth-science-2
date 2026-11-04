@@ -1,22 +1,20 @@
 /* =========================================================================
    이야기형 소단원(에피소드) 부품 — theme.js 다음에 불러온다.
 
-   한 탭(소단원) = 한 에피소드. 장면이 차례로 열리고 마지막 장면(결말)에서 끝난다.
+   한 탭(소단원) = 한 에피소드. 장면은 미션을 끝내지 않아도 자유롭게 오갈 수 있고(2026-11-04),
+   미션을 끝낸 장면만 끝난 것으로 기록한다. 모든 장면의 미션을 끝내야 이야기가 끝난 것이다.
      <div class="episode" id="ep1">
        <section class="scene" data-title="사건 접수" data-auto> … </section>
        <section class="scene" data-title="현장 조사"> … </section>
      </div>
      var ep = sthStory({ root: "ep1", key: "ep1", name: "사건 파일 ①" });
-     ep.clear(1);            // 그 장면의 미션을 끝냈을 때 부른다 → '다음 장면' 버튼이 열린다
+     ep.clear(1);            // 그 장면의 미션을 끝냈을 때 부른다 → 끝난 장면으로 기록하고 '다음 장면' 버튼을 강조한다
 
-   data-auto 가 붙은 장면은 읽기만 하면 넘어갈 수 있다.
-   주소에 ?open=1 을 붙이면(교사용) 모든 장면이 열린다.
+   data-auto 가 붙은 장면은 열기만 하면 끝난 것으로 기록한다.
    진행 상황은 sthState 로 단원 기록에 함께 저장된다. sthUnit() 을 먼저 불러야 한다.
    ========================================================================= */
 (function () {
   "use strict";
-
-  var OPEN_ALL = /[?&]open=1/.test(location.search);
 
   function el(tag, cls, html) {
     var e = document.createElement(tag);
@@ -44,12 +42,6 @@
 
     function persist() { window.sthState(opt.key, { c: cleared, at: at, done: isDone() }); }
     function isDone() { for (var i = 0; i < scenes.length; i++) if (!cleared[i]) return false; return true; }
-    function reach() {                       // 들어갈 수 있는 마지막 장면 번호
-      if (OPEN_ALL) return scenes.length - 1;
-      var r = 0;
-      while (r < scenes.length - 1 && cleared[r]) r++;
-      return r;
-    }
 
     /* 진행 막대 */
     var bar = el("div", "ep-bar");
@@ -91,21 +83,18 @@
     });
 
     function paint() {
-      var r = reach();
       scenes.forEach(function (s, i) {
         s.hidden = i !== at;
-        dots[i].disabled = i > r;
         dots[i].className = "ep-dot" + (cleared[i] ? " cleared" : "") + (i === at ? " now" : "");
         if (nexts[i]) {
-          var okay = !!cleared[i] || OPEN_ALL;
-          nexts[i].disabled = !okay;
-          nexts[i].parentNode.querySelector(".lock-note").textContent = okay ? "" : "🔒 이 장면의 미션을 끝내면 열립니다";
+          nexts[i].classList.toggle("primary", !!cleared[i]);   /* 잠그지 않는다 — 미션을 끝내면 강조만 */
+          nexts[i].parentNode.querySelector(".lock-note").textContent = cleared[i] ? "" : "미션을 건너뛰어도 넘어갈 수 있어요. 언제든 돌아와 풀 수 있습니다.";
         }
       });
     }
 
     function go(i) {
-      if (i < 0 || i >= scenes.length || i > reach()) return;
+      if (i < 0 || i >= scenes.length) return;
       at = i;
       if (scenes[i].hasAttribute("data-auto") && !cleared[i]) cleared[i] = true;
       persist(); paint();

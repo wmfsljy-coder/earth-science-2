@@ -3,7 +3,9 @@
    모든 과목 저장소에 같은 사본. 단원마다 따로 설정하지 않아도 된다.
 
    1) 수업 범위: 주소 끝에 ?sec=01,03 처럼 붙이면
-      · 그 밖의 이야기 탭을 숨기고
+      · 그 범위의 첫 소단원을 바로 열고
+      · 그 밖의 이야기 탭은 흐리게 두되 누를 수 있게 한다 — 누르면 범위를 풀고(?go=03) 단원 전체로 그 소단원을 연다.
+        범위 밖 소단원의 응용 실험실 사례·잇기 카드·문항을 온전히 보이게 하려고 페이지를 새로 연다.
       · 수준별 문제·들어가기·교과서 실험·응용 실험실·실제 자료에서 빠진 소단원(sec) 문항을 빼고
       · 정리하기·우리 반의 기록 줄(r1, r2 …)과 '네 사건' 같은 말을 남은 수에 맞춘다.
       sec(응용 실험실 사례는 about — lab.js 는 sec 가 있으면 사례를 이야기 탭으로 옮기므로) 가 없는 문항은 늘 남는다. 이야기 탭은 안에 .episode 가 있는 탭이고,
@@ -26,6 +28,7 @@
   var TEACHER = /[?&](open|teacher)=1/.test(location.search);
   var m = /[?&]sec=([0-9,]+)/.exec(location.search);
   var ASKED = m ? m[1].split(",") : null;
+  var mGo = /[?&]go=([0-9]+)/.exec(location.search);
 
   function josa(w, a, b) { var c = w.charCodeAt(w.length - 1); return (c >= 0xAC00 && c <= 0xD7A3 && (c - 0xAC00) % 28) ? a : b; }
 
@@ -89,12 +92,18 @@
   function applyTabs() {
     scan();
     Array.prototype.forEach.call(document.querySelectorAll(".tab-btn[data-sec]"), function (b) {
-      if (ON.indexOf(b.getAttribute("data-sec")) < 0) { b.hidden = true; b.classList.add("scope-off"); }
+      if (ON.indexOf(b.getAttribute("data-sec")) < 0) b.classList.add("scope-off");
     });
-    /* ?sec= 로 들어오면(소단원 QR) 그 범위의 첫 소단원을 바로 연다 — 00 들어가기는 메뉴에 남고, 이야기 머리의 안내로도 갈 수 있다 */
-    var act = document.querySelector(".tab-btn.active"), asked = ASKED && SKIPPED.length ? document.querySelector('.tab-btn[data-sec="' + ON[0] + '"]') : null;
-    if (asked) asked.click();
-    else if (act && act.hidden) { var first = document.querySelector(".tab-btn:not([hidden])"); if (first) first.click(); }
+    /* 범위 밖 탭 → 범위를 풀고 그 소단원으로. 탭 전환(theme.js)보다 먼저 가로챈다 */
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest ? e.target.closest(".tab-btn.scope-off") : null;
+      if (!b) return;
+      e.preventDefault(); e.stopPropagation();
+      location.href = location.pathname + "?go=" + b.getAttribute("data-sec") + (TEACHER ? "&open=1" : "");
+    }, true);
+    /* ?sec= 로 들어오면(소단원 QR) 그 범위의 첫 소단원을, ?go= 면 그 소단원을 바로 연다 — 00 들어가기는 메뉴에 남고, 이야기 머리의 안내로도 갈 수 있다 */
+    var land = ASKED && SKIPPED.length ? ON[0] : (mGo && SECS[mGo[1]] ? mGo[1] : null);
+    if (land) document.querySelector('.tab-btn[data-sec="' + land + '"]').click();
     /* 교사 기기: 이야기 탭 머리마다 그 소단원 QR */
     if (window.STH_TEACHER && window.sthSecQR) ON.forEach(function (s) {
       var p = document.querySelector('.tab-panel[data-sec="' + s + '"]'), h = p && p.querySelector(".stage-head");
@@ -109,7 +118,7 @@
       var band = document.createElement("div");
       band.className = "scope-band";
       band.innerHTML = "<b>이번 수업 범위</b> " + ON.map(function (s) { return s + " " + SECS[s]; }).join(" · ") +
-        "<br><span>건너뜀: " + SKIPPED.map(function (s) { return s + " " + SECS[s]; }).join(" · ") + "</span>";
+        "<br><span>다른 소단원도 메뉴에서 고를 수 있어요(휴대폰은 이 줄을 옆으로 밀어요).</span>";
       brand.appendChild(band);
     }
     if (TEACHER && ALL.length > 1) {

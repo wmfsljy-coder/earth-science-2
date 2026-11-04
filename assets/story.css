@@ -340,6 +340,7 @@
 
 /* 수업 범위 */
 .tab-btn[hidden] { display: none !important; }
+.tab-btn.scope-off:not(:hover):not(:focus-visible) { opacity: .72; }
 .scope-band { margin-top: 10px; font-size: 12px; line-height: 1.5; padding: 8px 10px; border-radius: 10px; background: var(--card-2); }
 .scope-band span { color: var(--mist); }
 .scope-box { margin-top: 10px; font-size: 12px; padding: 8px 10px; border-radius: 10px; border: 1px dashed var(--line); }
