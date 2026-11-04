@@ -1221,11 +1221,20 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
     onPick: function (i) { window.sthState("cPredOK", i === 1 ? "맞음" : "어긋남"); ep.clear(0); }
   });
 
-  /* ---- 장면2 : 5도의 기울기 ---- */
+  /* ---- 장면2 : 5도의 기울기 (우주 디오라마 — 유리 상자 속 황도면·백도면) ---- */
   (function () {
     var canvas = $("c-c-tilt"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h;
     var lam = 60, phase = "new", inc = 5.1;
     var G = window.sthState("cTilt") || { a: false, b: false, c: false, d: false };
+
+    /* 진열장: x 0~L (화면 오른쪽 아래), y 0~D (왼쪽 아래), z 위. 태양은 −x 쪽(왼쪽 위) 아주 멀리 */
+    var DH = 440;
+    var I = K.iso({ ox: 400, oy: 192, s: 0.62, L: 340, D: 340 });
+    var L = I.L, D = I.D, HZ = 230, Z0 = 115, CX = L / 2, CY = D / 2, RO = 140;
+    var RE = 8.5 / 0.62;                /* 지구 반지름(그림 단위, 화면 8.5 px) */
+    var KZ = RE / SOL_LIMIT;            /* 황위 1°를 몇 그림 단위 높이로 — 일식 한계 황위에서 달 그림자가 지구 가장자리에 닿는다 */
+    var EXAG = Math.round(Math.atan(KZ * 5.1 / RO) * R2D / 5.1);
+    var gph = 200, playing = !REDUCE, ghostOn = playing;
 
     function verdict() {
       var b = Math.abs(betaOf(lam, inc));
@@ -1239,63 +1248,208 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
       return { t: "망이지만 월식이 아닙니다", ok: false, c: "--rose-700" };
     }
 
-    function draw() {
-      var b = betaOf(lam, inc), ab = Math.abs(b), vd = verdict();
-      stage(ctx, W, H, "백도면이 " + inc.toFixed(1) + "° 기울어져 있을 때 — 삭·망마다 식이 일어날까", { seed: 37, right: true });
+    function W3(phi, r, z) { var a = phi * D2R; return I.P(CX + r * Math.cos(a), CY + r * Math.sin(a), z); }
+    function zOrb(phi, node) { return Z0 + KZ * betaOf(phi - node, inc); }
+    function rSh(d) { return RE - (RE - LUN_LIMIT * KZ) * d / RO; }          /* 지구 그림자 반지름(그림 단위) */
+    function poly(pts, fill) {
+      ctx.beginPath(); pts.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
+      ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    }
+    function earthShadowPts() {
+      var top = [], bot = [], d;
+      for (d = 0; d <= L - CX - 4; d += 6) { top.push(I.P(CX + d, CY, Z0 + rSh(d))); bot.unshift(I.P(CX + d, CY, Z0 - rSh(d))); }
+      return top.concat(bot);
+    }
+    /* 높이 막대(점선) + 궤도면 위 발자국 */
+    function pole(x, y, z, col) {
+      var a = I.P(x, y, z), b = I.P(x, y, Z0);
+      K.line(ctx, a, b, col, 1.2, [3, 3]);
+      ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(b.x, b.y, 4, 2, 0, 0, 6.2832); ctx.fill();
+    }
 
-      /* 위에서 본 그림 */
-      var cx = 300, cy = 220, R = 138;
-      ctx.strokeStyle = withA(v("--line"), 1); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.ellipse(cx, cy, R, R * 0.42, 0, 0, 6.2832); ctx.stroke();
-      K.sun(ctx, 64, cy, 18);
-      lbl(ctx, "태양", 64, cy + 50, { s: 12, a: "center", c: KC.yellow });
-      ctx.strokeStyle = withA(v("--amber"), .35); ctx.lineWidth = 1;
-      for (var i = -2; i <= 2; i++) {
-        ctx.beginPath(); ctx.moveTo(96, cy + i * 11); ctx.lineTo(cx - 26, cy + i * 11); ctx.stroke();
+    function drawModel(b, ab, vd) {
+      var moonDir = phase === "new" ? 180 : 0, node = moonDir - lam;
+      var zm = Z0 + KZ * b;
+      var base = I.P(L, D, -26);
+      K.studio(ctx, 0, 0, W, DH, { x: I.P(L / 2, D / 2, 0).x, y: base.y - 22, rx: 290, ry: 50 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, W, DH, 14); ctx.clip();
+
+      /* 태양과 햇빛 */
+      var sp = I.P(-300, CY, Z0);
+      for (var k = -2; k <= 2; k++) K.line(ctx, I.P(-300, CY, Z0 + k * 7), I.P(0, CY, Z0 + k * 7), "rgba(255,170,40,.55)", 1.2);
+      K.sun(ctx, sp.x, sp.y, 20);
+
+      /* 받침대 */
+      I.box(ctx, -12, -12, -26, L + 12, D + 12, -2, "#eef1f6", "#c9d1dc", "#a9b3c3");
+
+      /* 유리 상자 속 우주 */
+      var sil = [I.P(0, 0, HZ), I.P(L, 0, HZ), I.P(L, 0, 0), I.P(L, D, 0), I.P(0, D, 0), I.P(0, D, HZ)];
+      var bg = ctx.createLinearGradient(0, sil[0].y, 0, sil[3].y); bg.addColorStop(0, "#070b26"); bg.addColorStop(1, "#151b47");
+      poly(sil, bg);
+      ctx.save(); ctx.beginPath(); sil.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }); ctx.closePath(); ctx.clip();
+      var R = K.rng(41);
+      for (var i = 0; i < 170; i++) {
+        ctx.fillStyle = "rgba(255,255,255," + (0.25 + R() * 0.6).toFixed(2) + ")";
+        var sz = R() > .9 ? 1.8 : 1.1;
+        ctx.fillRect(sil[5].x + R() * (sil[2].x - sil[5].x), sil[0].y + R() * (sil[3].y - sil[0].y), sz, sz);
       }
-      K.earth(ctx, cx, cy, 16);
-      lbl(ctx, "지구", cx, cy + 38, { s: 12, a: "center", c: KC.blue });
-      var shg = ctx.createLinearGradient(cx, 0, cx + R + 54, 0); shg.addColorStop(0, "rgba(0,0,0,.55)"); shg.addColorStop(1, "rgba(0,0,0,.05)");
-      ctx.fillStyle = shg;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - 14); ctx.lineTo(cx + R + 54, cy - 24);
-      ctx.lineTo(cx + R + 54, cy + 24); ctx.lineTo(cx, cy + 14);
-      ctx.closePath(); ctx.fill();
-      lbl(ctx, "지구의 그림자", cx + R + 10, cy - 34, { s: 11, c: KC.mute });
+      ctx.restore();
+      /* 안쪽 모서리 */
+      var o = I.P(0, 0, 0);
+      ctx.strokeStyle = "rgba(255,255,255,.16)"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(o.x, o.y); ctx.lineTo(sil[2].x, sil[2].y); ctx.moveTo(o.x, o.y); ctx.lineTo(sil[4].x, sil[4].y); ctx.moveTo(o.x, o.y); ctx.lineTo(sil[0].x, sil[0].y); ctx.stroke();
 
-      /* 달의 방향 : 삭이면 태양 쪽(왼쪽, 180°), 망이면 반대쪽(0°) */
-      var moonDir = (phase === "new") ? 180 : 0;
-      var nodeDir = moonDir - lam;
-      function pt(deg, rr) { return { x: cx + rr * Math.cos(deg * D2R), y: cy - rr * Math.sin(deg * D2R) * 0.42 }; }
-      var n1 = pt(nodeDir, R), n2 = pt(nodeDir + 180, R);
-      ctx.strokeStyle = withA(v("--violet"), .85); ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
-      ctx.beginPath(); ctx.moveTo(n1.x, n1.y); ctx.lineTo(n2.x, n2.y); ctx.stroke(); ctx.setLineDash([]);
-      K.glow(ctx, n1.x, n1.y, 4, "rgba(182,156,255,.95)", 3); K.glow(ctx, n2.x, n2.y, 4, "rgba(182,156,255,.95)", 3);
-      lbl(ctx, "교점선", clamp((n1.x + cx) / 2, 90, 500), n1.y - 12, { s: 11.5, a: "center", c: KC.violet });
+      /* 상자 안으로 들어온 햇빛 */
+      poly([I.P(0, CY, Z0 + RE), I.P(CX, CY, Z0 + RE), I.P(CX, CY, Z0 - RE), I.P(0, CY, Z0 - RE)], "rgba(255,200,90,.13)");
 
-      var mp = pt(moonDir, R);
-      ball(ctx, mp.x, mp.y, 9, MOON, "#4a4c58");
-      lbl(ctx, phase === "new" ? "달 (삭)" : "달 (망)", clamp(mp.x, 80, 520), mp.y - 18, { s: 12, a: "center", c: "#ffffff" });
-      text(ctx, "교점에서 " + Math.abs(lam) + "° 떨어져 있습니다", 60, 392, { s: 12, w: "800", c: v("--mist") });
+      /* 백도면 아래쪽 반 → 황도면 → 백도면 위쪽 반 */
+      function half(up) {
+        if (inc === 0) return;
+        ctx.beginPath(); var c0 = I.P(CX, CY, Z0); ctx.moveTo(c0.x, c0.y);
+        for (var t = 0; t <= 180; t += 6) { var ph = node + (up ? t : 180 + t), p = W3(ph, RO, zOrb(ph, node)); ctx.lineTo(p.x, p.y); }
+        ctx.closePath(); ctx.fillStyle = up ? "rgba(182,156,255,.30)" : "rgba(182,156,255,.15)"; ctx.fill();
+        ctx.strokeStyle = up ? "rgba(200,180,255,.95)" : "rgba(182,156,255,.55)"; ctx.lineWidth = 2; ctx.beginPath();
+        for (t = 0; t <= 180; t += 6) { ph = node + (up ? t : 180 + t); p = W3(ph, RO, zOrb(ph, node)); if (t) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); }
+        ctx.stroke();
+      }
+      half(false);
+      I.plane(ctx, Z0, "rgba(255,211,107,.12)", "rgba(255,211,107,.65)");
+      ctx.save(); ctx.setLineDash([5, 5]); ctx.strokeStyle = inc === 0 ? "rgba(200,180,255,.95)" : "rgba(255,211,107,.45)"; ctx.lineWidth = inc === 0 ? 2 : 1.2; ctx.beginPath();
+      for (var t2 = 0; t2 <= 360; t2 += 6) { var q = W3(t2, RO, Z0); if (t2) ctx.lineTo(q.x, q.y); else ctx.moveTo(q.x, q.y); }
+      ctx.stroke(); ctx.restore();
+      half(true);
 
-      /* 옆에서 본 그림 */
-      var sy = 436, sx0 = 60, sx1 = 520;
-      ctx.strokeStyle = withA(v("--line"), 1); ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(sx0, sy); ctx.lineTo(sx1, sy); ctx.stroke();
-      text(ctx, "황도면 (옆에서 본 모습)", sx0, sy + 18, { s: 11.5, c: v("--mist") });
-      var tilt = inc * 3.4 * D2R;
-      ctx.strokeStyle = withA(v("--violet"), .9); ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(sx0, sy + Math.tan(tilt) * (sx1 - sx0) / 2);
-      ctx.lineTo(sx1, sy - Math.tan(tilt) * (sx1 - sx0) / 2);
+      /* 교점선 */
+      if (inc > 0) {
+        K.line(ctx, W3(node, RO * 1.12, Z0), W3(node + 180, RO * 1.12, Z0), "rgba(200,180,255,.95)", 2, [7, 5]);
+        [node, node + 180].forEach(function (ph) { var p = W3(ph, RO, Z0); K.glow(ctx, p.x, p.y, 3.5, "rgba(182,156,255,.95)", 3); });
+      }
+
+      /* 천체 — 먼 것부터 */
+      var mx = CX + RO * Math.cos(moonDir * D2R), my = CY;
+      var gx = CX + RO * Math.cos(gph * D2R), gy = CY + RO * Math.sin(gph * D2R), gz = zOrb(gph, node);
+      function ghost() {
+        if (!ghostOn) return;
+        ctx.save(); ctx.globalAlpha = .8; pole(gx, gy, gz, "rgba(200,180,255,.8)");
+        var p = I.P(gx, gy, gz); K.glow(ctx, p.x, p.y, 3, "rgba(220,210,255,.6)", 3); K.planet(ctx, p.x, p.y, 5, MOON, "#4a4c58"); ctx.restore();
+      }
+      var gBack = gx + gy < CX + CY;
+      if (gBack) ghost();
+      if (phase === "new") {
+        pole(mx, my, zm, "rgba(255,255,255,.7)");
+        var mp = I.P(mx, my, zm); ball(ctx, mp.x, mp.y, 5.5, MOON, "#4a4c58");
+        /* 달의 그림자: 태양 반대쪽(+x)으로 */
+        var xEnd = vd.ok ? CX - RE * 0.4 : L - 4, sh = [], d, r0 = 5.5 / 0.62;
+        for (d = mx; d <= xEnd; d += 8) sh.push(I.P(d, my, zm + r0 * (1 - .7 * (d - mx) / (L - mx))));
+        for (d = xEnd; d >= mx; d -= 8) sh.push(I.P(d, my, zm - r0 * (1 - .7 * (d - mx) / (L - mx))));
+        poly(sh, "rgba(0,0,0,.45)");
+      }
+      var es = ctx.createLinearGradient(I.P(CX, CY, Z0).x, 0, I.P(L, CY, Z0).x, 0);
+      es.addColorStop(0, "rgba(0,0,0,.72)"); es.addColorStop(1, "rgba(0,0,0,.28)");
+      poly(earthShadowPts(), es);
+      var ep2 = I.P(CX, CY, Z0); K.earth(ctx, ep2.x, ep2.y, 8.5);
+      if (phase === "new" && vd.ok) {
+        var spt = I.P(CX - RE * .55, CY, zm);
+        ctx.fillStyle = "rgba(0,0,0,.3)"; ctx.beginPath(); ctx.arc(spt.x, spt.y, 4.5, 0, 6.2832); ctx.fill();
+        ctx.fillStyle = "rgba(0,0,0,.85)"; ctx.beginPath(); ctx.arc(spt.x, spt.y, 2, 0, 6.2832); ctx.fill();
+      }
+      if (phase === "full") {
+        pole(mx, my, zm, "rgba(255,255,255,.7)");
+        var fp = I.P(mx, my, zm); ball(ctx, fp.x, fp.y, 5.5, MOON, "#4a4c58");
+        if (vd.ok) {
+          ctx.save(); ctx.beginPath(); ctx.arc(fp.x, fp.y, 6, 0, 6.2832); ctx.clip();
+          if (ab <= LUN_TOTAL) { ctx.fillStyle = "rgba(170,60,35,.78)"; ctx.fillRect(fp.x - 7, fp.y - 7, 14, 14); }
+          else poly(earthShadowPts(), "rgba(30,12,10,.8)");
+          ctx.restore();
+        }
+      }
+      if (!gBack) ghost();
+
+      /* 유리 앞면·윗면 */
+      poly([I.P(0, D, 0), I.P(L, D, 0), I.P(L, D, HZ), I.P(0, D, HZ)], "rgba(255,255,255,.035)");
+      poly([I.P(L, 0, 0), I.P(L, D, 0), I.P(L, D, HZ), I.P(L, 0, HZ)], "rgba(255,255,255,.05)");
+      poly([I.P(0, 0, HZ), I.P(L, 0, HZ), I.P(L, D, HZ), I.P(0, D, HZ)], "rgba(255,255,255,.06)");
+      ctx.save(); ctx.globalAlpha = .12; ctx.fillStyle = "#ffffff";
+      poly([I.P(40, D, HZ), I.P(95, D, HZ), I.P(25, D, 0), I.P(0, D, 0), I.P(0, D, 40)], "#ffffff"); ctx.restore();
+      ctx.strokeStyle = "rgba(255,255,255,.75)"; ctx.lineWidth = 1.3; ctx.beginPath();
+      [[0, D, 0, L, D, 0], [L, D, 0, L, 0, 0], [0, D, 0, 0, D, HZ], [L, D, 0, L, D, HZ], [L, 0, 0, L, 0, HZ],
+       [0, D, HZ, L, D, HZ], [L, D, HZ, L, 0, HZ], [L, 0, HZ, 0, 0, HZ], [0, 0, HZ, 0, D, HZ]].forEach(function (e) {
+        var a = I.P(e[0], e[1], e[2]), c = I.P(e[3], e[4], e[5]); ctx.moveTo(a.x, a.y); ctx.lineTo(c.x, c.y);
+      });
       ctx.stroke();
-      text(ctx, "백도면 (" + inc.toFixed(1) + "°) — 기울기는 보기 쉽게 확대해 그렸습니다", sx0, sy - 26,
-        { s: 11.5, w: "700", c: withA(v("--violet-700"), 1) });
+      ctx.restore();
+
+      /* 이름표 */
+      K.pill(ctx, "태양 — 실제로는 훨씬 멀고 큼", sp.x, sp.y + 44, { a: "center", s: 11.5, c: "#ffd35a" });
+      var mpp = I.P(mx, my, zm), mtxt = "달 (" + (phase === "new" ? "삭" : "망") + ") · 황위 " + (b >= 0 ? "+" : "−") + ab.toFixed(2) + "°";
+      var mBox = phase === "new"
+        ? K.pill(ctx, mtxt, mpp.x, mpp.y - 15, { a: "center", s: 11.5, c: "#ffffff" })
+        : K.pill(ctx, mtxt, mpp.x + 14, mpp.y + 4, { s: 11.5, c: "#ffffff" });
+      var eBox = I.label(ctx, CX, CY, Z0 - RE * .9, "지구", -46, 36, "#bfe6ff", [0, W]);
+      if (inc > 0) {
+        [node, node + 180].forEach(function (ph) {
+          var p = W3(ph, RO, Z0), x0 = p.x - 18, y0 = p.y - 30;
+          function hit(bx) { return bx && x0 < bx.x + bx.w + 4 && x0 + 36 > bx.x - 4 && y0 < bx.y + bx.h + 4 && y0 + 20 > bx.y - 4; }
+          if (hit(mBox) || hit(eBox)) return;
+          K.pill(ctx, "교점", p.x, p.y - 12, { a: "center", s: 10.5, c: "#d9ccff" });
+        });
+      }
+      /* 범례 */
+      var lg = [["━ 황도면: 지구의 공전 궤도면", "#ffd35a"],
+                ["━ 백도면: 달의 공전 궤도면 (" + inc.toFixed(1) + "°)", "#c9b6ff"],
+                ["┅ 교점선: 두 면이 만나는 선", "#c9b6ff"],
+                ["▬ 검은 띠: 지구·달의 그림자", "#c7cfe6"]];
+      if (ghostOn) lg.push(["◌ 흐린 달: 궤도를 도는 달", "#c7cfe6"]);
+      lg.forEach(function (r, i3) { K.pill(ctx, r[0], 650, 296 + i3 * 24, { s: 11.5, c: r[1] }); });
+      K.warn(ctx, W - 14, 428, "⚠ 백도면 기울기는 약 " + EXAG + "배, 크기·거리는 보기 쉽게 과장", "right");
+
+      /* 큰 제목 */
+      var h1, h2, side = b > 0 ? "위" : "아래";
+      if (inc === 0) {
+        h1 = phase === "new" ? "기울기가 0°라면 — 삭마다 일식" : "기울기가 0°라면 — 망마다 월식";
+        h2 = "교점에서 " + Math.abs(lam) + "° 떨어져도 황위는 0°";
+      } else if (phase === "new") {
+        h1 = vd.ok ? "달 그림자가 지구에 닿았다" : "삭인데 그림자가 비껴간다";
+        h2 = vd.ok ? vd.t + " · 황위 " + ab.toFixed(2) + "°" : "달이 태양의 " + side + "쪽을 지나간다 · 황위 " + ab.toFixed(2) + "°";
+      } else {
+        h1 = vd.ok ? "달이 지구 그림자 속으로" : "망인데 그림자를 비껴간다";
+        h2 = vd.ok ? vd.t + " · 황위 " + ab.toFixed(2) + "°" : "지구 그림자의 " + side + "쪽을 지나간다 · 황위 " + ab.toFixed(2) + "°";
+      }
+      K.bigText(ctx, h1, W - 18, 50, 26, "#ffffff", "right");
+      K.bigText(ctx, h2, W - 18, 82, 16, vd.ok ? "#ffd35a" : "#ffb3c1", "right");
+    }
+
+    function drawSide(b, ab, vd) {
+      var y0 = DH + 8, ly = 560, ex = 330, kz2 = 13, rs0 = SOL_LIMIT * kz2;
+      K.stage(ctx, 0, y0, W, H - y0, "space", { seed: 37 });
+      K.pill(ctx, "옆에서 본 모습 — 달이 황도면에서 떨어진 높이(황위)", 16, y0 + 26, { s: 12, c: KC.blue });
+      for (var k = -1; k <= 1; k++) K.line(ctx, { x: 74, y: ly + k * 9 }, { x: ex - 16, y: ly + k * 9 }, "rgba(255,190,80,.35)", 1);
+      K.line(ctx, { x: 30, y: ly }, { x: 495, y: ly }, "rgba(255,211,107,.85)", 1.6);
+      K.sun(ctx, 60, ly, 12);
+      K.t(ctx, "태양", 60, ly + 32, { s: 11.5, a: "center", c: KC.yellow });
+      K.t(ctx, "황도면", 90, ly + 20, { s: 11, c: KC.yellow });
+      var g = ctx.createLinearGradient(ex, 0, 495, 0); g.addColorStop(0, "rgba(0,0,0,.75)"); g.addColorStop(1, "rgba(0,0,0,.3)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(ex, ly - rs0); ctx.lineTo(495, ly - rs0 + (rs0 - LUN_LIMIT * kz2) * 165 / 120);
+      ctx.lineTo(495, ly + rs0 - (rs0 - LUN_LIMIT * kz2) * 165 / 120); ctx.lineTo(ex, ly + rs0); ctx.closePath(); ctx.fill();
+      var mx = phase === "new" ? ex - 120 : ex + 120, my = ly - b * kz2;
+      if (phase === "new") {
+        var xe = vd.ok ? ex - 8 : 495;
+        ctx.fillStyle = "rgba(0,0,0,.5)"; ctx.beginPath(); ctx.moveTo(mx, my - 7); ctx.lineTo(xe, my - 2.5); ctx.lineTo(xe, my + 2.5); ctx.lineTo(mx, my + 7); ctx.closePath(); ctx.fill();
+      }
+      K.earth(ctx, ex, ly, 18);
+      K.t(ctx, "지구", ex, ly + 38, { s: 11.5, a: "center", c: KC.blue });
+      ball(ctx, mx, my, 7, MOON, "#4a4c58");
+      if (phase === "full" && vd.ok) { ctx.fillStyle = ab <= LUN_TOTAL ? "rgba(170,60,35,.78)" : "rgba(30,12,10,.6)"; ctx.beginPath(); ctx.arc(mx, my, 7.3, 0, 6.2832); ctx.fill(); }
+      K.pill(ctx, "달", mx + 12, my + 5, { s: 11, c: "#ffffff" });
+      if (ab >= 0.15) {
+        K.line(ctx, { x: mx, y: ly }, { x: mx, y: my + (b > 0 ? 8 : -8) }, KC.yellow, 1.5, [3, 3]);
+        K.pill(ctx, "황위 " + ab.toFixed(2) + "°", mx - 14, (ly + my) / 2 + 5, { s: 11, a: "right", c: KC.yellow });
+      }
 
       /* 오른쪽 판정판 */
-      var bx = 590, by = 76, bw = 280;
-      glass(ctx, bx, by, bw, 270, 14);
-      text(ctx, "지금 이 배치에서는", bx + 16, by + 28, { s: 13.5, w: "900" });
+      var bx = 512, by = 462, bw = 374;
+      glass(ctx, bx, by, bw, 176, 12);
+      text(ctx, "지금 이 배치에서는", bx + 16, by + 26, { s: 13.5, w: "900" });
       var lines = [
         "달의 위치 : " + (phase === "new" ? "삭 (태양 쪽)" : "망 (반대쪽)"),
         "교점에서 떨어진 각 : " + Math.abs(lam) + "°",
@@ -1304,16 +1458,26 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
         "일식 한계 황위 : " + SOL_LIMIT.toFixed(1) + "°",
         "월식 한계 황위 : " + LUN_LIMIT.toFixed(1) + "°"
       ];
-      lines.forEach(function (t, i2) { text(ctx, t, bx + 16, by + 58 + i2 * 23, { s: 12.5, c: v("--mist") }); });
-      text(ctx, vd.t, bx + 16, by + 222, { s: 15, w: "900", c: v(vd.c) });
-
-      /* 황위 막대 */
-      var gx = bx + 16, gw = bw - 32, gy = by + 240;
+      lines.forEach(function (t, i2) { text(ctx, t, bx + 16 + (i2 < 3 ? 0 : 184), by + 50 + (i2 % 3) * 20, { s: 12, c: v("--mist") }); });
+      text(ctx, vd.t, bx + 16, by + 122, { s: 15, w: "900", c: v(vd.c) });
+      var gx = bx + 16, gw = bw - 32, gy = by + 134;
       ctx.fillStyle = "rgba(255,255,255,.08)"; ctx.beginPath(); ctx.roundRect(gx, gy, gw, 12, 6); ctx.fill();
       ctx.save(); ctx.fillStyle = KC.green; ctx.shadowColor = KC.green; ctx.shadowBlur = 8; ctx.beginPath(); ctx.roundRect(gx, gy, gw * (SOL_LIMIT / 5.5), 12, 6); ctx.fill(); ctx.restore();
       K.glow(ctx, gx + clamp(ab / 5.5, 0, 1) * gw, gy + 6, 4, "rgba(255,255,255,.95)", 3);
       text(ctx, "0°", gx, gy + 28, { s: 10.5, c: v("--mist") });
       text(ctx, "5.5°", gx + gw, gy + 28, { s: 10.5, a: "right", c: v("--mist") });
+    }
+
+    function drawScene() {
+      var b = betaOf(lam, inc), ab = Math.abs(b), vd = verdict();
+      ctx.clearRect(0, 0, W, H);
+      drawModel(b, ab, vd);
+      drawSide(b, ab, vd);
+    }
+
+    function draw() {
+      var b = betaOf(lam, inc), ab = Math.abs(b), vd = verdict();
+      drawScene();
 
       var ch = false;
       if (inc === 0 && phase === "new" && Math.abs(lam) >= 60 && !G.a) { G.a = ch = true; }
@@ -1343,6 +1507,11 @@ function drawSky(ctx, box, lamC, spanDeg, opts) {
     });
     segWire("c-phase", function (b) { phase = b.getAttribute("data-k"); draw(); });
     segWire("c-inc", function (b) { inc = parseFloat(b.getAttribute("data-i")); draw(); });
+    var pb = $("c-tilt-play");
+    function pbText() { if (pb) pb.textContent = playing ? "⏸ 달 공전 멈추기" : "▶ 달 공전 보기"; }
+    if (pb) pb.addEventListener("click", function () { playing = !playing; ghostOn = true; pbText(); drawScene(); });
+    pbText();
+    K.animate(canvas, function (dt) { if (!playing) return; gph = (gph + dt / 1000 * 36) % 360; drawScene(); }, 24);
     draw(); mission();
   })();
 

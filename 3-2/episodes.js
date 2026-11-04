@@ -1700,71 +1700,155 @@ function msLogL(T) {
   })();
 
   (function () {
+    /* 팽창 격자 — 우주 공간을 유리 상자처럼 잘라 낸 진열장(아이소메트릭). 은하는 제자리(같은 격자 칸)에 있고 격자(공간)가 늘어난다. */
     var canvas = $("d-c-grid"), ctx = window.setupCanvas(canvas), W = canvas._w, H = canvas._h;
-    var COLS = 5, ROWS = 3, SPX = 112, SPY = 104, OX = 96, OY = 108;
-    var ref = 7;
+    var COLS = 5, ROWS = 3, ref = 7;
+    var LW = 626;                                            /* 왼쪽 진열장 칸 폭 */
+    var I = K.iso({ ox: 318, oy: 300, s: 0.74, L: 400, D: 240 });
+    var L = I.L, D = I.D, HZ = 240, CX = L / 2, CY = D / 2, CZ = HZ / 2;
+    var EX = 54, EY = 60, AMIN = 1, AMAX = 1.7;
+    var DZ = [-30, 24, -8, 36, -22, 14, -40, 4, 30, -14, 40, -26, 10, -36, 20];   /* 은하마다 정해진 높이(공간 좌표, 늘어나도 칸은 그대로) */
     var GAL = [];
-    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) GAL.push({ x: OX + c * SPX, y: OY + r * SPY, i: GAL.length });
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) GAL.push({ u: (c - 2) * EX, w: (r - 1) * EY, h: DZ[GAL.length], i: GAL.length, tilt: (GAL.length * 0.7) % 3.1 });
+    var a = REDUCE ? 1.35 : 1.15, playing = !REDUCE, hold = 0;
+    var SR = K.rng(53), STARS = [];
+    for (var s0 = 0; s0 < 90; s0++) STARS.push([SR(), SR(), SR(), SR()]);
 
-    function draw() {
-      stage(ctx, W, H);
-      K.pill(ctx, "기준을 바꿔 보자 — 어느 은하에 서도 같은 법칙이 나온다", 16, 28, { s: 13, c: KC.blue });
-      var R = GAL[ref];
+    function pos(g) { return { x: CX + a * g.u, y: CY + a * g.w, z: CZ + a * g.h }; }
+    function box(ctx2) {
+      var p = [I.P(0, 0, HZ), I.P(L, 0, HZ), I.P(L, 0, 0), I.P(L, D, 0), I.P(0, D, 0), I.P(0, D, HZ)];
+      ctx2.beginPath(); ctx2.moveTo(p[0].x, p[0].y); for (var k = 1; k < 6; k++) ctx2.lineTo(p[k].x, p[k].y); ctx2.closePath();
+    }
+    function galaxy(x, y, isRef, tilt) {
+      var col = isRef ? "63,211,163" : "182,156,255";
+      var hg = ctx.createRadialGradient(x, y, 2, x, y, 24);
+      hg.addColorStop(0, "rgba(" + col + ",.42)"); hg.addColorStop(1, "rgba(" + col + ",0)");
+      ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(x, y, 24, 0, 6.2832); ctx.fill();
+      ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.scale(1, 0.42);
+      var dg = ctx.createRadialGradient(0, 0, 0, 0, 0, 13);
+      dg.addColorStop(0, "rgba(255,255,255,1)"); dg.addColorStop(.35, "rgba(" + col + ",.95)"); dg.addColorStop(1, "rgba(" + col + ",0)");
+      ctx.fillStyle = dg; ctx.beginPath(); ctx.arc(0, 0, 13, 0, 6.2832); ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.55)"; ctx.lineWidth = 1.6;
+      ctx.beginPath(); ctx.arc(0, 0, 8.5, 0.2, 2.4); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, 8.5, 3.34, 5.54); ctx.stroke();
+      ctx.restore();
+      ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 6.2832); ctx.fill();
+    }
+    function headline() {
+      var n = G3.refs.length;
+      if (n >= 3) { K.bigText(ctx, "어디서 봐도 같은 우주", 22, 50, 28, "#ffd35a"); K.bigText(ctx, "기준을 옮겨도 그림은 똑같다", 22, 84, 18, "#ffffff"); }
+      else if (n >= 1) { K.bigText(ctx, "기준을 옮겨도 똑같을까?", 22, 50, 28, "#ffffff"); K.bigText(ctx, "기준으로 삼아 본 은하 " + n + " / 3", 22, 84, 18, "#ffd35a"); }
+      else { K.bigText(ctx, "모두 나에게서 멀어진다", 22, 50, 28, "#ffffff"); K.bigText(ctx, "여기서 본다: " + (ref + 1) + "번 은하", 22, 84, 18, "#ffd35a"); }
+    }
+    function paint() {
+      ctx.clearRect(0, 0, W, H);
+      var fl = I.P(L, D, 0);
+      K.studio(ctx, 0, 0, LW, H, { x: fl.x - 52, y: fl.y - 30, rx: 270, ry: 44 });
+      ctx.save(); ctx.beginPath(); ctx.roundRect(0, 0, LW, H, 14); ctx.clip();
 
-      /* 격자 */
-      ctx.save(); ctx.strokeStyle = "rgba(127,211,255,.22)"; ctx.lineWidth = 1.2;
-      for (var c2 = 0; c2 < COLS; c2++) {
-        ctx.beginPath(); ctx.moveTo(OX + c2 * SPX, OY - 46); ctx.lineTo(OX + c2 * SPX, OY + (ROWS - 1) * SPY + 46); ctx.stroke();
+      /* 상자 안 = 어두운 우주 */
+      var t0 = I.P(0, 0, HZ), b0 = I.P(L, D, 0);
+      var sp = ctx.createLinearGradient(0, t0.y, 0, b0.y); sp.addColorStop(0, "#0a0f2c"); sp.addColorStop(1, "#18214f");
+      ctx.save(); box(ctx); ctx.fillStyle = sp; ctx.fill(); ctx.clip();
+      STARS.forEach(function (q) {
+        var p = I.P(q[0] * L, q[1] * D, q[2] * HZ);
+        ctx.fillStyle = "rgba(255,255,255," + (0.25 + q[3] * 0.5).toFixed(2) + ")"; ctx.fillRect(p.x, p.y, 1.4, 1.4);
+      });
+      /* 뒤쪽 숨은 모서리 */
+      ctx.setLineDash([4, 5]); ctx.strokeStyle = "rgba(200,215,255,.28)"; ctx.lineWidth = 1;
+      var o0 = I.P(0, 0, 0);
+      [I.P(L, 0, 0), I.P(0, D, 0), I.P(0, 0, HZ)].forEach(function (q) { ctx.beginPath(); ctx.moveTo(o0.x, o0.y); ctx.lineTo(q.x, q.y); ctx.stroke(); });
+      ctx.setLineDash([]);
+      /* 바닥 기준면 + 늘어나는 격자(공간) */
+      I.plane(ctx, 0, "rgba(127,211,255,.07)", null);
+      ctx.strokeStyle = "rgba(127,211,255,.42)"; ctx.lineWidth = 1.2;
+      for (var k = -6; k <= 6; k++) {
+        var gx = CX + a * k * EX, gy = CY + a * k * EY;
+        if (gx > 0 && gx < L) { var p1 = I.P(gx, 0, 0), p2 = I.P(gx, D, 0); ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke(); }
+        if (gy > 0 && gy < D) { var p3 = I.P(0, gy, 0), p4 = I.P(L, gy, 0); ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke(); }
       }
-      for (var r2 = 0; r2 < ROWS; r2++) {
-        ctx.beginPath(); ctx.moveTo(OX - 52, OY + r2 * SPY); ctx.lineTo(OX + (COLS - 1) * SPX + 52, OY + r2 * SPY); ctx.stroke();
-      }
+      /* 은하: 먼 것부터 */
+      var R = pos(GAL[ref]), RP = I.P(R.x, R.y, R.z);
+      var order = GAL.slice().sort(function (g1, g2) { var A = pos(g1), B = pos(g2); return (A.x + A.y) - (B.x + B.y); });
+      order.forEach(function (g) {
+        var q = pos(g), f = I.P(q.x, q.y, 0), p = I.P(q.x, q.y, q.z), isR = g.i === ref;
+        ctx.fillStyle = isR ? "rgba(63,211,163,.35)" : "rgba(182,156,255,.28)";
+        ctx.beginPath(); ctx.ellipse(f.x, f.y, 9, 4.5, 0, 0, 6.2832); ctx.fill();
+        ctx.setLineDash([3, 4]); ctx.strokeStyle = "rgba(200,215,255,.35)"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(f.x, f.y); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.setLineDash([]);
+        galaxy(p.x, p.y, isR, g.tilt);
+        g.sx = p.x; g.sy = p.y;
+        if (!isR) {                                          /* 기준 은하에서 본 후퇴: 거리에 비례 */
+          var e = I.P(q.x + (q.x - R.x) * 0.22, q.y + (q.y - R.y) * 0.22, q.z + (q.z - R.z) * 0.22);
+          var dx = e.x - p.x, dy = e.y - p.y, dl = Math.hypot(dx, dy);
+          if (dl > 4) K.arrow(ctx, { x: p.x + dx / dl * 13, y: p.y + dy / dl * 13 }, { x: e.x + dx / dl * 13, y: e.y + dy / dl * 13 }, KC.red, 2.2, 8);
+        }
+      });
+      ctx.restore();
+      /* 앞쪽 유리면 */
+      ctx.save();
+      [["front", "rgba(255,255,255,.06)"], ["right", "rgba(190,215,255,.09)"]].forEach(function (fc) {
+        I.face(ctx, fc[0], function (Lw) { ctx.fillStyle = fc[1]; ctx.fillRect(0, 0, Lw, HZ); });
+      });
+      I.plane(ctx, HZ, "rgba(255,255,255,.07)", null);
+      ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 1.5;
+      [[[0, D, 0], [L, D, 0]], [[L, D, 0], [L, 0, 0]], [[L, D, 0], [L, D, HZ]], [[0, D, 0], [0, D, HZ]], [[L, 0, 0], [L, 0, HZ]],
+       [[0, 0, HZ], [L, 0, HZ]], [[L, 0, HZ], [L, D, HZ]], [[L, D, HZ], [0, D, HZ]], [[0, D, HZ], [0, 0, HZ]]].forEach(function (e2) {
+        var u1 = I.P(e2[0][0], e2[0][1], e2[0][2]), u2 = I.P(e2[1][0], e2[1][1], e2[1][2]);
+        ctx.beginPath(); ctx.moveTo(u1.x, u1.y); ctx.lineTo(u2.x, u2.y); ctx.stroke();
+      });
+      var gl = ctx.createLinearGradient(I.P(0, D, HZ).x, 0, I.P(L, D, HZ).x, 0);   /* 유리 반사 띠 */
+      gl.addColorStop(0, "rgba(255,255,255,0)"); gl.addColorStop(.5, "rgba(255,255,255,.10)"); gl.addColorStop(1, "rgba(255,255,255,0)");
+      I.face(ctx, "front", function (Lw) { ctx.fillStyle = gl; ctx.beginPath(); ctx.moveTo(Lw * .18, HZ); ctx.lineTo(Lw * .34, HZ); ctx.lineTo(Lw * .2, 0); ctx.lineTo(Lw * .04, 0); ctx.closePath(); ctx.fill(); });
+      ctx.restore();
       ctx.restore();
 
-      var maxd = 0;
-      GAL.forEach(function (g) { maxd = Math.max(maxd, Math.hypot(g.x - R.x, g.y - R.y)); });
-      GAL.forEach(function (g) {
-        var dx = g.x - R.x, dy = g.y - R.y, d = Math.hypot(dx, dy);
-        if (d > 0.5) {
-          var ux = dx / d, uy = dy / d, len = 12 + (d / maxd) * 52;
-          K.arrow(ctx, { x: g.x + ux * 14, y: g.y + uy * 14 }, { x: g.x + ux * (len + 2), y: g.y + uy * (len + 2) }, KC.red, 2.2, 9);
-        }
-        ctx.save(); ctx.translate(g.x, g.y); ctx.rotate(g.i * 0.7); ctx.scale(1, 7 / 11);
-        var gg2 = ctx.createRadialGradient(0, 0, 0, 0, 0, 13); gg2.addColorStop(0, "#ffffff"); gg2.addColorStop(.3, g.i === ref ? "rgba(63,211,163,.95)" : "rgba(182,156,255,.9)"); gg2.addColorStop(1, "rgba(120,100,220,0)");
-        ctx.fillStyle = gg2; ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI * 2); ctx.fill(); ctx.restore();
-        if (g.i === ref) {
-          ctx.save(); ctx.strokeStyle = v("--teal"); ctx.lineWidth = 2.4;
-          ctx.beginPath(); ctx.arc(g.x, g.y, 19, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
-          lbl(ctx, "여기서 본다", g.x, g.y - 26, { s: 11, a: "center", c: KC.green });
-        }
-      });
-      text(ctx, "은하를 눌러 기준을 바꿔 보세요 · 기준으로 삼아 본 은하 " + G3.refs.length + " / 3",
-        30, 400, { s: 12.5, w: "900", c: G3.refs.length >= 3 ? v("--teal-700") : v("--mist") });
-      text(ctx, "은하는 제자리에 있고 격자(공간)가 늘어납니다. 화살표는 멀어지는 빠르기입니다.", 30, 422, { s: 11.5, c: v("--mist") });
+      /* 이름표 */
+      var box2 = [0, LW];
+      K.pill(ctx, "여기서 본다", RP.x, RP.y - 24, { s: 11, a: "center", c: KC.green, box: box2 });
+        I.label(ctx, L - 50, D - 30, 0, "늘어나는 격자(공간)", 40, 44, "#bfe6ff", box2);
+      K.warn(ctx, LW - 14, 30, "⚠ 은하 크기·간격은 실제 비율이 아님", "right");
+      K.pill(ctx, "공간이 늘어난 정도 × " + a.toFixed(2), LW - 14, 62, { s: 12, a: "right", c: KC.yellow, box: box2 });
+      K.pill(ctx, "→ 화살표: 멀어지는 빠르기", LW - 14, 92, { s: 11, a: "right", c: KC.red, box: box2 });
+      K.pill(ctx, "은하 크기는 그대로", LW - 14, 120, { s: 11, a: "right", c: "#d8ccff", box: box2 });
+      K.pill(ctx, "은하를 눌러 기준을 바꿔 보세요 · " + G3.refs.length + " / 3", 16, H - 16, { s: 12, c: G3.refs.length >= 3 ? KC.green : KC.ink, box: box2 });
+      headline();
 
-      /* 미니 그래프 */
-      var GX0 = 648, GX1 = 872, GY0 = 96, GY1 = 300;
+      /* 오른쪽: 기준 은하에서 본 거리 — 후퇴 속도 */
+      var RX = LW + 8, RW = W - RX;
+      K.stage(ctx, RX, 0, RW, H, "space", { seed: 59 });
+      var GX0 = RX + 30, GX1 = W - 22, GY0 = 112, GY1 = 330;
+      K.t(ctx, "기준 은하에서 본", RX + 18, 44, { s: 13, w: "800", c: KC.ink });
+      K.t(ctx, "거리 — 후퇴 속도", RX + 18, 66, { s: 13, w: "800", c: KC.blue });
       axes(ctx, GX0, GY0, GX1, GY1);
-      text(ctx, "기준 은하에서 본", GX0, 76, { s: 11, w: "800", c: v("--mist") });
-      text(ctx, "거리 — 후퇴 속도", GX0, GY1 + 20, { s: 10.5, c: v("--mist") });
-      ctx.strokeStyle = v("--teal"); ctx.lineWidth = 2.4;
-      ctx.beginPath(); ctx.moveTo(GX0, GY1); ctx.lineTo(GX1, GY0); ctx.stroke();
+      K.t(ctx, "거리 →", GX1, GY1 + 18, { s: 11, a: "right", c: KC.mute });
+      K.t(ctx, "↑ 빠르기", GX0, GY0 - 10, { s: 11, c: KC.mute });
+      ctx.save(); ctx.strokeStyle = KC.green; ctx.lineWidth = 2.4; glowLine(ctx, KC.green);
+      ctx.beginPath(); ctx.moveTo(GX0, GY1); ctx.lineTo(GX1, GY0); ctx.stroke(); ctx.restore();
+      var maxd = 0;
+      GAL.forEach(function (g) { maxd = Math.max(maxd, Math.hypot(g.u - GAL[ref].u, g.w - GAL[ref].w, g.h - GAL[ref].h)); });
       GAL.forEach(function (g) {
-        var d = Math.hypot(g.x - R.x, g.y - R.y);
+        var d = Math.hypot(g.u - GAL[ref].u, g.w - GAL[ref].w, g.h - GAL[ref].h);
         if (d < 0.5) return;
-        var u = d / maxd;
-        K.glow(ctx, GX0 + u * (GX1 - GX0), GY1 - u * (GY1 - GY0), 3.4, "rgba(255,160,110,.95)", 3);
+        var uu = d / maxd;
+        K.glow(ctx, GX0 + uu * (GX1 - GX0), GY1 - uu * (GY1 - GY0), 3.4, "rgba(255,160,110,.95)", 3);
       });
-      text(ctx, "기준을 어디로 옮겨도", GX0, 344, { s: 11, c: v("--mist") });
-      text(ctx, "같은 직선이 나옵니다.", GX0, 362, { s: 11, c: v("--mist") });
-
+      K.t(ctx, "기준을 어디로 옮겨도", RX + 18, 376, { s: 12, c: KC.mute });
+      K.t(ctx, "같은 직선이 나옵니다.", RX + 18, 396, { s: 12, c: KC.mute });
+      K.t(ctx, "기준으로 삼아 본 은하", RX + 18, 446, { s: 12, w: "800", c: KC.mute });
+      K.t(ctx, G3.refs.length + " / 3", RX + 18, 484, { s: 28, w: "900", c: G3.refs.length >= 3 ? KC.green : KC.yellow });
+      K.t(ctx, a >= AMAX - 1e-6 ? "다 늘어남 · ▶ 로 처음부터 다시" : (!playing ? "멈춤" : "공간이 늘어나는 중"), RX + 18, H - 22, { s: 11, c: KC.mute });
+    }
+    function draw() {
+      paint();
       $("d-grid-info").innerHTML = "지금 <b>" + (ref + 1) + "번 은하</b>에 서서 보고 있습니다. 나머지 은하가 모두 멀어지고, <b>멀리 있는 은하일수록 빠르게</b> 멀어집니다. 다른 은하를 눌러 기준을 옮겨도 그림은 똑같습니다 — 그래서 <b>중심이 따로 없습니다.</b>";
     }
     canvas._redraw = draw;
     canvas.addEventListener("click", function (e) {
       var p = hit(canvas, e), best = -1, bd = 26;
       GAL.forEach(function (g) {
-        var d = Math.hypot(p.x - g.x, p.y - g.y);
+        if (g.sx == null) return;
+        var d = Math.hypot(p.x - g.sx, p.y - g.sy);
         if (d < bd) { bd = d; best = g.i; }
       });
       if (best < 0) return;
@@ -1772,6 +1856,16 @@ function msLogL(T) {
       if (G3.refs.indexOf(best) < 0) { G3.refs.push(best); window.sthState("dHub", G3); mission3(); }
       draw();
     });
+    var pb = $("d-grid-play");
+    function btn() { if (pb) pb.textContent = playing ? "⏸ 팽창 멈추기" : (a >= AMAX - 1e-6 ? "▶ 처음부터 다시 보기" : "▶ 팽창 보기"); }
+    if (pb) pb.addEventListener("click", function () { if (!playing && a >= AMAX - 1e-6) a = AMIN; playing = !playing; btn(); paint(); });
+    btn();
+    K.animate(canvas, function (dt) {
+      if (!playing) return;
+      a = Math.min(AMAX, a + dt / 1000 * 0.11);
+      if (a >= AMAX) { playing = false; btn(); }   /* 한 번 늘어나고 멈춘다(되돌아가며 줄어드는 것처럼 보이지 않게) */
+      paint();
+    }, 24);
     draw(); mission3();
   })();
 
