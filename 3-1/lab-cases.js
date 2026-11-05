@@ -3,6 +3,38 @@
 (function () {
 "use strict";
 
+/* 그림 말투 맞추기(이야기 장면과 같은 스튜디오 말투): 점 → 입체 공, 수치 판 → 흰 카드, 해 → 빛나는 공 */
+var K5 = window.sthKit;
+function up(H) {
+  if (!K5 || H._s5) return H;
+  var o = {}, k;
+  for (k in H) o[k] = H[k];
+  o.dot = function (ctx, x, y, r, col) {
+    if (r < 5 || !/^#[0-9a-f]{6}$/i.test(String(col).trim())) { H.dot(ctx, x, y, r, col); return; }
+    ctx.save(); ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(x + r * .3, y + r * .9, r * 1.05, r * .32, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+    K5.planet(ctx, x, y, r, String(col).trim(), K5.tint(String(col).trim(), .45));
+  };
+  o.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var mw = 0, W = ctx.canvas._w || 900;
+    list.forEach(function (r) {
+      ctx.font = "800 12px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[0]).width);
+      ctx.font = "900 " + (r[3] ? 20 : 15) + "px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[1]).width);
+    });
+    var cw = Math.min(mw + 36, W - x + 12);
+    K5.card(ctx, x - 18, y - 28, cw, (list.length - 1) * gap + 56);
+    H.rows(ctx, x, y, list, gap);
+  };
+  o.sun = function (ctx, x, y, r) {
+    K5.sun(ctx, x, y, r);
+    var g = ctx.createRadialGradient(x - r * .35, y - r * .35, r * .1, x, y, r);
+    g.addColorStop(0, "#fffbe6"); g.addColorStop(.55, "#ffd04a"); g.addColorStop(1, "#ff9a1f");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+  };
+  o._s5 = true;
+  return o;
+}
+
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
   cases: [
@@ -19,7 +51,7 @@ window.sthLab({
     },
     task: "시간을 흘려 <b>태양 – 지구 – 토성이 다시 한 줄</b>(충)이 되는 날을 찾으세요(± 3일).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
       var d = 200, PS = 29.46 * 365.25;
       function angE(t) { return 2 * Math.PI * t / 365.25; }
       function angS(t) { return 2 * Math.PI * t / PS; }
@@ -31,7 +63,7 @@ window.sthLab({
         ctx.strokeStyle = H.v("--line"); ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(cx, cy, rE, 0, Math.PI * 2); ctx.stroke();
         ctx.beginPath(); ctx.arc(cx, cy, rS, 0, Math.PI * 2); ctx.stroke();
-        H.text(ctx, "☀️", cx, cy + 9, { s: 24, a: "center" });
+        H.sun(ctx, cx, cy, 12);
         var e = [cx + rE * Math.cos(-angE(d)), cy + rE * Math.sin(-angE(d))];
         var s = [cx + rS * Math.cos(-angS(d)), cy + rS * Math.sin(-angS(d))];
         H.dash(ctx, cx, cy, s[0], s[1], H.v("--amber"));
@@ -79,7 +111,7 @@ window.sthLab({
     },
     task: "지구의 위치를 옮겨 화성에서 본 <b>지구와 태양 사이의 각(이각)이 가장 커지는</b> 순간을 찾으세요(최대 이각 − 0.5° 이내).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
       var th = 150, RM = 1.52;
       function elong(t) {
         var a = t * Math.PI / 180, ex = Math.cos(a), ey = Math.sin(a), mx = RM, my = 0;
@@ -93,7 +125,7 @@ window.sthLab({
         H.text(ctx, "위에서 본 모습 (화성 고정)", 40, 26, { s: 13.5, w: "900" });
         var cx = 200, cy = 180, sc = 90;
         ctx.strokeStyle = H.v("--line"); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(cx, cy, sc, 0, Math.PI * 2); ctx.stroke();
-        H.text(ctx, "☀️", cx, cy + 9, { s: 22, a: "center" });
+        H.sun(ctx, cx, cy, 11);
         var mx = cx + RM * sc, my = cy;
         H.dot(ctx, mx, my, 8, H.v("--rose")); H.text(ctx, "화성", mx + 12, my + 4, { s: 11, w: "800", c: H.v("--rose-700") });
         var a = th * Math.PI / 180, ex = cx + sc * Math.cos(a), ey = cy - sc * Math.sin(a);
@@ -140,7 +172,7 @@ window.sthLab({
     },
     task: "화성의 위치를 고르고 포보스의 고도를 정해, <b>근일점에서도 개기 일식이 되는 가장 먼 고도</b>를 찾으세요(± 150 km).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(300), ctx = cv.ctx, W = cv.W;
       var R_SUN = 696000, RP = 11.1, pos = "avg", alt = 6000;
       var DIST = { peri: 2.066e8, avg: 2.279e8, aph: 2.492e8 };
       function sunA() { return R_SUN / DIST[pos]; }

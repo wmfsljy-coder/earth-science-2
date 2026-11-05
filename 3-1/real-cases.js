@@ -4,6 +4,38 @@
    자료: data/mars-2024.js (NASA JPL Horizons, 지구 중심, 5일 간격) */
 (function () {
 "use strict";
+
+/* 그림 말투 맞추기(이야기 장면과 같은 스튜디오 말투): 점 → 입체 공, 수치 판 → 흰 카드, 해 → 빛나는 공 */
+var K5 = window.sthKit;
+function up(H) {
+  if (!K5 || H._s5) return H;
+  var o = {}, k;
+  for (k in H) o[k] = H[k];
+  o.dot = function (ctx, x, y, r, col) {
+    if (r < 5 || !/^#[0-9a-f]{6}$/i.test(String(col).trim())) { H.dot(ctx, x, y, r, col); return; }
+    ctx.save(); ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(x + r * .3, y + r * .9, r * 1.05, r * .32, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+    K5.planet(ctx, x, y, r, String(col).trim(), K5.tint(String(col).trim(), .45));
+  };
+  o.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var mw = 0, W = ctx.canvas._w || 900;
+    list.forEach(function (r) {
+      ctx.font = "800 12px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[0]).width);
+      ctx.font = "900 " + (r[3] ? 20 : 15) + "px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[1]).width);
+    });
+    var cw = Math.min(mw + 36, W - x + 12);
+    K5.card(ctx, x - 18, y - 28, cw, (list.length - 1) * gap + 56);
+    H.rows(ctx, x, y, list, gap);
+  };
+  o.sun = function (ctx, x, y, r) {
+    K5.sun(ctx, x, y, r);
+    var g = ctx.createRadialGradient(x - r * .35, y - r * .35, r * .1, x, y, r);
+    g.addColorStop(0, "#fffbe6"); g.addColorStop(.55, "#ffd04a"); g.addColorStop(1, "#ff9a1f");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+  };
+  o._s5 = true;
+  return o;
+}
 var M = (window.REAL_MARS || { rows: [] }).rows;                  /* [날짜, 적경°, 적위°, 등급, 거리 au] */
 var MON = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
 function day(s) { var p = s.split("-"); return (Date.UTC(+p[0], MON[p[1]] - 1, +p[2]) - Date.UTC(2024, 6, 1)) / 864e5; }
@@ -47,7 +79,7 @@ window.sthLab({
     },
     task: "빨간 점 구간이 <b>역행 구간과 딱 맞게</b> 시작일과 끝날을 옮기고, 역행 기간을 맞추세요(시작·끝 ± 10일).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(290), ctx = cv.ctx, W = cv.W, a = 100, b = 150;
+      var H = up(api.h), cv = api.canvas(290), ctx = cv.ctx, W = cv.W, a = 100, b = 150;
       function draw() {
         sky(H, ctx, W, cv.H, a, b, null);
         H.rows(ctx, 680, 50, [["시작", label(a)], ["끝", label(b)], ["기간", Math.round(b - a) + " 일", null, true]], 60);
@@ -82,7 +114,7 @@ window.sthLab({
     },
     task: "날짜를 옮겨 화성이 <b>가장 가까운 날</b>을 찾으세요(± 10일).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(290), ctx = cv.ctx, W = cv.W, d = 60;
+      var H = up(api.h), cv = api.canvas(290), ctx = cv.ctx, W = cv.W, d = 60;
       function at(x) { return D.reduce(function (b, r) { return Math.abs(r[0] - x) < Math.abs(b[0] - x) ? r : b; }, D[0]); }
       function draw() {
         var r = at(d);

@@ -17,6 +17,7 @@ var SRC = "<small>출처: 고생물학 데이터베이스(PBDB) — 대한민국
 function chart(H, ctx, W, CH, pick, env) {
   H.paper(ctx, W, CH);
   var x0 = 60, x1 = 620, y0 = 30, y1 = CH - 52, bw = (x1 - x0) / Math.max(1, R.length);
+  (function () { var K = window.sthKit; if (!K) return; ctx.save(); ctx.shadowColor = "rgba(20,30,60,.14)"; ctx.shadowBlur = 12; ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.beginPath(); ctx.roundRect(x0 - 52, 8, x1 - x0 + 66, CH - 16, 14); ctx.fill(); ctx.restore(); })();
   var mx = Math.max.apply(null, R.map(function (r) { return r[3]; })) * 1.1 || 1;
   function Y(v) { return y1 - v / mx * (y1 - y0); }
   H.axes(ctx, x0, y0, x1, y1);
@@ -57,7 +58,8 @@ window.sthLab({
       function draw() {
         chart(H, ctx, W, cv.H, i, false);
         var r = R[i] || ["", 0, 0, 0, 0, 0, 0, []];
-        H.rows(ctx, 650, 30, [["고른 시대", r[0], "--amber-700"], ["연대", r[1] + " ~ " + r[2] + " 백만 년 전"], ["화석 기록", r[3] + " 건", null, true], ["많이 나온 무리", r[7].length ? r[7].map(function (t) { return t[0]; }).join(", ") : "—"]], 56);
+        window.sthKit.card(ctx, 636, 8, 254, cv.H - 16);
+        H.rows(ctx, 652, 30, [["고른 시대", r[0], "--amber-700"], ["연대", r[1] + " ~ " + r[2] + " 백만 년 전"], ["화석 기록", r[3] + " 건", null, true], ["많이 나온 무리", r[7].length ? r[7].map(function (t) { return t[0]; }).join(", ") : "—"]], 56);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "시대", min: 0, max: Math.max(0, R.length - 1), step: 1, value: 0, fmt: function (x) { return R[x] ? R[x][0] : ""; }, onInput: function (x) { i = x; api.changed(); draw(); } });
@@ -94,7 +96,8 @@ window.sthLab({
       var H = api.h, cv = api.canvas(300), ctx = cv.ctx, W = cv.W, g = 50;
       function draw() {
         chart(H, ctx, W, cv.H, null, true);
-        H.rows(ctx, 650, 30, [["캄브리아 · 오르도비스", "바다 " + EPM + " / 환경 알려진 " + EPK], ["백악기", "바다 " + CR[4] + " · 육지 " + CR[5]], ["내 답 (백악기 육지 비율)", g + "%", null, true]], 62);
+        window.sthKit.card(ctx, 636, 8, 254, cv.H - 16);
+        H.rows(ctx, 652, 30, [["캄브리아 · 오르도비스", "바다 " + EPM + " / 환경 알려진 " + EPK], ["백악기", "바다 " + CR[4] + " · 육지 " + CR[5]], ["내 답 (백악기 육지 비율)", g + "%", null, true]], 62);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "백악기 육지 비율", min: 0, max: 100, step: 1, value: 50, fmt: function (x) { return x + "%"; }, onInput: function (x) { g = x; api.changed(); draw(); } });

@@ -5,6 +5,25 @@
    자료: data/oni.js (NOAA CPC, Niño 3.4 해역 수온 편차의 3개월 평균), data/cw155.js */
 (function () {
 "use strict";
+/* 스튜디오 말투(_tools/STUDIO_GUIDE.md): 밝은 스튜디오 바탕, 굵은 축, 오른쪽 수치판은 흰 판정 카드 */
+var KS_ = window.sthKit;
+function lift(H0) {
+  if (!KS_) return H0;
+  var H = {}, k; for (k in H0) H[k] = H0[k];
+  H.paper = function (ctx, W, Hh) { ctx.clearRect(0, 0, W, Hh); KS_.studio(ctx, 0, 0, W, Hh); };
+  H.axes = function (ctx, x0, y0, x1, y1) { ctx.save(); ctx.strokeStyle = KS_.LT.line; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore(); };
+  H.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var W = (ctx.canvas && ctx.canvas._w) || 900;
+    KS_.card(ctx, x - 16, y - 26, W - x + 4, list.length * gap + 22, "");
+    list.forEach(function (r, i) {
+      var yy = y + i * gap;
+      H0.text(ctx, r[0], x, yy, { s: 12, w: "800", c: KS_.LT.mute });
+      H0.text(ctx, r[1], x, yy + (r[3] ? 25 : 20), { s: r[3] ? 21 : 15.5, w: "900", c: r[2] ? H0.v(r[2]) : KS_.LT.ink });
+    });
+  };
+  return H;
+}
 var O = (window.REAL_ONI || { rows: [] }).rows;                    /* [묶음, 연도, 편차] */
 var SEAS = ["DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ"];
 var KS = { DJF: "12~2월", JFM: "1~3월", FMA: "2~4월", MAM: "3~5월", AMJ: "4~6월", MJJ: "5~7월", JJA: "6~8월", JAS: "7~9월", ASO: "8~10월", SON: "9~11월", OND: "10~12월", NDJ: "11~1월" };
@@ -50,7 +69,7 @@ window.sthLab({
     },
     task: "연도를 옮겨 11~1월 값이 <b>가장 높은 해</b>를 고르세요(그해 11월 ~ 이듬해 1월).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, y = 1970;
+      var H = lift(api.h), cv = api.canvas(280), ctx = cv.ctx, W = cv.W, y = 1970;
       function val(yy) { for (var i = 0; i < NDJ.length; i++) if (NDJ[i][1] === yy) return NDJ[i][2]; return null; }
       function draw() {
         chart(H, ctx, W, cv.H, y);
@@ -85,7 +104,7 @@ window.sthLab({
     },
     task: "가장 최근 값으로 지금 상태를 고르고, 그 값을 슬라이더로 맞추세요(± 0.1 °C).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, pick = "neutral", v = 0;
+      var H = lift(api.h), cv = api.canvas(280), ctx = cv.ctx, W = cv.W, pick = "neutral", v = 0;
       var REC = O.slice(-15);
       function draw() {
         H.paper(ctx, W, cv.H);
@@ -133,7 +152,7 @@ window.sthLab({
     },
     task: "빨간 막대 가운데 <b>2010년 이후의 막대 수</b>를 슬라이더로 맞추세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, k = 0;
+      var H = lift(api.h), cv = api.canvas(280), ctx = cv.ctx, W = cv.W, k = 0;
       var x0 = 50, x1 = 640, y0 = 24, y1 = 240, n = ZS.length || 1, bw = (x1 - x0) / n;
       function Y(v) { return y1 - (v - 23) / 4 * (y1 - y0); }
       function draw() {

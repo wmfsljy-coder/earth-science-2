@@ -26,30 +26,44 @@ window.sthLab({
       var off = 3;
       var base = 330, sc = 4.2;
       function tuffTop(col, o) { var h = 0; for (var i = 0; i < col.length; i++) { if (col[i][0] === "응회암") return h; h += col[i][1]; } return 0; }
-      function column(x, col, o, name) {
-        var y = base - o * sc;
-        H.text(ctx, name, x + 45, 30, { s: 13, w: "900", a: "center" });
+      /* 두 지역의 지층 기둥을 블록으로 잘라 세운다(B 블록은 위아래로 옮길 수 있다) */
+      function column(ox, col, o, name) {
+        var K = window.sthKit, I = K.iso({ ox: ox, oy: base - 60, s: 1, L: 76, D: 52 }), z = o * sc, labs = [];
         col.forEach(function (L) {
-          var h = L[1] * sc; y -= h;
-          ctx.fillStyle = L[2]; ctx.fillRect(x, y, 90, h);
-          ctx.strokeStyle = "rgba(0,0,0,.25)"; ctx.strokeRect(x, y, 90, h);
-          if (h > 14) H.text(ctx, L[0], x + 45, y + h / 2 + 4, { s: 11, w: "800", a: "center", c: "#1b2430" });
-          else H.text(ctx, L[0], x + 98, y + h / 2 + 4, { s: 10.5, w: "800", c: H.v("--rose-700") });
+          var h = L[1] * sc;
+          I.box(ctx, 0, 0, z, 76, 52, z + h, K.tint(L[2], 1.08), L[2], K.tint(L[2], .78));
+          I.face(ctx, "front", function () { ctx.fillStyle = "rgba(255,255,255,.18)"; for (var k = 0; k < 40; k++) ctx.fillRect((k * 37) % 76, z + (k * 53) % Math.max(2, h), 1.5, 1.5); });
+          labs.push([L[0], z + h / 2, h]);
+          z += h;
         });
+        var e = I.P(76, 52, o * sc), f = I.P(76, 52, z), g0 = I.P(0, 52, z), g1 = I.P(76, 0, z);
+        ctx.strokeStyle = "rgba(255,255,255,.7)"; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(e.x, e.y); ctx.lineTo(f.x, f.y); ctx.moveTo(g0.x, g0.y); ctx.lineTo(f.x, f.y); ctx.lineTo(g1.x, g1.y); ctx.stroke();
+        labs.forEach(function (lb) {
+          var p = I.P(38, 52, lb[1]);
+          if (lb[2] > 14) H.text(ctx, lb[0], p.x, p.y + 4, { s: 11, w: "900", a: "center", c: "#1b2430" });
+          else { var q = I.P(76, 26, lb[1]); window.sthKit.pill(ctx, lb[0], q.x + 8, q.y + 4, { s: 11, c: "#ffc2c2" }); }
+        });
+        var top = I.P(0, 0, z);
+        window.sthKit.pill(ctx, name, top.x, top.y - 12, { s: 12.5, a: "center", c: "#ffffff" });
+        return I;
       }
       function draw() {
+        var K = window.sthKit, LT = K.LT;
         H.paper(ctx, W, cv.H);
-        column(140, A, 0, "A 지역");
-        column(420, B, off, "B 지역");
-        var ya = base - (tuffTop(A) + 3) * sc, yb = base - (off + tuffTop(B) + 3) * sc;
-        H.dash(ctx, 230, ya, 420, yb, H.v("--rose"), 2);
+        ctx.fillStyle = "rgba(20,30,50,.16)"; ctx.beginPath(); ctx.ellipse(330, base - 10, 250, 18, 0, 0, 6.2832); ctx.fill();
+        var IA = column(190, A, 0, "A 지역"), IB = column(450, B, off, "B 지역");
+        var ya = (tuffTop(A) + 1.5) * sc, yb = (off + tuffTop(B) + 1.5) * sc;
+        var pa = IA.P(76, 52, ya), pb = IB.P(0, 52, yb);
+        ctx.save(); ctx.strokeStyle = LT.red; ctx.lineWidth = 2.4; ctx.setLineDash([7, 5]); ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke(); ctx.restore();
         var ok = Math.abs((tuffTop(A)) - (off + tuffTop(B))) <= 2;
-        H.text(ctx, "응회암끼리 잇는 선", 325, Math.min(ya, yb) - 8, { s: 11, w: "800", a: "center", c: H.v("--rose-700") });
-        H.rows(ctx, 640, 80, [
-          ["B 기둥을 올린 높이", (off >= 0 ? "+" : "") + off + " m"],
-          ["응회암 높이 차", Math.abs(tuffTop(A) - off - tuffTop(B)).toFixed(0) + " m", ok ? "--green-700" : "--rose-700", true]
-        ], 70);
-        H.text(ctx, "※ B의 사암은 응회암 ‘위’에 있습니다", 640, 250, { s: 11.5, c: H.v("--mist") });
+        K.pill(ctx, "응회암끼리 잇는 선", (pa.x + pb.x) / 2 + 20, Math.max(pa.y, pb.y) + 28, { s: 11, a: "center", c: "#ffc2c2", box: [0, 610] });
+        K.card(ctx, 622, 14, 264, cv.H - 28, "지층 대비");
+        K.row(ctx, "B 기둥을 올린 높이", (off >= 0 ? "+" : "") + off + " m", 640, 868, 70);
+        K.t(ctx, "응회암 높이 차", 640, 112, { s: 12, w: "800", c: LT.mute });
+        K.t(ctx, Math.abs(tuffTop(A) - off - tuffTop(B)).toFixed(0) + " m", 640, 146, { s: 26, w: "900", c: ok ? LT.green : LT.red });
+        K.tip(ctx, ok ? "같은 시기의 층이 나란히" : "응회암 높이를 맞춰 보세요", 634, 172, 240, ok);
+        K.t(ctx, "※ B의 사암은 응회암 ‘위’에 있습니다", 640, 250, { s: 11, w: "700", c: LT.mute });
+        K.t(ctx, "화산재는 넓은 곳에 한꺼번에 쌓인다", 640, 300, { s: 11, w: "800", c: "#1179a6" });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "B 기둥을 위아래로 옮기기", min: -10, max: 30, step: 1, value: 3, fmt: function (x) { return (x >= 0 ? "+" : "") + x + " m"; },
@@ -93,26 +107,29 @@ window.sthLab({
       function GX(h) { return gx0 + h / 48 * (gx1 - gx0); }
       function GY(p) { return gy1 - p * (gy1 - gy0); }
       function draw() {
+        var K = window.sthKit, LT = K.LT, COL = { tc: LT.teal, i: LT.violet, f: LT.orange };
         H.paper(ctx, W, cv.H);
-        H.text(ctx, "주사 뒤 몸속에 남은 방사성 원소의 비율", 40, 28, { s: 14, w: "900" });
-        H.axes(ctx, gx0, gy0, gx1, gy1);
-        [0, 12, 24, 36, 48].forEach(function (h) { H.text(ctx, h + "시간", GX(h), gy1 + 16, { s: 10, a: "center", c: H.v("--mist") }); });
-        [0, 0.5, 1].forEach(function (p) { H.text(ctx, (p * 100) + "%", gx0 - 6, GY(p) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        H.dash(ctx, gx0, GY(1 / 16), gx1, GY(1 / 16), H.v("--rose"));
-        H.text(ctx, "1/16 (6.25%)", gx1 - 4, GY(1 / 16) - 6, { s: 10.5, w: "800", a: "right", c: H.v("--rose-700") });
+        var g = K.chart(ctx, { x: 16, y: 34, w: 570, h: 276, x0: 0, x1: 48, y0: 0, y1: 1, xt: 4, yt: 2, pl: 52, light: true,
+          xl: "주사 뒤 시간 →", xf: function (v) { return v + "시간"; }, yf: function (v) { return Math.round(v * 100) + "%"; } });
+        K.t(ctx, "주사 뒤 몸속에 남은 방사성 원소의 비율", 22, 22, { s: 13.5, w: "900", c: LT.ink });
+        ctx.save(); ctx.strokeStyle = LT.red; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(g.L, g.Y(1 / 16)); ctx.lineTo(g.R, g.Y(1 / 16)); ctx.stroke(); ctx.restore();
+        K.t(ctx, "1/16 (6.25%)", g.R - 4, g.Y(1 / 16) - 6, { s: 10.5, w: "800", a: "right", c: LT.red });
         Object.keys(ISO).forEach(function (k) {
-          var pts = []; for (var h = 0; h <= 48; h += 0.25) pts.push([GX(h), GY(rem(k, h))]);
-          H.line(ctx, pts, H.v(ISO[k].c), k === iso ? 3.5 : 1.2);
+          var pts = []; for (var h = 0; h <= 48; h += 0.25) pts.push([h, rem(k, h)]);
+          K.plot(ctx, g, pts, COL[k], { light: true, w: k === iso ? 3.6 : 1.4, glow: k === iso });
         });
-        H.line(ctx, [[GX(t), gy0], [GX(t), gy1]], H.v("--ink"), 1.5);
+        ctx.strokeStyle = LT.ink; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(g.X(t), g.T); ctx.lineTo(g.X(t), g.B); ctx.stroke();
         var p = rem(iso, t);
-        H.dot(ctx, GX(t), GY(p), 6, H.v(ISO[iso].c + "-700"));
-        H.rows(ctx, 610, 60, [
-          ["고른 원소 (반감기)", ISO[iso].t + " (" + (ISO[iso].hl >= 24 ? (ISO[iso].hl / 24) + "일" : ISO[iso].hl + "시간") + ")"],
-          ["1시간 뒤 남은 양", (rem(iso, 1) * 100).toFixed(1) + "%", rem(iso, 1) >= 0.85 ? "--green-700" : "--rose-700"],
-          ["24시간 뒤 남은 양", (rem(iso, 24) * 100).toFixed(1) + "%", rem(iso, 24) <= 1 / 16 + 1e-9 ? "--green-700" : "--rose-700"],
-          [t + "시간 뒤 남은 양", (p * 100).toFixed(2) + "%", null, true]
-        ], 52);
+        ctx.fillStyle = "#ffffff"; ctx.strokeStyle = COL[iso]; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(g.X(t), g.Y(p), 7, 0, 6.2832); ctx.fill(); ctx.stroke();
+        K.card(ctx, 600, 14, 286, cv.H - 28, "고른 원소");
+        K.t(ctx, ISO[iso].t, 618, 64, { s: 17, w: "900", c: COL[iso] });
+        K.row(ctx, "반감기", ISO[iso].hl >= 24 ? (ISO[iso].hl / 24) + "일" : ISO[iso].hl + "시간", 618, 868, 100);
+        var r1 = rem(iso, 1), r24 = rem(iso, 24);
+        K.row(ctx, "1시간 뒤 남은 양", (r1 * 100).toFixed(1) + "%", 618, 868, 136, r1 >= 0.85 ? LT.green : LT.red);
+        K.row(ctx, "24시간 뒤 남은 양", (r24 * 100).toFixed(1) + "%", 618, 868, 172, r24 <= 1 / 16 + 1e-9 ? LT.green : LT.red);
+        K.t(ctx, t + "시간 뒤 남은 양", 618, 214, { s: 12, w: "800", c: LT.mute });
+        K.t(ctx, (p * 100).toFixed(2) + "%", 618, 246, { s: 24, w: "900", c: LT.ink });
+        K.bar(ctx, 618, 262, 250, p, COL[iso]);
       }
       cv.canvas._redraw = draw;
       api.seg({ label: "동위 원소", value: "i", options: [{ v: "f", t: "플루오린-18 (1.83시간)" }, { v: "tc", t: "테크네튬-99m (6시간)" }, { v: "i", t: "아이오딘-131 (8일)" }],
@@ -162,21 +179,54 @@ window.sthLab({
           ["바닷물 정도의 염분", sal === "sea"]
         ];
       }
+      /* 옛 바다를 블록으로 잘라 본 모형: 수심·물빛·탁도가 조작대로 바뀐다 */
       function draw() {
+        var K = window.sthKit, LT = K.LT;
         H.paper(ctx, W, cv.H);
-        H.text(ctx, "복원한 옛 바다 단면", 40, 28, { s: 14, w: "900" });
-        var top = 70, sc = 2.2;
-        var col = temp === "warm" ? "--teal" : "--brand";
-        H.box(ctx, 60, top, 420, 230, H.v(col), clear === "clear" ? 0.25 : 0.45);
-        if (clear !== "clear") for (var i = 0; i < 40; i++) H.dot(ctx, 70 + (i * 97) % 400, top + 10 + (i * 53) % 200, 2, "rgba(140,110,60,.6)");
-        var by = Math.min(300, top + depth * sc);
-        ctx.fillStyle = "#c9b48a"; ctx.fillRect(60, by, 420, 300 - by + 20);
-        var ok = checks().every(function (c) { return c[1]; });
-        H.text(ctx, ok ? "🪸🪸🐠🪸" : "·  ·  ·", 270, by - 6, { s: ok ? 26 : 18, a: "center" });
-        H.text(ctx, "☀️", 90, 60, { s: 22 });
-        H.text(ctx, "수심 " + depth + " m", 470, by - 8, { s: 11.5, w: "800", a: "right" });
+        var I = K.iso({ ox: 300, oy: 140, s: 0.8, L: 300, D: 110 }), ZW = 150, zf = ZW - depth * 0.65;
+        var warm = temp === "warm", ok = checks().every(function (c) { return c[1]; });
+        ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(I.P(300, 110, 0).x - 100, I.P(300, 110, 0).y + 6, 230, 22, 0, 0, 6.2832); ctx.fill();
+        /* 바닥 아래 퇴적물(석회질 모래) */
+        ["front", "right"].forEach(function (side) {
+          I.face(ctx, side, function (Lw) {
+            var g = ctx.createLinearGradient(0, 0, 0, zf); g.addColorStop(0, "#a8916a"); g.addColorStop(1, "#e6d4a8");
+            ctx.fillStyle = g; ctx.fillRect(0, 0, Lw, zf);
+            ctx.strokeStyle = "rgba(90,70,40,.25)"; ctx.lineWidth = 1; for (var lz = 8; lz < zf; lz += 10) { ctx.beginPath(); ctx.moveTo(0, lz); ctx.lineTo(Lw, lz); ctx.stroke(); }
+          });
+        });
+        I.shade(ctx, "right", function () { return zf; });
+        I.plane(ctx, zf, "#efe0b8", null);
+        if (ok) {                                           /* 초를 만드는 산호 미니어처 */
+          var R = K.rng(4);
+          for (var k = 0; k < 16; k++) {
+            var p = I.P(20 + R() * 260, 15 + R() * 85, zf), col = ["#ff8fa3", "#ffb36b", "#c99cff", "#ff6b81"][k % 4];
+            for (var b = -2; b <= 2; b++) { ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = "round"; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + b * 4, p.y - 10 - Math.abs(2 - Math.abs(b)) * 4); ctx.stroke(); }
+          }
+        }
+        /* 물: 따뜻하면 청록, 차가우면 짙은 파랑. 탁하면 흙빛 */
+        var top = warm ? "rgba(60,200,200,.40)" : "rgba(70,130,210,.42)", deep = warm ? "rgba(10,110,130,.62)" : "rgba(20,50,120,.66)";
+        if (clear !== "clear") { top = "rgba(160,140,90,.55)"; deep = "rgba(110,90,50,.75)"; }
+        I.water(ctx, ZW, function () { return zf; }, { top: top, deep: deep });
+        if (clear !== "clear") { var R2 = K.rng(9); for (var q = 0; q < 50; q++) { var pp = I.P(R2() * 300, 110, zf + R2() * (ZW - zf)); ctx.fillStyle = "rgba(120,90,40,.55)"; ctx.beginPath(); ctx.arc(pp.x, pp.y, 1.6, 0, 6.2832); ctx.fill(); } }
+        /* 햇빛: 깊을수록, 탁할수록 약해진다 */
+        var reach = clear === "clear" ? 90 : 30;
+        for (var r = 0; r < 5; r++) {
+          var a = I.P(40 + r * 55, 110, ZW), b2 = I.P(40 + r * 55 + 10, 110, Math.max(zf, ZW - reach));
+          var lg = ctx.createLinearGradient(a.x, a.y, b2.x, b2.y); lg.addColorStop(0, "rgba(255,240,170,.55)"); lg.addColorStop(1, "rgba(255,240,170,0)");
+          ctx.strokeStyle = lg; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b2.x, b2.y); ctx.stroke();
+        }
+        K.sun(ctx, 70, 52, 12);
+        var box = [0, 600];
+        I.label(ctx, 300, 55, zf, "바닥 · 수심 " + depth + " m", 34, 30, "#f6e7c4", box);
+        I.label(ctx, 300, 30, ZW, (warm ? "따뜻한 바다 25 ℃" : "차가운 바다 10 ℃") + (sal === "sea" ? " · 바닷물" : " · 민물 섞임"), 30, -18, "#bfe6ff", box);
+        if (ok) I.label(ctx, 150, 60, zf + 8, "산호초", -60, -50, "#ffc2cf", box);
+        K.bigText(ctx, ok ? "산호가 살 수 있는 바다" : "산호가 살 수 없다", 18, 300, 20, ok ? "#7dffa8" : "#ff9a8a");
+        /* 오른쪽 판정 카드 */
+        K.card(ctx, 610, 14, 276, cv.H - 28, "산호가 살려면");
         checks().forEach(function (c, i) {
-          H.text(ctx, (c[1] ? "✓ " : "✗ ") + c[0], 520, 90 + i * 40, { s: 12.5, w: "800", c: c[1] ? H.v("--green-700") : H.v("--rose-700") });
+          var y = 74 + i * 52;
+          ctx.fillStyle = c[1] ? "#e7f7f0" : "#fdeee4"; ctx.beginPath(); ctx.roundRect(624, y - 22, 248, 40, 10); ctx.fill();
+          K.t(ctx, (c[1] ? "✓ " : "✗ ") + c[0], 634, y + 3, { s: 11.5, w: "800", c: c[1] ? "#0f766e" : "#b4400c" });
         });
       }
       cv.canvas._redraw = draw;

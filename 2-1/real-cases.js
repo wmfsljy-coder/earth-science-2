@@ -21,6 +21,7 @@ var SRC = "<small>출처: 고생물학 데이터베이스(PBDB) — 동물(Metaz
 function chart(H, ctx, W, CH, what, pick) {
   H.paper(ctx, W, CH);
   var x0 = 60, x1 = 640, y0 = 30, y1 = CH - 50;
+  (function () { var K = window.sthKit; if (!K) return; ctx.save(); ctx.shadowColor = "rgba(20,30,60,.14)"; ctx.shadowBlur = 12; ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.beginPath(); ctx.roundRect(x0 - 52, 8, x1 - x0 + 66, CH - 16, 14); ctx.fill(); ctx.restore(); })();
   function X(ma) { return x0 + (500 - ma) / (500 - 2.6) * (x1 - x0); }
   var top = what === "e" ? 0.6 : 7500;
   function Y(v) { return y1 - v / top * (y1 - y0); }
@@ -56,7 +57,8 @@ window.sthLab({
       function draw() {
         var r = USE[k];
         chart(H, ctx, W, cv.H, "e", r);
-        H.rows(ctx, 670, 40, [["고른 시기", nm(r[0]), "--amber-700"], ["지질 시대", period((r[1] + r[2]) / 2)], ["때", r[1].toFixed(1) + " ~ " + r[2].toFixed(1) + " 백만 년 전"], ["사라진 속의 비율", Math.round(ext(r) * 100) + " %", null, true]], 54);
+        window.sthKit.card(ctx, 656, 8, 234, cv.H - 16);
+        H.rows(ctx, 672, 40, [["고른 시기", nm(r[0]), "--amber-700"], ["지질 시대", period((r[1] + r[2]) / 2)], ["때", r[1].toFixed(1) + " ~ " + r[2].toFixed(1) + " 백만 년 전"], ["사라진 속의 비율", Math.round(ext(r) * 100) + " %", null, true]], 54);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "시기", min: 0, max: USE.length - 1, step: 1, value: 0, fmt: function (x) { var r = USE[x]; return Math.round(r[1]) + " 백만 년 전"; }, onInput: function (x) { k = x; api.changed(); draw(); } });
@@ -91,7 +93,8 @@ window.sthLab({
       function draw() {
         var p = chart(H, ctx, W, cv.H, "n", null);
         [MA, DA].forEach(function (r) { H.dot(ctx, p.X((r[1] + r[2]) / 2), p.Y(r[3]) - 6, 6, H.v("--amber-700")); });
-        H.rows(ctx, 670, 40, [["마스트리흐트절 (백악기 끝)", MA[3].toLocaleString() + " 속"], ["다니절 (신생대 처음)", DA[3].toLocaleString() + " 속"], ["내 답 (줄어든 비율)", g + " %", null, true]], 58);
+        window.sthKit.card(ctx, 656, 8, 234, cv.H - 16);
+        H.rows(ctx, 672, 40, [["마스트리흐트절 (백악기 끝)", MA[3].toLocaleString() + " 속"], ["다니절 (신생대 처음)", DA[3].toLocaleString() + " 속"], ["내 답 (줄어든 비율)", g + " %", null, true]], 58);
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "줄어든 비율", min: 0, max: 80, step: 1, value: 0, fmt: function (x) { return x + " %"; }, onInput: function (x) { g = x; api.changed(); draw(); } });

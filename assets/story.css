@@ -366,7 +366,8 @@
 .bq-w { font-size: 13px; margin-top: 6px; }
 
 /* 모든 그림 틀을 무대 색으로 */
-.episode .canvas-wrap, .lab .canvas-wrap { background: var(--stage-bg); border-bottom-color: #1b2150; }
+.episode .canvas-wrap { background: var(--stage-bg); border-bottom-color: #1b2150; }
+.lab .canvas-wrap, .canvas-wrap.studio, .episode .canvas-wrap.studio { background: #e4eaf1; border-bottom-color: var(--line); }
 
 
 /* 대표 그림 카드(AI 그림 + 설명) — <figure class="hero-art"><img …><figcaption><b>제목</b> 설명</figcaption></figure> */

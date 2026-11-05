@@ -26,33 +26,36 @@ window.sthLab({
       function name() { return (deep() ? ["반려암", "섬록암", "화강암"] : ["현무암", "안산암", "유문암"])[kind()]; }
       function grain() { return dep < 2 ? 0.05 + dep * 0.1 : 1 + (dep - 2) * 0.8; }
       function draw() {
+        var K = window.sthKit, LT = K.LT;
         H.paper(ctx, W, cv.H);
-        H.text(ctx, "화성암 분류표", 40, 28, { s: 14, w: "900" });
-        var x0 = 150, cw = 130, y0 = 60, rh = 60;
-        ["염기성 (SiO₂ 52% 미만)", "중성 (52~63%)", "산성 (63% 이상)"].forEach(function (s, i) { H.text(ctx, s, x0 + cw * i + cw / 2, y0 - 8, { s: 10.5, w: "800", a: "center", c: H.v("--mist") }); });
+        K.card(ctx, 14, 12, 470, cv.H - 24, "화성암 분류표");
+        var x0 = 150, cw = 106, y0 = 76, rh = 64;
+        ["염기성 (52% 미만)", "중성 (52~63%)", "산성 (63% 이상)"].forEach(function (s, i) { K.t(ctx, s, x0 + cw * i + cw / 2, y0 - 10, { s: 10.5, w: "800", a: "center", c: LT.mute }); });
         [["화산암 (세립질)", ["현무암", "안산암", "유문암"]], ["심성암 (조립질)", ["반려암", "섬록암", "화강암"]]].forEach(function (r, j) {
-          H.text(ctx, r[0], x0 - 8, y0 + rh * j + 35, { s: 11, w: "800", a: "right" });
+          K.t(ctx, r[0], x0 - 10, y0 + rh * j + 37, { s: 11, w: "900", a: "right", c: LT.ink });
           r[1].forEach(function (nm, i) {
             var on = kind() === i && deep() === (j === 1);
-            H.box(ctx, x0 + cw * i + 2, y0 + rh * j + 2, cw - 4, rh - 4, on ? H.v("--teal") : H.v("--card-2"), on ? 0.6 : 1);
-            H.text(ctx, nm, x0 + cw * i + cw / 2, y0 + rh * j + 36, { s: 13, w: "900", a: "center" });
+            ctx.fillStyle = on ? "#0c8599" : "#e9eef5"; ctx.beginPath(); ctx.roundRect(x0 + cw * i + 3, y0 + rh * j + 3, cw - 6, rh - 6, 10); ctx.fill();
+            K.t(ctx, nm, x0 + cw * i + cw / 2, y0 + rh * j + 38, { s: 13.5, w: "900", a: "center", c: on ? "#ffffff" : LT.ink });
           });
         });
-        /* 확대 사진 흉내: 알갱이 */
-        var bx = 620, by = 60, bw = 220, bh = 160, g = grain(), n = 0;
-        ctx.save(); ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.clip();
-        var dark = [70, 110, 150][kind()];
-        ctx.fillStyle = "rgb(" + (dark + 90) + "," + (dark + 90) + "," + (dark + 95) + ")"; ctx.fillRect(bx, by, bw, bh);
-        var s = Math.max(2, Math.min(34, g * 14));
-        for (var yy = by; yy < by + bh; yy += s) for (var xx = bx; xx < bx + bw; xx += s) {
-          n++; var r = ((n * 73) % 97) / 97;
-          var c = r < [0.6, 0.4, 0.2][kind()] ? dark : 220;
-          ctx.fillStyle = "rgb(" + c + "," + c + "," + (c + 6) + ")"; ctx.fillRect(xx + 1, yy + 1, s - 1, s - 1);
+        K.t(ctx, "만들어진 암석: " + name(), 40, 254, { s: 17, w: "900", c: name() === "섬록암" ? LT.green : LT.ink });
+        K.t(ctx, dep < 2 ? "지표 부근에서 빨리 식음 → 결정이 자랄 시간이 없음" : "지하 깊은 곳에서 천천히 식음 → 결정이 크게 자람", 40, 282, { s: 11.5, w: "700", c: LT.mute });
+        /* 입체 표본: 알갱이 크기가 식은 깊이대로 */
+        var g = grain(), tx = document.createElement("canvas"); tx.width = 400; tx.height = 280;
+        var c = tx.getContext("2d"), dark = [70, 110, 150][kind()], s = Math.max(4, Math.min(60, g * 26)), n = 0;
+        c.fillStyle = "rgb(" + (dark + 90) + "," + (dark + 90) + "," + (dark + 95) + ")"; c.fillRect(0, 0, 400, 280);
+        var Rg = K.rng(kind() * 100 + Math.round(dep * 10) + 1), cnt = Math.max(80, Math.min(5000, Math.round(400 * 280 / (s * s) * 1.4)));
+        for (n = 0; n < cnt; n++) {
+          var rr = Rg(), cc = rr < [0.6, 0.4, 0.2][kind()] ? dark - 30 : 230, xx = Rg() * 400, yy = Rg() * 280, ss = s * (.6 + Rg() * .6);
+          c.fillStyle = "rgb(" + cc + "," + cc + "," + (cc + 6) + ")"; c.fillRect(xx, yy, ss, ss * (.6 + Rg() * .5));
         }
-        ctx.restore();
-        H.text(ctx, "확대한 모습 (알갱이 약 " + g.toFixed(g < 1 ? 2 : 1) + " mm)", bx, by + bh + 18, { s: 11, c: H.v("--mist") });
-        H.text(ctx, "만들어진 암석: " + name(), 150, 220, { s: 18, w: "900", c: name() === "섬록암" ? H.v("--green-700") : H.v("--ink") });
-        H.text(ctx, dep < 2 ? "지표 부근에서 빨리 식음 → 결정이 자랄 시간이 없음" : "지하 깊은 곳에서 천천히 식음 → 결정이 크게 자람", 150, 250, { s: 12, c: H.v("--mist") });
+        var I = K.iso({ ox: 660, oy: 118, s: 1, L: 170, D: 110 }), Z = 76;
+        ctx.fillStyle = "rgba(20,30,50,.2)"; ctx.beginPath(); ctx.ellipse(700, 268, 160, 20, 0, 0, 6.2832); ctx.fill();
+        ["front", "right"].forEach(function (sd) { I.face(ctx, sd, function (Lw) { ctx.translate(0, Z); ctx.scale(1, -1); ctx.drawImage(tx, 0, 0, Lw, Z); }); });
+        I.shade(ctx, "right", function () { return Z; });
+        var o = I.P(0, 0, Z); ctx.save(); ctx.transform(0.866, 0.5, -0.866, 0.5, o.x, o.y); ctx.drawImage(tx, 0, 0, 170, 110); ctx.restore();
+        K.pill(ctx, "확대한 표본 · 알갱이 약 " + g.toFixed(g < 1 ? 2 : 1) + " mm", 700, 302, { s: 11.5, a: "center", c: "#ffffff" });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "마그마의 SiO₂ 함량", min: 45, max: 75, step: 1, value: 48, fmt: function (x) { return x + "%"; }, onInput: function (x) { si = x; draw(); } });
@@ -103,24 +106,27 @@ window.sthLab({
       function GX(t) { return gx0 + (t - 100) / 800 * (gx1 - gx0); }
       function GY(d) { return gy0 + d / 40 * (gy1 - gy0); }
       function draw() {
+        var K = window.sthKit, LT = K.LT;
         H.paper(ctx, W, cv.H);
-        H.text(ctx, "온도 – 깊이 그림", 40, 28, { s: 14, w: "900" });
-        H.axes(ctx, gx0, gy0, gx1, gy1);
-        H.box(ctx, GX(750), gy0, gx1 - GX(750), gy1 - gy0, H.v("--rose"), 0.2);
-        H.text(ctx, "녹음", (GX(750) + gx1) / 2, gy0 + 20, { s: 12, w: "900", a: "center", c: H.v("--rose-700") });
-        H.box(ctx, GX(450), gy0, GX(750) - GX(450), GY(8) - gy0, H.v("--amber"), 0.2);
-        H.text(ctx, "접촉 변성", (GX(450) + GX(750)) / 2, gy0 + 20, { s: 11, w: "800", a: "center", c: H.v("--amber-700") });
-        H.box(ctx, GX(600), GY(20), GX(750) - GX(600), gy1 - GY(20), H.v("--violet"), 0.2);
-        H.text(ctx, "편마암", (GX(600) + GX(750)) / 2, GY(30), { s: 11, w: "800", a: "center", c: H.v("--violet-700") });
-        [100, 300, 500, 700, 900].forEach(function (t) { H.text(ctx, t + "℃", GX(t), gy0 - 8, { s: 10, a: "center", c: H.v("--mist") }); });
-        [0, 10, 20, 30, 40].forEach(function (d) { H.text(ctx, d + " km", gx0 - 6, GY(d) + 4, { s: 10, a: "right", c: H.v("--mist") }); });
-        H.dot(ctx, GX(T), GY(D), 7, H.v("--ink"));
+        var gc = K.chart(ctx, { x: 16, y: 34, w: 570, h: 286, x0: 100, x1: 900, y0: 40, y1: 0, xt: 4, yt: 4, pl: 56, light: true,
+          xl: "온도 →", yl: "깊이 ↓", xf: function (v) { return v + "℃"; }, yf: function (v) { return v + " km"; } });
+        K.t(ctx, "온도 – 깊이 그림", 22, 22, { s: 13.5, w: "900", c: LT.ink });
+        function rect(t0, t1, d0, d1, col, a) { ctx.fillStyle = col; ctx.globalAlpha = a; ctx.fillRect(gc.X(t0), gc.Y(d0), gc.X(t1) - gc.X(t0), gc.Y(d1) - gc.Y(d0)); ctx.globalAlpha = 1; }
+        rect(750, 900, 0, 40, "#e03131", .18); rect(450, 750, 0, 8, "#f59f00", .22); rect(600, 750, 20, 40, "#7048e8", .2);
+        K.t(ctx, "녹음", (gc.X(750) + gc.R) / 2, gc.T + 20, { s: 12, w: "900", a: "center", c: LT.red });
+        K.t(ctx, "접촉 변성", (gc.X(450) + gc.X(750)) / 2, gc.T + 20, { s: 11, w: "800", a: "center", c: "#b45309" });
+        K.t(ctx, "편마암", (gc.X(600) + gc.X(750)) / 2, gc.Y(30), { s: 11, w: "900", a: "center", c: LT.violet });
         var r = rock();
-        H.rows(ctx, 610, 70, [
-          ["온도 · 깊이", T + " ℃ · " + D + " km"],
-          ["만들어진 암석", r, r === "편마암" ? "--green-700" : (r.indexOf("녹음") === 0 ? "--rose-700" : null), true]
-        ], 70);
-        H.text(ctx, r === "편마암" ? "밝은 띠·어두운 띠 (편마 구조)" : (r === "편암" ? "얇은 판처럼 쪼개지는 엽리 (편리)" : ""), 610, 240, { s: 11.5, c: H.v("--mist") });
+        ctx.fillStyle = "#ffffff"; ctx.strokeStyle = r === "편마암" ? LT.green : LT.ink; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(gc.X(T), gc.Y(D), 8, 0, 6.2832); ctx.fill(); ctx.stroke();
+        K.card(ctx, 600, 14, 286, cv.H - 28, "가상 고온·고압 장치");
+        K.row(ctx, "온도 · 깊이", T + " ℃ · " + D + " km", 618, 868, 66);
+        K.t(ctx, "만들어진 암석", 618, 108, { s: 12, w: "800", c: LT.mute });
+        K.t(ctx, r, 618, 140, { s: r.length > 10 ? 15 : 21, w: "900", c: r === "편마암" ? LT.green : (r.indexOf("녹음") === 0 ? LT.red : LT.ink) });
+        /* 시료 미니어처: 엽리가 생긴 정도 */
+        var I = K.iso({ ox: 718, oy: 176, s: 1, L: 120, D: 70 }), Z = 50, band = r === "편마암" ? 3 : (r === "편암" || r === "천매암" ? 2 : (r === "점판암" ? 1 : 0));
+        I.box(ctx, 0, 0, 0, 120, 70, Z, band === 3 ? "#c9c4cf" : "#8a8790", band === 3 ? "#9d97a6" : "#6b6870", band === 3 ? "#7c7686" : "#55525a");
+        if (band) ["front", "right"].forEach(function (sd) { I.face(ctx, sd, function (Lw) { var nl = [0, 12, 8, 5][band]; for (var l = 0; l < nl; l++) { ctx.strokeStyle = l % 2 ? "rgba(245,242,236,.85)" : "rgba(30,26,40,.8)"; ctx.lineWidth = [0, 1.2, 2.2, 4][band]; ctx.beginPath(); for (var u = 0; u <= Lw; u += 4) { var zz = 3 + (l + .5) * (Z - 6) / nl + Math.sin(u / 12 + l) * (band === 3 ? 2 : .8); if (u) ctx.lineTo(u, zz); else ctx.moveTo(u, zz); } ctx.stroke(); } }); });
+        K.t(ctx, r === "편마암" ? "밝은 띠·어두운 띠 (편마 구조)" : (r === "편암" ? "얇은 판처럼 쪼개지는 엽리 (편리)" : ""), 618, 300, { s: 11.5, w: "700", c: LT.mute });
       }
       cv.canvas._redraw = draw;
       api.slider({ label: "온도", min: 100, max: 900, step: 25, value: 200, fmt: function (x) { return x + " ℃"; }, onInput: function (x) { T = x; draw(); } });
@@ -171,20 +177,26 @@ window.sthLab({
       }
       function path() { var s = "sed", p = [s]; for (var i = 0; i < 3; i++) { s = s === "bad" ? "bad" : next(s, steps[i]); p.push(s); } return p; }
       function draw() {
+        var K = window.sthKit, LT = K.LT;
         H.paper(ctx, W, cv.H);
         var p = path();
-        H.text(ctx, "암석이 걸어간 길", 40, 28, { s: 14, w: "900" });
+        K.t(ctx, "암석이 걸어간 길", 40, 28, { s: 14, w: "900", c: LT.ink });
+        var LOOK = { sed: "#d8c08a", sedi: "#e6cf9a", meta: "#b9b4c4", mag: "#ff9a3c", gran: "#e9c3c1", volc: "#b8aeb0", bad: "#f3b2b2" };
         p.forEach(function (s, i) {
-          var x = 40 + i * 215, y = 110;
-          H.box(ctx, x, y - 34, 170, 58, s === "bad" ? H.v("--rose") : (s === "gran" && i === 3 ? H.v("--green") : H.v("--card-2")), s === "bad" || (s === "gran" && i === 3) ? 0.35 : 1);
-          H.text(ctx, NAME[s], x + 85, y, { s: 13, w: "900", a: "center" });
+          var x = 40 + i * 215, y = 110, good = s === "gran" && i === 3;
+          ctx.save(); ctx.shadowColor = "rgba(20,30,60,.16)"; ctx.shadowBlur = 10; ctx.fillStyle = s === "bad" ? "#fdeee4" : (good ? "#e7f7f0" : "#ffffff"); ctx.beginPath(); ctx.roundRect(x, y - 52, 170, 96, 14); ctx.fill(); ctx.restore();
+          var I = K.iso({ ox: x + 85, oy: y - 30, s: .8, L: 40, D: 28 });
+          if (s === "mag") { K.glow(ctx, x + 85, y - 18, 12, "rgba(255,150,60,.9)", 1.8); K.planet(ctx, x + 85, y - 18, 13, "#ffd36b", "#c2410c"); }
+          else if (s !== "bad") I.box(ctx, 0, 0, 0, 40, 28, 22, K.tint(LOOK[s], 1.08), LOOK[s], K.tint(LOOK[s], .75));
+          else K.t(ctx, "✗", x + 85, y - 10, { s: 24, w: "900", a: "center", c: LT.red });
+          K.t(ctx, NAME[s], x + 85, y + 30, { s: 12.5, w: "900", a: "center", c: LT.ink });
           if (i < 3) {
-            H.arrow(ctx, x + 172, y - 5, x + 212, y - 5, H.v("--mist"), 2, 8);
-            H.text(ctx, OPS.filter(function (o) { return o.v === steps[i]; })[0].t, x + 192, y + 44, { s: 10.5, w: "800", a: "center", c: H.v("--brand-700") });
+            H.arrow(ctx, x + 172, y - 5, x + 212, y - 5, LT.mute, 2, 8);
+            K.t(ctx, OPS.filter(function (o) { return o.v === steps[i]; })[0].t, x + 192, y + 70, { s: 10.5, w: "800", a: "center", c: "#1179a6" });
           }
         });
         var viaMeta = p.indexOf("meta") > 0;
-        H.text(ctx, "편마암을 거쳤나요? " + (viaMeta ? "✓ 예" : "✗ 아니요"), 40, 230, { s: 13, w: "800", c: viaMeta ? H.v("--green-700") : H.v("--mist") });
+        K.tip(ctx, "편마암을 거쳤나요? " + (viaMeta ? "✓ 예" : "✗ 아니요"), 34, 214, 300, viaMeta ? true : null);
       }
       cv.canvas._redraw = draw;
       [0, 1, 2].forEach(function (i) {

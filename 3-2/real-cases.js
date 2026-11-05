@@ -4,6 +4,38 @@
    자료: data/hr-stars.js (ESA 히파르코스), data/hubble-sn.js (Pantheon+) */
 (function () {
 "use strict";
+
+/* 그림 말투 맞추기(이야기 장면과 같은 스튜디오 말투): 점 → 입체 공, 수치 판 → 흰 카드, 해 → 빛나는 공 */
+var K5 = window.sthKit;
+function up(H) {
+  if (!K5 || H._s5) return H;
+  var o = {}, k;
+  for (k in H) o[k] = H[k];
+  o.dot = function (ctx, x, y, r, col) {
+    if (r < 5 || !/^#[0-9a-f]{6}$/i.test(String(col).trim())) { H.dot(ctx, x, y, r, col); return; }
+    ctx.save(); ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(x + r * .3, y + r * .9, r * 1.05, r * .32, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+    K5.planet(ctx, x, y, r, String(col).trim(), K5.tint(String(col).trim(), .45));
+  };
+  o.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var mw = 0, W = ctx.canvas._w || 900;
+    list.forEach(function (r) {
+      ctx.font = "800 12px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[0]).width);
+      ctx.font = "900 " + (r[3] ? 20 : 15) + "px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[1]).width);
+    });
+    var cw = Math.min(mw + 36, W - x + 12);
+    K5.card(ctx, x - 18, y - 28, cw, (list.length - 1) * gap + 56);
+    H.rows(ctx, x, y, list, gap);
+  };
+  o.sun = function (ctx, x, y, r) {
+    K5.sun(ctx, x, y, r);
+    var g = ctx.createRadialGradient(x - r * .35, y - r * .35, r * .1, x, y, r);
+    g.addColorStop(0, "#fffbe6"); g.addColorStop(.55, "#ffd04a"); g.addColorStop(1, "#ff9a1f");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+  };
+  o._s5 = true;
+  return o;
+}
 var HR = window.REAL_HR || { rows: [], named: [] };
 var HB = (window.REAL_HUBBLE || { rows: [] }).rows;
 function temp(bv) { return 4600 * (1 / (0.92 * bv + 1.7) + 1 / (0.92 * bv + 0.62)); }   /* Ballesteros(2012) 식 */
@@ -29,7 +61,7 @@ window.sthLab({
     },
     task: "색지수를 식에 넣어 아크투루스의 표면 온도를 슬라이더로 맞추세요(± 200 K).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, g = 6000;
+      var H = up(api.h), cv = api.canvas(280), ctx = cv.ctx, W = cv.W, g = 6000;
       function draw() {
         H.paper(ctx, W, cv.H);
         var x0 = 60, x1 = 600, y0 = 24, y1 = cv.H - 40;
@@ -70,7 +102,7 @@ window.sthLab({
     },
     task: "직선의 기울기(H₀, km/s/Mpc)를 바꿔 점들에 가장 잘 맞추세요(± 3).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(280), ctx = cv.ctx, W = cv.W, k = 40;
+      var H = up(api.h), cv = api.canvas(280), ctx = cv.ctx, W = cv.W, k = 40;
       function draw() {
         H.paper(ctx, W, cv.H);
         var x0 = 70, x1 = 620, y0 = 24, y1 = cv.H - 36;

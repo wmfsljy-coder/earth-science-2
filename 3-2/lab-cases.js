@@ -3,6 +3,38 @@
 (function () {
 "use strict";
 
+/* 그림 말투 맞추기(이야기 장면과 같은 스튜디오 말투): 점 → 입체 공, 수치 판 → 흰 카드, 해 → 빛나는 공 */
+var K5 = window.sthKit;
+function up(H) {
+  if (!K5 || H._s5) return H;
+  var o = {}, k;
+  for (k in H) o[k] = H[k];
+  o.dot = function (ctx, x, y, r, col) {
+    if (r < 5 || !/^#[0-9a-f]{6}$/i.test(String(col).trim())) { H.dot(ctx, x, y, r, col); return; }
+    ctx.save(); ctx.fillStyle = "rgba(20,30,50,.18)"; ctx.beginPath(); ctx.ellipse(x + r * .3, y + r * .9, r * 1.05, r * .32, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+    K5.planet(ctx, x, y, r, String(col).trim(), K5.tint(String(col).trim(), .45));
+  };
+  o.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var mw = 0, W = ctx.canvas._w || 900;
+    list.forEach(function (r) {
+      ctx.font = "800 12px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[0]).width);
+      ctx.font = "900 " + (r[3] ? 20 : 15) + "px " + H.FONT; mw = Math.max(mw, ctx.measureText(r[1]).width);
+    });
+    var cw = Math.min(mw + 36, W - x + 12);
+    K5.card(ctx, x - 18, y - 28, cw, (list.length - 1) * gap + 56);
+    H.rows(ctx, x, y, list, gap);
+  };
+  o.sun = function (ctx, x, y, r) {
+    K5.sun(ctx, x, y, r);
+    var g = ctx.createRadialGradient(x - r * .35, y - r * .35, r * .1, x, y, r);
+    g.addColorStop(0, "#fffbe6"); g.addColorStop(.55, "#ffd04a"); g.addColorStop(1, "#ff9a1f");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+  };
+  o._s5 = true;
+  return o;
+}
+
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
   cases: [
@@ -19,7 +51,7 @@ window.sthLab({
     },
     task: "스펙트럼에 맞는 분광형을 고르고 반지름을 조절해 <b>광도가 태양의 10만 배</b>(± 5%)가 되게 하세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
       var SP = { B: { t: "B형 (약 20 000 K, 청백색)", T: 20000, c: "#9fc4ff" }, G: { t: "G형 (약 5800 K, 노란색)", T: 5800, c: "#ffe28a" }, M: { t: "M형 (약 3500 K, 붉은색, TiO 띠)", T: 3500, c: "#ff8a5c" } };
       var sp = "G", R = 100;
       function L() { return R * R * Math.pow(SP[sp].T / 5800, 4); }
@@ -73,7 +105,7 @@ window.sthLab({
     },
     task: "별의 질량을 조절해 <b>주계열 수명이 40억 년 이상</b>인 별 가운데 <b>가장 무거운</b> 별을 찾으세요(0.05 M☉ 이내).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
       var M = 3;
       function life(m) { return 100 * Math.pow(m, -2.5); }
       function lum(m) { return Math.pow(m, 3.5); }
@@ -133,7 +165,7 @@ window.sthLab({
     },
     task: "비교 스펙트럼을 밀어 흡수선을 맞춰 <b>적색 편이 z</b>를 구하고, <b>은하까지의 거리</b>를 정하세요(± 4 Mpc).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
+      var H = up(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
       var Z0 = 0.023, z = 0, d = 40, C = 300000, H0 = 70;
       var LINES = [486.1, 656.3, 589.3, 393.4, 396.8];
       var x0 = 60, x1 = 840;

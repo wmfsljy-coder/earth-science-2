@@ -193,23 +193,24 @@
         X: function (v) { return L + (v - o.x0) / (o.x1 - o.x0) * (R - L); },
         Y: function (v) { return B - (v - o.y0) / (o.y1 - o.y0) * (B - T); }
       };
-      ctx.fillStyle = "rgba(255,255,255,.03)"; ctx.fillRect(L, T, R - L, B - T);
-      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      var P0 = o.light ? K.LT : C;
+      ctx.fillStyle = o.light ? "rgba(255,255,255,.7)" : "rgba(255,255,255,.03)"; ctx.fillRect(L, T, R - L, B - T);
+      ctx.strokeStyle = P0.grid; ctx.lineWidth = 1;
       var xt = o.xt || 5, yt = o.yt || 4, i, v;
       for (i = 0; i <= xt; i++) {
         v = o.x0 + (o.x1 - o.x0) * i / xt; var gx = api.X(v);
         ctx.beginPath(); ctx.moveTo(gx, T); ctx.lineTo(gx, B); ctx.stroke();
-        K.t(ctx, o.xf ? o.xf(v) : fmt(v), gx, B + 16, { s: 10.5, a: "center", c: C.mute, w: "600" });
+        K.t(ctx, o.xf ? o.xf(v) : fmt(v), gx, B + 16, { s: 10.5, a: "center", c: P0.mute, w: "600" });
       }
       for (i = 0; i <= yt; i++) {
         v = o.y0 + (o.y1 - o.y0) * i / yt; var gy = api.Y(v);
         ctx.beginPath(); ctx.moveTo(L, gy); ctx.lineTo(R, gy); ctx.stroke();
-        K.t(ctx, o.yf ? o.yf(v) : fmt(v), L - 6, gy + 4, { s: 10.5, a: "right", c: C.mute, w: "600" });
+        K.t(ctx, o.yf ? o.yf(v) : fmt(v), L - 6, gy + 4, { s: 10.5, a: "right", c: P0.mute, w: "600" });
       }
-      ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+      ctx.strokeStyle = P0.line; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(L, T); ctx.lineTo(L, B); ctx.lineTo(R, B); ctx.stroke();
-      if (o.xl) K.t(ctx, o.xl, R, B + 30, { s: 11, a: "right", c: C.mute });
-      if (o.yl) K.t(ctx, o.yl, L - 4, T - 2 < y + 12 ? y + 12 : T - 2, { s: 11, a: "left", c: C.mute });
+      if (o.xl) K.t(ctx, o.xl, R, B + 30, { s: 11, a: "right", c: P0.mute });
+      if (o.yl) K.t(ctx, o.yl, L - 4, T - 2 < y + 12 ? y + 12 : T - 2, { s: 11, a: "left", c: P0.mute });
       return api;
     },
     plot: function (ctx, g, pts, col, o) {
@@ -218,7 +219,7 @@
       ctx.save();
       ctx.strokeStyle = col || C.blue; ctx.lineWidth = o.w || 2.4; ctx.lineJoin = "round";
       if (o.dash) ctx.setLineDash(o.dash);
-      if (o.glow !== false) { ctx.shadowColor = col || C.blue; ctx.shadowBlur = 8; }
+      if (o.glow !== false) { ctx.shadowColor = col || C.blue; ctx.shadowBlur = o.light ? 3 : 8; }
       ctx.beginPath();
       pts.forEach(function (p, i) { var px = g.X(p[0]), py = g.Y(p[1]); if (i) ctx.lineTo(px, py); else ctx.moveTo(px, py); });
       ctx.stroke(); ctx.restore();
@@ -258,6 +259,33 @@
        K.studio(ctx, x, y, w, h, floor)     → 밝은 스튜디오 바탕과 바닥 그림자 {x, y, rx, ry}
        K.bigText(ctx, 글, x, y, size, fill) → 썸네일처럼 굵은 테두리 글자
      ========================================================================= */
+  /* ---------- 밝은 스튜디오 화면용 (블록 모형 장면과 같은 말투) ----------
+     K.LT          밝은 바탕용 색표: ink mute dim grid line blue red green yellow orange violet teal
+     K.chart(ctx, { …, light: true })   밝은 그래프(흰 바탕·옅은 격자·진한 눈금)
+     K.plot(ctx, g, pts, col, { light: true })
+     K.card(ctx, x, y, w, h, 제목)       흰 판정 카드(그림자). 제목은 작은 회색 글자
+     K.row(ctx, 이름, 값, x0, x1, y, 값색)  카드 안 한 줄(왼쪽 이름·오른쪽 굵은 값)
+     K.bar(ctx, x, y, w, 비율, 색)        카드 안 가로 막대
+     K.tip(ctx, 글, x, y, w, 좋음여부)    카드 안 한 줄 판정 띠(초록/주황) */
+  K.LT = { ink: "#12203a", mute: "#5c7086", dim: "#8a96a8", grid: "rgba(20,40,90,.09)", line: "rgba(20,40,90,.38)",
+    blue: "#1c7ed6", red: "#e03131", green: "#0f9f76", yellow: "#f59f00", orange: "#e8590c", violet: "#7048e8", teal: "#0c8599" };
+  K.card = function (ctx, x, y, w, h, title) {
+    var g = ctx.createLinearGradient(x, y, x + w, y + h); g.addColorStop(0, "#ffffff"); g.addColorStop(1, "#eef2f8");
+    ctx.save(); ctx.shadowColor = "rgba(20,30,60,.18)"; ctx.shadowBlur = 14; ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(x, y, w, h, 14); ctx.fill(); ctx.restore();
+    if (title) K.t(ctx, title, x + 18, y + 28, { s: 12.5, w: "800", c: K.LT.mute });
+  };
+  K.row = function (ctx, name, val, x0, x1, y, col) {
+    K.t(ctx, name, x0, y, { s: 12, w: "700", c: K.LT.mute });
+    K.t(ctx, val, x1, y, { s: 14, w: "900", a: "right", c: col || K.LT.ink });
+  };
+  K.bar = function (ctx, x, y, w, f, col) {
+    ctx.fillStyle = "#e3e9f1"; ctx.beginPath(); ctx.roundRect(x, y, w, 10, 5); ctx.fill();
+    ctx.fillStyle = col || K.LT.yellow; ctx.beginPath(); ctx.roundRect(x, y, Math.max(5, w * Math.max(0, Math.min(1, f))), 10, 5); ctx.fill();
+  };
+  K.tip = function (ctx, s, x, y, w, good) {
+    ctx.fillStyle = good ? "#e7f7f0" : (good === false ? "#fdeee4" : "#eef1f5"); ctx.beginPath(); ctx.roundRect(x, y, w, 32, 10); ctx.fill();
+    K.t(ctx, s, x + 10, y + 21, { s: 12, w: "800", c: good ? "#0f766e" : (good === false ? "#b4400c" : K.LT.mute) });
+  };
   K.tint = function (hex, f) {
     var n = parseInt(hex.slice(1), 16), r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
     function c(v) { return Math.max(0, Math.min(255, Math.round(v * f))); }

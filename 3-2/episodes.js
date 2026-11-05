@@ -9,26 +9,62 @@ window.sthUnit("eshs-3-2");
 
 var FONT = "'Gothic A1','Segoe UI',sans-serif";
 function $(id) { return document.getElementById(id); }
-function v(name) { return window.cssVar(name); }
+/* 스튜디오 말투: 그래프 장면(MODE light)은 밝은 스튜디오 색, 천체 장면(MODE dark)은 어두운 우주 진열판 + 흰 판정 카드 */
+var MODE = "dark", PANEL = null;
+function v(name) { return MODE === "light" && window.cssVarStudio ? window.cssVarStudio(name) : window.cssVar(name); }
 function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
 function done(id) { var e = $(id); if (e) e.classList.add("done"); }
 function paper(ctx, W, H) { ctx.clearRect(0, 0, W, H); ctx.fillStyle = v("--panel"); ctx.fillRect(0, 0, W, H); }
-var K = window.sthKit, KC = K.C, REDUCE = K.REDUCE;
+var K = window.sthKit, KS = K.C, LT = K.LT, REDUCE = K.REDUCE, KC = {};
+/* 지금 그리는 캔버스에 맞춘 색표(밝은 판이면 진한 색, 어두운 판이면 무대 색) */
+function setKC(light) {
+  var L = { ink: LT.ink, mute: LT.mute, dim: LT.dim, yellow: "#c98a00", blue: LT.blue, green: LT.green, red: LT.red, violet: LT.violet, orange: LT.orange, line: LT.line, grid: LT.grid };
+  for (var k in KS) KC[k] = light && L[k] ? L[k] : KS[k];
+}
+setKC(false);
+/* 어두운 진열판 위 흰 카드 안에 쓰는 글자: 무대 색 → 같은 이름의 밝은 판 색 */
+var TOKS = ["--ink", "--mist", "--line", "--brand", "--brand-700", "--teal", "--teal-700", "--coral", "--coral-700", "--violet", "--violet-700", "--amber", "--amber-700", "--rose", "--rose-700", "--green", "--green-700"], LMAP = null;
+function toLight(c) {
+  if (!LMAP) {
+    LMAP = {};
+    TOKS.forEach(function (t) { var a = window.cssVar(t), b = window.cssVarStudio ? window.cssVarStudio(t) : a; if (a) LMAP[a] = /-700$|--ink|--mist/.test(t) ? b : (window.cssVarStudio ? window.cssVarStudio(t + "-700") || b : b); });
+    LMAP[KS.ink] = LT.ink; LMAP[KS.mute] = LT.mute; LMAP[KS.dim] = LT.dim; LMAP[KS.yellow] = "#b07800"; LMAP[KS.blue] = LT.blue; LMAP[KS.green] = LT.green;
+    LMAP[KS.red] = LT.red; LMAP[KS.violet] = LT.violet; LMAP[KS.orange] = LT.orange; LMAP["#ffffff"] = LT.ink;
+  }
+  return LMAP[c] || c;
+}
+function inPanel(x, y) { return PANEL && x >= PANEL[0] && x <= PANEL[0] + PANEL[2] && y >= PANEL[1] && y <= PANEL[1] + PANEL[3]; }
+/* 굵은 큰 글자 두 줄 */
+function big(ctx, s1, s2, x, y, col2, a, sz) {
+  if (s1) K.bigText(ctx, s1, x, y, sz || 25, "#ffffff", a);
+  if (s2) K.bigText(ctx, s2, x, y + 31, 16, col2 || "#ffd35a", a);
+}
 /* 캔버스마다 무대 종류와 계산판(유리판) 자리 */
 var STG = {
-  "a-c-spec": { k: "lab" }, "a-c-sb": { k: "space", p: [386, 50, 500, 356] }, "a-c-hr": { k: "space", p: [686, 52, 206, 368] },
-  "b-c-jeans": { k: "space", p: [416, 46, 476, 386] }, "b-c-life": { k: "lab", p: [506, 46, 386, 354] }, "b-c-path": { k: "space", p: [654, 54, 238, 352] },
-  "c-c-fork": { k: "space", p: [456, 42, 436, 410] }, "c-c-agn": { k: "space", p: [436, 46, 456, 368] }, "c-c-var": { k: "lab", p: [466, 46, 426, 328] },
+  "a-c-spec": { k: "lab" }, "a-c-sb": { k: "space", p: [386, 50, 500, 356] }, "a-c-hr": { k: "lab", p: [686, 52, 206, 368] },
+  "b-c-jeans": { k: "space", p: [416, 46, 476, 386] }, "b-c-life": { k: "lab", p: [506, 46, 386, 354] }, "b-c-path": { k: "lab", p: [654, 54, 238, 352] },
+  "c-c-fork": { k: "space", p: [456, 42, 436, 410], g: 1 }, "c-c-agn": { k: "space", p: [436, 46, 456, 368] }, "c-c-var": { k: "lab", p: [466, 46, 426, 328] },
   "d-c-z": { k: "lab", p: [24, 300, 852, 126] }, "d-c-hub": { k: "lab", p: [618, 52, 274, 354] }, "d-c-grid": { k: "space", p: [634, 54, 258, 306] },
   "d-c-bb": { k: "night", p: [618, 52, 274, 290] }, "d-c-cmb": { k: "lab", p: [618, 52, 274, 270] }, "d-c-fut": { k: "lab" }
 };
 function stage(ctx, W, H) {
   var o = STG[ctx.canvas.id] || { k: "space" };
+  MODE = o.k === "lab" ? "light" : "dark"; setKC(MODE === "light"); PANEL = null;
   ctx.clearRect(0, 0, W, H);
-  K.stage(ctx, 0, 0, W, H, o.k, { seed: (ctx.canvas.id.length * 7 + W) % 97 });
-  if (o.p) { ctx.save(); ctx.fillStyle = "rgba(255,255,255,.05)"; ctx.strokeStyle = "rgba(200,210,255,.2)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(o.p[0], o.p[1], o.p[2], o.p[3], 14); ctx.fill(); ctx.stroke(); ctx.restore(); }
+  K.studio(ctx, 0, 0, W, H);
+  if (MODE === "dark") {
+    ctx.save(); ctx.shadowColor = "rgba(20,30,60,.30)"; ctx.shadowBlur = 16; ctx.shadowOffsetY = 5;
+    ctx.fillStyle = "#0b1030"; ctx.beginPath(); ctx.roundRect(6, 6, W - 12, H - 12, 14); ctx.fill(); ctx.restore();
+    K.stage(ctx, 6, 6, W - 12, H - 12, o.k, { seed: (ctx.canvas.id.length * 7 + W) % 97 });
+    ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.roundRect(6.7, 6.7, W - 13.4, H - 13.4, 14); ctx.stroke();
+  }
+  if (o.p && o.g) { ctx.save(); ctx.fillStyle = "rgba(255,255,255,.06)"; ctx.strokeStyle = "rgba(200,210,255,.3)"; ctx.lineWidth = 1; ctx.beginPath(); ctx.roundRect(o.p[0], o.p[1], o.p[2], o.p[3], 14); ctx.fill(); ctx.stroke(); ctx.restore(); }
+  else if (o.p) { K.card(ctx, o.p[0], o.p[1], o.p[2], o.p[3]); if (MODE === "dark") PANEL = o.p; }
 }
-function lbl(ctx, s, x, y, o) { o = o || {}; return K.pill(ctx, s, x, y, { s: Math.min(o.s || 12, 13), a: o.a, c: o.c || KC.ink, box: o.box }); }
+function lbl(ctx, s, x, y, o) {
+  o = o || {}; var lt = MODE === "light";
+  return K.pill(ctx, s, x, y, { s: Math.min(o.s || 12, 13), a: o.a, c: o.c || KC.ink, box: o.box, bg: lt ? "rgba(255,255,255,.93)" : undefined, line: lt ? "rgba(20,40,90,.22)" : undefined });
+}
 /* 빛나는 별: 가장자리가 어두운 공 + 빛무리 */
 function starBall(ctx, x, y, r, T, halo) {
   var col = starColor(T);
@@ -38,12 +74,14 @@ function starBall(ctx, x, y, r, T, halo) {
   var g = ctx.createRadialGradient(x - r * .25, y - r * .25, r * .05, x, y, r);
   g.addColorStop(0, "#ffffff"); g.addColorStop(.45, col); g.addColorStop(1, col.replace("rgb(", "rgba(").replace(")", ",.75)"));
   ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+  if (MODE === "light") { ctx.strokeStyle = "rgba(20,30,60,.35)"; ctx.lineWidth = 1; ctx.stroke(); }
 }
-function glowLine(ctx, col) { ctx.shadowColor = col; ctx.shadowBlur = 8; }
+function glowLine(ctx, col) { ctx.shadowColor = col; ctx.shadowBlur = MODE === "light" ? 2 : 8; }
 function text(ctx, s, x, y, o) {
   o = o || {};
   ctx.font = (o.w || "500") + " " + (o.s || 12) + "px " + FONT;
-  ctx.fillStyle = o.c || v("--ink"); ctx.textAlign = o.a || "left";
+  var c = o.c || v("--ink"); if (MODE === "dark" && inPanel(x, y)) c = toLight(c);
+  ctx.fillStyle = c; ctx.textAlign = o.a || "left";
   ctx.fillText(s, x, y);
 }
 function segPick(group, btn) {
@@ -57,7 +95,7 @@ function segWire(id, onPick) {
   });
 }
 function axes(ctx, x0, y0, x1, y1) {
-  ctx.fillStyle = "rgba(255,255,255,.035)"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+  ctx.fillStyle = MODE === "light" ? "rgba(255,255,255,.78)" : "rgba(255,255,255,.035)"; ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
   ctx.strokeStyle = KC.grid; ctx.lineWidth = 1;
   for (var gi = 1; gi < 4; gi++) { var gy = y0 + (y1 - y0) * gi / 4; ctx.beginPath(); ctx.moveTo(x0, gy); ctx.lineTo(x1, gy); ctx.stroke(); }
   ctx.strokeStyle = KC.line; ctx.lineWidth = 1.5;
@@ -70,7 +108,7 @@ function band(ctx, x, y, w, h, color, alpha) {
   ctx.beginPath(); ctx.roundRect(x, y, Math.max(0, w), h, Math.min(h / 2, 7)); ctx.fill(); ctx.restore();
 }
 function dash(ctx, x0, y0, x1, y1, color) {
-  ctx.save(); ctx.strokeStyle = v(color || "--line"); ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+  ctx.save(); ctx.strokeStyle = MODE === "light" && (!color || color === "--line" || color === "--ink") ? LT.line : v(color || "--line"); ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
   ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke(); ctx.setLineDash([]); ctx.restore();
 }
 /* setTimeout 애니메이션 (가려진 탭에서는 그리지 않는다) */
@@ -263,17 +301,20 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var cls = spType(T), lmax = WIEN / T;
-      K.pill(ctx, "표면 온도 하나를 움직이면 스펙트럼이 어떻게 달라지나", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "표면 온도 하나를 움직이면 스펙트럼이 어떻게 달라지나", 16, 28, { s: 13, c: KC.blue });
 
       /* 별 */
-      starBall(ctx, 88, 110, 40, T, 1.7);
-      lbl(ctx, "지금 이 별", 88, 180, { s: 11.5, a: "center", c: KC.ink });
-      text(ctx, cls + "형", 88, 226, { s: 30, a: "center", w: "900", c: v("--ink") });
-      text(ctx, SPCOL[cls], 88, 252, { s: 13, a: "center", w: "800", c: v("--mist") });
-      text(ctx, comma(T) + " K", 88, 276, { s: 13, a: "center", w: "800", c: v("--teal-700") });
+      ctx.save(); ctx.shadowColor = "rgba(20,30,60,.3)"; ctx.shadowBlur = 12; ctx.fillStyle = "#0b1030"; ctx.beginPath(); ctx.roundRect(16, 48, 144, 124, 14); ctx.fill(); ctx.restore();
+      K.stage(ctx, 16, 48, 144, 124, "space", { seed: 5 });
+      starBall(ctx, 88, 110, 40, T, 1.5);
+      lbl(ctx, "지금 이 별", 88, 196, { s: 11.5, a: "center", c: KC.ink });
+      K.bigText(ctx, cls + "형", 88, 236, 32, "#ffffff", "center");
+      text(ctx, SPCOL[cls], 88, 260, { s: 13, a: "center", w: "800", c: v("--mist") });
+      text(ctx, comma(T) + " K", 88, 282, { s: 13, a: "center", w: "800", c: v("--teal-700") });
 
       /* 연속 스펙트럼 띠 */
       var peak = planck(lmax, T);
+      ctx.fillStyle = "#0b0d18"; ctx.fillRect(SX0, SY0, SX1 - SX0, SY1 - SY0);   /* 어두운 바탕 위에 빛띠 */
       for (var x = SX0; x <= SX1; x++) {
         var nm = NM0 + (x - SX0) / (SX1 - SX0) * (NM1 - NM0);
         var rel = clamp(planck(nm, T) / peak, 0.06, 1);
@@ -412,7 +453,8 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var R = Math.pow(10, lr), tp = Math.pow(T / TSUN, 4), sp = R * R, L = tp * sp, lmax = WIEN / T;
-      K.pill(ctx, "광도 = (반지름)² × (표면 온도)⁴ — 흑체 복사 법칙 두 개를 한꺼번에", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "광도 = (반지름)² × (표면 온도)⁴ — 흑체 복사 법칙 두 개를 한꺼번에", 16, 28, { s: 13, c: KC.blue });
+      big(ctx, "광도 " + num(L) + "배", "반지름 " + num(R) + "배 · " + comma(T) + " K", 24, 84);
 
       /* 크기 비교 */
       starBall(ctx, 120, 195, RR(1), TSUN, 1.5);
@@ -518,7 +560,7 @@ function msLogL(T) {
 
     function draw() {
       stage(ctx, W, H);
-      K.pill(ctx, "H-R도 — 표면 온도와 광도를 한 장에 찍으면", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "H-R도 — 표면 온도와 광도를 한 장에 찍으면", 16, 28, { s: 13, c: KC.blue });
       axes(ctx, X0, Y0, X1, Y1);
 
       /* 등반지름선 */
@@ -684,7 +726,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var n = Math.pow(10, ln), MJ = jeans(T, n), collapse = MJ < CLOUD;
-      K.pill(ctx, "중력과 압력의 겨루기 — 이 성운은 별을 낳을 수 있는가", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "중력과 압력의 겨루기 — 이 성운은 별을 낳을 수 있는가", 16, 28, { s: 13, c: KC.blue });
 
       /* 성운 그림 */
       var cx = 205, cy = 225, R = 118;
@@ -715,8 +757,7 @@ function msLogL(T) {
         K.arrow(ctx, { x: cx + Math.cos(a2) * r1, y: cy + Math.sin(a2) * r1 }, { x: cx + Math.cos(a2) * r2, y: cy + Math.sin(a2) * r2 }, collapse ? KC.violet : KC.orange, 3, 10);
       }
       ctx.restore();
-      K.pill(ctx, collapse ? "중력이 이긴다 — 수축!" : "압력이 이긴다 — 퍼져 버린다", cx, cy + R + 48,
-        { s: 15, a: "center", c: collapse ? KC.violet : KC.orange });
+      K.bigText(ctx, collapse ? "중력이 이긴다 — 수축!" : "압력이 이긴다 — 퍼져 버린다", cx, cy + R + 50, 21, collapse ? "#d9ccff" : "#ffc58a", "center");
       if (collapse) K.glow(ctx, cx, cy, 5 + 3 * ((tick % 30) / 30), "rgba(255,240,200,.95)", 3.5);
       text(ctx, "온도 " + T + " K · 수밀도 10" + sup(ln.toFixed(1)) + " 개/cm³", cx, cy + R + 72, { s: 11.5, a: "center", c: v("--mist") });
 
@@ -790,7 +831,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var L = msLum(M), t = msLife(M);
-      K.pill(ctx, "질량이 광도를 정하고, 광도가 수명을 정한다", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "질량이 광도를 정하고, 광도가 수명을 정한다", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
       ctx.save(); ctx.strokeStyle = v("--teal"); ctx.lineWidth = 3; glowLine(ctx, v("--teal")); ctx.beginPath();
@@ -911,7 +952,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var P = path(M), seg = Math.min(Math.floor(prog), P.length - 1), f = clamp(prog - seg, 0, 1);
-      K.pill(ctx, "H-R도 위에 그린 진화 경로 — 갈림길을 정하는 것은 질량뿐", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "H-R도 위에 그린 진화 경로 — 갈림길을 정하는 것은 질량뿐", 16, 28, { s: 13, c: KC.blue });
       axes(ctx, X0, Y0, X1, Y1);
 
       /* 주계열 띠 */
@@ -1144,7 +1185,7 @@ function msLogL(T) {
 
     function draw() {
       stage(ctx, W, H);
-      K.pill(ctx, "허블의 소리굽쇠 — 모양만으로 은하를 가른다", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "허블의 소리굽쇠 — 모양만으로 은하를 가른다", 16, 28, { s: 13, c: KC.blue });
 
       /* 미리보기 */
       var cx = 225, cy = 225;
@@ -1308,7 +1349,7 @@ function msLogL(T) {
       var M = Math.pow(10, lbh), mdot = Math.pow(10, lacc);
       var L = mdot * L_PER_MDOT, Ledd = LEDD_PER_M * M, ratio = L / Ledd;
       var d = DATA[kind];
-      K.pill(ctx, "은하 하나보다 밝은 중심핵 — 그 에너지는 어디서 오는가", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "은하 하나보다 밝은 중심핵 — 그 에너지는 어디서 오는가", 16, 28, { s: 13, c: KC.blue });
 
       var cx = 225, cy = 235;
       if (d.host === "spiral") {
@@ -1352,7 +1393,7 @@ function msLogL(T) {
       ctx.save(); ctx.fillStyle = "rgb(12,12,20)";
       ctx.beginPath(); ctx.arc(cx, cy, clamp(lbh - 2, 4, 12), 0, Math.PI * 2); ctx.fill(); ctx.restore();
       lbl(ctx, "거대 질량 블랙홀 + 강착 원반", cx, cy + 70, { s: 11.5, a: "center", c: KC.ink });
-      K.pill(ctx, d.n, 16, 64, { s: 14, c: KC.orange });
+      lbl(ctx, d.n, 16, 64, { s: 14, c: KC.orange });
 
       var px = 450;
       text(ctx, "빨려 들어간 물질의 약 10 %가 빛으로 바뀐다", px, 70, { s: 12, w: "800", c: v("--mist") });
@@ -1414,7 +1455,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var t = Math.pow(10, lt), size = LD * t;
-      K.pill(ctx, "며칠 만에 깜박이는 것은 며칠보다 클 수 없다", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "며칠 만에 깜박이는 것은 며칠보다 클 수 없다", 16, 28, { s: 13, c: KC.blue });
 
       var X0 = 60, X1 = 430, Y0 = 72, Y1 = 208;
       axes(ctx, X0, Y0, X1, Y1);
@@ -1556,7 +1597,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var dl = lam - LAM0, z = dl / LAM0, vel = z * C_KMS, dist = vel / 70;
-      K.pill(ctx, "선이 얼마나 밀렸는가 — 적색 편이로 속도를 잰다", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "선이 얼마나 밀렸는가 — 적색 편이로 속도를 잰다", 16, 28, { s: 13, c: KC.blue });
 
       strip(66, 118, LAM0, "--mist", "실험실");
       strip(166, 218, lam, "--rose", "이 은하");
@@ -1641,7 +1682,7 @@ function msLogL(T) {
       stage(ctx, W, H);
       var age = TH / H0, err = 0;
       CL.forEach(function (c) { err += Math.abs(c.v - H0 * c.d); });
-      K.pill(ctx, "멀리 있는 은하일수록 빠르게 멀어진다 — 기울기를 맞춰 보세요", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "멀리 있는 은하일수록 빠르게 멀어진다 — 기울기를 맞춰 보세요", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
       [0, 100, 200, 300].forEach(function (d) {
@@ -1746,6 +1787,7 @@ function msLogL(T) {
       else { K.bigText(ctx, "모두 나에게서 멀어진다", 22, 50, 28, "#ffffff"); K.bigText(ctx, "여기서 본다: " + (ref + 1) + "번 은하", 22, 84, 18, "#ffd35a"); }
     }
     function paint() {
+      MODE = "dark"; setKC(false); PANEL = null;   /* 이 장면은 자체 스튜디오 그림 — 공용 색표를 어두운 무대로 */
       ctx.clearRect(0, 0, W, H);
       var fl = I.P(L, D, 0);
       K.studio(ctx, 0, 0, LW, H, { x: fl.x - 52, y: fl.y - 30, rx: 270, ry: 44 });
@@ -1810,13 +1852,13 @@ function msLogL(T) {
 
       /* 이름표 */
       var box2 = [0, LW];
-      K.pill(ctx, "여기서 본다", RP.x, RP.y - 24, { s: 11, a: "center", c: KC.green, box: box2 });
+      lbl(ctx, "여기서 본다", RP.x, RP.y - 24, { s: 11, a: "center", c: KC.green, box: box2 });
         I.label(ctx, L - 50, D - 30, 0, "늘어나는 격자(공간)", 40, 44, "#bfe6ff", box2);
       K.warn(ctx, LW - 14, 30, "⚠ 은하 크기·간격은 실제 비율이 아님", "right");
-      K.pill(ctx, "공간이 늘어난 정도 × " + a.toFixed(2), LW - 14, 62, { s: 12, a: "right", c: KC.yellow, box: box2 });
-      K.pill(ctx, "→ 화살표: 멀어지는 빠르기", LW - 14, 92, { s: 11, a: "right", c: KC.red, box: box2 });
-      K.pill(ctx, "은하 크기는 그대로", LW - 14, 120, { s: 11, a: "right", c: "#d8ccff", box: box2 });
-      K.pill(ctx, "은하를 눌러 기준을 바꿔 보세요 · " + G3.refs.length + " / 3", 16, H - 16, { s: 12, c: G3.refs.length >= 3 ? KC.green : KC.ink, box: box2 });
+      lbl(ctx, "공간이 늘어난 정도 × " + a.toFixed(2), LW - 14, 62, { s: 12, a: "right", c: KC.yellow, box: box2 });
+      lbl(ctx, "→ 화살표: 멀어지는 빠르기", LW - 14, 92, { s: 11, a: "right", c: KC.red, box: box2 });
+      lbl(ctx, "은하 크기는 그대로", LW - 14, 120, { s: 11, a: "right", c: "#d8ccff", box: box2 });
+      lbl(ctx, "은하를 눌러 기준을 바꿔 보세요 · " + G3.refs.length + " / 3", 16, H - 16, { s: 12, c: G3.refs.length >= 3 ? KC.green : KC.ink, box: box2 });
       headline();
 
       /* 오른쪽: 기준 은하에서 본 거리 — 후퇴 속도 */
@@ -1919,7 +1961,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var S = STAGE[st], list = parts(st);
-      K.pill(ctx, "우주가 식어 가며 무엇이 언제 만들어졌나", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "우주가 식어 가며 무엇이 언제 만들어졌나", 16, 28, { s: 13, c: KC.blue });
 
       var BX0 = 50, BX1 = 600, BY0 = 62, BY1 = 342;
       band(ctx, BX0, BY0, BX1 - BX0, BY1 - BY0, "--card-2", 1);
@@ -2012,7 +2054,7 @@ function msLogL(T) {
     function draw() {
       stage(ctx, W, H);
       var f = Math.pow(10, le), T = 2.725 * f, lmax = WIEN / T;
-      K.pill(ctx, "그때 떠난 빛이 지금은 어떤 빛으로 보이는가", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "그때 떠난 빛이 지금은 어떤 빛으로 보이는가", 16, 28, { s: 13, c: KC.blue });
 
       axes(ctx, X0, Y0, X1, Y1);
       /* 파장 영역 띠 */
@@ -2099,7 +2141,7 @@ function msLogL(T) {
       stage(ctx, W, H);
       var OL = de / 100, Om = 1 - OL, q0 = Om / 2 - OL;
       var f = ageF(OL), age = f * TH / 70, a0 = aOf(f, OL);
-      K.pill(ctx, "대폭발이 풀지 못한 것 — 급팽창과 가속 팽창", 16, 28, { s: 13, c: KC.blue });
+      lbl(ctx, "대폭발이 풀지 못한 것 — 급팽창과 가속 팽창", 16, 28, { s: 13, c: KC.blue });
 
       /* 왼쪽 : 급팽창 도식 */
       var AX0 = 56, AX1 = 400, AY0 = 74, AY1 = 300;

@@ -2,6 +2,25 @@
    이야기에서 찾은 개념을 처음 보는 상황에 써 본다. 공용 엔진: ../assets/lab.js (sthLab) */
 (function () {
 "use strict";
+/* 스튜디오 말투(_tools/STUDIO_GUIDE.md): 밝은 스튜디오 바탕, 굵은 축, 오른쪽 수치판은 흰 판정 카드 */
+var KS_ = window.sthKit;
+function lift(H0) {
+  if (!KS_) return H0;
+  var H = {}, k; for (k in H0) H[k] = H0[k];
+  H.paper = function (ctx, W, Hh) { ctx.clearRect(0, 0, W, Hh); KS_.studio(ctx, 0, 0, W, Hh); };
+  H.axes = function (ctx, x0, y0, x1, y1) { ctx.save(); ctx.strokeStyle = KS_.LT.line; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore(); };
+  H.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var W = (ctx.canvas && ctx.canvas._w) || 900;
+    KS_.card(ctx, x - 16, y - 26, W - x + 4, list.length * gap + 22, "");
+    list.forEach(function (r, i) {
+      var yy = y + i * gap;
+      H0.text(ctx, r[0], x, yy, { s: 12, w: "800", c: KS_.LT.mute });
+      H0.text(ctx, r[1], x, yy + (r[3] ? 25 : 20), { s: r[3] ? 21 : 15.5, w: "900", c: r[2] ? H0.v(r[2]) : KS_.LT.ink });
+    });
+  };
+  return H;
+}
 
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
@@ -19,7 +38,7 @@ window.sthLab({
     },
     task: "섞인 두 수괴와 비율을 골라 <b>섞인 물의 점이 시료와 겹치게</b>(수온 ±0.3 ℃, 염분 ±0.03 psu) 만드세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(340), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(340), ctx = cv.ctx, W = cv.W;
       var WM = { A: { t: "A 차갑고 짠 수괴", T: 4, S: 35.0, c: "--brand" }, B: { t: "B 따뜻하고 싱거운 수괴", T: 14, S: 34.0, c: "--violet" }, C: { t: "C 따뜻하고 짠 수괴", T: 20, S: 35.5, c: "--coral" } };
       var pair = "AC", f = 50, SAMPLE = { T: 7.0, S: 34.70 };
       var x0 = 90, x1 = 560, y0 = 40, y1 = 300;
@@ -91,7 +110,7 @@ window.sthLab({
     },
     task: "일기도로 <b>저기압의 이동 속력</b>을 맞추고(± 2 km/h), 모레 <b>오전 9시 ~ 오후 6시</b> 사이에 비를 맞지 않을 공연 시작 시각을 정하세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(350), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(350), ctx = cv.ctx, W = cv.W;
       var TRUE_V = 30, v = 50, start = 60;
       function xc(t, vv) { return -1500 + vv * t; }
       function wx(t, vv) {
@@ -166,7 +185,7 @@ window.sthLab({
     },
     task: "피할 방향과 진로에서 떨어진 거리를 정해 <b>바람 20 m/s 이하</b>인 곳을 찾으세요(250 km 이내).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(340), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(340), ctx = cv.ctx, W = cv.W;
       var side = "R", r = 100, VT = 10, VMAX = 45, RMAX = 40;
       function vrot(d) { return d < RMAX ? VMAX * d / RMAX : VMAX * Math.pow(RMAX / d, 0.6); }
       function wind(sd, d) { return Math.max(0, vrot(d) + (sd === "R" ? VT : -VT)); }

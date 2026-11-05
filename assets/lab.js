@@ -32,9 +32,15 @@
   var FONT = "'Gothic A1','Segoe UI',sans-serif";
 
   function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
-  function v(name) { return window.cssVar(name); }
+  function v(name) { return (window.cssVarStudio || window.cssVar)(name); }       /* 실험실 그림은 밝은 스튜디오 색 */
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
-  function paper(ctx, W, H) { ctx.clearRect(0, 0, W, H); ctx.fillStyle = v("--panel"); ctx.fillRect(0, 0, W, H); }
+  function paper(ctx, W, H) {
+    ctx.clearRect(0, 0, W, H);
+    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#f6f8fb"); g.addColorStop(1, "#dfe6ee");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    var r = ctx.createRadialGradient(W / 2, H * .35, 20, W / 2, H * .35, W * .7); r.addColorStop(0, "rgba(255,255,255,.55)"); r.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = r; ctx.fillRect(0, 0, W, H);
+  }
   function text(ctx, s, x, y, o) {
     o = o || {};
     ctx.font = (o.w || "500") + " " + (o.s || 12) + "px " + FONT;

@@ -2,6 +2,25 @@
    이야기에서 찾은 개념을 처음 보는 상황에 써 본다. 공용 엔진: ../assets/lab.js (sthLab) */
 (function () {
 "use strict";
+/* 스튜디오 말투(_tools/STUDIO_GUIDE.md): 밝은 스튜디오 바탕, 굵은 축, 오른쪽 수치판은 흰 판정 카드 */
+var KS_ = window.sthKit;
+function lift(H0) {
+  if (!KS_) return H0;
+  var H = {}, k; for (k in H0) H[k] = H0[k];
+  H.paper = function (ctx, W, Hh) { ctx.clearRect(0, 0, W, Hh); KS_.studio(ctx, 0, 0, W, Hh); };
+  H.axes = function (ctx, x0, y0, x1, y1) { ctx.save(); ctx.strokeStyle = KS_.LT.line; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore(); };
+  H.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var W = (ctx.canvas && ctx.canvas._w) || 900;
+    KS_.card(ctx, x - 16, y - 26, W - x + 4, list.length * gap + 22, "");
+    list.forEach(function (r, i) {
+      var yy = y + i * gap;
+      H0.text(ctx, r[0], x, yy, { s: 12, w: "800", c: KS_.LT.mute });
+      H0.text(ctx, r[1], x, yy + (r[3] ? 25 : 20), { s: r[3] ? 21 : 15.5, w: "900", c: r[2] ? H0.v(r[2]) : KS_.LT.ink });
+    });
+  };
+  return H;
+}
 
 window.sthLab({
   mount: "lab", key: "lab", result: "rLab",
@@ -19,27 +38,46 @@ window.sthLab({
     },
     task: "바람의 방향과 세기를 정해 <b>적도 동태평양의 표층 수온을 22 ℃ 이하</b>로 만드세요(평소 무역풍은 10 m/s를 넘지 않습니다).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W;
       var dir = "W", u = 4;
       function sst() { return dir === "E2W" ? 27 - 0.6 * u : 27 + 0.2 * u; }
       function draw() {
         H.paper(ctx, W, cv.H);
-        H.text(ctx, "적도를 남북으로 자른 단면 (왼쪽 남, 오른쪽 북)", 40, 26, { s: 13.5, w: "900" });
-        var cx = 300, sy = 110, k = u / 10;
-        H.box(ctx, 60, sy, 480, 200, H.v("--brand"), 0.22);
-        H.line(ctx, [[cx, 50], [cx, 310]], H.v("--line"), 1.5);
-        H.text(ctx, "적도", cx, 46, { s: 11, w: "800", a: "center", c: H.v("--mist") });
-        H.text(ctx, "남반구", 120, 90, { s: 12, w: "800", a: "center", c: H.v("--mist") });
-        H.text(ctx, "북반구", 480, 90, { s: 12, w: "800", a: "center", c: H.v("--mist") });
+        /* 블록 모형: 적도 바다를 잘라 낸 블록. 앞면 = 남(왼쪽)–북(오른쪽) 단면, 안쪽(오른쪽 위) = 서쪽 */
+        var K = KS_, k = u / 10, up = dir === "E2W" && u > 0, dn = dir !== "E2W" && u > 0;
+        var I = K.iso({ ox: 300, oy: 140, s: 0.62, L: 420, D: 150 }), ZS = 110, XE = 210;
+        function th(x) { var e = Math.exp(-Math.pow((x - XE) / 70, 2)); return ZS - 46 + (up ? 36 * k * e : (dn ? -30 * k * e : 0)); }
+        function sstX(x) { var e = Math.exp(-Math.pow((x - XE) / 70, 2)); return 27 - (up ? (27 - sst()) * e : 0) + (dn ? 0.2 * u * e : 0); }
+        function tc(T) { var f = Math.max(0, Math.min(1, (T - 20) / 9)); return "rgb(" + Math.round(40 + 205 * f) + "," + Math.round(120 + 34 * f) + "," + Math.round(210 - 141 * f) + ")"; }
+        var fc = I.P(I.L / 2, I.D / 2, 0);
+        K.studio(ctx, 0, 0, W, cv.H, { x: fc.x, y: fc.y + 10, rx: 250, ry: 50 });
+        I.face(ctx, "front", function (Lw) {
+          var g = ctx.createLinearGradient(0, 0, 0, ZS); g.addColorStop(0, "#0a2350"); g.addColorStop(1, "#2f6db0"); ctx.fillStyle = g; ctx.fillRect(0, 0, Lw, ZS);
+          ctx.beginPath(); ctx.moveTo(0, ZS); ctx.lineTo(Lw, ZS); for (var x = Lw; x >= 0; x -= 6) ctx.lineTo(x, th(x)); ctx.closePath();
+          var wg = ctx.createLinearGradient(0, 0, Lw, 0); for (var i = 0; i <= 8; i++) wg.addColorStop(i / 8, tc(sstX(Lw * i / 8))); ctx.fillStyle = wg; ctx.fill();
+          ctx.strokeStyle = "rgba(255,255,255,.85)"; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]); ctx.beginPath(); for (var x2 = 0; x2 <= Lw; x2 += 6) ctx.lineTo(x2, th(x2)); ctx.stroke(); ctx.setLineDash([]);
+          ctx.fillStyle = "#5b4a3a"; ctx.fillRect(0, 0, Lw, 8);
+        });
+        I.face(ctx, "right", function (Lw) { var g = ctx.createLinearGradient(0, 0, 0, ZS); g.addColorStop(0, "#081b40"); g.addColorStop(1, "#225e98"); ctx.fillStyle = g; ctx.fillRect(0, 0, Lw, ZS); ctx.fillStyle = tc(sstX(I.L)); ctx.fillRect(0, th(I.L), Lw, ZS - th(I.L)); ctx.fillStyle = "#4a3c2f"; ctx.fillRect(0, 0, Lw, 8); });
+        I.shade(ctx, "front", function () { return ZS; }); I.shade(ctx, "right", function () { return ZS; });
+        I.top(ctx, function () { return ZS; }, function (n, x) { return tc(sstX(x)); }, 42);
+        I.edges(ctx, ZS, ZS);
+        var e0 = I.P(XE, 0, ZS), e1 = I.P(XE, I.D, ZS); ctx.strokeStyle = "rgba(245,159,0,.9)"; ctx.setLineDash([6, 5]); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(e0.x, e0.y); ctx.lineTo(e1.x, e1.y); ctx.stroke(); ctx.setLineDash([]);
+        K.pill(ctx, "적도", e0.x + 8, e0.y - 4, { s: 11.5, c: "#ffd35a" });
+        var sp = I.P(40, I.D, ZS - 12), np = I.P(I.L - 40, I.D, ZS - 12);
+        K.pill(ctx, "남반구", sp.x, sp.y, { s: 11.5, a: "center", c: "#ffffff" });
+        K.pill(ctx, "북반구", np.x, np.y, { s: 11.5, a: "center", c: "#ffffff" });
+        K.pill(ctx, "적도 바다 블록 — 앞면은 남(왼쪽)–북(오른쪽) 단면", 18, 30, { s: 12.5, c: "#ffffff" });
         if (u > 0) {
-          H.text(ctx, dir === "E2W" ? "⊗ 동풍 (서쪽을 바라본 단면 — 지면 안쪽으로 서진)" : "⊙ 서풍 (서쪽을 바라본 단면 — 지면 바깥쪽으로 동진)", cx, 74, { s: 11.5, w: "800", a: "center" });
-          var outward = dir === "E2W";
-          var len = 40 + 90 * k;
-          if (outward) { H.arrow(ctx, cx + 20, sy + 12, cx + 20 + len, sy + 12, H.v("--teal-700"), 3, 10); H.arrow(ctx, cx - 20, sy + 12, cx - 20 - len, sy + 12, H.v("--teal-700"), 3, 10);
-            H.arrow(ctx, cx, sy + 150, cx, sy + 30, H.v("--brand-700"), 3 + 3 * k, 12); H.text(ctx, "용승", cx + 10, sy + 100, { s: 12, w: "900", c: H.v("--brand-700") }); }
-          else { H.arrow(ctx, cx + 20 + len, sy + 12, cx + 20, sy + 12, H.v("--coral-700"), 3, 10); H.arrow(ctx, cx - 20 - len, sy + 12, cx - 20, sy + 12, H.v("--coral-700"), 3, 10);
-            H.arrow(ctx, cx, sy + 30, cx, sy + 130, H.v("--coral-700"), 3, 12); H.text(ctx, "침강", cx + 10, sy + 100, { s: 12, w: "900", c: H.v("--coral-700") }); }
-          H.text(ctx, "에크만 수송", cx + 30, sy + 32, { s: 10.5, c: H.v("--mist") });
+          /* 바람(수면 위): 동풍은 서쪽(안쪽)으로, 서풍은 동쪽(바깥쪽)으로 */
+          [-90, 0, 90].forEach(function (dx) { var a = I.P(XE + dx, dir === "E2W" ? I.D - 20 : 20, ZS + 40), b = I.P(XE + dx, dir === "E2W" ? 20 : I.D - 20, ZS + 40); K.arrow(ctx, a, b, "#ffffff", 7, 15); K.arrow(ctx, a, b, "#f59f00", 4, 13); });
+          var len = 40 + 90 * k, z = ZS - 12;
+          function ar(x0, x1, col) { var a = I.P(x0, I.D, z), b = I.P(x1, I.D, z); K.arrow(ctx, a, b, "#ffffff", 7, 14); K.arrow(ctx, a, b, col, 4, 12); }
+          if (up) { ar(XE + 16, XE + 16 + len, "#e03131"); ar(XE - 16, XE - 16 - len, "#e03131"); K.arrow(ctx, I.P(XE, I.D, 26), I.P(XE, I.D, ZS - 30), "#ffffff", 4 + 4 * k, 15); K.arrow(ctx, I.P(XE, I.D, 26), I.P(XE, I.D, ZS - 30), "#1c7ed6", 3 + 3 * k, 13); }
+          else { ar(XE + 16 + len, XE + 16, "#e8590c"); ar(XE - 16 - len, XE - 16, "#e8590c"); K.arrow(ctx, I.P(XE, I.D, ZS - 30), I.P(XE, I.D, 40), "#ffffff", 7, 15); K.arrow(ctx, I.P(XE, I.D, ZS - 30), I.P(XE, I.D, 40), "#e8590c", 4, 13); }
+          var lp = I.P(XE, I.D, 70); K.pill(ctx, up ? "용승" : "침강", lp.x + 14, lp.y, { s: 12.5, c: up ? "#a9dcff" : "#ffc078" });
+          var tp = I.P(XE + 16 + len / 2, I.D, ZS); K.pill(ctx, "에크만 수송", tp.x, tp.y - 10, { s: 11, a: "center", c: "#ffb3b3", box: [0, 580] });
+          K.pill(ctx, dir === "E2W" ? "동풍(무역풍) → 서쪽(안쪽)으로" : "서풍 → 동쪽(바깥쪽)으로", 18, 58, { s: 12, c: "#ffd35a" });
         }
         var t = sst();
         H.rows(ctx, 600, 70, [
@@ -84,7 +122,7 @@ window.sthLab({
     },
     task: "자전축 기울기, 이심률, 근일점 시기를 조절해 <b>65°N 여름 일사량을 440 W/m² 이하</b>로 만드세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
       var tilt = 23.4, e = 0.015, peri = "jan";
       function ins() { return 477 * (1 + 0.04 * (tilt - 23.44)) * (peri === "jan" ? 1 - 2 * e : 1 + 2 * e); }
       function draw() {
@@ -147,7 +185,7 @@ window.sthLab({
     },
     task: "해수면을 올린 원인을 모두 고르고, 바닷물이 데워진 <b>깊이</b>를 정해 합계가 <b>10 ± 0.5 cm</b>가 되게 하세요.",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
+      var H = lift(api.h), cv = api.canvas(320), ctx = cv.ctx, W = cv.W;
       var depth = 300, on = { gl: false, gr: false, an: false, lw: false, si: true };
       var SRC = [["gl", "산악 빙하", 2.0, "--teal"], ["gr", "그린란드 빙상", 2.0, "--brand"], ["an", "남극 빙상", 1.0, "--violet"], ["lw", "육지의 물 저장 변화", 1.0, "--amber"], ["si", "북극 해빙", 0.0, "--mist"]];
       function thermal() { return 0.0002 * 0.2 * depth * 100; }

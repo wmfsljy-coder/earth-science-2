@@ -4,6 +4,25 @@
    자료: data/argo-east.js (국제 아르고 계획, 2024년 8월 동해) */
 (function () {
 "use strict";
+/* 스튜디오 말투(_tools/STUDIO_GUIDE.md): 밝은 스튜디오 바탕, 굵은 축, 오른쪽 수치판은 흰 판정 카드 */
+var KS_ = window.sthKit;
+function lift(H0) {
+  if (!KS_) return H0;
+  var H = {}, k; for (k in H0) H[k] = H0[k];
+  H.paper = function (ctx, W, Hh) { ctx.clearRect(0, 0, W, Hh); KS_.studio(ctx, 0, 0, W, Hh); };
+  H.axes = function (ctx, x0, y0, x1, y1) { ctx.save(); ctx.strokeStyle = KS_.LT.line; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke(); ctx.restore(); };
+  H.rows = function (ctx, x, y, list, gap) {
+    gap = gap || 34;
+    var W = (ctx.canvas && ctx.canvas._w) || 900;
+    KS_.card(ctx, x - 16, y - 26, W - x + 4, list.length * gap + 22, "");
+    list.forEach(function (r, i) {
+      var yy = y + i * gap;
+      H0.text(ctx, r[0], x, yy, { s: 12, w: "800", c: KS_.LT.mute });
+      H0.text(ctx, r[1], x, yy + (r[3] ? 25 : 20), { s: r[3] ? 21 : 15.5, w: "900", c: r[2] ? H0.v(r[2]) : KS_.LT.ink });
+    });
+  };
+  return H;
+}
 var AR = window.REAL_ARGO || { profiles: [] };
 var P = AR.profiles[0] || { date: "", rows: [] };                     /* [압력 dbar, 수온, 염분] */
 function tAt(z) { var r = P.rows; for (var i = 1; i < r.length; i++) if (r[i][0] >= z) { var a = r[i - 1], b = r[i], f = (z - a[0]) / (b[0] - a[0]); return [a[1] + f * (b[1] - a[1]), a[2] + f * (b[2] - a[2])]; } var l = r[r.length - 1]; return [l[1], l[2]]; }
@@ -42,7 +61,7 @@ window.sthLab({
     },
     task: "깊이를 옮겨 수온을 읽고, 수온이 1 °C 아래로 떨어지는 가장 얕은 깊이를 맞추세요(± 40 m).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W, z = 100, what = "t";
+      var H = lift(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W, z = 100, what = "t";
       function draw() {
         prof(H, ctx, W, cv.H, z, what);
         var v = tAt(z);
@@ -78,7 +97,7 @@ window.sthLab({
     },
     task: "가장 깊은 곳의 수온을 읽고, 표층과의 차이를 슬라이더로 맞추세요(± 0.5 °C).",
     build: function (stage, api) {
-      var H = api.h, cv = api.canvas(330), ctx = cv.ctx, W = cv.W, g = 10;
+      var H = lift(api.h), cv = api.canvas(330), ctx = cv.ctx, W = cv.W, g = 10;
       var D = TOP[1] - DEEP[1];
       function draw() {
         var p = prof(H, ctx, W, cv.H, null, "t");
