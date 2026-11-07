@@ -243,6 +243,7 @@
       /* 반 전체가 한꺼번에 누르면 시트에 줄이 생긴다. 뒷단이 '많습니다' 라고 하면
          조금씩 다른 시간만큼 기다렸다가 스스로 다시 보낸다(최대 세 번). */
       function send(tries) {
+        if (!URL_) return Promise.reject(new Error("공유가 꺼져 있습니다"));
         return fetch(URL_, {
           method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" },      // 단순 요청이라 사전 요청(preflight)이 없다
           body: body

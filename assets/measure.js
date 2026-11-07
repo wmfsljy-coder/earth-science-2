@@ -115,7 +115,7 @@
       mineLine.innerHTML = "<b>내 값</b> " + m.v.map(function (x) { return fmt(x); }).join(", ") + " " + U
         + (m.v.length > 1 ? " → 평균 <b>" + fmt(a, D + 1) + " " + U + "</b>" : "")
         + (opt.calc ? " · " + opt.calc.label + " <b>" + fmt(opt.calc.f(a), opt.calc.digits) + " " + opt.calc.u + "</b>" : "")
-        + (m.g ? " · " + m.g : "");
+        + (m.g ? " · " + String(m.g).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }) : "");
     }
 
     /* 반 그림: 한 사람 = 점 하나(그 사람의 평균). 나는 크게, 참값은 세로 점선 */
@@ -157,7 +157,7 @@
         inRow.forEach(function (p) {
           var px = X(p.a); lift = px - lastX < 9 ? (lift + 1) % 3 : 0; lastX = px;
           var py = cy + (lift === 1 ? -9 : lift === 2 ? 9 : 0), col = "var(" + COLS[opt.group ? r % COLS.length : 0] + ")";
-          s += '<circle cx="' + px.toFixed(1) + '" cy="' + py + '" r="' + (p.me ? 8 : 5.5) + '" fill="' + col + '" fill-opacity="' + (p.me ? 1 : .7) + '"' + (p.me ? ' stroke="var(--ink)" stroke-width="2.5"' : "") + "><title>" + p.nick.replace(/[<>&]/g, "") + " " + fmt(p.a, D + 1) + "</title></circle>";
+          s += '<circle cx="' + px.toFixed(1) + '" cy="' + py + '" r="' + (p.me ? 8 : 5.5) + '" fill="' + col + '" fill-opacity="' + (p.me ? 1 : .7) + '"' + (p.me ? ' stroke="var(--ink)" stroke-width="2.5"' : "") + "><title>" + String(p.nick == null ? "" : p.nick).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }) + " " + fmt(p.a, D + 1) + "</title></circle>";
           if (p.me) s += '<text x="' + px.toFixed(1) + '" y="' + (py - 13) + '" font-size="12" font-weight="900" fill="var(--ink)" text-anchor="middle">나</text>';
         });
       }
@@ -206,6 +206,7 @@
       post.disabled = true; msg.textContent = "올리는 중…";
       var body = JSON.stringify({ action: "measure", cls: o.cls, nick: o.nick, t: tok(o.nick), unit: opt.unit, key: opt.key, v: m.v, g: m.g });
       function send(tries) {
+        if (!URL_) return Promise.reject(new Error("공유가 꺼져 있습니다"));
         return fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
           .then(function (res) { return res.json(); })
           .then(function (j) {

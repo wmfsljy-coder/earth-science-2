@@ -25,8 +25,9 @@
     return window.sthAccount && window.sthAccount.ident ? window.sthAccount.ident(UID) : null;
   }
   function call(body) {
-    var who = me(); body.cls = who.cls; body.nick = who.nick; body.t = who.t || ""; body.unit = UID;
-    return fetch(url(), { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })
+    var who = me(), u = url(); if (!u || !who) return Promise.reject(new Error("공유가 꺼져 있습니다"));
+    body.cls = who.cls; body.nick = who.nick; body.t = who.t || ""; body.unit = UID;
+    return fetch(u, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); });
   }
 
@@ -74,7 +75,7 @@
         add.addEventListener("click", send); inp.addEventListener("keydown", function (e) { if (e.key === "Enter") send(); });
         row.appendChild(inp); row.appendChild(add); row.appendChild(msg); box.appendChild(row);
       }
-      if (ERR) { box.appendChild(el("p", "qb-msg", ERR)); return; }
+      if (ERR) { box.appendChild(el("p", "qb-msg", esc(ERR))); return; }
       if (!ITEMS) { box.appendChild(el("p", "qb-msg", "불러오는 중…")); return; }
       if (!ITEMS.length) { box.appendChild(el("p", "qb-msg", end ? "이 단원에서 우리 반이 남긴 질문이 없습니다." : "아직 우리 반 질문이 없습니다. 첫 질문을 남겨 보세요.")); return; }
       var list = ITEMS.slice().sort(function (x, y) { return (y.same - x.same) || (x.t - y.t); });
@@ -87,7 +88,7 @@
         var solvedNow = q.solved > 0 && q.solved >= Math.max(1, Math.ceil((q.same + 1) / 2));
         var li = el("li", end && solvedNow ? "solved" : "");
         li.appendChild(el("span", "t", esc(q.text) + (q.mine ? "<em>내 질문</em>" : "")));
-        var b = el("button", end ? (q.meSolved ? "on" : "") : (q.meSame ? "on" : ""), end ? "✓ 이제 답할 수 있어요 " + q.solved : "🙋 나도 " + (q.same + 1)); b.type = "button";
+        var b = el("button", end ? (q.meSolved ? "on" : "") : (q.meSame ? "on" : ""), end ? "✓ 이제 답할 수 있어요 " + (+q.solved || 0) : "🙋 나도 " + ((+q.same || 0) + 1)); b.type = "button";
         if (!end && q.mine) b.disabled = true;
         b.addEventListener("click", function () {
           b.disabled = true;

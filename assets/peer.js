@@ -31,8 +31,9 @@
   }
   function myText() { try { return String(((JSON.parse(localStorage.getItem("sth-" + UID) || "{}").w || {})[FIELD]) || "").replace(/\s+/g, " ").trim(); } catch (e) { return ""; } }
   function call(body) {
-    var who = me(); body.cls = who.cls; body.nick = who.nick; body.t = who.t || ""; body.unit = UID;
-    return fetch(url(), { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })
+    var who = me(), u = url(); if (!u || !who) return Promise.reject(new Error("공유가 꺼져 있습니다"));
+    body.cls = who.cls; body.nick = who.nick; body.t = who.t || ""; body.unit = UID;
+    return fetch(u, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) })
       .then(function (r) { return r.json(); });
   }
 
@@ -76,7 +77,7 @@
     /* 2) 친구 글 */
     var area = el("div"); box.appendChild(area);
     var get = el("button", "btn", state.items ? "다른 글 받기" : "친구 글 두 편 받기"); get.type = "button";
-    var gm = el("span", "pr-msg", state.rated ? "지금까지 " + state.rated + "편을 평가했어요." : "");
+    var gm = el("span", "pr-msg", state.rated ? "지금까지 " + (+state.rated || 0) + "편을 평가했어요." : "");
     get.addEventListener("click", function () { get.disabled = true; gm.textContent = "불러오는 중…"; refresh(state, true); });
     var r2 = el("div", "btn-row"); r2.appendChild(get); r2.appendChild(gm); area.appendChild(r2);
     (state.items || []).forEach(function (it) {
