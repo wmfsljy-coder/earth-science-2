@@ -11,6 +11,7 @@ function period(ma) { for (var i = BND.length - 1; i >= 0; i--) if (ma <= BND[i]
 function ext(r) { return r[4] + r[5] ? r[4] / (r[4] + r[5]) : 0; }
 var USE = P.filter(function (r) { return r[1] < 500 && r[4] + r[5] >= 300; });          /* 자료가 너무 적은 캄브리아기 초는 뺌 */
 var TOP = USE.reduce(function (b, r) { return ext(r) > ext(b) ? r : b; }, USE[0] || ["", 0, 0, 0, 0, 1]);
+var NEXT = USE.filter(function (r) { return r !== TOP; }).reduce(function (b, r) { return !b || ext(r) > ext(b) ? r : b; }, null);   /* 둘째로 높은 시기 — 순위가 박빙임을 알려 준다 */
 var SK = { Changhsingian: "창싱절", Wuchiapingian: "우치아핑절", Katian: "카티절", Hirnantian: "허넌트절", Darriwilian: "다리윌절", Maastrichtian: "마스트리흐트절", Danian: "다니절", Norian: "노리절", Rhaetian: "레티절", Givetian: "지벳절", Frasnian: "프란절", Famennian: "파멘절" };
 function nm(n) { return SK[n] ? SK[n] + "(" + n + ")" : n; }
 function byName(n) { return P.filter(function (r) { return r[0] === n; })[0]; }
@@ -68,7 +69,8 @@ window.sthLab({
       return {
         judge: function () {
           var r = USE[k];
-          if (r === TOP) return { ok: true, msg: nm(r[0]) + " (" + period((r[1] + r[2]) / 2) + " 말, 약 " + Math.round(r[2]) + " 백만 년 전) — 넘어온 속의 약 " + Math.round(ext(r) * 100) + "%가 사라졌습니다. 고생대를 끝낸 가장 큰 대멸종입니다." };
+          if (r === TOP) return { ok: true, msg: nm(r[0]) + " (" + period((r[1] + r[2]) / 2) + " 말, 약 " + Math.round(r[2]) + " 백만 년 전) — 넘어온 속의 약 " + Math.round(ext(r) * 100) + "%가 사라졌습니다. 고생대를 끝낸 가장 큰 대멸종입니다."
+              + (NEXT ? " ※ 다만 둘째로 높은 " + nm(NEXT[0]) + "(" + Math.round(ext(NEXT) * 100) + "%)와 차이가 작습니다. 속(genus)으로 셀지 종으로 셀지, 시기를 어떻게 나눌지, 화석 표본이 얼마나 되는지에 따라 순위가 바뀔 수 있어서, 과학자들은 여러 자료를 함께 견줍니다(여기서는 자료가 적은 캄브리아기 초를 뺐습니다)." : "") };
           return { ok: false, msg: nm(r[0]) + " 은 " + Math.round(ext(r) * 100) + "%입니다. 더 높은 막대가 있습니다." };
         }
       };

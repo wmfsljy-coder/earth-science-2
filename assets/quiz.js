@@ -30,6 +30,7 @@
     2: { name: "발전", sub: "해석과 계산", desc: "자료를 읽고, 계산하고, 순서를 세웁니다" },
     3: { name: "심화", sub: "적용과 논증", desc: "처음 보는 상황에 개념을 쓰고 근거를 들어 설명합니다" }
   };
+  var MSEQ = 0;
   var TYPE = { ox: "OX", mc: "고르기", bogi: "보기 고르기", blank: "빈칸", num: "계산", order: "순서", match: "짝짓기", essay: "서술" };
   var KOR = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ"], GANA = ["가", "나", "다", "라", "마"];
 
@@ -363,20 +364,31 @@
         lock = function () { chips.forEach(function (c) { c.disabled = true; }); reset.disabled = true; };
         auto = function (good) { reset.click(); var o = it.items.map(function (_, i) { return i; }); if (!good) o.reverse(); o.forEach(function (k) { chips.filter(function (c) { return c._k === k; })[0].click(); }); };
       } else if (it.t === "match") {
+        /* 짝짓기: 드롭다운 대신 누르는 큰 단추. 왼쪽 항목마다 짝 후보를 단추로 늘어놓고 하나를 누른다 */
         var rp = seedPerm(it.id, it.pairs.length);
         var sels = it.pairs.map(function (p, i) {
-          var r = el("label", "qz-match", "<span>" + p[0] + "</span>");
-          var sel = document.createElement("select");
-          sel.innerHTML = "<option value=''>— 고르기 —</option>" + rp.map(function (k) { return "<option value='" + k + "'>" + it.pairs[k][1] + "</option>"; }).join("");
-          r.appendChild(sel); box.appendChild(r); return sel;
+          var r = el("div", "qz-match", "<span class='qz-mt'>" + p[0] + "</span>");
+          var lid = "qzm-" + (++MSEQ); r.firstChild.id = lid;
+          var g = el("div", "qz-mopts"); g.setAttribute("role", "group"); g.setAttribute("aria-labelledby", lid);
+          var pick = { value: "", disabled: false, btns: [] };
+          pick.set = function (v) {
+            pick.value = String(v);
+            pick.btns.forEach(function (b) { var on = String(b._k) === pick.value; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+          };
+          rp.forEach(function (k) {
+            var b = el("button", "qz-mo", it.pairs[k][1]); b.type = "button"; b._k = k; b.setAttribute("aria-pressed", "false");
+            b.addEventListener("click", function () { if (!pick.disabled) pick.set(k); });
+            g.appendChild(b); pick.btns.push(b);
+          });
+          r.appendChild(g); box.appendChild(r); return pick;
         });
         check = function () {
           if (sels.some(function (s2) { return s2.value === ""; })) return { soft: "모두 짝을 지어 주세요." };
           var bad = 0; sels.forEach(function (s2, i) { if (it.pairs[+s2.value][1] !== it.pairs[i][1]) bad++; });
           return bad ? bad + "개의 짝이 맞지 않습니다." : true;
         };
-        lock = function () { sels.forEach(function (s2) { s2.disabled = true; }); };
-        auto = function (good) { sels.forEach(function (s2, i) { s2.value = String(good ? i : (i + 1) % it.pairs.length); }); };
+        lock = function () { sels.forEach(function (s2) { s2.disabled = true; s2.btns.forEach(function (b) { b.disabled = true; }); }); };
+        auto = function (good) { sels.forEach(function (s2, i) { s2.set(good ? i : (i + 1) % it.pairs.length); }); };
       } else if (it.t === "essay") {
         var ta = document.createElement("textarea"); ta.className = "qz-ta"; ta.rows = 4; ta.maxLength = 600;
         ta.placeholder = "근거를 들어 두세 문장으로 적어 보세요.";

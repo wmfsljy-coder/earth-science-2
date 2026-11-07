@@ -106,6 +106,10 @@
 .teacher-note { font-size: 11.5px; color: var(--mist); margin: 10px 4px 0; }
 .teacher-note a { color: inherit; }
 
+/* 휴대폰: 진행 막대가 위에 붙어 따라오면 그림 윗부분을 가린다 → 제자리에 둔다 */
+@media (max-width: 780px) {
+  .ep-bar { position: static; }
+}
 @media (max-width: 640px) {
   .ep-bar { top: 0; padding: 8px 10px; }
   .ep-dot span.t { display: none; }
@@ -266,7 +270,16 @@
 .qz-seq em { color: var(--mist); font-style: normal; }
 .qz-reset { margin-top: 2px; }
 .qz-match { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 8px; font-size: 14px; }
-.qz-match span { min-width: 150px; font-weight: 700; }
+.qz-match > span { min-width: 150px; font-weight: 700; }
+.qz-match .qz-mt { flex: 0 0 auto; }
+.qz-mopts { display: flex; flex-wrap: wrap; gap: 8px; flex: 1 1 260px; }
+.qz-mo { font: inherit; font-size: 14px; min-height: 44px; padding: 8px 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--card);
+  color: var(--ink); cursor: pointer; text-align: left; }
+.qz-mo.on { border-color: var(--brand); background: var(--brand); color: var(--on-accent); font-weight: 800; }
+.qz-mo:disabled { cursor: default; opacity: .7; }
+.qz-mo.on:disabled { opacity: 1; }
+.qz-match + .qz-match { padding-top: 8px; border-top: 1px dashed var(--line); }
+.lab-near { margin-top: 8px; padding: 8px 12px; border-radius: 12px; background: var(--teal-100); color: var(--teal-700); font-size: 13px; font-weight: 700; line-height: 1.6; }
 .qz-match select { font: inherit; font-size: 14px; padding: 7px 10px; border-radius: 12px; border: 2px solid var(--line);
   background: var(--card); color: var(--ink); max-width: 100%; }
 .qz-ta { width: 100%; box-sizing: border-box; font: inherit; font-size: 14px; line-height: 1.7; padding: 10px 12px; border-radius: 14px;
@@ -286,7 +299,8 @@
 @media (max-width: 560px) {
   .qz-card { padding: 14px 12px; }
   .qz-blank input { width: 130px; }
-  .qz-match span { min-width: 0; width: 100%; }
+  .qz-match > span { min-width: 0; width: 100%; }
+  .qz-mo { flex: 1 1 100%; }
 }
 .qz-gap { display: inline-block; min-width: 64px; padding: 0 6px; margin: 0 2px; border-bottom: 2.5px solid var(--brand); text-align: center; font-weight: 800; color: var(--brand-700); }
 

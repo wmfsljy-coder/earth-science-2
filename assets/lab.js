@@ -169,7 +169,7 @@
       body.appendChild(el("div", "lab-step", "② 직접 해 봅시다"));
       body.appendChild(stage);
       var ctrls = el("div", "controls"), btnRow = null, info = null;
-      var verdictTxt;
+      var verdictTxt, nearBox = null, probing = false;
 
       var api = {
         h: H_,
@@ -217,7 +217,7 @@
           if (!info) { info = el("div", "info-card"); stage.appendChild(info); }
           info.innerHTML = html;
         },
-        changed: function () { if (verdictTxt && !s.ok) { verdictTxt.textContent = ""; verdictTxt.className = "lab-verdict"; } },
+        changed: function () { if (verdictTxt && !s.ok) { verdictTxt.textContent = ""; verdictTxt.className = "lab-verdict"; } if (nearBox && !probing) nearBox.hidden = true; },
         ticker: function () {
           var box = { gen: 0 };
           return function (steps, ms, onStep) {
@@ -239,6 +239,8 @@
       verdictTxt = el("span", "lab-verdict"); verdictTxt.setAttribute("aria-live", "polite");
       var jr = el("div", "btn-row"); jr.appendChild(jb); jr.appendChild(verdictTxt);
       judgeRow.appendChild(jr);
+      nearBox = el("div", "lab-near"); nearBox.hidden = true; nearBox.setAttribute("aria-live", "polite");
+      judgeRow.appendChild(nearBox);
       var hintBox = el("div", "lab-hint"); hintBox.hidden = true;
       var solBtn = el("button", "btn", "💡 풀이 보기"); solBtn.type = "button"; solBtn.hidden = true;
       var solBox = el("div", "lab-sol"); solBox.hidden = true; solBox.innerHTML = "<b>풀이</b> " + (c.solution || "");
@@ -304,17 +306,71 @@
         why.appendChild(bx);
       }
 
+      /* 거의 맞았는지 살피기 — 판정이 틀렸을 때, 슬라이더 하나(또는 둘)를 몇 눈금만 옮기면 합격하는지 판정 함수로 확인한다.
+         버튼(실행·발사)이 있는 사례는 실행 상태가 풀릴 수 있어 살피지 않는다. 사례가 judge 에서 near 글을 주면 그것을 쓴다. */
+      function nearMiss() {
+        if (btnRow || !made.judge) return "";
+        var rs = Array.prototype.slice.call(stage.querySelectorAll("input[type=range]")).filter(function (r) { return !r.disabled; });
+        if (!rs.length || rs.length > 4) return "";
+        function name(r) {
+          var lb = r.previousElementSibling, t = "";
+          if (lb && lb.classList.contains("ctrl-label")) { var x = lb.cloneNode(true), v0 = x.querySelector(".val"); if (v0) v0.remove(); t = x.textContent; }
+          t = t.replace(/\s+/g, " ").replace(/\s*\(.*\)\s*$/, "").trim();
+          return t.length > 26 ? t.slice(0, 25) + "…" : t || "조절값";
+        }
+        function steps(r) {
+          var st = +r.step || 1, span = (+r.max - +r.min) / st, k = Math.max(1, Math.min(4, Math.round(span * 0.06))), out = [];
+          for (var d = 1; d <= k; d++) { out.push(d); out.push(-d); }
+          return out;
+        }
+        function put(r, v) { r.value = String(v); r.dispatchEvent(new Event("input", { bubbles: true })); }
+        function ok() { try { var x = made.judge(); return !!(x && x.ok); } catch (e) { return false; } }
+        var orig = rs.map(function (r) { return r.value; }), found = null;
+        probing = true;
+        try {
+          for (var i = 0; i < rs.length && !found; i++) {
+            var ds = steps(rs[i]);
+            for (var a = 0; a < ds.length && !found; a++) {
+              var v = +orig[i] + ds[a] * (+rs[i].step || 1);
+              if (v < +rs[i].min - 1e-9 || v > +rs[i].max + 1e-9) continue;
+              put(rs[i], v);
+              if (+rs[i].value !== +orig[i] && ok()) found = [[i, ds[a]]];
+              put(rs[i], orig[i]);
+            }
+          }
+          if (!found && rs.length >= 2) {
+            for (var i2 = 0; i2 < rs.length && !found; i2++) for (var j2 = i2 + 1; j2 < rs.length && !found; j2++) {
+              var di = steps(rs[i2]).slice(0, 4), dj = steps(rs[j2]).slice(0, 4);
+              for (var p = 0; p < di.length && !found; p++) for (var q2 = 0; q2 < dj.length && !found; q2++) {
+                var vi = +orig[i2] + di[p] * (+rs[i2].step || 1), vj = +orig[j2] + dj[q2] * (+rs[j2].step || 1);
+                if (vi < +rs[i2].min - 1e-9 || vi > +rs[i2].max + 1e-9 || vj < +rs[j2].min - 1e-9 || vj > +rs[j2].max + 1e-9) continue;
+                put(rs[i2], vi); put(rs[j2], vj);
+                if (ok()) found = [[i2, di[p]], [j2, dj[q2]]];
+                put(rs[i2], orig[i2]); put(rs[j2], orig[j2]);
+              }
+            }
+          }
+        } finally {
+          rs.forEach(function (r, k) { if (r.value !== orig[k]) put(r, orig[k]); });
+          probing = false;
+        }
+        if (!found) return "";
+        return "🎯 거의 맞았어요: " + found.map(function (f) { return "「" + name(rs[f[0]]) + "」 값을 조금 더 " + (f[1] > 0 ? "키워(오른쪽으로)" : "줄여(왼쪽으로)"); }).join(", ") + " 보세요.";
+      }
+
       jb.addEventListener("click", function () {
         if (s.p == null || s.ok) return;
         if (!signedIn()) return;
         var r = made.judge ? made.judge() : { ok: false, msg: "" };
         if (r.ok) {
-          s.ok = 1; save();
+          s.ok = 1; save(); nearBox.hidden = true;
           askWhy(function () { if (r.msg) { var m = el("p", "lab-cmp", r.msg); why.insertBefore(m, why.children[1] || null); } paintEx(); });
         } else {
           s.n = (s.n || 0) + 1; save();
+          var nm = typeof r.near === "string" ? r.near : nearMiss();
           verdictTxt.className = "lab-verdict no";
           verdictTxt.textContent = "✗ " + (r.msg || "아직 아닙니다.");
+          if (nm) { nearBox.textContent = nm; nearBox.hidden = false; } else nearBox.hidden = true;
           showHint();
         }
       });
