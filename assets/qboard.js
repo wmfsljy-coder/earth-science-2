@@ -16,12 +16,12 @@
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function url() {
     var u = String(window.STH_SHARE_URL || "").trim(), h = window.STH_SHARE_HOSTS;
-    if (u && h && h.length && h.indexOf(location.hostname) < 0 && location.protocol !== "file:") u = "";
+    if (u && h && h.length && h.indexOf(location.hostname) < 0) u = "";
     return u;
   }
   function me() {
     var m = {}; try { m = JSON.parse(localStorage.getItem("sth-me") || "{}"); } catch (e) {}
-    if (m.cls && m.nick) return { cls: m.cls, nick: m.nick };
+    if (m.cls && m.nick) return { cls: m.cls, nick: m.nick, t: window.sthAccount && window.sthAccount.tokFor ? window.sthAccount.tokFor(m.nick) : "" };
     return window.sthAccount && window.sthAccount.ident ? window.sthAccount.ident(UID) : null;
   }
   function call(body) {

@@ -20,6 +20,9 @@
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function me() { try { return JSON.parse(localStorage.getItem(ME) || "{}"); } catch (e) { return {}; } }
+  /* 로그인 학생('@학번' 별명): 새 뒷단은 목록에서 '친구 xxxx'(me.pub)로 가려 보내므로 그것과도 견준다. 올릴 때는 로그인 토큰을 붙인다 */
+  function isMine(n, my) { var A = window.sthAccount; return A && A.isMine ? A.isMine(n, my) : n === my; }
+  function tok(n) { var A = window.sthAccount; return A && A.tokFor ? A.tokFor(n) : ""; }
   function unitData(unit) { try { return JSON.parse(localStorage.getItem("sth-" + unit) || "{}"); } catch (e) { return {}; } }
   function clean(s, n) { return String(s || "").replace(/\s+/g, " ").trim().slice(0, n); }
   function when(t) {
@@ -36,7 +39,7 @@
     var URL_ = (window.STH_SHARE_URL || "").trim();
     /* 복사한 사이트(다른 계정의 Pages)가 원래 학교의 시트로 올리지 않도록, 허용한 주소에서만 공유 주소를 쓴다 */
     var HOSTS_ = window.STH_SHARE_HOSTS, FOREIGN_ = false;
-    if (URL_ && HOSTS_ && HOSTS_.length && HOSTS_.indexOf(location.hostname) < 0 && location.protocol !== "file:") { URL_ = ""; FOREIGN_ = true; }
+    if (URL_ && HOSTS_ && HOSTS_.length && HOSTS_.indexOf(location.hostname) < 0) { URL_ = ""; FOREIGN_ = true; }
     var ROWS = opt.rows || [], WORKS = opt.works || [];
     var withLine = null, withWorks = null;
     mount.classList.add("share");
@@ -213,8 +216,9 @@
       board.appendChild(tally);
       var grid = el("div", "sh-grid");
       items.forEach(function (it) {
-        var c = el("div", "sh-card" + (it.nick === o.nick ? " me" : ""));
-        c.appendChild(el("div", "sh-nick", it.nick + (it.nick === o.nick ? " (나)" : "")));
+        var mine = isMine(it.nick, o.nick);
+        var c = el("div", "sh-card" + (mine ? " me" : ""));
+        c.appendChild(el("div", "sh-nick", it.nick + (mine ? " (나)" : "")));
         allRows().forEach(function (row) {
           if (!it.results || !it.results[row.key]) return;
           var p = el("p"); p.appendChild(el("b", null, row.label + " ")); p.appendChild(document.createTextNode(it.results[row.key])); c.appendChild(p);
@@ -235,7 +239,7 @@
       }
       postBtn.disabled = true; msg.textContent = "올리는 중…";
       var rr = { _ev: evidence() }; Object.keys(r).forEach(function (k) { rr[k] = r[k]; });
-      var body = JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, unit: opt.unit, unitLabel: opt.unitLabel || "", results: rr, line: withLine && withLine.checked ? myLine() : "" });
+      var body = JSON.stringify({ action: "post", cls: o.cls, nick: o.nick, t: tok(o.nick), unit: opt.unit, unitLabel: opt.unitLabel || "", results: rr, line: withLine && withLine.checked ? myLine() : "" });
       /* 반 전체가 한꺼번에 누르면 시트에 줄이 생긴다. 뒷단이 '많습니다' 라고 하면
          조금씩 다른 시간만큼 기다렸다가 스스로 다시 보낸다(최대 세 번). */
       function send(tries) {

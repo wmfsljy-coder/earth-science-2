@@ -494,7 +494,7 @@
       /* 우리 반이 많이 틀린 문항 — 반 코드·별명을 저장했고 공유가 켜져 있을 때만(별명 없이 문항별 인원만 받는다) */
       try {
         var me = JSON.parse(localStorage.getItem("sth-me") || "{}"), url = String(window.STH_SHARE_URL || "").trim(), hosts = window.STH_SHARE_HOSTS;
-        if (url && hosts && hosts.length && hosts.indexOf(location.hostname) < 0 && location.protocol !== "file:") url = "";
+        if (url && hosts && hosts.length && hosts.indexOf(location.hostname) < 0) url = "";
         var uid = window.sthUnitId ? window.sthUnitId() : "";
         if (url && me.cls && uid) fetch(url + "?action=classmiss&cls=" + encodeURIComponent(me.cls) + "&unit=" + encodeURIComponent(uid))
           .then(function (r) { return r.json(); })

@@ -22,6 +22,8 @@
   var ME = "sth-me";
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function me() { try { return JSON.parse(localStorage.getItem(ME) || "{}"); } catch (e) { return {}; } }
+  function isMine(n, my) { var A = window.sthAccount; return A && A.isMine ? A.isMine(n, my) : n === my; }   /* share.js 와 같이: '@학번' 이면 가린 이름(me.pub)과도 */
+  function tok(n) { var A = window.sthAccount; return A && A.tokFor ? A.tokFor(n) : ""; }
   function mean(a) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i]; return a.length ? s / a.length : NaN; }
   function median(a) { var b = a.slice().sort(function (x, y) { return x - y; }), n = b.length; return n ? (n % 2 ? b[(n - 1) / 2] : (b[n / 2 - 1] + b[n / 2]) / 2) : NaN; }
   function sd(a) { if (a.length < 2) return NaN; var m = mean(a), s = 0; for (var i = 0; i < a.length; i++) s += (a[i] - m) * (a[i] - m); return Math.sqrt(s / (a.length - 1)); }
@@ -55,7 +57,7 @@
     if (!mount) return;
     css();
     var URL_ = (window.STH_SHARE_URL || "").trim(), HOSTS_ = window.STH_SHARE_HOSTS;
-    if (URL_ && HOSTS_ && HOSTS_.length && HOSTS_.indexOf(location.hostname) < 0 && location.protocol !== "file:") URL_ = "";
+    if (URL_ && HOSTS_ && HOSTS_.length && HOSTS_.indexOf(location.hostname) < 0) URL_ = "";
     var D = opt.digits == null ? 1 : opt.digits, U = opt.u || "", N = Math.max(1, Math.min(3, opt.tries || 1));
     var SK = "ms-" + opt.key;
     function fmt(x, d) { return isFinite(x) ? (+x).toFixed(d == null ? D : d) : "–"; }
@@ -119,7 +121,7 @@
     /* 반 그림: 한 사람 = 점 하나(그 사람의 평균). 나는 크게, 참값은 세로 점선 */
     function paintPlot(items, o) {
       plot.innerHTML = "";
-      var pts = items.map(function (it) { return { nick: it.nick, a: mean(it.v || []), g: it.g || "", me: it.nick === o.nick }; })
+      var pts = items.map(function (it) { return { nick: it.nick, a: mean(it.v || []), g: it.g || "", me: isMine(it.nick, o.nick) }; })
         .filter(function (p) { return isFinite(p.a); });
       if (!pts.length) { plot.appendChild(el("p", "ms-note", o.cls + "반에서 아직 올린 값이 없습니다. 첫 값을 올려 보세요.")); return; }
       var vals = pts.map(function (p) { return p.a; }), lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
@@ -202,7 +204,7 @@
       paintMine();
       var o = who(); if (!o) { msg.textContent = "내 기기에 저장했습니다."; return; }
       post.disabled = true; msg.textContent = "올리는 중…";
-      var body = JSON.stringify({ action: "measure", cls: o.cls, nick: o.nick, unit: opt.unit, key: opt.key, v: m.v, g: m.g });
+      var body = JSON.stringify({ action: "measure", cls: o.cls, nick: o.nick, t: tok(o.nick), unit: opt.unit, key: opt.key, v: m.v, g: m.g });
       function send(tries) {
         return fetch(URL_, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: body })
           .then(function (res) { return res.json(); })
