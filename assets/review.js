@@ -4,7 +4,7 @@
    - 수준별 문제에서 한 번 손댄 문항이, 같은 과목의 다른 단원 문항과 섞여 며칠 뒤 다시 나온다.
      처음에 틀린 문항은 하루 뒤, 맞힌 문항은 사흘 뒤. 다시 풀 때 바로 떠올리면 다음 간격이 길어지고
      (1 → 3 → 7 → 14 → 30 → 60일), 틀리면 다음 날 다시 나온다(라이트너 상자).
-   - 문제는 /science-teacher-hub/assets/review-<묶음>.js (make_review_bank.js 가 만든 은행)에서 읽는다.
+   - 문제는 /science-teacher-hub-qtrqwc/assets/review-<묶음>.js (make_review_bank.js 가 만든 은행)에서 읽는다.
    - 기록은 localStorage 'sth-rv-<묶음>' = { s: { rv: { "단원.문항": { b: 상자, d: 다음 날(ms), n: 푼 횟수, k: 바로 떠올린 횟수 } } } }.
      로그인한 학생은 account.js 가 이 기록도 함께 올린다(다른 기기에서 이어서).
    - 수준별 문제 탭 맨 위에 붙고, 탭 단추에 오늘 할 문항 수를 작게 보인다.
@@ -35,7 +35,7 @@
     if (BANK) return cb(BANK);
     waiters.push(cb); if (waiters.length > 1) return;
     var s = document.createElement("script");
-    s.src = "/science-teacher-hub/assets/review-" + GRP + ".js";
+    s.src = "/science-teacher-hub-qtrqwc/assets/review-" + GRP + ".js";
     s.onload = function () { BANK = (window.STH_REVIEW_BANK || {})[GRP] || { units: {}, items: [] }; var w = waiters; waiters = []; w.forEach(function (f) { f(BANK); }); };
     s.onerror = function () { BANK = { units: {}, items: [] }; var w = waiters; waiters = []; w.forEach(function (f) { f(BANK); }); };
     document.head.appendChild(s);

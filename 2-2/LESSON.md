@@ -2,7 +2,7 @@
 
 > 이 파일은 `_tools/make_lessons.js` 가 페이지 내용에서 만든 것입니다. 페이지를 고치면 다시 만들어 주세요. 차시·시간은 예시이니 반 상황에 맞게 바꾸세요.
 
-- 주소: https://wmfsljy-coder.github.io/earth-science-2/2-2/  (교사 미리 보기: 끝에 `?open=1`)
+- 주소: https://wmfsljy-coder.github.io/earth-science-2-vm2vds/2-2/  (교사 미리 보기: 끝에 `?open=1`)
 - 구성: 이야기 3편 · 수준별 문제 19문항 · 응용 실험실 3사례 · 실제 자료 2사례
 - 권장: 이야기 1편 = 1차시(50분). 수준별 문제·실험실은 각 차시 뒤쪽이나 마지막 차시에 나눠 씁니다.
 
@@ -85,4 +85,4 @@
 
 ## 학생 정보
 
-우리 반 공유를 켠 경우 별명·결과 요약·첫 추리·진행 기록만 선생님 시트에 갑니다. 자세한 것은 [GUIDE.md](https://github.com/wmfsljy-coder/science-teacher-hub/blob/main/GUIDE.md) 5.
+우리 반 공유를 켠 경우 별명·결과 요약·첫 추리·진행 기록만 선생님 시트에 갑니다. 자세한 것은 [GUIDE.md](https://github.com/wmfsljy-coder/science-teacher-hub-qtrqwc/blob/main/GUIDE.md) 5.
